@@ -1,0 +1,42 @@
+{
+  "name": "shape-to-query",
+  "version": "0.0.0",
+  "repository": "git@github.com:hypermedia-app/shape-to-query.git",
+  "author": "tpluscode <tpluscode@users.noreply.github.com>",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@hydrofoil/shape-to-query": "^0.3.2",
+    "@rdfjs-elements/rdf-editor": "^0.5.4",
+    "@rdfjs-elements/sparql-editor": "^0.2.0",
+    "@shoelace-style/shoelace": "^2.0.0",
+    "@tpluscode/rdf-ns-builders": "^2.0.1",
+    "lit": "^2.6.1",
+    "rdf-ext": "^2"
+  },
+  "devDependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "@tpluscode/eslint-config": "^0.3.4",
+    "@typescript-eslint/eslint-plugin": "^5.49.0",
+    "@typescript-eslint/parser": "^5.49.0",
+    "browserify-zlib": "^0.2.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-import-resolver-typescript": "^3.5.3",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "process": "^0.11.10",
+    "standard": "^17.0.0",
+    "util": "^0.12.5",
+    "vite": "^4.0.4"
+  },
+  "resolutions": {
+    "readable-stream": "^4"
+  }
+}
