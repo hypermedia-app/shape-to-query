@@ -13,8 +13,6 @@ jobs:
         with:
           node-version: 14
 
-      - run: yarn install --frozen-lockfile
-
       - uses: nelonoel/branch-name@v1.0.1
 
       - name: Publish preview
