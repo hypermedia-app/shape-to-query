@@ -36,8 +36,5 @@
     "standard": "^17.0.0",
     "util": "^0.12.5",
     "vite": "^4.0.4"
-  },
-  "resolutions": {
-    "readable-stream": "^4"
   }
 }
