@@ -1,12 +1,12 @@
-import { parse } from '@labyrinth/testing/nodeFactory'
 import { foaf, rdf, schema, sh } from '@tpluscode/rdf-ns-builders'
 import { SELECT } from '@tpluscode/sparql-builder'
 import { expect } from 'chai'
 import { sparql } from '@tpluscode/rdf-string'
-import { ex } from '@labyrinth/testing/namespace'
 import type { GraphPointer } from 'clownface'
 import { constructQuery, deleteQuery, shapeToPatterns } from '..'
-import '@labyrinth/testing/sparql'
+import { ex } from './namespace'
+import { parse } from './nodeFactory'
+import './sparql'
 
 describe('@hydrofoil/shape-to-query', () => {
   describe('shapeToPatterns', () => {

@@ -3,28 +3,21 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "rules": {
-    "no-undef": "off",
-    "camelcase": ["error", {"allow": ["hyper_"]}]
+  "env": {
+    "mocha": true
   },
-  "overrides": [{
-    "files": ["*.ts"],
-    "rules": {
-      "no-unused-expressions": "off"
-    }
-  }, {
-    "files": ["*.test.ts"],
-    "rules": {
-      "import/no-unresolved": "off"
-    }
-  }],
-  "settings": {
-    "import/resolver": {
-      "typescript": {
-        "project": [
-          "packages/*/tsconfig.json"
-        ]
+  "rules": {
+    "require-extensions/require-extensions": "off"
+  },
+  "overrides": [
+    {
+      "files": ["packages/shape-to-query/test/**"],
+      "rules": {
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": true}]
       }
     }
-  }
+  ],
+  "ignorePatterns": [
+    "mocha-setup.js"
+  ]
 }

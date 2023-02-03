@@ -2,6 +2,3 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npx lint-staged
-yarn talos:helptext:put || true
-yarn talos:helptext:put-vocab || true
-git add docs/talos
