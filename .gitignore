@@ -1,2 +1,8 @@
 node_modules/
 dist/
+*.log
+*.js
+*.d.ts
+!types/**/*.d.ts
+coverage/
+.idea/

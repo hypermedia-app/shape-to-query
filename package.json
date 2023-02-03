@@ -1,0 +1,49 @@
+{
+  "name": "shape-to-query",
+  "private": "true",
+  "scripts": {
+    "prepare": "husky install",
+    "postinstall": "npx yarn-deduplicate",
+    "lint": "eslint . --ext .ts --quiet --ignore-path .gitignore",
+    "test": "c8 --all --reporter=lcov mocha --recursive packages/**/*.test.ts",
+    "release": "changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.26.0",
+    "@tpluscode/eslint-config": "^0.4.1",
+    "@types/mocha": "^10.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.50.0",
+    "@typescript-eslint/parser": "^5.50.0",
+    "c8": "^7.12.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-import-resolver-typescript": "^3.5.3",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-require-extensions": "^0.1.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.0.2",
+    "mocha": "^10.2.0",
+    "standard": "^17.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5",
+    "yarn-deduplicate": "^6.0.1"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "mocha": {
+    "watch-files": [
+      "./**/*.ts"
+    ],
+    "require": [
+      "mocha-setup.js"
+    ]
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix --quiet"
+    ]
+  }
+}
