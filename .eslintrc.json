@@ -7,10 +7,13 @@
     "mocha": true,
     "browser": true
   },
-  "rules": {
-    "require-extensions/require-extensions": "off"
-  },
   "overrides": [
+    {
+      "files": "packages/shape-to-query/**",
+      "rules": {
+        "require-extensions/require-extensions": "off"
+      }
+    },
     {
       "files": ["packages/shape-to-query/test/**"],
       "rules": {
@@ -18,7 +21,7 @@
       }
     },
     {
-      "files": "packages/demo/vite.config.js",
+      "files": "packages/demo/vite.config.ts",
       "rules": {
         "import/no-extraneous-dependencies": "off"
       }

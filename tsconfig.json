@@ -4,10 +4,12 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "declaration": true
+    "declaration": true,
+    "experimentalDecorators": true
   },
   "include": [
     "example",
-    "packages"
+    "packages",
+    "global.d.ts"
   ]
 }
