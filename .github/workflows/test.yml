@@ -8,8 +8,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-        with:
-          node-version: '14'
       - run: yarn --frozen-lockfile
       - run: yarn test
       - name: Codecov
@@ -22,8 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-        with:
-          node-version: '14'
       - run: yarn --frozen-lockfile
       - run: yarn tsc --noEmit
 
@@ -32,7 +28,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-        with:
-          node-version: '14'
       - run: yarn --frozen-lockfile
       - run: yarn lint
