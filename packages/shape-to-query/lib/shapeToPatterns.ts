@@ -139,6 +139,12 @@ function * deepPropertyShapePatterns({ shape, focusNode, options, parentPatterns
         $rdf.quad(intermediateNode, property, variable()),
       ]
     } else if (isAlternativePathPattern(path)) {
+      const altList = path.out(sh.alternativePath).list()
+
+      if (altList === null) {
+        continue
+      }
+
       const property = [...path.out(sh.alternativePath).list()].map(e => e.term)
 
       if (!property.every(term => term.termType === 'NamedNode')) {
