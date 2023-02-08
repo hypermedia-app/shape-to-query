@@ -2,7 +2,8 @@
   "name": "@hydrofoil/shape-to-query",
   "version": "0.3.2",
   "scripts": {
-    "prepack": "tsc"
+    "prepack": "tsc",
+    "prepare": "npm run prepack"
   },
   "files": [
     "*.js",
