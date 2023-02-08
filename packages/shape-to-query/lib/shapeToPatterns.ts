@@ -145,7 +145,7 @@ function * deepPropertyShapePatterns({ shape, focusNode, options, parentPatterns
         continue
       }
 
-      const property = [...path.out(sh.alternativePath).list()].map(e => e.term)
+      const property = [...altList].map(e => e.term)
 
       if (!property.every(term => term.termType === 'NamedNode')) {
         continue
