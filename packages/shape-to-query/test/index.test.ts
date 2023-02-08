@@ -574,5 +574,33 @@ describe('@hydrofoil/shape-to-query', () => {
         `)
       })
     })
+
+    context('sh:alternativePath', () => {
+      it('generates a deep pattern', async () => {
+        // given
+        const shape = await parse`
+          <>
+            a ${sh.NodeShape} ;
+            ${sh.property}
+            [
+              ${sh.path} [ ${sh.alternativePath} (${foaf.nick} ${foaf.givenName})  ] ;
+            ] ; 
+          .
+        `
+
+        // when
+        const query = constructQuery(shape, { subjectVariable: 'node' })
+
+        expect(query).to.be.a.query(sparql`CONSTRUCT {
+          ?node ?node_0 ?node_0_i .
+        } WHERE { 
+          ?node ?node_0 ?node_0_i .
+          values (?node_0) {
+            ( ${foaf.nick} )
+            ( ${foaf.givenName} )
+          }
+        }`)
+      })
+    })
   })
 })

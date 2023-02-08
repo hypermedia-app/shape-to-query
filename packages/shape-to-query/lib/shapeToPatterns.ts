@@ -3,9 +3,10 @@ import type { AnyPointer, GraphPointer } from 'clownface'
 import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { rdf, sh, xsd } from '@tpluscode/rdf-ns-builders'
 import $rdf from '@rdfjs/data-model'
-import { IN } from '@tpluscode/sparql-builder/expressions'
+import { IN, VALUES } from '@tpluscode/sparql-builder/expressions'
 import TermSet from '@rdfjs/term-set'
 import { isBlankNode, isNamedNode } from 'is-graph-pointer'
+import factory from '@rdfjs/data-model'
 import { create, PrefixedVariable } from './variableFactory'
 
 export interface Options {
@@ -38,6 +39,14 @@ export function shapeToPatterns(shape: GraphPointer, options: Options): ShapePat
 
   const flatPatterns = () => [targetClassPattern, ...resourcePatterns
     .flat()
+    .map(elem => {
+      if (elem.toString().includes('VALUES')) {
+        // @ts-expect-error this is a hack
+        return factory.quad(elem?.values[0], elem?.values[1], elem?.values[2])
+      }
+
+      return elem
+    })
     .filter((quad): quad is BaseQuad => 'subject' in quad)
     .reduce((set, quad) => set.add(quad), new TermSet()),
   ].map(quad => sparql`${quad}`)
@@ -129,6 +138,19 @@ function * deepPropertyShapePatterns({ shape, focusNode, options, parentPatterns
         sparql`${focusNode()} ${property}* ${intermediateNode} .`,
         $rdf.quad(intermediateNode, property, variable()),
       ]
+    } else if (isAlternativePathPattern(path)) {
+      const property = [...path.out(sh.alternativePath).list()].map(e => e.term)
+
+      if (!property.every(term => term.termType === 'NamedNode')) {
+        continue
+      }
+
+      const intermediateNode = variable.extend('i')()
+      const v = variable()
+
+      selfPatterns = [
+        sparql`${focusNode()} ${v} ${intermediateNode} . ${VALUES({ [v.value]: property[0] }, { [v.value]: property[1] })}`,
+      ]
     } else {
       continue
     }
@@ -154,4 +176,8 @@ function * deepPropertyShapePatterns({ shape, focusNode, options, parentPatterns
 
 function isDeepPathPattern(pointer: AnyPointer) {
   return isBlankNode(pointer) && isNamedNode(pointer.out([sh.zeroOrMorePath, sh.oneOrMorePath]))
+}
+
+function isAlternativePathPattern(pointer: AnyPointer) {
+  return isBlankNode(pointer) && isBlankNode(pointer.out([sh.alternativePath]))
 }
