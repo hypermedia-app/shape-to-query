@@ -151,11 +151,12 @@ function * deepPropertyShapePatterns({ shape, focusNode, options, parentPatterns
         continue
       }
 
-      const intermediateNode = variable.extend('i')()
-      const v = variable()
+      const v = variable.extend('p')()
+      // const intermediateNode = variable.extend('i')()
 
       selfPatterns = [
-        sparql`${focusNode()} ${v} ${intermediateNode} . ${VALUES({ [v.value]: property[0] }, { [v.value]: property[1] })}`,
+        // TODO: Make this work for more than 2 alts
+        sparql`${focusNode()} ${v} ${variable()} . ${VALUES({ [v.value]: property[0] }, { [v.value]: property[1] })}`,
       ]
     } else {
       continue

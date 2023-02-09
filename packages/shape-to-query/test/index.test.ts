@@ -5,7 +5,7 @@ import { sparql } from '@tpluscode/rdf-string'
 import type { GraphPointer } from 'clownface'
 import { constructQuery, deleteQuery, shapeToPatterns } from '..'
 import { ex } from './namespace'
-import { parse } from './nodeFactory'
+import { parse, parseShaclc } from './nodeFactory'
 import './sparql'
 
 describe('@hydrofoil/shape-to-query', () => {
@@ -592,14 +592,88 @@ describe('@hydrofoil/shape-to-query', () => {
         const query = constructQuery(shape, { subjectVariable: 'node' })
 
         expect(query).to.be.a.query(sparql`CONSTRUCT {
-          ?node ?node_0 ?node_0_i .
+          ?node ?node_0_p ?node_0 .
         } WHERE { 
-          ?node ?node_0 ?node_0_i .
-          values (?node_0) {
+          ?node ?node_0_p ?node_0 .
+          values (?node_0_p) {
             ( ${foaf.nick} )
             ( ${foaf.givenName} )
           }
         }`)
+      })
+
+      it('generates a deep pattern with a nested alternative with asserted type', async () => {
+        const shape = await parseShaclc(`
+          BASE <http://example.org/>
+          PREFIX ex: <http://example.org/>
+
+          shape ex:MyShape -> ex:MyType { ex:alt1|ex:alt2 { ex:p . } . }
+        `, 'http://example.org/MyShape')
+
+        // when
+        const query = constructQuery(shape, { subjectVariable: 'node' })
+
+        expect(query).to.be.a.query(sparql`
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        CONSTRUCT {
+            ?node a <http://example.org/MyType> .
+            ?node ?node_0_p ?node_0.
+            ?node_0 <http://example.org/p> ?node_0_0.
+          }
+          WHERE {
+            ?node a <http://example.org/MyType>.
+            {
+              ?node ?node_0_p ?node_0.
+              VALUES ?node_0_p {
+                <http://example.org/alt1>
+                <http://example.org/alt2>
+              }
+            }
+            UNION
+            {
+              ?node ?node_0_p ?node_0.
+              VALUES ?node_0_p {
+                <http://example.org/alt1>
+                <http://example.org/alt2>
+              }
+              ?node_0 <http://example.org/p> ?node_0_0.
+            }
+          }`)
+      })
+
+      it('generates a deep pattern with a nested alternative', async () => {
+        const shape = await parseShaclc(`
+          BASE <http://example.org/>
+          PREFIX ex: <http://example.org/>
+
+          shape ex:MyShape { ex:alt1|ex:alt2 { ex:p . } . }
+        `, 'http://example.org/MyShape')
+
+        // when
+        const query = constructQuery(shape, { subjectVariable: 'node' })
+
+        expect(query).to.be.a.query(sparql`CONSTRUCT {
+            ?node ?node_0_p ?node_0.
+            ?node_0 <http://example.org/p> ?node_0_0.
+          }
+          WHERE {
+            {
+              ?node ?node_0_p ?node_0.
+              VALUES ?node_0_p {
+                <http://example.org/alt1>
+                <http://example.org/alt2>
+              }
+            }
+            UNION
+            {
+              ?node ?node_0_p ?node_0.
+              VALUES ?node_0_p {
+                <http://example.org/alt1>
+                <http://example.org/alt2>
+              }
+              ?node_0 <http://example.org/p> ?node_0_0.
+            }
+          }`)
       })
     })
   })

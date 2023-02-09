@@ -6,6 +6,7 @@ import toStream from 'string-to-stream'
 import { turtle } from '@tpluscode/rdf-string'
 import { StreamParser } from 'n3'
 import { fromStream } from 'rdf-dataset-ext'
+import { parse as shaclcParse } from 'shaclc-parse'
 
 export function namedNode<Iri extends string = string>(term: Iri | NamedNode<Iri>): GraphPointer<NamedNode, DatasetExt> {
   return clownface({ dataset: $rdf.dataset() }).namedNode(term)
@@ -19,6 +20,12 @@ export async function parse(...[strings, ...values]: Parameters<typeof turtle>):
   const dataset = await $rdf.dataset().import(getStream(strings, ...values))
 
   return clownface({ dataset }).namedNode('')
+}
+
+export async function parseShaclc(input: string, shapeName = ''): Promise<GraphPointer> {
+  const dataset = await $rdf.dataset(shaclcParse(input))
+
+  return clownface({ dataset }).namedNode(shapeName)
 }
 
 export function append(...[strings, ...values]: Parameters<typeof turtle>) {
