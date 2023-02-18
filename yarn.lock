@@ -862,7 +862,7 @@
   dependencies:
     "@rdfjs/to-ntriples" "^2.0.0"
 
-"@rdfjs/term-set@^1", "@rdfjs/term-set@^1.0.1":
+"@rdfjs/term-set@^1.0.1":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@rdfjs/term-set/-/term-set-1.1.0.tgz#36adb73683262e94f135f0bb0cdf71d983e70960"
   integrity sha512-QQ4yzVe1Rvae/GN9SnOhweHNpaxQtnAjeOVciP/yJ0Gfxtbphy2tM56ZsRLV04Qq5qMcSclZIe6irYyEzx/UwQ==
@@ -1715,10 +1715,10 @@ clone@^1.0.2:
   resolved "https://registry.yarnpkg.com/clone/-/clone-1.0.4.tgz#da309cc263df15994c688ca902179ca3c7cd7c7e"
   integrity sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg==
 
-clownface-shacl-path@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/clownface-shacl-path/-/clownface-shacl-path-1.5.0.tgz#d5b20115c186a73ea2bdff50708cfb63dc5dc55c"
-  integrity sha512-1HjDlP4yd40RbtYEcU+MUHtCKOUxpUfoijkDvgAuOAV6ApJNoKNXnAILR2Bc+ER636idGjBxi7+TTxUhRCdqqg==
+clownface-shacl-path@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/clownface-shacl-path/-/clownface-shacl-path-1.5.1.tgz#f2e28ae6fe906291dbeee57f117b7f0f35c24fba"
+  integrity sha512-p7mNA/rtl0x6zfIdbbqcwrrgH53dkq3yCAepRH0LMT6ZJTR7zQZ7ggM2ZKcXZWSvH+v2j6MjJjrp8PQpFNX+TA==
   dependencies:
     "@rdf-esm/term-set" "^0.5.0"
     "@tpluscode/rdf-ns-builders" "^2.0.0"

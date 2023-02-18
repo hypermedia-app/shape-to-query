@@ -18,7 +18,7 @@
     "@rdfjs/data-model": "^1",
     "@tpluscode/rdf-ns-builders": "^2.0.1",
     "@tpluscode/sparql-builder": "^0.3.27",
-    "clownface-shacl-path": "^1.5.0",
+    "clownface-shacl-path": "^1.5.1",
     "is-graph-pointer": "^1.2.2"
   },
   "devDependencies": {
