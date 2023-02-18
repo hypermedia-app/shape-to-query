@@ -9,14 +9,14 @@ interface Context {
 }
 
 export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
-  private _outPatterns: SparqlTemplateResult[] = []
+  private _constructPatterns: SparqlTemplateResult[] = []
 
   constructor(private variable: VariableSequence) {
     super()
   }
 
-  get outPatterns(): SparqlTemplateResult {
-    return sparql`${this._outPatterns}`
+  get constructPatterns(): SparqlTemplateResult {
+    return sparql`${this._constructPatterns}`
   }
 
   visitAlternativePath({ paths }: Path.AlternativePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
@@ -40,7 +40,7 @@ export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
 
   visitPredicatePath(path: Path.PredicatePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
     const pattern = sparql`${pathStart} ${path.term} ${pathEnd} .`
-    this._outPatterns.push(pattern)
+    this._constructPatterns.push(pattern)
     return pattern
   }
 
@@ -82,7 +82,7 @@ export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
     const intermediateNode = this.variable()
     const outPattern = sparql`${intermediateNode} ${path.term} ${pathEnd} .`
 
-    this._outPatterns.push(outPattern)
+    this._constructPatterns.push(outPattern)
     return sparql`${pathStart} ${path.term}* ${intermediateNode} . \n${outPattern}`
   }
 }

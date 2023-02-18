@@ -104,7 +104,7 @@ describe('lib/PathVisitor', () => {
 
         // then
         const wherePatterns = result.toString({ prologue: false }).trimStart().trimEnd()
-        const outPatterns = visitor.outPatterns.toString({ prologue: false }).trimStart().trimEnd()
+        const outPatterns = visitor.constructPatterns.toString({ prologue: false }).trimStart().trimEnd()
         expect(wherePatterns).to.equalIgnoreSpaces(expectedWherePatterns.trimStart().trimEnd())
         if (expectedConstructPatterns) {
           expect(outPatterns).to.equalIgnoreSpaces(expectedConstructPatterns.trimStart().trimEnd())

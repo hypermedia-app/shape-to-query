@@ -1,6 +1,8 @@
+import { Variable } from 'rdf-js'
 import { Assertion, AssertionError } from 'chai'
 import { Generator, Parser, SparqlQuery } from 'sparqljs'
 import type { SparqlTemplateResult } from '@tpluscode/rdf-string'
+import { createVariableSequence } from '../lib/variableSequence'
 
 const sparqlParser = new Parser()
 const generator = new Generator()
@@ -42,5 +44,22 @@ Query was:
 ${this._obj.toString()}`)
   }
 
-  new Assertion(generator.stringify(actualQuery)).deep.eq(generator.stringify(expectedQuery))
+  new Assertion(stringifyAndNormalize(actualQuery)).deep.eq(stringifyAndNormalize(expectedQuery))
 })
+
+function stringifyAndNormalize(query: SparqlQuery) {
+  const nextVariable = createVariableSequence('q')
+  const variableMap = new Map<string, Variable>()
+
+  return ((): string => {
+    const stringified = generator.stringify(query)
+
+    return stringified.replace(/\?\w+/g, (variable) => {
+      if (!variableMap.has(variable)) {
+        variableMap.set(variable, nextVariable())
+      }
+
+      return '?' + variableMap.get(variable).value
+    })
+  })()
+}
