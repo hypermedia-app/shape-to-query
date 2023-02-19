@@ -84,8 +84,12 @@ describe('lib/PathVisitor', () => {
       <> ${sh.path} [ ${sh.zeroOrMorePath} ${foaf.knows} ] .
     `,
     `
-      ?n1 foaf:knows* ?n3 .
-      ?n3 foaf:knows ?n2 .
+      {
+        BIND (?n1 as ?n2)
+      } UNION {
+        ?n1 foaf:knows* ?n3 .
+        ?n3 foaf:knows ?n2 .
+      }
     `,
     '?n3 foaf:knows ?n2 .')
   })

@@ -454,13 +454,21 @@ describe('@hydrofoil/shape-to-query', () => {
         expect(query).to.be.a.query(sparql`
           SELECT * WHERE {
             {
-              ?node ${foaf.knows}* ?node_0_i .
-              ?node_0_i ${foaf.knows} ?node_0 .
+              {
+                BIND(?node as ?node_0)
+              } UNION {
+                ?node ${foaf.knows}* ?node_0_i .
+                ?node_0_i ${foaf.knows} ?node_0 .
+              }
             }
             UNION
             {
-              ?node ${foaf.knows}* ?node_0_i .
-              ?node_0_i ${foaf.knows} ?node_0 .
+              {
+                BIND(?node as ?node_0)
+              } UNION {
+                ?node ${foaf.knows}* ?node_0_i .
+                ?node_0_i ${foaf.knows} ?node_0 .
+              }
               ?node_0 ${foaf.name} ?node_0_0 .
             }
           }
@@ -506,25 +514,41 @@ describe('@hydrofoil/shape-to-query', () => {
             ?node_0_1 ${sh.inversePath} ?node_0_1_0 .
           } WHERE {
             {
-              ?node ${ex.nextInHierarchy}* ?node_0_i .
-              ?node_0_i ${ex.nextInHierarchy} ?node_0 .
+              {
+                BIND(?node as ?node_0)
+              } UNION {
+                ?node ${ex.nextInHierarchy}* ?node_0_i .
+                ?node_0_i ${ex.nextInHierarchy} ?node_0 .
+              }
             }
             UNION 
             {
-              ?node ${ex.nextInHierarchy}* ?node_0_i .
-              ?node_0_i ${ex.nextInHierarchy} ?node_0 .
+              {
+                BIND(?node as ?node_0)
+              } UNION {
+                ?node ${ex.nextInHierarchy}* ?node_0_i .
+                ?node_0_i ${ex.nextInHierarchy} ?node_0 .
+              }
               ?node_0 ${schema.name} ?node_0_0 .
             }
             UNION 
             {
-              ?node ${ex.nextInHierarchy}* ?node_0_i .
-              ?node_0_i ${ex.nextInHierarchy} ?node_0 .
+              {
+                BIND(?node as ?node_0)
+              } UNION {
+                ?node ${ex.nextInHierarchy}* ?node_0_i .
+                ?node_0_i ${ex.nextInHierarchy} ?node_0 .
+              }
               ?node_0 ${sh.path} ?node_0_1 .
             }
             UNION 
             {
-              ?node ${ex.nextInHierarchy}* ?node_0_i .
-              ?node_0_i ${ex.nextInHierarchy} ?node_0 .
+              {
+                BIND(?node as ?node_0)
+              } UNION {
+                ?node ${ex.nextInHierarchy}* ?node_0_i .
+                ?node_0_i ${ex.nextInHierarchy} ?node_0 .
+              }
               ?node_0 ${sh.path} ?node_0_1 .
               ?node_0_1 ${sh.inversePath} ?node_0_1_0 .
             }

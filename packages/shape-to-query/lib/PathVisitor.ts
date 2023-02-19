@@ -34,8 +34,8 @@ export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
     return path.accept(this, { pathStart: pathEnd, pathEnd: pathStart })
   }
 
-  visitOneOrMorePath(path: Path.OneOrMorePath, arg?: Context): SparqlTemplateResult {
-    return this.greedyPath(path, arg)
+  visitOneOrMorePath(path: Path.OneOrMorePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
+    return this.morePath(path, { pathStart, pathEnd })
   }
 
   visitPredicatePath(path: Path.PredicatePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
@@ -62,19 +62,23 @@ export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
     return patterns
   }
 
-  visitZeroOrMorePath(path: Path.ZeroOrMorePath, arg?: Context): SparqlTemplateResult {
-    return this.greedyPath(path, arg)
+  visitZeroOrMorePath(path: Path.ZeroOrMorePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
+    return this.zeroOrPath({ pathStart, pathEnd }, this.morePath(path, { pathStart, pathEnd }))
   }
 
   visitZeroOrOnePath({ path }: Path.ZeroOrOnePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
+    return this.zeroOrPath({ pathStart, pathEnd }, path.accept(this, { pathStart, pathEnd }))
+  }
+
+  private zeroOrPath({ pathStart, pathEnd }: Context, other: SparqlTemplateResult): SparqlTemplateResult {
     return sparql`{
       BIND(${pathStart} as ${pathEnd})
     } UNION {
-      ${path.accept(this, { pathStart, pathEnd })}
+      ${other}
     }`
   }
 
-  private greedyPath({ path }: Path.ZeroOrMorePath | Path.OneOrMorePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
+  private morePath({ path }: Path.ZeroOrMorePath | Path.OneOrMorePath, { pathStart, pathEnd }: Context): SparqlTemplateResult {
     if (!(path instanceof Path.PredicatePath)) {
       throw new Error('Only Predicate Path is supported as child of *OrMorePaths')
     }
