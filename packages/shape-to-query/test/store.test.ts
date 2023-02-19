@@ -47,7 +47,6 @@ describe('@hydrofoil/shape-to-query', () => {
       // when
       const result = await $rdf.dataset().import(await constructQuery(shape, {
         focusNode: tbbt('sheldon-cooper'),
-        subjectVariable: 'person',
       }).execute(client.query))
 
       // then
@@ -55,6 +54,55 @@ describe('@hydrofoil/shape-to-query', () => {
         ${tbbt('sheldon-cooper')} ${schema.givenName} "Sheldon" .
         ${tbbt('sheldon-cooper')} ${schema.parent} ${tbbt('mary-cooper')} .
         ${tbbt('mary-cooper')} ${schema.givenName} "Mary" .
+      `
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
+    })
+
+    it('sh:oneOrMore returns "second level" properties', async () => {
+      // given
+      const shape = await parse`<>
+        ${sh.property} [
+          ${sh.path} (
+            [ ${sh.oneOrMorePath} ${schema.parent} ]
+            ${schema.givenName}
+          );
+        ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape, {
+        focusNode: tbbt('sheldon-cooper'),
+      }).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${tbbt('sheldon-cooper')} ${schema.parent} ${tbbt('mary-cooper')} .
+        ${tbbt('mary-cooper')} ${schema.givenName} "Mary" .
+      `
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
+    })
+
+    it('sh:zeroOrOne returns self and child properties', async () => {
+      // given
+      const shape = await parse`<>
+        ${sh.property} [
+          ${sh.path} (
+            [ ${sh.zeroOrOnePath} ${schema.spouse} ]
+            ${schema.givenName}
+          );
+        ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape, {
+        focusNode: tbbt('howard-wolowitz'),
+      }).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${tbbt('howard-wolowitz')} ${schema.spouse} ${tbbt('bernadette-rostenkowski')} .
+        ${tbbt('howard-wolowitz')} ${schema.givenName} "Howard" .
+        ${tbbt('bernadette-rostenkowski')} ${schema.givenName} "Bernadette" .
       `
       expect(result.toCanonical()).to.eq(expected.toCanonical())
     })

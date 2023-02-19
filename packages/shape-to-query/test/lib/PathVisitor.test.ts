@@ -46,12 +46,13 @@ describe('lib/PathVisitor', () => {
       <> ${sh.path} [ ${sh.zeroOrOnePath} ${foaf.knows} ] .
     `, `
       {
-        BIND(?n1 as ?n2)
+        BIND(?n1 as ?n3)
       } UNION {
-        ?n1 foaf:knows ?n2 .
+        ?n1 foaf:knows ?n4 .
       }
+      FILTER(?n2 = ?n3 || ?n2 = ?n4)
     `,
-    '?n1 foaf:knows ?n2 .')
+    '?n1 foaf:knows ?n4 .')
   })
 
   describe('alternative path', () => {

@@ -34,8 +34,8 @@ export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
     return path.accept(this, { pathStart: pathEnd, pathEnd: pathStart })
   }
 
-  visitOneOrMorePath(path: Path.OneOrMorePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
-    return this.morePath(path, { pathStart, pathEnd })
+  visitOneOrMorePath(path: Path.OneOrMorePath, arg?: Context): SparqlTemplateResult {
+    return this.greedyPath(path, arg)
   }
 
   visitPredicatePath(path: Path.PredicatePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
@@ -63,22 +63,29 @@ export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
   }
 
   visitZeroOrMorePath(path: Path.ZeroOrMorePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
-    return this.zeroOrPath({ pathStart, pathEnd }, this.morePath(path, { pathStart, pathEnd }))
+    return sparql`
+    {
+      BIND (${pathStart} as ${pathEnd})
+    } UNION {
+      ${this.greedyPath(path, { pathStart, pathEnd })}
+    }
+    `
   }
 
   visitZeroOrOnePath({ path }: Path.ZeroOrOnePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
-    return this.zeroOrPath({ pathStart, pathEnd }, path.accept(this, { pathStart, pathEnd }))
-  }
+    const zeroPathVariable = this.variable()
+    const orMorePathVariable = this.variable()
 
-  private zeroOrPath({ pathStart, pathEnd }: Context, other: SparqlTemplateResult): SparqlTemplateResult {
     return sparql`{
-      BIND(${pathStart} as ${pathEnd})
+      BIND(${pathStart} as ${zeroPathVariable})
     } UNION {
-      ${other}
-    }`
+      ${path.accept(this, { pathStart, pathEnd: orMorePathVariable })}
+    }
+    
+    FILTER(${pathEnd} = ${zeroPathVariable} || ${pathEnd} = ${orMorePathVariable})`
   }
 
-  private morePath({ path }: Path.ZeroOrMorePath | Path.OneOrMorePath, { pathStart, pathEnd }: Context): SparqlTemplateResult {
+  private greedyPath({ path }: Path.ZeroOrMorePath | Path.OneOrMorePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
     if (!(path instanceof Path.PredicatePath)) {
       throw new Error('Only Predicate Path is supported as child of *OrMorePaths')
     }
