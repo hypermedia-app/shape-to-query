@@ -16,101 +16,124 @@ describe('lib/PathVisitor', () => {
   })
 
   describe('predicate path', () => {
-    iit('simple case', parse`
+    iit('simple case', {
+      shape: parse`
         <>
           ${sh.path} ${foaf.knows} ;
         .
-      `
-    ,
-    '?n1 foaf:knows ?n2 .')
+      `,
+      expectedWherePatterns: '?n1 foaf:knows ?n2 .',
+    })
   })
 
   describe('sequence path', () => {
-    iit('two predicates', parse`
-      <>
-        ${sh.path} ( ${foaf.knows} ${foaf.name} ) ;
-      .
-    `,
-    '?n1 foaf:knows ?n3 .\n?n3 foaf:name ?n2 .')
+    iit('two predicates', {
+      shape: parse`
+        <>
+          ${sh.path} ( ${foaf.knows} ${foaf.name} ) ;
+        .
+      `,
+      expectedWherePatterns: '?n1 foaf:knows ?n3 .\n?n3 foaf:name ?n2 .',
+    })
   })
 
   describe('inverse path', () => {
-    iit('of predicate path', parse`
-      <> ${sh.path} [ ${sh.inversePath} ${foaf.knows} ] .
-    `,
-    '?n2 foaf:knows ?n1 .')
+    iit('of predicate path', {
+      shape: parse`
+        <> ${sh.path} [ ${sh.inversePath} ${foaf.knows} ] .
+      `,
+      expectedWherePatterns: '?n2 foaf:knows ?n1 .',
+    })
   })
 
   describe('zero-or-one path', () => {
-    iit('of predicate path', parse`
-      <> ${sh.path} [ ${sh.zeroOrOnePath} ${foaf.knows} ] .
-    `, `
-      {
-        BIND(?n1 as ?n3)
-      } UNION {
-        ?n1 foaf:knows ?n4 .
-      }
-      FILTER(?n2 = ?n3 || ?n2 = ?n4)
-    `,
-    '?n1 foaf:knows ?n4 .')
+    iit('of predicate path', {
+      shape: parse`
+        <> ${sh.path} [ ${sh.zeroOrOnePath} ${foaf.knows} ] .
+      `,
+      expectedWherePatterns: `
+        {
+          BIND(?n1 as ?n3)
+        } UNION {
+          ?n1 foaf:knows ?n4 .
+        }
+        FILTER(?n2 = ?n3 || ?n2 = ?n4)
+      `,
+      expectedConstructPatterns: '?n1 foaf:knows ?n4 .',
+    })
   })
 
   describe('alternative path', () => {
-    iit('of two predicates', parse`
-      <> ${sh.path} [ ${sh.alternativePath} ( ${foaf.knows} ${schema.knows} ) ] .
-    `,
-    `{
-      ?n1 foaf:knows ?n3 .
-    } UNION {
-      ?n1 schema:knows ?n4 .
-    }`,
-    `
-      ?n1 foaf:knows ?n3 .
-      ?n1 schema:knows ?n4 .`)
+    iit('of two predicates', {
+      shape: parse`
+        <> ${sh.path} [ ${sh.alternativePath} ( ${foaf.knows} ${schema.knows} ) ] .
+      `,
+      expectedWherePatterns: `{
+          ?n1 foaf:knows ?n3 .
+        } UNION {
+          ?n1 schema:knows ?n4 .
+        }`,
+      expectedConstructPatterns: `
+        ?n1 foaf:knows ?n3 .
+        ?n1 schema:knows ?n4 .`,
+      isLeafPath: true,
+    })
 
-    iit('of two predicates when it is not last', parse`
-      <> ${sh.path} [ ${sh.alternativePath} ( ${foaf.knows} ${schema.knows} ) ] .
-    `,
-    `{
-      ?n1 foaf:knows ?n3 .
-    } UNION {
-      ?n1 schema:knows ?n4 .
-    }
-    
-    FILTER(?n2 IN(?n3, ?n4))`,
-    `
-      ?n1 foaf:knows ?n3 .
-      ?n1 schema:knows ?n4 .`,
-    false)
+    iit('of two predicates when it is not last', {
+      shape: parse`
+        <> ${sh.path} [ ${sh.alternativePath} ( ${foaf.knows} ${schema.knows} ) ] .
+      `,
+      expectedWherePatterns: `{
+          ?n1 foaf:knows ?n3 .
+        } UNION {
+          ?n1 schema:knows ?n4 .
+        }
+        
+        FILTER(?n2 IN(?n3, ?n4))`,
+      expectedConstructPatterns: `
+        ?n1 foaf:knows ?n3 .
+        ?n1 schema:knows ?n4 .`,
+    })
   })
 
   describe('one-or-more path', () => {
-    iit('of predicate path', parse`
-      <> ${sh.path} [ ${sh.oneOrMorePath} ${foaf.knows} ] .
-    `,
-    `
-      ?n1 foaf:knows* ?n3 .
-      ?n3 foaf:knows ?n2 .
-    `,
-    '?n3 foaf:knows ?n2 .')
+    iit('of predicate path', {
+      shape: parse`
+        <> ${sh.path} [ ${sh.oneOrMorePath} ${foaf.knows} ] .
+      `,
+      expectedWherePatterns: `
+        ?n1 foaf:knows* ?n3 .
+        ?n3 foaf:knows ?n2 .
+      `,
+      expectedConstructPatterns: '?n3 foaf:knows ?n2 .',
+    })
   })
 
   describe('zero-or-more path', () => {
-    iit('of predicate path', parse`
-      <> ${sh.path} [ ${sh.zeroOrMorePath} ${foaf.knows} ] .
-    `,
-    `
-      {
-        BIND (?n1 as ?n2)
-      } UNION {
-        ?n1 foaf:knows* ?n3 .
-        ?n3 foaf:knows ?n2 .
-      }
-    `,
-    '?n3 foaf:knows ?n2 .')
+    iit('of predicate path', {
+      shape: parse`
+        <> ${sh.path} [ ${sh.zeroOrMorePath} ${foaf.knows} ] .
+      `,
+      expectedWherePatterns: `
+        {
+          BIND (?n1 as ?n2)
+        } UNION {
+          ?n1 foaf:knows* ?n3 .
+          ?n3 foaf:knows ?n2 .
+        }
+      `,
+      expectedConstructPatterns: '?n3 foaf:knows ?n2 .',
+    })
   })
 
-  function iit(name: string, shape: Promise<GraphPointer>, expectedWherePatterns: string, expectedConstructPatterns?: string, isLeafPath?: boolean) {
+  interface Iit {
+    shape: Promise<GraphPointer>
+    expectedWherePatterns: string
+    expectedConstructPatterns?: string
+    isLeafPath?: boolean
+  }
+
+  function iit(name: string, { shape, expectedWherePatterns, expectedConstructPatterns, isLeafPath }: Iit) {
     context(name, () => {
       it('creates correct patterns', async () => {
         // given

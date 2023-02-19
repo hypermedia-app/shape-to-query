@@ -21,7 +21,7 @@ export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
     return sparql`${this._constructPatterns}`
   }
 
-  visitAlternativePath({ paths }: Path.AlternativePath, { pathStart, pathEnd = this.variable(), isLeafPath = true }: Context): SparqlTemplateResult {
+  visitAlternativePath({ paths }: Path.AlternativePath, { pathStart, pathEnd = this.variable(), isLeafPath }: Context): SparqlTemplateResult {
     const [first, ...rest] = paths
     const intermediatePaths: Variable[] = [this.variable()]
 
