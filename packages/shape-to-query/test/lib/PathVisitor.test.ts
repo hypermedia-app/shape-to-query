@@ -5,6 +5,7 @@ import { GraphPointer } from 'clownface'
 import { parse } from '../nodeFactory'
 import PathVisitor from '../../lib/PathVisitor'
 import { createVariableSequence, VariableSequence } from '../../lib/variableSequence'
+import { normalize } from '../sparql'
 
 describe('lib/PathVisitor', () => {
   let variable: VariableSequence
@@ -33,7 +34,7 @@ describe('lib/PathVisitor', () => {
           ${sh.path} ( ${foaf.knows} ${foaf.name} ) ;
         .
       `,
-      expectedWherePatterns: '?n1 foaf:knows ?n3 .\n?n3 foaf:name ?n2 .',
+      expectedWherePatterns: '?in foaf:knows ?mid .\n?mid foaf:name ?out .',
     })
   })
 
@@ -147,11 +148,11 @@ describe('lib/PathVisitor', () => {
         })
 
         // then
-        const wherePatterns = result.toString({ prologue: false }).trimStart().trimEnd()
-        const outPatterns = visitor.constructPatterns.toString({ prologue: false }).trimStart().trimEnd()
-        expect(wherePatterns).to.equalIgnoreSpaces(expectedWherePatterns.trimStart().trimEnd())
+        const wherePatterns = normalize(result.toString({ prologue: false }))
+        const outPatterns = normalize(visitor.constructPatterns.toString({ prologue: false }))
+        expect(wherePatterns).to.equalIgnoreSpaces(normalize(expectedWherePatterns))
         if (expectedConstructPatterns) {
-          expect(outPatterns).to.equalIgnoreSpaces(expectedConstructPatterns.trimStart().trimEnd())
+          expect(outPatterns).to.equalIgnoreSpaces(normalize(expectedConstructPatterns))
         } else {
           expect(outPatterns).to.equalIgnoreSpaces(wherePatterns)
         }

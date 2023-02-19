@@ -48,18 +48,18 @@ ${this._obj.toString()}`)
 })
 
 function stringifyAndNormalize(query: SparqlQuery) {
+  return normalize(generator.stringify(query))
+}
+
+export function normalize(query: string): string {
   const nextVariable = createVariableSequence('q')
   const variableMap = new Map<string, Variable>()
 
-  return ((): string => {
-    const stringified = generator.stringify(query)
+  return (() => query.trimStart().trimEnd().replace(/\?\w+/g, (variable) => {
+    if (!variableMap.has(variable)) {
+      variableMap.set(variable, nextVariable())
+    }
 
-    return stringified.replace(/\?\w+/g, (variable) => {
-      if (!variableMap.has(variable)) {
-        variableMap.set(variable, nextVariable())
-      }
-
-      return '?' + variableMap.get(variable).value
-    })
-  })()
+    return '?' + variableMap.get(variable).value
+  }))()
 }
