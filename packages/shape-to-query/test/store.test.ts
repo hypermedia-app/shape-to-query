@@ -106,5 +106,111 @@ describe('@hydrofoil/shape-to-query', () => {
       `
       expect(result.toCanonical()).to.eq(expected.toCanonical())
     })
+
+    it('sh:alternativePath chained last in a sequence', async () => {
+      // given
+      const shape = await parse`<>
+        ${sh.property} [
+          ${sh.path} (
+            ${schema.address}
+            [ 
+              ${sh.alternativePath} (
+                ${schema.addressCountry}
+                ${schema.addressLocality}
+                ${schema.addressRegion}
+                ${schema.postalCode}
+                ${schema.streetAddress}
+              )
+            ]
+          );
+        ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape, {
+        focusNode: tbbt('penny'),
+      }).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${tbbt('penny')} ${schema.address} [
+          ${schema.addressCountry} "US";
+          ${schema.addressLocality} "Pasadena";
+          ${schema.addressRegion} "CA";
+          ${schema.postalCode} "91104";
+          ${schema.streetAddress} "2311 North Los Robles Avenue, Aparment 4B" ;
+        ] .
+      `
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
+    })
+
+    it('sh:alternativePath chained first in a sequence', async () => {
+      // given
+      const shape = await parse`<> 
+        ${sh.property} [
+          ${sh.path} (
+            [ ${sh.alternativePath} ( ${schema.children} ${schema.knows} ) ]
+            ${schema.givenName}
+          ) ;
+        ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape, {
+        focusNode: tbbt('mary-cooper'),
+      }).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${tbbt('mary-cooper')} ${schema.children} ${tbbt('sheldon-cooper')} .
+        ${tbbt('mary-cooper')} ${schema.knows} 
+          ${tbbt('howard-wolowitz')} ,
+          ${tbbt('penny')} ,
+          ${tbbt('rajesh-koothrappali')} ,
+          ${tbbt('sheldon-cooper')} 
+        .
+        ${tbbt('howard-wolowitz')} ${schema.givenName} "Howard" .
+        ${tbbt('penny')} ${schema.givenName} "Penny" .
+        ${tbbt('rajesh-koothrappali')} ${schema.givenName} "Rajesh" .
+        ${tbbt('sheldon-cooper')} ${schema.givenName} "Sheldon" .
+      `
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
+    })
+
+    it('two sh:alternativePath in a sequence', async () => {
+      // given
+      const shape = await parse`<> 
+        ${sh.property} [
+          ${sh.path} (
+            [ ${sh.alternativePath} ( ${schema.children} ${schema.knows} ) ]
+            [ ${sh.alternativePath} ( ${schema.givenName} ${schema.familyName} ) ]
+          ) ;
+        ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape, {
+        focusNode: tbbt('mary-cooper'),
+      }).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${tbbt('mary-cooper')} ${schema.children} ${tbbt('sheldon-cooper')} .
+        ${tbbt('mary-cooper')} ${schema.knows} 
+          ${tbbt('howard-wolowitz')} ,
+          ${tbbt('penny')} ,
+          ${tbbt('rajesh-koothrappali')} ,
+          ${tbbt('sheldon-cooper')} 
+        .
+        ${tbbt('howard-wolowitz')} ${schema.givenName} "Howard" .
+        ${tbbt('howard-wolowitz')} ${schema.familyName} "Wolowitz" .
+        ${tbbt('penny')} ${schema.givenName} "Penny" .
+        ${tbbt('rajesh-koothrappali')} ${schema.givenName} "Rajesh" .
+        ${tbbt('rajesh-koothrappali')} ${schema.familyName} "Koothrappali" .
+        ${tbbt('sheldon-cooper')} ${schema.givenName} "Sheldon" .
+        ${tbbt('sheldon-cooper')} ${schema.familyName} "Cooper" .
+      `
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
+    })
   })
 })

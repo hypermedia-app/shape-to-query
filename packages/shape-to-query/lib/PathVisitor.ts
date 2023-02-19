@@ -1,11 +1,13 @@
-import type { Term } from 'rdf-js'
+import type { Term, Variable } from 'rdf-js'
 import * as Path from 'clownface-shacl-path'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
+import { IN } from '@tpluscode/sparql-builder/expressions'
 import { VariableSequence } from './variableSequence'
 
 interface Context {
   pathStart: Term
   pathEnd?: Term
+  isLeafPath?: boolean
 }
 
 export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
@@ -19,15 +21,28 @@ export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
     return sparql`${this._constructPatterns}`
   }
 
-  visitAlternativePath({ paths }: Path.AlternativePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
+  visitAlternativePath({ paths }: Path.AlternativePath, { pathStart, pathEnd = this.variable(), isLeafPath = true }: Context): SparqlTemplateResult {
     const [first, ...rest] = paths
-    return rest.reduce((union, path) => {
+    const intermediatePaths: Variable[] = [this.variable()]
+
+    const union = rest.reduce((union, path) => {
+      const intermediatePath = this.variable()
+      intermediatePaths.push(intermediatePath)
+
       return sparql`${union} UNION {
-       ${path.accept(this, { pathStart, pathEnd })}
+       ${path.accept(this, { pathStart, pathEnd: intermediatePath })}
       }`
     }, sparql`{
-      ${first.accept(this, { pathStart, pathEnd })}
+      ${first.accept(this, { pathStart, pathEnd: intermediatePaths[0] })}
     }`)
+
+    if (isLeafPath) {
+      return union
+    }
+
+    return sparql`${union}
+    
+    FILTER(${pathEnd} ${IN(...intermediatePaths)})`
   }
 
   visitInversePath({ path }: Path.InversePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
@@ -50,9 +65,11 @@ export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
     let segEnd = this.variable()
 
     for (const [index, segment] of paths.entries()) {
+      const isLast = index === paths.length - 1
       patterns = sparql`${patterns}\n${segment.accept(this, {
         pathStart: segStart,
-        pathEnd: index === paths.length - 1 ? pathEnd : segEnd,
+        pathEnd: isLast ? pathEnd : segEnd,
+        isLeafPath: isLast,
       })}`
 
       segStart = segEnd
