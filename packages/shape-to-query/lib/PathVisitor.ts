@@ -1,13 +1,11 @@
 import type { Term, Variable } from 'rdf-js'
 import * as Path from 'clownface-shacl-path'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import { IN } from '@tpluscode/sparql-builder/expressions'
 import { VariableSequence } from './variableSequence'
 
 interface Context {
   pathStart: Term
   pathEnd?: Term
-  isLeafPath?: boolean
 }
 
 export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
@@ -21,28 +19,22 @@ export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
     return sparql`${this._constructPatterns}`
   }
 
-  visitAlternativePath({ paths }: Path.AlternativePath, { pathStart, pathEnd = this.variable(), isLeafPath }: Context): SparqlTemplateResult {
+  visitAlternativePath({ paths }: Path.AlternativePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
     const [first, ...rest] = paths
     const intermediatePaths: Variable[] = [this.variable()]
 
-    const union = rest.reduce((union, path) => {
+    return rest.reduce((union, path) => {
       const intermediatePath = this.variable()
       intermediatePaths.push(intermediatePath)
 
       return sparql`${union} UNION {
        ${path.accept(this, { pathStart, pathEnd: intermediatePath })}
+      BIND(${intermediatePath} as ${pathEnd})
       }`
     }, sparql`{
       ${first.accept(this, { pathStart, pathEnd: intermediatePaths[0] })}
+      BIND(${intermediatePaths[0]} as ${pathEnd})
     }`)
-
-    if (isLeafPath) {
-      return union
-    }
-
-    return sparql`${union}
-    
-    FILTER(${pathEnd} ${IN(...intermediatePaths)})`
   }
 
   visitInversePath({ path }: Path.InversePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
@@ -69,7 +61,6 @@ export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
       patterns = sparql`${patterns}\n${segment.accept(this, {
         pathStart: segStart,
         pathEnd: isLast ? pathEnd : segEnd,
-        isLeafPath: isLast,
       })}`
 
       segStart = segEnd
@@ -90,16 +81,15 @@ export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
   }
 
   visitZeroOrOnePath({ path }: Path.ZeroOrOnePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
-    const zeroPathVariable = this.variable()
     const orMorePathVariable = this.variable()
 
     return sparql`{
-      BIND(${pathStart} as ${zeroPathVariable})
+      BIND(${pathStart} as ${pathEnd})
     } UNION {
       ${path.accept(this, { pathStart, pathEnd: orMorePathVariable })}
+      BIND(${orMorePathVariable} as ${pathEnd})
     }
-    
-    FILTER(${pathEnd} = ${zeroPathVariable} || ${pathEnd} = ${orMorePathVariable})`
+    `
   }
 
   private greedyPath({ path }: Path.ZeroOrMorePath | Path.OneOrMorePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {

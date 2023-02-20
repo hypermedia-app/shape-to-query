@@ -54,11 +54,11 @@ describe('lib/PathVisitor', () => {
       `,
       expectedWherePatterns: `
         {
-          BIND(?n1 as ?n3)
+          BIND(?n1 as ?n2)
         } UNION {
           ?n1 foaf:knows ?n4 .
+          BIND (?n4 as ?n2)
         }
-        FILTER(?n2 = ?n3 || ?n2 = ?n4)
       `,
       expectedConstructPatterns: '?n1 foaf:knows ?n4 .',
     })
@@ -71,26 +71,11 @@ describe('lib/PathVisitor', () => {
       `,
       expectedWherePatterns: `{
           ?n1 foaf:knows ?n3 .
+          BIND(?n3 as ?n2)
         } UNION {
           ?n1 schema:knows ?n4 .
+          BIND(?n4 as ?n2)
         }`,
-      expectedConstructPatterns: `
-        ?n1 foaf:knows ?n3 .
-        ?n1 schema:knows ?n4 .`,
-      isLeafPath: true,
-    })
-
-    iit('of two predicates when it is not last', {
-      shape: parse`
-        <> ${sh.path} [ ${sh.alternativePath} ( ${foaf.knows} ${schema.knows} ) ] .
-      `,
-      expectedWherePatterns: `{
-          ?n1 foaf:knows ?n3 .
-        } UNION {
-          ?n1 schema:knows ?n4 .
-        }
-        
-        FILTER(?n2 IN(?n3, ?n4))`,
       expectedConstructPatterns: `
         ?n1 foaf:knows ?n3 .
         ?n1 schema:knows ?n4 .`,
@@ -131,10 +116,9 @@ describe('lib/PathVisitor', () => {
     shape: Promise<GraphPointer>
     expectedWherePatterns: string
     expectedConstructPatterns?: string
-    isLeafPath?: boolean
   }
 
-  function iit(name: string, { shape, expectedWherePatterns, expectedConstructPatterns, isLeafPath }: Iit) {
+  function iit(name: string, { shape, expectedWherePatterns, expectedConstructPatterns }: Iit) {
     context(name, () => {
       it('creates correct patterns', async () => {
         // given
@@ -144,7 +128,6 @@ describe('lib/PathVisitor', () => {
         const path = fromNode(shapePtr.out(sh.path))
         const result = visitor.visit(path, {
           pathStart: variable(),
-          isLeafPath,
         })
 
         // then
