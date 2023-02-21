@@ -212,5 +212,30 @@ describe('@hydrofoil/shape-to-query', () => {
       `
       expect(result.toCanonical()).to.eq(expected.toCanonical())
     })
+
+    it('mix of sh:target', async () => {
+      // given
+      const shape = await parse`
+        <>
+          a ${sh.NodeShape} ;
+          ${sh.targetNode} ${tbbt('stuart-bloom')} ; # match Stuart
+          ${sh.targetObjectsOf} ${schema.parent} ;           # match Mee-Maw
+          ${sh.targetSubjectsOf} ${schema.address} ;         # match Leonard, Sheldon and Penny
+        .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${tbbt('mary-cooper')} a ${schema.Person} .
+        ${tbbt('stuart-bloom')} a ${schema.Person} .
+        ${tbbt('penny')} a ${schema.Person} .
+        ${tbbt('leonard-hofstadter')} a ${schema.Person} .
+        ${tbbt('sheldon-cooper')} a ${schema.Person} .
+      `
+      expect(result.toCanonical).to.eq(expected.toCanonical)
+    })
   })
 })

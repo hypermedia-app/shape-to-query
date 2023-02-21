@@ -250,6 +250,45 @@ describe('@hydrofoil/shape-to-query', () => {
             ?resource ${foaf.name} ?resource_0 .
         }`)
       })
+
+      it('generates a query with multiple targets', async () => {
+        // given
+        const shape = await parse`
+          <>
+            a ${sh.NodeShape} ;
+            ${sh.targetNode} ${ex.John} ;
+            ${sh.targetClass} ${schema.Person} ;
+            ${sh.targetSubjectsOf} ${schema.spouse} ;
+            ${sh.targetObjectsOf} ${schema.parent} ;
+            ${sh.property}
+            [
+              ${sh.path} ${foaf.name} ;
+            ] ; 
+          .
+        `
+
+        // when
+        const query = constructQuery(shape).build()
+
+        // then
+        expect(query).to.be.a.query(sparql`CONSTRUCT {
+          ?resource a ${schema.Person} .
+          ?resource ${schema.spouse} ?spouse .
+          ?parent ${schema.parent} ?resource .
+          ?resource ${foaf.name} ?resource_0 .
+        } WHERE {
+          {
+            VALUES (?resource) { (${ex.John}) }
+          } UNION {
+            ?resource a ${schema.Person} .
+          } UNION {
+            ?resource ${schema.spouse} ?spouse .
+          } UNION {
+            ?parent ${schema.parent} ?resource .
+          }
+          ?resource ${foaf.name} ?resource_0 .
+        }`)
+      })
     })
 
     describe('delete', () => {
