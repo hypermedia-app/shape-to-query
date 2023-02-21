@@ -1,12 +1,13 @@
-import { BaseQuad, NamedNode } from 'rdf-js'
-import type { AnyPointer, GraphPointer } from 'clownface'
-import { sparql, SparqlTemplateResult } from '@tpluscode/rdf-string'
+import { BaseQuad, NamedNode, Term, Variable } from 'rdf-js'
+import type { GraphPointer } from 'clownface'
+import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { rdf, sh, xsd } from '@tpluscode/rdf-ns-builders'
 import $rdf from '@rdfjs/data-model'
 import { IN } from '@tpluscode/sparql-builder/expressions'
-import TermSet from '@rdfjs/term-set'
-import { isBlankNode, isNamedNode } from 'is-graph-pointer'
-import { create, PrefixedVariable } from './variableFactory'
+import { isNamedNode } from 'is-graph-pointer'
+import { fromNode } from 'clownface-shacl-path'
+import PathVisitor from './PathVisitor'
+import { createVariableSequence, VariableSequence } from './variableSequence'
 
 export interface Options {
   subjectVariable?: string
@@ -18,37 +19,31 @@ type PropertyShapeOptions = Pick<Options, 'objectVariablePrefix'>
 
 const TRUE = $rdf.literal('true', xsd.boolean)
 
-interface ShapePatterns extends Iterable<SparqlTemplateResult> {
+interface ShapePatterns {
   whereClause(): SparqlTemplateResult
   constructClause(): SparqlTemplateResult
 }
 
 export function shapeToPatterns(shape: GraphPointer, options: Options): ShapePatterns {
-  const focusNode = create({
-    focusNode: options.focusNode,
-    prefix: options.subjectVariable || 'resource',
-  })
+  const prefix = options.subjectVariable || 'resource'
+  const variable = createVariableSequence(prefix)
+  const focusNode = options.focusNode || variable()
 
-  const { targetClassPattern, targetClassFilter } = targetClass(shape, focusNode)
+  const { targetClassPattern, targetClassFilter } = targetClass(shape, focusNode, prefix)
+  const visitor = new PathVisitor(variable)
   const resourcePatterns = [...deepPropertyShapePatterns({
     shape,
     focusNode,
     options,
+    visitor,
+    variable,
   })]
 
-  const flatPatterns = () => [targetClassPattern, ...resourcePatterns
-    .flat()
-    .filter((quad): quad is BaseQuad => 'subject' in quad)
-    .reduce((set, quad) => set.add(quad), new TermSet()),
-  ].map(quad => sparql`${quad}`)
-
   return {
-    [Symbol.iterator]() {
-      return flatPatterns()[Symbol.iterator]()
-    },
     constructClause() {
       return sparql`
-        ${[...flatPatterns()]}
+        ${targetClassPattern}
+        ${visitor.constructPatterns}
       `
     },
     whereClause() {
@@ -61,7 +56,7 @@ export function shapeToPatterns(shape: GraphPointer, options: Options): ShapePat
   }
 }
 
-function targetClass(shape: GraphPointer, focusNode: PrefixedVariable) {
+function targetClass(shape: GraphPointer, focusNode: Term, prefix: string) {
   const targetClass = shape.out(sh.targetClass)
   if (!targetClass.terms.length) {
     return {}
@@ -69,21 +64,19 @@ function targetClass(shape: GraphPointer, focusNode: PrefixedVariable) {
 
   if (isNamedNode(targetClass)) {
     return {
-      targetClassPattern: $rdf.quad(focusNode(), rdf.type, targetClass.term),
+      targetClassPattern: $rdf.quad<BaseQuad>(focusNode, rdf.type, targetClass.term),
     }
   }
 
-  const typeVar = focusNode.extend('targetClass')
+  const typeVar = $rdf.variable(prefix + '_targetClass')
 
   return {
-    targetClassPattern: $rdf.quad(focusNode(), rdf.type, typeVar()),
-    targetClassFilter: sparql`FILTER ( ${typeVar()} ${IN(...targetClass.terms)} )`,
+    targetClassPattern: $rdf.quad<BaseQuad>(focusNode, rdf.type, typeVar),
+    targetClassFilter: sparql`FILTER ( ${typeVar} ${IN(...targetClass.terms)} )`,
   }
 }
 
-type Pattern = BaseQuad | SparqlTemplateResult
-
-function toUnion(propertyPatterns: Pattern[][]) {
+function toUnion(propertyPatterns: SparqlTemplateResult[][]) {
   if (propertyPatterns.length > 1) {
     return propertyPatterns.reduce((union, next, index) => {
       if (index === 0) {
@@ -101,39 +94,28 @@ function toUnion(propertyPatterns: Pattern[][]) {
 
 interface PropertyShapePatterns {
   shape: GraphPointer
-  focusNode: PrefixedVariable
+  focusNode: NamedNode | Variable
   options: PropertyShapeOptions
-  parentPatterns?: Pattern[]
+  parentPatterns?: SparqlTemplateResult[]
+  visitor: PathVisitor
+  variable: VariableSequence
 }
 
-function * deepPropertyShapePatterns({ shape, focusNode, options, parentPatterns = [] }: PropertyShapePatterns): Generator<Pattern[]> {
+function * deepPropertyShapePatterns({ shape, focusNode, options, visitor, variable, parentPatterns = [] }: PropertyShapePatterns): Generator<SparqlTemplateResult[]> {
   const activeProperties = shape.out(sh.property)
     .filter(propShape => !propShape.has(sh.deactivated, TRUE).term)
     .toArray()
 
-  for (const [index, propShape] of activeProperties.entries()) {
-    const variable = options.objectVariablePrefix
-      ? focusNode.extend(options.objectVariablePrefix).extend(index)
-      : focusNode.extend(index)
-
+  for (const propShape of activeProperties) {
     const path = propShape.out(sh.path)
 
-    let selfPatterns: Pattern[] = []
-    if (isNamedNode(path)) {
-      selfPatterns = [$rdf.quad(focusNode(), path.term, variable())]
-    } else if (isDeepPathPattern(path)) {
-      const property = <NamedNode>path.out([sh.zeroOrMorePath, sh.oneOrMorePath]).term
-      const intermediateNode = variable.extend('i')()
+    const pathEnd = variable()
+    const selfPatterns = visitor.visit(fromNode(path), {
+      pathStart: focusNode,
+      pathEnd,
+    })
 
-      selfPatterns = [
-        sparql`${focusNode()} ${property}* ${intermediateNode} .`,
-        $rdf.quad(intermediateNode, property, variable()),
-      ]
-    } else {
-      continue
-    }
-
-    const combinedPatterns = [...parentPatterns, ...selfPatterns]
+    const combinedPatterns = [...parentPatterns, selfPatterns]
 
     yield combinedPatterns
 
@@ -141,17 +123,15 @@ function * deepPropertyShapePatterns({ shape, focusNode, options, parentPatterns
     for (const shNode of shNodes) {
       const deepPatterns = deepPropertyShapePatterns({
         shape: shNode,
-        focusNode: variable,
+        focusNode: pathEnd,
         options,
         parentPatterns: combinedPatterns,
+        visitor,
+        variable,
       })
       for (const deepPattern of deepPatterns) {
         yield deepPattern
       }
     }
   }
-}
-
-function isDeepPathPattern(pointer: AnyPointer) {
-  return isBlankNode(pointer) && isNamedNode(pointer.out([sh.zeroOrMorePath, sh.oneOrMorePath]))
 }

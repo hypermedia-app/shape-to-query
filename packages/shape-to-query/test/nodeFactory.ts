@@ -15,10 +15,14 @@ export function blankNode(label?: string): GraphPointer<BlankNode, DatasetExt> {
   return clownface({ dataset: $rdf.dataset() }).blankNode(label)
 }
 
-export async function parse(...[strings, ...values]: Parameters<typeof turtle>): Promise<GraphPointer> {
-  const dataset = await $rdf.dataset().import(getStream(strings, ...values))
+export async function parse(...[strings, ...values]: Parameters<typeof turtle>): Promise<GraphPointer<NamedNode, DatasetExt>> {
+  const dataset = await raw(strings, ...values)
 
   return clownface({ dataset }).namedNode('')
+}
+
+export async function raw(...[strings, ...values]: Parameters<typeof turtle>): Promise<DatasetExt> {
+  return $rdf.dataset().import(getStream(strings, ...values))
 }
 
 export function append(...[strings, ...values]: Parameters<typeof turtle>) {
@@ -30,7 +34,7 @@ export function append(...[strings, ...values]: Parameters<typeof turtle>) {
   }
 }
 
-function getStream(...[strings, ...values]: Parameters<typeof turtle>) {
+export function getStream(...[strings, ...values]: Parameters<typeof turtle>) {
   const turtleStream = toStream(turtle(strings, ...values).toString())
   return turtleStream.pipe(new StreamParser())
 }
