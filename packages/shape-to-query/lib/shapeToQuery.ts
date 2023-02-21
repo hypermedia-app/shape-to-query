@@ -7,9 +7,9 @@ export function constructQuery(shape: GraphPointer, options: Options = {}) {
   const patterns = shapeToPatterns(shape, options)
 
   return CONSTRUCT`
-    ${patterns.constructClause()}
+    ${patterns.constructClause}
   `.WHERE`
-    ${patterns.whereClause()}
+    ${patterns.whereClause}
   `
 }
 
@@ -21,9 +21,9 @@ export function deleteQuery(shape: GraphPointer, options: DeleteOptions = {}) {
   const patterns = shapeToPatterns(shape, options)
 
   const query = DELETE`
-    ${patterns.constructClause()}
+    ${patterns.constructClause}
   `.WHERE`
-    ${patterns.whereClause()}
+    ${patterns.whereClause}
   `
 
   if (options.graph) {

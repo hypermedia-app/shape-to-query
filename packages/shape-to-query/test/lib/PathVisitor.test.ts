@@ -5,7 +5,7 @@ import { GraphPointer } from 'clownface'
 import { parse } from '../nodeFactory'
 import PathVisitor from '../../lib/PathVisitor'
 import { createVariableSequence, VariableSequence } from '../../lib/variableSequence'
-import { normalize } from '../sparql'
+import '../sparql'
 
 describe('lib/PathVisitor', () => {
   let variable: VariableSequence
@@ -126,18 +126,17 @@ describe('lib/PathVisitor', () => {
 
         // when
         const path = fromNode(shapePtr.out(sh.path))
-        const result = visitor.visit(path, {
+        const wherePatterns = visitor.visit(path, {
           pathStart: variable(),
         })
 
         // then
-        const wherePatterns = normalize(result.toString({ prologue: false }))
-        const outPatterns = normalize(visitor.constructPatterns.toString({ prologue: false }))
-        expect(wherePatterns).to.equalIgnoreSpaces(normalize(expectedWherePatterns))
+        const outPatterns = visitor.constructPatterns
+        expect(wherePatterns).to.equalPatterns(expectedWherePatterns)
         if (expectedConstructPatterns) {
-          expect(outPatterns).to.equalIgnoreSpaces(normalize(expectedConstructPatterns))
+          expect(outPatterns).to.equalPatterns(expectedConstructPatterns)
         } else {
-          expect(outPatterns).to.equalIgnoreSpaces(wherePatterns)
+          expect(outPatterns).to.equalPatterns(wherePatterns)
         }
       })
     })

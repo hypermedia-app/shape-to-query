@@ -1,4 +1,4 @@
-import { foaf, rdf, schema, sh } from '@tpluscode/rdf-ns-builders'
+import { foaf, schema, sh } from '@tpluscode/rdf-ns-builders'
 import { SELECT } from '@tpluscode/sparql-builder'
 import { expect } from 'chai'
 import { sparql } from '@tpluscode/rdf-string'
@@ -22,11 +22,11 @@ describe('@hydrofoil/shape-to-query', () => {
 
           // when
           const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-          const query = SELECT.ALL.WHERE`${patterns.whereClause()}`.build()
+          const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
 
           // then
           expect(query).to.be.a.query(sparql`SELECT * WHERE {
-            ?node ${rdf.type} ${foaf.Person}
+            ?node a ${foaf.Person}
           }`)
         })
 
@@ -40,12 +40,12 @@ describe('@hydrofoil/shape-to-query', () => {
 
           // when
           const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-          const query = SELECT.ALL.WHERE`${patterns.whereClause()}`.build()
+          const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
 
           // then
           expect(query).to.be.a.query(sparql`SELECT * WHERE {
-            ?node ${rdf.type} ?node_targetClass .
-            FILTER ( ?node_targetClass IN (${foaf.Person}, ${schema.Person}) )
+            ?node a ?node_targetClass .
+            VALUES (?node_targetClass) { (${foaf.Person}) (${schema.Person}) }
           }`)
         })
       })
@@ -66,7 +66,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-        const query = SELECT.ALL.WHERE`${patterns.whereClause()}`.build()
+        const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
 
         // then
         expect(query).to.be.a.query(sparql`SELECT * WHERE {
@@ -91,7 +91,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-        const query = SELECT.ALL.WHERE`${patterns.whereClause()}`.build()
+        const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
 
         // then
         expect(query).to.be.a.query(sparql`SELECT * WHERE {
@@ -123,7 +123,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-        const query = SELECT.ALL.WHERE`${patterns.whereClause()}`.build()
+        const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
 
         // then
         expect(query).to.be.a.query(sparql`SELECT * WHERE {
@@ -194,6 +194,36 @@ describe('@hydrofoil/shape-to-query', () => {
         }`)
       })
 
+      it('generates a query for a single target node', async () => {
+        // given
+        const shape = await parse`
+          <>
+            a ${sh.NodeShape} ;
+            ${sh.targetNode} ${ex.John} ;
+            ${sh.property}
+            [
+              ${sh.path} ${foaf.name} ;
+            ],
+            [
+              ${sh.path} ${foaf.lastName} ;
+            ] ; 
+          .
+        `
+
+        // when
+        const query = constructQuery(shape).build()
+
+        // then
+        expect(query).to.be.a.query(sparql`CONSTRUCT {
+          ${ex.John} ${foaf.name} ?resource_0 .
+          ${ex.John} ${foaf.lastName} ?resource_1 .
+        } WHERE {
+          { ${ex.John} ${foaf.name} ?resource_0 . }
+          union
+          { ${ex.John} ${foaf.lastName} ?resource_1 . }
+        }`)
+      })
+
       it('generates a query with multiple target types', async () => {
         // given
         const shape = await parse`
@@ -208,17 +238,16 @@ describe('@hydrofoil/shape-to-query', () => {
         `
 
         // when
-        const focusNode = ex.John
-        const query = constructQuery(shape, { focusNode }).build()
+        const query = constructQuery(shape).build()
 
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
-          ${ex.John} ${rdf.type} ?resource_targetClass .
-          ${ex.John} ${foaf.name} ?resource_0 .
+          ?resource a ?resource_targetClass .
+          ?resource ${foaf.name} ?resource_0 .
         } WHERE {
-            ${ex.John} ${rdf.type} ?resource_targetClass .
-            FILTER ( ?resource_targetClass IN (${foaf.Person}, ${schema.Person}) )
-            ${ex.John} ${foaf.name} ?resource_0 .
+            ?resource a ?resource_targetClass .
+            VALUES (?resource_targetClass) { (${foaf.Person}) (${schema.Person}) }
+            ?resource ${foaf.name} ?resource_0 .
         }`)
       })
     })
@@ -332,7 +361,7 @@ describe('@hydrofoil/shape-to-query', () => {
         const patterns = shapeToPatterns(shape, {
           subjectVariable: 'node',
         })
-        const query = SELECT.ALL.WHERE`${patterns.whereClause()}`.build()
+        const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
 
         // then
         expect(query).to.be.a.query(sparql`SELECT * WHERE {
@@ -448,7 +477,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-        const query = SELECT.ALL.WHERE`${patterns.whereClause()}`.build()
+        const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
 
         // then
         expect(query).to.be.a.query(sparql`
@@ -579,7 +608,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-        const query = SELECT.ALL.WHERE`${patterns.whereClause()}`.build()
+        const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
 
         // then
         expect(query).to.be.a.query(sparql`
