@@ -1,13 +1,13 @@
-import { BaseQuad, NamedNode, Term, Variable } from 'rdf-js'
+import { NamedNode, Variable } from 'rdf-js'
 import type { GraphPointer } from 'clownface'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import { rdf, sh, xsd } from '@tpluscode/rdf-ns-builders'
+import { sh, xsd } from '@tpluscode/rdf-ns-builders'
 import $rdf from '@rdfjs/data-model'
-import { IN } from '@tpluscode/sparql-builder/expressions'
-import { isNamedNode } from 'is-graph-pointer'
 import { fromNode } from 'clownface-shacl-path'
 import PathVisitor from './PathVisitor'
 import { createVariableSequence, VariableSequence } from './variableSequence'
+import { ShapePatterns } from './types'
+import targets from './targets'
 
 export interface Options {
   subjectVariable?: string
@@ -19,17 +19,26 @@ type PropertyShapeOptions = Pick<Options, 'objectVariablePrefix'>
 
 const TRUE = $rdf.literal('true', xsd.boolean)
 
-interface ShapePatterns {
-  whereClause(): SparqlTemplateResult
-  constructClause(): SparqlTemplateResult
-}
-
 export function shapeToPatterns(shape: GraphPointer, options: Options): ShapePatterns {
   const prefix = options.subjectVariable || 'resource'
   const variable = createVariableSequence(prefix)
-  const focusNode = options.focusNode || variable()
+  let focusNode = options.focusNode || variable()
 
-  const { targetClassPattern, targetClassFilter } = targetClass(shape, focusNode, prefix)
+  let target: ShapePatterns = {
+    constructClause: '',
+    whereClause: '',
+  }
+
+  if (focusNode.termType === 'Variable') {
+    const result = targetPatterns(shape, focusNode, variable)
+    if (result) {
+      if ('termType' in result) {
+        focusNode = result
+      } else if (result) {
+        target = result
+      }
+    }
+  }
   const visitor = new PathVisitor(variable)
   const resourcePatterns = [...deepPropertyShapePatterns({
     shape,
@@ -40,43 +49,49 @@ export function shapeToPatterns(shape: GraphPointer, options: Options): ShapePat
   })]
 
   return {
-    constructClause() {
-      return sparql`
-        ${targetClassPattern}
-        ${visitor.constructPatterns}
-      `
-    },
-    whereClause() {
-      return sparql`
-        ${targetClassPattern}
-        ${targetClassFilter}
-        ${toUnion(resourcePatterns)}
-      `
-    },
+    constructClause: sparql`
+      ${target.constructClause}
+      ${visitor.constructPatterns}
+    `,
+    whereClause: sparql`
+      ${target.whereClause}
+      ${toUnion(resourcePatterns)}
+    `,
   }
 }
 
-function targetClass(shape: GraphPointer, focusNode: Term, prefix: string) {
-  const targetClass = shape.out(sh.targetClass)
-  if (!targetClass.terms.length) {
-    return {}
+function targetPatterns(shape: GraphPointer, focusNode: Variable, variable: VariableSequence): ShapePatterns | NamedNode | null {
+  const targetPatternMap = [...targets].map(([term, target]) => [term, target({
+    shape, focusNode, variable,
+  })]).filter((arg): arg is [NamedNode, ShapePatterns] => {
+    return 'whereClause' in arg[1]
+  })
+
+  if (targetPatternMap.length === 0) {
+    return null
   }
 
-  if (isNamedNode(targetClass)) {
-    return {
-      targetClassPattern: $rdf.quad<BaseQuad>(focusNode, rdf.type, targetClass.term),
+  if (targetPatternMap.length === 1) {
+    const [term, patterns] = targetPatternMap.shift()
+    if (term.equals(sh.targetNode)) {
+      return <NamedNode>shape.out(sh.targetNode).term
     }
+
+    return patterns
   }
 
-  const typeVar = $rdf.variable(prefix + '_targetClass')
-
+  const targetPatterns = targetPatternMap.map(([, p]) => p)
+  const constructClause = targetPatterns
+    .map(({ constructClause }) => constructClause)
+    .reduce((previousValue, currentValue) => sparql`${previousValue}\n${currentValue}`)
+  const whereClause = sparql`${toUnion(targetPatterns.map(({ whereClause }) => [whereClause]))}`
   return {
-    targetClassPattern: $rdf.quad<BaseQuad>(focusNode, rdf.type, typeVar),
-    targetClassFilter: sparql`FILTER ( ${typeVar} ${IN(...targetClass.terms)} )`,
+    constructClause,
+    whereClause,
   }
 }
 
-function toUnion(propertyPatterns: SparqlTemplateResult[][]) {
+function toUnion(propertyPatterns: (string | SparqlTemplateResult)[][]) {
   if (propertyPatterns.length > 1) {
     return propertyPatterns.reduce((union, next, index) => {
       if (index === 0) {

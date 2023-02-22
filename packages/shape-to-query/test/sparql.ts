@@ -12,6 +12,7 @@ declare global {
   namespace Chai {
     interface TypeComparison {
       query(expected: string | SparqlTemplateResult | SparqlQuery): void
+      equalPatterns(expected: string | SparqlTemplateResult): void
     }
   }
 }
@@ -47,11 +48,18 @@ ${this._obj.toString()}`)
   new Assertion(stringifyAndNormalize(actualQuery)).deep.eq(stringifyAndNormalize(expectedQuery))
 })
 
+Assertion.addMethod('equalPatterns', function (this: Chai.AssertionStatic, expected: string | SparqlTemplateResult) {
+  const actualPatterns = normalize(this._obj.toString({ prologue: false }))
+  const expectedPatterns = normalize(expected.toString({ prologue: false }))
+
+  new Assertion(actualPatterns).to.equalIgnoreSpaces(expectedPatterns)
+})
+
 function stringifyAndNormalize(query: SparqlQuery) {
   return normalize(generator.stringify(query))
 }
 
-export function normalize(query: string): string {
+function normalize(query: string): string {
   const nextVariable = createVariableSequence('q')
   const variableMap = new Map<string, Variable>()
 
