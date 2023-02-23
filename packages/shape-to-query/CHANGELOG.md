@@ -1,5 +1,14 @@
 # @hydrofoil/shape-to-query
 
+## 0.4.0
+
+### Minor Changes
+
+- 3f2fab2: Removed deprecated export `construct`
+- 5f42999: Add support for `sh:targetNode`, `sh:targetClass`, `sh:targetSubjectsOf` and `sh:targetObjectsOf` (closes #12)
+- e1f0ae6: Reimplement pattern generation using `clownface-shacl-path` visitor
+- 5f42999: When the node shape has any `sh:target*` property, the `focusNode` argument of `constructQuery` and `deleteQuery` is ignored
+
 ## 0.3.2
 
 ### Patch Changes
