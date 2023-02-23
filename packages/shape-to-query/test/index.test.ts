@@ -49,6 +49,28 @@ describe('@hydrofoil/shape-to-query', () => {
           }`)
         })
       })
+
+      context('node target', () => {
+        it('single value replaces root subject', async () => {
+          // given
+          const shape = await parse`
+            <>
+              a ${sh.NodeShape} ;
+              ${sh.targetNode} ${foaf.Person} ;
+              ${sh.property} [ ${sh.path} ${foaf.name} ] ;
+            .
+          `
+
+          // when
+          const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
+          const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
+
+          // then
+          expect(query).to.be.a.query(sparql`SELECT * WHERE {
+            ${foaf.Person} ${foaf.name} ?name .
+          }`)
+        })
+      })
     })
 
     context('property constraints', () => {
