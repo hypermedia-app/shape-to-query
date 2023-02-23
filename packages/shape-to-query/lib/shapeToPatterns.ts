@@ -4,6 +4,7 @@ import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { sh, xsd } from '@tpluscode/rdf-ns-builders'
 import $rdf from '@rdfjs/data-model'
 import { fromNode } from 'clownface-shacl-path'
+import { isNamedNode } from 'is-graph-pointer'
 import PathVisitor from './PathVisitor'
 import { createVariableSequence, VariableSequence } from './variableSequence'
 import { ShapePatterns } from './types'
@@ -72,12 +73,12 @@ function targetPatterns(shape: GraphPointer, focusNode: Variable, variable: Vari
   }
 
   if (targetPatternMap.length === 1) {
-    const [term, patterns] = targetPatternMap.shift()
-    if (term.equals(sh.targetNode)) {
-      return <NamedNode>shape.out(sh.targetNode).term
+    const targetNode = shape.out(sh.targetNode)
+    if (isNamedNode(targetNode)) {
+      return targetNode.term
     }
 
-    return patterns
+    return targetPatternMap.shift()[1]
   }
 
   const targetPatterns = targetPatternMap.map(([, p]) => p)

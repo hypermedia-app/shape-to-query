@@ -11,3 +11,9 @@ services:
       - ENABLE_UPLOAD=true
     volumes:
       - ./packages/shape-to-query/test/fuseki-config.ttl:/fuseki/config.ttl
+  bikeshed:
+    build:
+      context: .
+      dockerfile: bikeshed.Dockerfile
+    volumes:
+      - ./packages/demo/public/docs:/docs

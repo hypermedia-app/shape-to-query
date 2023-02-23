@@ -1,0 +1,80 @@
+<pre class='metadata'>
+Title: shape-to-query
+Shortname: s2q
+Editor: Tomasz Pluskiewicz
+Abstract: Library for generating SPARQL from SHACL Shapes
+Status: LD
+Markup Shorthands: markdown yes
+Block Elements: s2q-snippet
+Repository: https://github.com/hypermedia-app/shape-to-query
+URL: https://shape-to-query.hypermedia.app/docs
+</pre>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.1.0/dist/themes/light.css" />
+<script type="module" src="./lib/s2q-snippet.js" async defer>
+</script>
+
+# Introduction # {#introduction}
+
+The library translates SHACL Node Shapes to [[!sparql11-overview|SPARQL]] Queries in the form of [[sparql11-query#construct|CONSTRUCT]] and [[sparql11-update#deleteWhere|DELETE]].
+
+# Getting started # {#gettings-started}
+
+## Installation ## {#installation}
+
+The library is written in TypeScript and distributed as an NPM package:
+
+```shell
+npm i --save @hydrofoil/shape-to-query
+```
+
+## Basic usage ## {#basic-usage}
+
+```ts
+import type { GraphPointer } from 'clownface'
+import { constructQuery } from '@hydrofoil/shape-to-query'
+
+let shape: GraphPointer
+
+const queryString = constructQuery(shape).build()
+```
+
+# SHACL Constraints # {#shacl-constraints}
+
+## Targets ## {#target}
+
+### Node targets (`sh:targetNode`) ### {#target-node}
+
+Note: Base spec: [[shacl#targetNode]]
+
+A single `sh:targetNode` becomes the root subject, directly in the generated triple patterns
+
+<s2q-snippet>
+
+<pre class="include-code">
+path: example/targetNode.ttl
+highlight: turtle
+</pre>
+
+<pre class="include-code">
+path: example/targetNode.ttl.rq
+highlight: sparql
+</pre>
+
+</s2q-snippet>
+
+When there are multiple target nodes, a variable is used for the root focus node and the target nodes are provided as inline data using [[sparql11-query#inline-data|VALUES]] claues.
+
+<s2q-snippet>
+
+<pre class="include-code">
+path: example/targetNode-multi.ttl
+highlight: turtle
+</pre>
+
+<pre class="include-code">
+path: example/targetNode-multi.ttl.rq
+highlight: sparql
+</pre>
+
+</s2q-snippet>

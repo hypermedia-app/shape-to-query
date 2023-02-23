@@ -6,3 +6,6 @@ dist/
 !types/**/*.d.ts
 coverage/
 .idea/
+packages/demo/public/docs/index.html
+packages/demo/public/docs/example/*.rq
+!packages/demo/public/docs/**/*.js
