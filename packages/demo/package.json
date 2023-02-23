@@ -11,6 +11,7 @@
     "serve": "vite",
     "build": "vite build"
   },
+  "homepage": "https://shape-to-query.hypermedia.app/docs",
   "dependencies": {
     "@hydrofoil/shape-to-query": "^0.3.2",
     "@rdfjs-elements/rdf-editor": "^0.5.4",
