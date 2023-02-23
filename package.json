@@ -7,6 +7,8 @@
     "lint": "eslint . --ext .ts --quiet --ignore-path .gitignore",
     "test": "c8 --all --reporter=lcov mocha --recursive packages/**/*.test.ts",
     "build": "yarn run --cwd=packages/demo build",
+    "docs": "docker-compose run bikeshed spec /docs/index.bs",
+    "docs:watch": "docker-compose run --publish 8000:8000 bikeshed serve /docs/index.bs",
     "release": "changeset publish"
   },
   "devDependencies": {

@@ -7,6 +7,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "postinstall": "node --loader ts-node/esm docs/example/build.js",
     "serve": "vite",
     "build": "vite build"
   },
@@ -33,8 +34,11 @@
     "eslint-plugin-n": "^15.6.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
+    "globby": "^13.1.3",
     "process": "^0.11.10",
+    "rdf-utils-fs": "^2.3.0",
     "rollup-plugin-node-polyfills": "^0.2.1",
+    "sparqljs": "^3.6.2",
     "standard": "^17.0.0",
     "util": "^0.12.5",
     "vite": "^4.1.1"
