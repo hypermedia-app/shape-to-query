@@ -5,7 +5,7 @@ import '@rdfjs-elements/rdf-editor'
 import '@rdfjs-elements/sparql-editor'
 import '@shoelace-style/shoelace/dist/components/button/button.js'
 import '@shoelace-style/shoelace/dist/components/input/input.js'
-import { construct } from '@hydrofoil/shape-to-query'
+import { constructQuery } from '@hydrofoil/shape-to-query'
 import $rdf from 'rdf-ext'
 import { rdf, sh } from '@tpluscode/rdf-ns-builders'
 import { RdfEditor } from '@rdfjs-elements/rdf-editor/src/RdfEditor.js'
@@ -65,11 +65,11 @@ export class App extends LitElement {
     }
 
     if (this.focusNode.value) {
-      this.query = construct(this.shape, {
+      this.query = constructQuery(this.shape, {
         focusNode: $rdf.namedNode(this.focusNode.value),
       }).build()
     } else {
-      this.query = construct(this.shape).build()
+      this.query = constructQuery(this.shape).build()
     }
   }
 }
