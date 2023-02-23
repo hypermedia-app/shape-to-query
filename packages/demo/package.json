@@ -7,7 +7,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "postinstall": "node --loader ts-node/esm docs/example/build.js",
+    "postinstall": "node --loader ts-node/esm public/docs/example/build.js",
     "serve": "vite",
     "build": "vite build"
   },
