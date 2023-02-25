@@ -1,4 +1,5 @@
-import { foaf, schema, sh } from '@tpluscode/rdf-ns-builders'
+import { foaf, rdfs, schema } from '@tpluscode/rdf-ns-builders'
+import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { SELECT } from '@tpluscode/sparql-builder'
 import { expect } from 'chai'
 import { sparql } from '@tpluscode/rdf-string'
@@ -310,6 +311,35 @@ describe('@hydrofoil/shape-to-query', () => {
           }
           ?resource ${foaf.name} ?resource_0 .
         }`)
+      })
+
+      context('shacl advanced features', () => {
+        context('constant term expression', () => {
+          it('binds te constant values', async () => {
+            // given
+            const shape = await parse`
+              <>
+                a ${sh.NodeShape} ;
+                ${sh.property}
+                [
+                  ${sh.path} ${rdfs.label} ;
+                  ${sh.values} "Apple"@en, "Apfel"@de, "Jabłko"@pl ;
+                ] ; 
+              .
+            `
+
+            // when
+            const query = constructQuery(shape).build()
+
+            // then
+            expect(query).to.be.a.query(sparql`CONSTRUCT {
+              ?node ${rdfs.label} ?node_0
+            } WHERE {
+              VALUES ?apple { "Apple"@en "Apfel"@de "Jabłko"@pl }
+              BIND (?apple as ?node_0)
+            }`)
+          })
+        })
       })
     })
 

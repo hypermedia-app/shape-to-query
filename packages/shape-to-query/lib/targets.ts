@@ -4,7 +4,7 @@ import { sh } from '@tpluscode/rdf-ns-builders'
 import type { GraphPointer } from 'clownface'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'
 import { sparql } from '@tpluscode/sparql-builder'
-import { ShapePatterns } from './types'
+import { ShapePatterns } from './shapePatterns'
 import { VariableSequence } from './variableSequence'
 
 type TargetNodePatterns = ShapePatterns | Record<string, never>
