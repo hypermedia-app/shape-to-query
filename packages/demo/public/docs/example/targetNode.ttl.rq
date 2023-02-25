@@ -1,0 +1,3 @@
+PREFIX schema: <http://schema.org/>
+CONSTRUCT { <https://tbbt.tv/sheldon-cooper> schema:name ?resource2. }
+WHERE { <https://tbbt.tv/sheldon-cooper> schema:name ?resource2. }

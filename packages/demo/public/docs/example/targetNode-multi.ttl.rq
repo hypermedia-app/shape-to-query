@@ -1,0 +1,9 @@
+PREFIX schema: <http://schema.org/>
+CONSTRUCT { ?resource1 schema:name ?resource2. }
+WHERE {
+  VALUES ?resource1 {
+    <https://tbbt.tv/sheldon-cooper>
+    <https://tbbt.tv/penny>
+  }
+  ?resource1 schema:name ?resource2.
+}
