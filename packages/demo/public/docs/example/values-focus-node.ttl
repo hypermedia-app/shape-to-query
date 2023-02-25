@@ -1,0 +1,13 @@
+PREFIX schema: <http://schema.org/>
+PREFIX tbbt: <https://tbbt.tv/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+[
+  a sh:NodeShape ;
+  sh:targetNode tbbt:sheldon-cooper ;
+  sh:property
+    [
+      sh:path schema:knows ;
+      sh:values sh:this ;
+    ] ;
+] .

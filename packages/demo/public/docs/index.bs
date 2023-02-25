@@ -95,6 +95,28 @@ Note: Because the result must be a triple patterns where the node expression's o
 
 Issue(20): Multiple objects of `sh:values` should form a `UNION`
 
+### Focus node expression ### {#shacl-focus-node-expressions}
+
+The object of the property at `sh:path` is the current focus node
+
+<div class="example" id="example-focus-node">
+  Focus node expressions
+
+  <s2q-snippet>
+
+  <pre class="include-code">
+  path: example/values-focus-node.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code">
+  path: example/values-focus-node.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
 ### Constant term expression ### {#shacl-constant-term-expressions}
 
 The objects of `sh:values` become directly asserted as the objects of the property.
