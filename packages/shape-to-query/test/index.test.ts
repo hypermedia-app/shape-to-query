@@ -335,8 +335,11 @@ describe('@hydrofoil/shape-to-query', () => {
             expect(query).to.be.a.query(sparql`CONSTRUCT {
               ?node ${rdfs.label} ?node_0
             } WHERE {
-              VALUES ?apple { "Apple"@en "Apfel"@de "Jabłko"@pl }
-              BIND (?apple as ?node_0)
+              { BIND ("Apple"@en as ?node_0) }
+              UNION
+              { BIND ("Apfel"@de as ?node_0) }
+              UNION
+              { BIND ("Jabłko"@pl as ?node_0) }
             }`)
           })
         })
