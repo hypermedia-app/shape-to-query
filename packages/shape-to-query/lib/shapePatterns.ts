@@ -1,6 +1,7 @@
 import { BaseQuad } from 'rdf-js'
 import TermSet from '@rdfjs/term-set'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
+import { UNION } from '@tpluscode/sparql-builder/expressions'
 
 export interface ShapePatterns {
   whereClause: string | SparqlTemplateResult
@@ -24,22 +25,6 @@ export function unique(...construct: BaseQuad[][]): BaseQuad[] {
   return [...set]
 }
 
-export function toUnion(propertyPatterns: ShapePatterns[]): string | SparqlTemplateResult {
-  if (propertyPatterns.length > 1) {
-    return propertyPatterns.reduce((union, next, index) => {
-      if (index === 0) {
-        return sparql`{ ${next.whereClause} }`
-      }
-
-      return sparql`${union}
-      UNION
-      { ${next.whereClause} }`
-    }, sparql``)
-  }
-
-  if (propertyPatterns.length === 0) {
-    return ''
-  }
-
-  return propertyPatterns[0].whereClause
+export function toUnion(propertyPatterns: ShapePatterns[]): SparqlTemplateResult {
+  return sparql`${UNION(...propertyPatterns.map(({ whereClause }) => whereClause))}`
 }

@@ -119,8 +119,7 @@ function * deepPropertyShapePatterns({ shape, focusNode, options, visitor, varia
       patterns = getNodeExpressionPatterns({
         focusNode,
         variable,
-        nodeExpression,
-        path,
+        shape: propShape,
         pathEnd,
       })
     } else {
