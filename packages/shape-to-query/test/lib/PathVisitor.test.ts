@@ -2,6 +2,7 @@ import { foaf, schema, sh } from '@tpluscode/rdf-ns-builders'
 import { fromNode } from 'clownface-shacl-path'
 import { expect } from 'chai'
 import { GraphPointer } from 'clownface'
+import { sparql } from '@tpluscode/sparql-builder'
 import { parse } from '../nodeFactory'
 import PathVisitor from '../../lib/PathVisitor'
 import { createVariableSequence, VariableSequence } from '../../lib/variableSequence'
@@ -126,17 +127,16 @@ describe('lib/PathVisitor', () => {
 
         // when
         const path = fromNode(shapePtr.out(sh.path))
-        const wherePatterns = visitor.visit(path, {
+        const { whereClause, constructClause } = visitor.visit(path, {
           pathStart: variable(),
         })
 
         // then
-        const outPatterns = visitor.constructPatterns
-        expect(wherePatterns).to.equalPatterns(expectedWherePatterns)
+        expect(whereClause).to.equalPatterns(expectedWherePatterns)
         if (expectedConstructPatterns) {
-          expect(outPatterns).to.equalPatterns(expectedConstructPatterns)
+          expect(sparql`${constructClause}`).to.equalPatterns(expectedConstructPatterns)
         } else {
-          expect(outPatterns).to.equalPatterns(wherePatterns)
+          expect(sparql`${constructClause}`).to.equalPatterns(whereClause)
         }
       })
     })

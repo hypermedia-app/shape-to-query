@@ -20,12 +20,18 @@ const generator = new sparql.Generator();
   const shapeGraphs = await globby('*.ttl', { cwd })
 
   await Promise.all(shapeGraphs.map(toAbsolutePath).map(async shapeGraphPath => {
-    const dataset = await $rdf.dataset().import(fromFile(shapeGraphPath))
-    const shapePointer = $rdf.clownface({ dataset })
-      .has(rdf.type, sh.NodeShape)
-      .toArray().shift()
-    const query = parser.parse(shapeTo.constructQuery(shapePointer).build())
+    let generated
+    try {
+      const dataset = await $rdf.dataset().import(fromFile(shapeGraphPath))
+      const shapePointer = $rdf.clownface({ dataset })
+        .has(rdf.type, sh.NodeShape)
+        .toArray().shift()
+      generated = shapeTo.constructQuery(shapePointer).build()
+      const query = parser.parse(generated)
 
-    await writeFile(`${shapeGraphPath}.rq`, generator.stringify(query))
+      await writeFile(`${shapeGraphPath}.rq`, generator.stringify(query))
+    } catch (e) {
+      await writeFile(`${shapeGraphPath}.rq`, generated + '\n\n' + e.message)
+    }
   }))
 })()

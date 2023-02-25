@@ -1,4 +1,5 @@
-import { foaf, schema, sh } from '@tpluscode/rdf-ns-builders'
+import { foaf, rdf, rdfs, schema } from '@tpluscode/rdf-ns-builders'
+import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { SELECT } from '@tpluscode/sparql-builder'
 import { expect } from 'chai'
 import { sparql } from '@tpluscode/rdf-string'
@@ -26,7 +27,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
           // then
           expect(query).to.be.a.query(sparql`SELECT * WHERE {
-            ?node a ${foaf.Person}
+            ?node ${rdf.type} ${foaf.Person}
           }`)
         })
 
@@ -44,7 +45,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
           // then
           expect(query).to.be.a.query(sparql`SELECT * WHERE {
-            ?node a ?node_targetClass .
+            ?node ${rdf.type} ?node_targetClass .
             VALUES (?node_targetClass) { (${foaf.Person}) (${schema.Person}) }
           }`)
         })
@@ -264,10 +265,10 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
-          ?resource a ?resource_targetClass .
+          ?resource ${rdf.type} ?resource_targetClass .
           ?resource ${foaf.name} ?resource_0 .
         } WHERE {
-            ?resource a ?resource_targetClass .
+            ?resource ${rdf.type} ?resource_targetClass .
             VALUES (?resource_targetClass) { (${foaf.Person}) (${schema.Person}) }
             ?resource ${foaf.name} ?resource_0 .
         }`)
@@ -294,7 +295,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
-          ?resource a ${schema.Person} .
+          ?resource ${rdf.type} ${schema.Person} .
           ?resource ${schema.spouse} ?spouse .
           ?parent ${schema.parent} ?resource .
           ?resource ${foaf.name} ?resource_0 .
@@ -302,7 +303,7 @@ describe('@hydrofoil/shape-to-query', () => {
           {
             VALUES (?resource) { (${ex.John}) }
           } UNION {
-            ?resource a ${schema.Person} .
+            ?resource ${rdf.type} ${schema.Person} .
           } UNION {
             ?resource ${schema.spouse} ?spouse .
           } UNION {
@@ -310,6 +311,38 @@ describe('@hydrofoil/shape-to-query', () => {
           }
           ?resource ${foaf.name} ?resource_0 .
         }`)
+      })
+
+      context('shacl advanced features', () => {
+        context('constant term expression', () => {
+          it('binds te constant values', async () => {
+            // given
+            const shape = await parse`
+              <>
+                a ${sh.NodeShape} ;
+                ${sh.property}
+                [
+                  ${sh.path} ${rdfs.label} ;
+                  ${sh.values} "Apple"@en, "Apfel"@de, "Jabłko"@pl ;
+                ] ; 
+              .
+            `
+
+            // when
+            const query = constructQuery(shape).build()
+
+            // then
+            expect(query).to.be.a.query(sparql`CONSTRUCT {
+              ?node ${rdfs.label} ?node_0
+            } WHERE {
+              { BIND ("Apple"@en as ?node_0) }
+              UNION
+              { BIND ("Apfel"@de as ?node_0) }
+              UNION
+              { BIND ("Jabłko"@pl as ?node_0) }
+            }`)
+          })
+        })
       })
     })
 

@@ -1,14 +1,16 @@
 import { NamedNode, Variable } from 'rdf-js'
 import type { GraphPointer } from 'clownface'
-import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import { sh, xsd } from '@tpluscode/rdf-ns-builders'
+import { sparql } from '@tpluscode/sparql-builder'
+import { xsd } from '@tpluscode/rdf-ns-builders'
+import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import $rdf from '@rdfjs/data-model'
 import { fromNode } from 'clownface-shacl-path'
 import { isNamedNode } from 'is-graph-pointer'
 import PathVisitor from './PathVisitor'
 import { createVariableSequence, VariableSequence } from './variableSequence'
-import { ShapePatterns } from './types'
+import { emptyPatterns, ShapePatterns, toUnion, unique } from './shapePatterns'
 import targets from './targets'
+import { getNodeExpressionPatterns } from './nodeExpressions'
 
 export interface Options {
   subjectVariable?: string
@@ -20,13 +22,13 @@ type PropertyShapeOptions = Pick<Options, 'objectVariablePrefix'>
 
 const TRUE = $rdf.literal('true', xsd.boolean)
 
-export function shapeToPatterns(shape: GraphPointer, options: Options): ShapePatterns {
+export function shapeToPatterns(shape: GraphPointer, options: Options = {}): ShapePatterns {
   const prefix = options.subjectVariable || 'resource'
   const variable = createVariableSequence(prefix)
   let focusNode = options.focusNode || variable()
 
   let target: ShapePatterns = {
-    constructClause: '',
+    constructClause: [],
     whereClause: '',
   }
 
@@ -49,11 +51,13 @@ export function shapeToPatterns(shape: GraphPointer, options: Options): ShapePat
     variable,
   })]
 
+  const constructClause = unique(
+    target.constructClause,
+    ...resourcePatterns.map(p => p.constructClause),
+  )
+
   return {
-    constructClause: sparql`
-      ${target.constructClause}
-      ${visitor.constructPatterns}
-    `,
+    constructClause,
     whereClause: sparql`
       ${target.whereClause}
       ${toUnion(resourcePatterns)}
@@ -83,41 +87,24 @@ function targetPatterns(shape: GraphPointer, focusNode: Variable, variable: Vari
 
   const targetPatterns = targetPatternMap.map(([, p]) => p)
   const constructClause = targetPatterns
-    .map(({ constructClause }) => constructClause)
-    .reduce((previousValue, currentValue) => sparql`${previousValue}\n${currentValue}`)
-  const whereClause = sparql`${toUnion(targetPatterns.map(({ whereClause }) => [whereClause]))}`
+    .flatMap(({ constructClause }) => constructClause)
+  const whereClause = sparql`${toUnion(targetPatterns)}`
   return {
     constructClause,
     whereClause,
   }
 }
 
-function toUnion(propertyPatterns: (string | SparqlTemplateResult)[][]) {
-  if (propertyPatterns.length > 1) {
-    return propertyPatterns.reduce((union, next, index) => {
-      if (index === 0) {
-        return sparql`{ ${next} }`
-      }
-
-      return sparql`${union}
-      UNION
-      { ${next} }`
-    }, sparql``)
-  }
-
-  return propertyPatterns
-}
-
 interface PropertyShapePatterns {
   shape: GraphPointer
   focusNode: NamedNode | Variable
   options: PropertyShapeOptions
-  parentPatterns?: SparqlTemplateResult[]
+  parentPatterns?: ShapePatterns
   visitor: PathVisitor
   variable: VariableSequence
 }
 
-function * deepPropertyShapePatterns({ shape, focusNode, options, visitor, variable, parentPatterns = [] }: PropertyShapePatterns): Generator<SparqlTemplateResult[]> {
+function * deepPropertyShapePatterns({ shape, focusNode, options, visitor, variable, parentPatterns = emptyPatterns }: PropertyShapePatterns): Generator<ShapePatterns> {
   const activeProperties = shape.out(sh.property)
     .filter(propShape => !propShape.has(sh.deactivated, TRUE).term)
     .toArray()
@@ -126,12 +113,26 @@ function * deepPropertyShapePatterns({ shape, focusNode, options, visitor, varia
     const path = propShape.out(sh.path)
 
     const pathEnd = variable()
-    const selfPatterns = visitor.visit(fromNode(path), {
-      pathStart: focusNode,
-      pathEnd,
-    })
+    const nodeExpression = propShape.out(sh.values)
+    let patterns: ShapePatterns
+    if (nodeExpression.terms.length) {
+      patterns = getNodeExpressionPatterns({
+        focusNode,
+        variable,
+        shape: propShape,
+        pathEnd,
+      })
+    } else {
+      patterns = visitor.visit(fromNode(path), {
+        pathStart: focusNode,
+        pathEnd,
+      })
+    }
 
-    const combinedPatterns = [...parentPatterns, selfPatterns]
+    const combinedPatterns: ShapePatterns = {
+      whereClause: sparql`${parentPatterns.whereClause}\n${patterns.whereClause}`,
+      constructClause: [...parentPatterns.constructClause, ...patterns.constructClause],
+    }
 
     yield combinedPatterns
 

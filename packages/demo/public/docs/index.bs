@@ -49,32 +49,70 @@ Note: Base spec: [[shacl#targetNode]]
 
 A single `sh:targetNode` becomes the root subject, directly in the generated triple patterns
 
-<s2q-snippet>
+<div class="example" id="example-targetNode">
+  Single target node
 
-<pre class="include-code">
-path: example/targetNode.ttl
-highlight: turtle
-</pre>
-
-<pre class="include-code">
-path: example/targetNode.ttl.rq
-highlight: sparql
-</pre>
-
-</s2q-snippet>
+  <s2q-snippet>
+    <pre class="include-code">
+    path: example/targetNode.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code">
+    path: example/targetNode.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
 
 When there are multiple target nodes, a variable is used for the root focus node and the target nodes are provided as inline data using [[sparql11-query#inline-data|VALUES]] claues.
 
-<s2q-snippet>
+<div class="example" id="example-targetNode-multi">
+  Multiple target nodes
 
-<pre class="include-code">
-path: example/targetNode-multi.ttl
-highlight: turtle
-</pre>
+  <s2q-snippet>
+    <pre class="include-code">
+    path: example/targetNode-multi.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code">
+    path: example/targetNode-multi.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
 
-<pre class="include-code">
-path: example/targetNode-multi.ttl.rq
-highlight: sparql
-</pre>
+# SHACL Advanced Features # {#shacl-advanced}
 
-</s2q-snippet>
+Advisement: This section uses the currently published [[!shacl-af|SHACL Advanced Features]] spec as well as parts of the [Community Group Draft](https://w3c.github.io/shacl/shacl-af). The implementation may become outdated in time or deviate from the spec to accommodate for the specifics of generating queries.
+
+Issue(19): Issue epic on GitHub
+
+## Node expressions ## {#shacl-advanced-node-expressions}
+
+The core of the support for node expressions is the new `sh:values` predicate, which allows the query generator to provide values for the predicate. Rather than following the `sh:path` to find the match the RDF terms, the node expressions are define the objects of the property. Different kinds of node expressions can be used to generate subselects or computed properties.
+
+Note: Because the result must be a triple patterns where the node expression's output is the subject or object, only [[shacl#property-path-predicate|Predicate Path]] and [[shacl#property-path-inverse|Inverse Path]] can be used with `sh:values`.
+
+Issue(20): Multiple objects of `sh:values` should form a `UNION`
+
+### Constant term expression ### {#shacl-constant-term-expressions}
+
+The objects of `sh:values` become directly asserted as the objects of the property.
+
+<div class="example" id="example-constant">
+  Two properties with constant values
+
+  <s2q-snippet>
+  
+  <pre class="include-code">
+  path: example/values-constant.ttl
+  highlight: turtle
+  </pre>
+  
+  <pre class="include-code">
+  path: example/values-constant.ttl.rq
+  highlight: sparql
+  </pre>
+  
+  </s2q-snippet>
+</div>

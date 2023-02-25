@@ -1,0 +1,10 @@
+PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  <https://tbbt.tv/sheldon-cooper> schema:givenName ?resource2.
+  <https://tbbt.tv/sheldon-cooper> schema:familyName ?resource3.
+}
+WHERE {
+  { BIND("Sheldon" AS ?resource2) }
+  UNION
+  { BIND("Cooper" AS ?resource3) }
+}

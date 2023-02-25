@@ -1,4 +1,4 @@
-import { sh } from '@tpluscode/rdf-ns-builders'
+import { sh, rdf } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import $rdf from '@rdfjs/data-model'
 import { sparql } from '@tpluscode/rdf-string'
@@ -45,7 +45,7 @@ describe('lib/targets', () => {
 
       // then
       expect(whereClause).to.equalPatterns(sparql`VALUES ( ?foo ) { ( ${ex.Foo} ) ( ${ex.Bar} ) }`)
-      expect(constructClause).to.equalPatterns('')
+      expect(sparql`${constructClause}`).to.equalPatterns('')
     })
   })
 
@@ -61,8 +61,8 @@ describe('lib/targets', () => {
       const { whereClause, constructClause } = targets.get(sh.targetClass)({ shape, focusNode, variable })
 
       // then
-      expect(whereClause).to.equalPatterns(sparql`?foo a ${ex.Foo} .`)
-      expect(constructClause).to.equalPatterns(sparql`?foo a ${ex.Foo} .`)
+      expect(whereClause).to.equalPatterns(sparql`?foo ${rdf.type} ${ex.Foo} .`)
+      expect(sparql`${constructClause}`).to.equalPatterns(sparql`?foo ${rdf.type} ${ex.Foo} .`)
     })
 
     it("matches focus node's single rdf:type using VALUES", async () => {
@@ -77,10 +77,10 @@ describe('lib/targets', () => {
 
       // then
       expect(whereClause).to.equalPatterns(sparql`
-        ?foo a ?targetClass .
+        ?foo ${rdf.type} ?targetClass .
         VALUES ( ?targetClass ) { ( ${ex.Foo} ) ( ${ex.Bar} ) } 
       `)
-      expect(constructClause).to.equalPatterns(sparql`?foo a ?targetClass .`)
+      expect(sparql`${constructClause}`).to.equalPatterns(sparql`?foo ${rdf.type} ?targetClass .`)
     })
   })
 
@@ -97,7 +97,7 @@ describe('lib/targets', () => {
 
       // then
       expect(whereClause).to.equalPatterns(sparql`?foo ${ex.prop} ?value .`)
-      expect(constructClause).to.equalPatterns(sparql`?foo ${ex.prop} ?value .`)
+      expect(sparql`${constructClause}`).to.equalPatterns(sparql`?foo ${ex.prop} ?value .`)
     })
 
     it('matches multiple targets using VALUES', async () => {
@@ -115,7 +115,7 @@ describe('lib/targets', () => {
         ?foo ?prop ?value .
         VALUES ( ?prop ) { ( ${ex.prop1} ) ( ${ex.prop2} ) } 
       `)
-      expect(constructClause).to.equalPatterns(sparql`?foo ?prop ?value .`)
+      expect(sparql`${constructClause}`).to.equalPatterns(sparql`?foo ?prop ?value .`)
     })
   })
 
@@ -132,7 +132,7 @@ describe('lib/targets', () => {
 
       // then
       expect(whereClause).to.equalPatterns(sparql`?value ${ex.prop} ?foo .`)
-      expect(constructClause).to.equalPatterns(sparql`?value ${ex.prop} ?foo .`)
+      expect(sparql`${constructClause}`).to.equalPatterns(sparql`?value ${ex.prop} ?foo .`)
     })
 
     it('matches multiple targets using VALUES', async () => {
@@ -150,7 +150,7 @@ describe('lib/targets', () => {
         ?value ?prop ?foo .
         VALUES ( ?prop ) { ( ${ex.prop1} ) ( ${ex.prop2} ) } 
       `)
-      expect(constructClause).to.equalPatterns(sparql`?value ?prop ?foo .`)
+      expect(sparql`${constructClause}`).to.equalPatterns(sparql`?value ?prop ?foo .`)
     })
   })
 })

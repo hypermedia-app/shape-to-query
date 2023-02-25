@@ -1,98 +1,111 @@
-import type { Term, Variable } from 'rdf-js'
+import type { Term, BaseQuad } from 'rdf-js'
 import * as Path from 'clownface-shacl-path'
-import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
+import { quad } from '@rdfjs/data-model'
+import { sparql } from '@tpluscode/sparql-builder'
 import { VariableSequence } from './variableSequence'
+import { ShapePatterns, emptyPatterns, merge } from './shapePatterns'
 
 interface Context {
   pathStart: Term
   pathEnd?: Term
 }
 
-export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
-  private _constructPatterns: SparqlTemplateResult[] = []
-
+export default class extends Path.PathVisitor<ShapePatterns, Context> {
   constructor(private variable: VariableSequence) {
     super()
   }
 
-  get constructPatterns(): SparqlTemplateResult {
-    return sparql`${this._constructPatterns}`
-  }
+  visitAlternativePath({ paths }: Path.AlternativePath, { pathStart, pathEnd = this.variable() }: Context): ShapePatterns {
+    let result = emptyPatterns
 
-  visitAlternativePath({ paths }: Path.AlternativePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
-    const [first, ...rest] = paths
-    const intermediatePaths: Variable[] = [this.variable()]
-
-    return rest.reduce((union, path) => {
+    for (const path of paths) {
       const intermediatePath = this.variable()
-      intermediatePaths.push(intermediatePath)
+      const inner = path.accept(this, { pathStart, pathEnd: intermediatePath })
+      const whereClause = sparql`${inner.whereClause}\nBIND(${intermediatePath} as ${pathEnd})`
 
-      return sparql`${union} UNION {
-       ${path.accept(this, { pathStart, pathEnd: intermediatePath })}
-      BIND(${intermediatePath} as ${pathEnd})
-      }`
-    }, sparql`{
-      ${first.accept(this, { pathStart, pathEnd: intermediatePaths[0] })}
-      BIND(${intermediatePaths[0]} as ${pathEnd})
-    }`)
+      if (result === emptyPatterns) {
+        result = {
+          whereClause: sparql`{ ${whereClause} }`,
+          constructClause: inner.constructClause,
+        }
+      } else {
+        result = {
+          whereClause: sparql`${result.whereClause} UNION { ${whereClause} }`,
+          constructClause: [...result.constructClause, ...inner.constructClause],
+        }
+      }
+    }
+
+    return result
   }
 
-  visitInversePath({ path }: Path.InversePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
+  visitInversePath({ path }: Path.InversePath, { pathStart, pathEnd = this.variable() }: Context): ShapePatterns {
     return path.accept(this, { pathStart: pathEnd, pathEnd: pathStart })
   }
 
-  visitOneOrMorePath(path: Path.OneOrMorePath, arg?: Context): SparqlTemplateResult {
+  visitOneOrMorePath(path: Path.OneOrMorePath, arg?: Context): ShapePatterns {
     return this.greedyPath(path, arg)
   }
 
-  visitPredicatePath(path: Path.PredicatePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
-    const pattern = sparql`${pathStart} ${path.term} ${pathEnd} .`
-    this._constructPatterns.push(pattern)
-    return pattern
+  visitPredicatePath(path: Path.PredicatePath, { pathStart, pathEnd = this.variable() }: Context): ShapePatterns {
+    return {
+      whereClause: sparql`${pathStart} ${path.term} ${pathEnd} .`,
+      constructClause: [quad<BaseQuad>(pathStart, path.term, pathEnd)],
+    }
   }
 
-  visitSequencePath({ paths }: Path.SequencePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
-    let patterns = sparql``
+  visitSequencePath({ paths }: Path.SequencePath, { pathStart, pathEnd = this.variable() }: Context): ShapePatterns {
     let segStart = pathStart
     let segEnd = this.variable()
 
+    let result: ShapePatterns = emptyPatterns
+
     for (const [index, segment] of paths.entries()) {
       const isLast = index === paths.length - 1
-      patterns = sparql`${patterns}\n${segment.accept(this, {
+      result = merge(result, segment.accept(this, {
         pathStart: segStart,
         pathEnd: isLast ? pathEnd : segEnd,
-      })}`
+      }))
 
       segStart = segEnd
       segEnd = this.variable()
     }
 
-    return patterns
+    return result
   }
 
-  visitZeroOrMorePath(path: Path.ZeroOrMorePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
-    return sparql`
-    {
-      BIND (${pathStart} as ${pathEnd})
-    } UNION {
-      ${this.greedyPath(path, { pathStart, pathEnd })}
+  visitZeroOrMorePath(path: Path.ZeroOrMorePath, { pathStart, pathEnd = this.variable() }: Context): ShapePatterns {
+    const inner = this.greedyPath(path, { pathStart, pathEnd })
+
+    return {
+      whereClause: sparql`
+      {
+        BIND (${pathStart} as ${pathEnd})
+      } UNION {
+        ${inner.whereClause}
+      }
+      `,
+      constructClause: inner.constructClause,
     }
-    `
   }
 
-  visitZeroOrOnePath({ path }: Path.ZeroOrOnePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
+  visitZeroOrOnePath({ path }: Path.ZeroOrOnePath, { pathStart, pathEnd = this.variable() }: Context): ShapePatterns {
     const orMorePathVariable = this.variable()
+    const inner: ShapePatterns = path.accept(this, { pathStart, pathEnd: orMorePathVariable })
+    const whereClause = sparql`{
+        BIND(${pathStart} as ${pathEnd})
+      } UNION {
+        ${inner.whereClause}
+        BIND(${orMorePathVariable} as ${pathEnd})
+      }`
 
-    return sparql`{
-      BIND(${pathStart} as ${pathEnd})
-    } UNION {
-      ${path.accept(this, { pathStart, pathEnd: orMorePathVariable })}
-      BIND(${orMorePathVariable} as ${pathEnd})
+    return {
+      whereClause,
+      constructClause: inner.constructClause,
     }
-    `
   }
 
-  private greedyPath({ path }: Path.ZeroOrMorePath | Path.OneOrMorePath, { pathStart, pathEnd = this.variable() }: Context): SparqlTemplateResult {
+  private greedyPath({ path }: Path.ZeroOrMorePath | Path.OneOrMorePath, { pathStart, pathEnd = this.variable() }: Context): ShapePatterns {
     if (!(path instanceof Path.PredicatePath)) {
       throw new Error('Only Predicate Path is supported as child of *OrMorePaths')
     }
@@ -100,7 +113,9 @@ export default class extends Path.PathVisitor<SparqlTemplateResult, Context> {
     const intermediateNode = this.variable()
     const outPattern = sparql`${intermediateNode} ${path.term} ${pathEnd} .`
 
-    this._constructPatterns.push(outPattern)
-    return sparql`${pathStart} ${path.term}* ${intermediateNode} . \n${outPattern}`
+    return {
+      whereClause: sparql`${pathStart} ${path.term}* ${intermediateNode} . \n${outPattern}`,
+      constructClause: [quad<BaseQuad>(intermediateNode, path.term, pathEnd)],
+    }
   }
 }
