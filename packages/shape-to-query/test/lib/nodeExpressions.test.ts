@@ -40,6 +40,19 @@ describe('lib/nodeExpressions', () => {
     })
   })
 
+  context('focus node expression', () => {
+    iit('uses $this as the object', {
+      shape: parse`
+        <>
+          ${sh.path} ${foaf.knows} ;
+          ${sh.values} ${sh.this} ;
+        .
+      `,
+      expectedWherePatterns: 'BIND (<root> as ?o)',
+      expectedConstructPatterns: '<root> foaf:knows ?o .',
+    })
+  })
+
   interface Iit {
     shape: Promise<GraphPointer>
     expectedWherePatterns: string

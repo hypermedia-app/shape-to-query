@@ -19,7 +19,12 @@ export function getNodeExpressionPatterns({ focusNode, shape, pathEnd }: GetNode
   const path = shape.out(sh.path)
 
   const evaluatedExpressions = nodeExpressions.map(nodeExpression => {
-    return sparql`BIND(${nodeExpression.term} as ${pathEnd})`
+    let { term } = nodeExpression
+    if (term.equals(sh.this)) {
+      term = focusNode
+    }
+
+    return sparql`BIND(${term} as ${pathEnd})`
   })
 
   return {
