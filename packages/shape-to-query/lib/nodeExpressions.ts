@@ -1,7 +1,8 @@
-import { Term, NamedNode, Variable } from 'rdf-js'
+import { Term, NamedNode, Variable, BaseQuad } from 'rdf-js'
 import { sparql } from '@tpluscode/sparql-builder'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'
 import type { MultiPointer } from 'clownface'
+import { quad } from '@rdfjs/data-model'
 import { ShapePatterns } from './shapePatterns'
 import { VariableSequence } from './variableSequence'
 
@@ -21,7 +22,9 @@ export function getNodeExpressionPatterns({ focusNode, variable, nodeExpression,
         ${VALUES(...constantTermExpressionValues)}
         BIND (${constantTermVar} as ${pathEnd})
       `
-  const constructClause = sparql`${focusNode} ${path.term} ${pathEnd} .`
 
-  return { whereClause, constructClause }
+  return {
+    whereClause,
+    constructClause: [quad<BaseQuad>(focusNode, path.term, pathEnd)],
+  }
 }

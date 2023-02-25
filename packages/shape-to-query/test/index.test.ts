@@ -1,4 +1,4 @@
-import { foaf, rdfs, schema } from '@tpluscode/rdf-ns-builders'
+import { foaf, rdf, rdfs, schema } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { SELECT } from '@tpluscode/sparql-builder'
 import { expect } from 'chai'
@@ -27,7 +27,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
           // then
           expect(query).to.be.a.query(sparql`SELECT * WHERE {
-            ?node a ${foaf.Person}
+            ?node ${rdf.type} ${foaf.Person}
           }`)
         })
 
@@ -45,7 +45,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
           // then
           expect(query).to.be.a.query(sparql`SELECT * WHERE {
-            ?node a ?node_targetClass .
+            ?node ${rdf.type} ?node_targetClass .
             VALUES (?node_targetClass) { (${foaf.Person}) (${schema.Person}) }
           }`)
         })
@@ -265,10 +265,10 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
-          ?resource a ?resource_targetClass .
+          ?resource ${rdf.type} ?resource_targetClass .
           ?resource ${foaf.name} ?resource_0 .
         } WHERE {
-            ?resource a ?resource_targetClass .
+            ?resource ${rdf.type} ?resource_targetClass .
             VALUES (?resource_targetClass) { (${foaf.Person}) (${schema.Person}) }
             ?resource ${foaf.name} ?resource_0 .
         }`)
@@ -295,7 +295,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
-          ?resource a ${schema.Person} .
+          ?resource ${rdf.type} ${schema.Person} .
           ?resource ${schema.spouse} ?spouse .
           ?parent ${schema.parent} ?resource .
           ?resource ${foaf.name} ?resource_0 .
@@ -303,7 +303,7 @@ describe('@hydrofoil/shape-to-query', () => {
           {
             VALUES (?resource) { (${ex.John}) }
           } UNION {
-            ?resource a ${schema.Person} .
+            ?resource ${rdf.type} ${schema.Person} .
           } UNION {
             ?resource ${schema.spouse} ?spouse .
           } UNION {

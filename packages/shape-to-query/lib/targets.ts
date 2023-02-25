@@ -1,9 +1,10 @@
-import { NamedNode, Variable } from 'rdf-js'
+import { NamedNode, Variable, BaseQuad } from 'rdf-js'
 import TermMap from '@rdfjs/term-map'
-import { sh } from '@tpluscode/rdf-ns-builders'
+import { rdf, sh } from '@tpluscode/rdf-ns-builders'
 import type { GraphPointer } from 'clownface'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'
 import { sparql } from '@tpluscode/sparql-builder'
+import { quad } from '@rdfjs/data-model'
 import { ShapePatterns } from './shapePatterns'
 import { VariableSequence } from './variableSequence'
 
@@ -26,7 +27,7 @@ function targetNode({ shape, focusNode: { value } }: TargetArgs): TargetNodePatt
   }
 
   return {
-    constructClause: '',
+    constructClause: [],
     whereClause: VALUES(...targetNodes),
   }
 }
@@ -39,20 +40,20 @@ function targetClass({ shape, focusNode, variable }: TargetArgs): TargetNodePatt
   }
 
   if (targetTypes.length === 1) {
-    const constructClause = sparql`${focusNode} a ${targetTypes.shift()} .`
+    const typeQuad = quad<BaseQuad>(focusNode, rdf.type, targetTypes.shift())
     return {
-      constructClause,
-      whereClause: constructClause,
+      constructClause: [typeQuad],
+      whereClause: sparql`${typeQuad}`,
     }
   }
 
   const targetType = variable()
   const values = targetTypes.map((term) => ({ [targetType.value]: term }))
-  const constructClause = sparql`${focusNode} a ${targetType} .`
+  const typeQuad = quad(focusNode, rdf.type, targetType)
   return {
-    constructClause,
+    constructClause: [typeQuad],
     whereClause: sparql`
-      ${constructClause}
+      ${typeQuad}
       ${VALUES(...values)}
     `,
   }
@@ -67,20 +68,20 @@ function targetSubjectsOf({ shape, focusNode, variable }: TargetArgs): TargetNod
 
   const propObject = variable()
   if (properties.length === 1) {
-    const constructClause = sparql`${focusNode} ${properties.shift()} ${propObject} .`
+    const patternQuad = quad<BaseQuad>(focusNode, properties.shift(), propObject)
     return {
-      constructClause,
-      whereClause: constructClause,
+      constructClause: [patternQuad],
+      whereClause: sparql`${patternQuad}`,
     }
   }
 
   const propVariable = variable()
   const values = properties.map(term => ({ [propVariable.value]: term }))
-  const constructClause = sparql`${focusNode} ${propVariable} ${propObject} .`
+  const propPatternQuad = quad<BaseQuad>(focusNode, propVariable, propObject)
   return {
-    constructClause,
+    constructClause: [propPatternQuad],
     whereClause: sparql`
-      ${constructClause}
+      ${propPatternQuad}
       ${VALUES(...values)}
     `,
   }
@@ -94,20 +95,20 @@ function targetObjectsOf({ shape, focusNode, variable }: TargetArgs): TargetNode
 
   const propSubject = variable()
   if (properties.length === 1) {
-    const constructClause = sparql`${propSubject} ${properties.shift()} ${focusNode} .`
+    const patternQuad = quad<BaseQuad>(propSubject, properties.shift(), focusNode)
     return {
-      constructClause,
-      whereClause: constructClause,
+      constructClause: [patternQuad],
+      whereClause: sparql`${patternQuad}`,
     }
   }
 
   const propVariable = variable()
   const values = properties.map(term => ({ [propVariable.value]: term }))
-  const constructClause = sparql`${propSubject} ${propVariable} ${focusNode} .`
+  const patternQuad = quad<BaseQuad>(propSubject, propVariable, focusNode)
   return {
-    constructClause,
+    constructClause: [patternQuad],
     whereClause: sparql`
-      ${constructClause}
+      ${patternQuad}
       ${VALUES(...values)}
     `,
   }
