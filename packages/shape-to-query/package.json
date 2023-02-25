@@ -15,7 +15,7 @@
     "url": "https://github.com/hypermedia-app/shape-to-query"
   },
   "dependencies": {
-    "@rdfjs/data-model": "^1",
+    "@rdfjs/data-model": "^2",
     "@rdfjs/term-map": "^1",
     "@rdfjs/term-set": "^1",
     "@tpluscode/rdf-ns-builders": "^2.0.1",
