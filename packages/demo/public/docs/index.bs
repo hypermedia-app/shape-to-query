@@ -49,7 +49,7 @@ Note: Base spec: [[shacl#targetNode]]
 
 A single `sh:targetNode` becomes the root subject, directly in the generated triple patterns
 
-<div class="example" id="example-targetNode">
+<div class="example">
   Single target node
 
   <s2q-snippet>
@@ -66,7 +66,7 @@ A single `sh:targetNode` becomes the root subject, directly in the generated tri
 
 When there are multiple target nodes, a variable is used for the root focus node and the target nodes are provided as inline data using [[sparql11-query#inline-data|VALUES]] claues.
 
-<div class="example" id="example-targetNode-multi">
+<div class="example">
   Multiple target nodes
 
   <s2q-snippet>
@@ -99,7 +99,7 @@ Issue(20): Multiple objects of `sh:values` should form a `UNION`
 
 The object of the property at `sh:path` is the current focus node
 
-<div class="example" id="example-focus-node">
+<div class="example">
   Focus node expressions
 
   <s2q-snippet>
@@ -117,11 +117,13 @@ The object of the property at `sh:path` is the current focus node
   </s2q-snippet>
 </div>
 
+Issue: the example above is quite nonsensical, just shows the mechanics of `sh:this`. Would be nice to come up with something more pragmatic
+
 ### Constant term expression ### {#shacl-constant-term-expressions}
 
 The objects of `sh:values` become directly asserted as the objects of the property.
 
-<div class="example" id="example-constant">
+<div class="example">
   Two properties with constant values
 
   <s2q-snippet>
