@@ -41,6 +41,8 @@ const queryString = constructQuery(shape).build()
 
 # SHACL Constraints # {#shacl-constraints}
 
+Issue(42): Issue epic on GitHub
+
 ## Targets ## {#target}
 
 ### Node targets (`sh:targetNode`) ### {#target-node}
