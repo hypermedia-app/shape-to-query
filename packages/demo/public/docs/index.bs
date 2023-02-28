@@ -83,6 +83,27 @@ When there are multiple target nodes, a variable is used for the root focus node
   </s2q-snippet>
 </div>
 
+## Core Constraint Components ## {#shacl-core-components}
+
+### Logical Constraint Components ### {#shacl-logical-constraints}
+
+#### sh:or #### {#shacl-or}
+
+<div class="example">
+  Get `schema:givenName` and `schema:familyName` but only of those resources which have either `schema:parent` or `schema:children` properties
+
+  <s2q-snippet>
+    <pre class="include-code">
+    path: example/or.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code">
+    path: example/or.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
 # SHACL Advanced Features # {#shacl-advanced}
 
 Advisement: This section uses the currently published [[!shacl-af|SHACL Advanced Features]] spec as well as parts of the [Community Group Draft](https://w3c.github.io/shacl/shacl-af). The implementation may become outdated in time or deviate from the spec to accommodate for the specifics of generating queries.

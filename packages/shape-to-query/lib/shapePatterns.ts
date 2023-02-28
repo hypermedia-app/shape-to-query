@@ -13,10 +13,12 @@ export const emptyPatterns: ShapePatterns = {
   constructClause: [],
 }
 
-export function merge(left: ShapePatterns, right: ShapePatterns): ShapePatterns {
+export function merge(...patterns: ShapePatterns[]): ShapePatterns {
+  const whereClause = patterns.reduce((prev, next) => sparql`${prev}\n${next.whereClause}`, sparql``)
+
   return {
-    whereClause: sparql`${left.whereClause}\n${right.whereClause}`,
-    constructClause: [...left.constructClause, ...right.constructClause],
+    whereClause,
+    constructClause: patterns.flatMap(p => p.constructClause),
   }
 }
 

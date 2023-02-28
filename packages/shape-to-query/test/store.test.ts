@@ -237,5 +237,35 @@ describe('@hydrofoil/shape-to-query', () => {
       `
       expect(result.toCanonical).to.eq(expected.toCanonical)
     })
+
+    it('sh:or merges multiple reused shapes in logical sum', async () => {
+      // given
+      const shape = await parse`
+        <> 
+          ${sh.or} ( _:blank <named> ) ;
+          ${sh.property} [ ${sh.path} ${schema.givenName} ] ;
+          ${sh.property}  [ ${sh.path} ${schema.familyName} ] .
+        
+        <named>
+          ${sh.property} [ ${sh.path} ${schema.parent} ] .
+        
+        _:blank
+          ${sh.property} [ ${sh.path} ${schema.children} ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${tbbt('sheldon-cooper')} ${schema.parent} ${tbbt('mary-cooper')} ;
+                                          ${schema.givenName} "Sheldon" ;
+                                          ${schema.familyName} "Cooper" .
+        ${tbbt('mary-cooper')} ${schema.children} ${tbbt('sheldon-cooper')} ;
+                                       ${schema.givenName} "Mary" ;
+                                       ${schema.familyName} "Cooper" .
+      `
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
+    })
   })
 })

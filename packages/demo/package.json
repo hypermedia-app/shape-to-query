@@ -21,7 +21,8 @@
     "@tpluscode/rdf-string": "^0.2.27",
     "is-graph-pointer": "^1.2.2",
     "lit": "^2.6.1",
-    "rdf-ext": "^2"
+    "rdf-ext": "^2",
+    "sparqljs": "^3.6.2"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
@@ -39,7 +40,6 @@
     "process": "^0.11.10",
     "rdf-utils-fs": "^2.3.0",
     "rollup-plugin-node-polyfills": "^0.2.1",
-    "sparqljs": "^3.6.2",
     "standard": "^17.0.0",
     "util": "^0.12.5",
     "vite": "^4.1.1"
