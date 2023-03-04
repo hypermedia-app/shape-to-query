@@ -267,5 +267,58 @@ describe('@hydrofoil/shape-to-query', () => {
       `
       expect(result.toCanonical()).to.eq(expected.toCanonical())
     })
+
+    it.skip('sh:or nested in sh:node', async () => {
+      // given
+      const shape = await parse`
+        <> 
+          ${sh.property} [ 
+            ${sh.path} ${schema.familyName} ;
+            ${sh.or} (
+              [ 
+                ${sh.hasValue} "Cooper" ; 
+              ] 
+              [ 
+                ${sh.hasValue} "Bloom" ; 
+              ]
+            ) ;
+          ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${tbbt('sheldon-cooper')} ${schema.familyName} "Cooper" .
+        ${tbbt('mary-cooper')} ${schema.familyName} "Cooper" .
+        ${tbbt('stuart-bloom')} ${schema.familyName} "Bloom" .
+      `
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
+    })
+
+    it.skip('sh:hasValue filters entire focus nodes', async () => { // given
+      const shape = await parse`
+        <> 
+          ${sh.property} [ 
+            ${sh.path} ${schema.givenName} ;
+          ], [ 
+            ${sh.path} ${schema.familyName} ;
+            ${sh.hasValue} "Cooper" ;
+          ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${tbbt('sheldon-cooper')} ${schema.givenName} "Sheldon" ;
+                                          ${schema.familyName} "Cooper" .
+        ${tbbt('mary-cooper')} ${schema.givenName} "Mary" ;
+                                       ${schema.familyName} "Cooper" .
+      `
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
+    })
   })
 })

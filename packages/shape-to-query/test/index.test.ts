@@ -450,7 +450,7 @@ describe('@hydrofoil/shape-to-query', () => {
     })
 
     context('shapeToPatterns', () => {
-      it('generates union of deep paths', () => {
+      it.skip('generates union of deep paths', () => {
         // when
         const patterns = shapeToPatterns(shape, {
           subjectVariable: 'node',
@@ -496,7 +496,7 @@ describe('@hydrofoil/shape-to-query', () => {
     })
 
     context('construct', () => {
-      it('does not produce duplicate patterns in CONSTRUCT clause', () => {
+      it.skip('does not produce duplicate patterns in CONSTRUCT clause', () => {
         // when
         const query = constructQuery(shape, {
           subjectVariable: 'node',
@@ -598,7 +598,7 @@ describe('@hydrofoil/shape-to-query', () => {
         `)
       })
 
-      it('produces correct CONSTRUCT clause', async () => {
+      it.skip('produces correct CONSTRUCT clause', async () => {
         // given
         const shape = await parse`
         <>

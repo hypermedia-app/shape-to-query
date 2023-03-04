@@ -1,13 +1,21 @@
 import { NamedNode } from 'rdf-js'
 import type { GraphPointer } from 'clownface'
+import { fromNode } from '../model/fromNode'
 import { ShapePatterns } from './shapePatterns'
-import { NodeShapeProcessor, Options as BaseOptions } from './NodeShapeProcessor'
+import { createVariableSequence } from './variableSequence'
 
-export interface Options extends BaseOptions {
+export interface Options {
   focusNode?: NamedNode
+  subjectVariable?: string
+  objectVariablePrefix?: string
 }
 
 export function shapeToPatterns(shape: GraphPointer, options: Options = {}): ShapePatterns {
-  const processor = new NodeShapeProcessor(options)
-  return processor.getPatterns(shape, options.focusNode || processor.variable())
+  const nodeShape = fromNode(shape)
+  const variable = createVariableSequence(options.objectVariablePrefix || 'resource')
+
+  return nodeShape.buildPatterns({
+    focusNode: options.focusNode || variable(),
+    variable,
+  })
 }

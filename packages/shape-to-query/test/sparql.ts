@@ -13,6 +13,7 @@ declare global {
     interface TypeComparison {
       query(expected: string | SparqlTemplateResult | SparqlQuery): void
       equalPatterns(expected: string | SparqlTemplateResult): void
+      equalPatternsVerbatim(expected: string | SparqlTemplateResult): void
     }
   }
 }
@@ -51,6 +52,13 @@ ${this._obj.toString()}`)
 Assertion.addMethod('equalPatterns', function (this: Chai.AssertionStatic, expected: string | SparqlTemplateResult) {
   const actualPatterns = normalize(this._obj.toString({ prologue: false }))
   const expectedPatterns = normalize(expected.toString({ prologue: false }))
+
+  new Assertion(actualPatterns).to.equalIgnoreSpaces(expectedPatterns)
+})
+
+Assertion.addMethod('equalPatternsVerbatim', function (this: Chai.AssertionStatic, expected: string | SparqlTemplateResult) {
+  const actualPatterns = this._obj.toString({ prologue: false })
+  const expectedPatterns = expected.toString({ prologue: false })
 
   new Assertion(actualPatterns).to.equalIgnoreSpaces(expectedPatterns)
 })
