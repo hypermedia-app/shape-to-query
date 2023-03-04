@@ -1,5 +1,5 @@
 import { Variable } from 'rdf-js'
-import $rdf from '@rdfjs/data-model'
+import $rdf from 'rdf-ext'
 
 export interface VariableSequence {
   (): Variable

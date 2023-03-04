@@ -1,6 +1,6 @@
-import type { Term, BaseQuad } from 'rdf-js'
+import type { Term } from 'rdf-js'
 import * as Path from 'clownface-shacl-path'
-import { quad } from '@rdfjs/data-model'
+import $rdf from 'rdf-ext'
 import { sparql } from '@tpluscode/sparql-builder'
 import { VariableSequence } from './variableSequence'
 import { ShapePatterns, emptyPatterns, merge } from './shapePatterns'
@@ -50,7 +50,7 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
   visitPredicatePath(path: Path.PredicatePath, { pathStart, pathEnd = this.variable() }: Context): ShapePatterns {
     return {
       whereClause: sparql`${pathStart} ${path.term} ${pathEnd} .`,
-      constructClause: [quad<BaseQuad>(pathStart, path.term, pathEnd)],
+      constructClause: [$rdf.quad(<any>pathStart, path.term, <any>pathEnd)],
     }
   }
 
@@ -115,7 +115,7 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
 
     return {
       whereClause: sparql`${pathStart} ${path.term}* ${intermediateNode} . \n${outPattern}`,
-      constructClause: [quad<BaseQuad>(intermediateNode, path.term, pathEnd)],
+      constructClause: [$rdf.quad(intermediateNode, path.term, <any>pathEnd)],
     }
   }
 }
