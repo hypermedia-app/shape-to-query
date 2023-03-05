@@ -6,6 +6,9 @@ export default defineConfig({
   define: {
     global: 'window',
   },
+  server: {
+    hmr: false,
+  },
   resolve: {
     alias: {
       stream: 'readable-stream',
