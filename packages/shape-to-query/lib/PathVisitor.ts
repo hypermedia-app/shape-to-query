@@ -3,7 +3,7 @@ import * as Path from 'clownface-shacl-path'
 import $rdf from 'rdf-ext'
 import { sparql } from '@tpluscode/sparql-builder'
 import { VariableSequence } from './variableSequence'
-import { ShapePatterns, emptyPatterns, merge } from './shapePatterns'
+import { ShapePatterns, emptyPatterns, flatten } from './shapePatterns'
 
 interface Context {
   pathStart: Term
@@ -62,7 +62,7 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
 
     for (const [index, segment] of paths.entries()) {
       const isLast = index === paths.length - 1
-      result = merge(result, segment.accept(this, {
+      result = flatten(result, segment.accept(this, {
         pathStart: segStart,
         pathEnd: isLast ? pathEnd : segEnd,
       }))

@@ -1,8 +1,6 @@
-import { sparql } from '@tpluscode/sparql-builder'
-import { UNION } from '@tpluscode/sparql-builder/expressions'
 import { isResource } from 'is-graph-pointer'
 import { FocusNode } from '../lib/FocusNode'
-import { ShapePatterns, unique } from '../lib/shapePatterns'
+import { emptyPatterns, flatten, ShapePatterns, union } from '../lib/shapePatterns'
 import { VariableSequence } from '../lib/variableSequence'
 import { PropertyShape } from './PropertyShape'
 import { Target, TargetNode } from './target'
@@ -28,32 +26,21 @@ export default class implements NodeShape {
   buildPatterns(arg: Parameters): ShapePatterns {
     let { focusNode, variable } = arg
 
-    let targets: ShapePatterns[] = []
+    let targets: ShapePatterns = emptyPatterns
     if (focusNode.termType === 'Variable') {
-      targets = this.targets.flatMap(target => target.buildPatterns(<any>{ focusNode, variable }))
+      targets = union(...this.targets.flatMap(target => target.buildPatterns(<any>{ focusNode, variable })))
     }
     if (this.targets.length === 1 && this.targets[0] instanceof TargetNode) {
       const [target] = this.targets
       if (isResource(target.nodes)) {
-        targets = []
+        targets = emptyPatterns
         focusNode = target.nodes.term
       }
     }
 
-    const constraints = this.constraints.map(c => c.buildPatterns({ focusNode, variable }))
-    const properties = this.properties.map(p => p.buildPatterns({ focusNode, variable }))
+    const constraints = union(...this.constraints.map(c => c.buildPatterns({ focusNode, variable })))
+    const properties = union(...this.properties.map(p => p.buildPatterns({ focusNode, variable })))
 
-    return {
-      constructClause: unique(
-        ...targets.map(t => t.constructClause),
-        ...constraints.map(c => c.constructClause),
-        ...properties.map(p => p.constructClause),
-      ),
-      whereClause: sparql`
-        ${UNION(...targets.map(t => t.whereClause))}
-        ${UNION(...constraints.map(t => t.whereClause))}
-        ${UNION(...properties.map(t => t.whereClause))}
-      `,
-    }
+    return flatten(targets, constraints, properties)
   }
 }

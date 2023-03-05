@@ -70,7 +70,7 @@ function propertyRule(path: GraphPointer) {
   }
 }
 
-function nodeExpression(pointer: GraphPointer) {
+export function nodeExpression(pointer: GraphPointer) {
   if (pointer.term.equals(sh.this)) {
     return new FocusNodeExpression()
   }

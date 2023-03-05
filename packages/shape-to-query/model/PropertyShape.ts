@@ -1,8 +1,7 @@
 import { GraphPointer } from 'clownface'
-import { fromNode } from 'clownface-shacl-path'
+import { fromNode, ShaclPropertyPath } from 'clownface-shacl-path'
 import { sparql } from '@tpluscode/sparql-builder'
-import { UNION } from '@tpluscode/sparql-builder/expressions'
-import { ShapePatterns } from '../lib/shapePatterns'
+import { ShapePatterns, union } from '../lib/shapePatterns'
 import { FocusNode } from '../lib/FocusNode'
 import { VariableSequence } from '../lib/variableSequence'
 import PathVisitor from '../lib/PathVisitor'
@@ -28,10 +27,12 @@ export interface PropertyShape {
 export default class implements PropertyShape {
   private readonly rules: ReadonlyArray<Rule>
   private readonly constraints: ReadonlyArray<ConstraintComponent>
+  private readonly path: ShaclPropertyPath
 
-  constructor(private readonly path: GraphPointer, { rules = [], constraints = [] }: Components = {}) {
+  constructor(path: GraphPointer, { rules = [], constraints = [] }: Components = {}) {
     this.rules = rules
     this.constraints = constraints
+    this.path = fromNode(path)
   }
 
   buildPatterns({ focusNode, variable }: Parameters): ShapePatterns {
@@ -44,12 +45,9 @@ export default class implements PropertyShape {
         focusNode,
         objectNode,
       }))
-      patterns = {
-        constructClause: rulePatterns.flatMap(r => r.constructClause),
-        whereClause: sparql`${UNION(...rulePatterns.map(r => r.whereClause))}`,
-      }
+      patterns = union(...rulePatterns)
     } else {
-      patterns = visitor.visit(fromNode(this.path), {
+      patterns = visitor.visit(this.path, {
         pathStart: focusNode,
         pathEnd,
       })
@@ -70,16 +68,7 @@ export default class implements PropertyShape {
       })
 
     if (deepPatterns.length) {
-      return {
-        constructClause: [
-          ...patterns.constructClause,
-          ...deepPatterns.flatMap(dp => dp.constructClause),
-        ],
-        whereClause: sparql`${UNION(
-          patterns.whereClause,
-          ...deepPatterns.map(dp => dp.whereClause),
-        )}`,
-      }
+      return union(patterns, ...deepPatterns)
     }
 
     return patterns

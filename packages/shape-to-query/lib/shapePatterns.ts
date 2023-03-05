@@ -13,20 +13,23 @@ export const emptyPatterns: ShapePatterns = {
   constructClause: [],
 }
 
-export function merge(...patterns: ShapePatterns[]): ShapePatterns {
+export function flatten(...patterns: ShapePatterns[]): ShapePatterns {
   const whereClause = patterns.reduce((prev, next) => sparql`${prev}\n${next.whereClause}`, sparql``)
 
   return {
     whereClause,
-    constructClause: patterns.flatMap(p => p.constructClause),
+    constructClause: unique(patterns.flatMap(p => p.constructClause)),
   }
 }
 
-export function unique(...construct: BaseQuad[][]): BaseQuad[] {
+function unique(...construct: BaseQuad[][]): BaseQuad[] {
   const set = new TermSet<BaseQuad>(construct.flatMap(arr => arr))
   return [...set]
 }
 
-export function toUnion(propertyPatterns: ShapePatterns[]): SparqlTemplateResult {
-  return sparql`${UNION(...propertyPatterns.map(({ whereClause }) => whereClause))}`
+export function union(...patterns: ShapePatterns[]): ShapePatterns {
+  return {
+    constructClause: unique(patterns.flatMap(p => p.constructClause)),
+    whereClause: sparql`${UNION(...patterns.map(({ whereClause }) => whereClause))}`,
+  }
 }

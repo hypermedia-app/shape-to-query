@@ -50,7 +50,6 @@ describe('model/PropertyShape', () => {
       const query = sparql`CONSTRUCT { ${constructClause} } WHERE { ${whereClause} }`
       expect(query).to.equalPatterns(`CONSTRUCT {
         ?this schema:knows ?foo .
-        ?this schema:knows ?foo .
       } WHERE {
         {
           SELECT ?foo { ... }
