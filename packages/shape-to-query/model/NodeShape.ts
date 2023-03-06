@@ -1,4 +1,6 @@
+import { Variable } from 'rdf-js'
 import { isResource } from 'is-graph-pointer'
+import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { FocusNode } from '../lib/FocusNode'
 import { emptyPatterns, flatten, ShapePatterns, union } from '../lib/shapePatterns'
 import { VariableSequence } from '../lib/variableSequence'
@@ -13,6 +15,7 @@ interface Parameters {
 
 export interface NodeShape {
   buildPatterns(arg: Parameters): ShapePatterns
+  buildConstraints(arg: Parameters & { valueNode: Variable }): SparqlTemplateResult
 }
 
 export default class implements NodeShape {
@@ -24,23 +27,23 @@ export default class implements NodeShape {
   }
 
   buildPatterns(arg: Parameters): ShapePatterns {
-    let { focusNode, variable } = arg
-
     let targets: ShapePatterns = emptyPatterns
-    if (focusNode.termType === 'Variable') {
-      targets = union(...this.targets.flatMap(target => target.buildPatterns(<any>{ focusNode, variable })))
+    if (arg.focusNode.termType === 'Variable') {
+      targets = union(...this.targets.flatMap(target => target.buildPatterns(<any>arg)))
     }
     if (this.targets.length === 1 && this.targets[0] instanceof TargetNode) {
       const [target] = this.targets
       if (isResource(target.nodes)) {
         targets = emptyPatterns
-        focusNode = target.nodes.term
       }
     }
 
-    const constraints = union(...this.constraints.map(c => c.buildPatterns({ focusNode, variable })))
-    const properties = union(...this.properties.map(p => p.buildPatterns({ focusNode, variable })))
+    const properties = union(...this.properties.map(p => p.buildPatterns(arg)))
 
-    return flatten(targets, constraints, properties)
+    return flatten(targets, properties)
+  }
+
+  buildConstraints(arg: Parameters & { valueNode: Variable }): SparqlTemplateResult {
+    return sparql`${this.constraints.map(c => c.buildPatterns(arg))}`
   }
 }

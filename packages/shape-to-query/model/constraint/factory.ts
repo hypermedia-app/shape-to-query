@@ -5,15 +5,16 @@ import clownface, { GraphPointer } from 'clownface'
 import $rdf from 'rdf-ext'
 import loadShacl from '@zazuko/rdf-vocabularies/datasets/sh'
 import loadDash from '@zazuko/rdf-vocabularies/datasets/dash'
+import TermSet from '@rdfjs/term-set'
 import { ConstraintComponent } from './ConstraintComponent'
 import { constraintComponents } from './index'
 
 export default function * (shape: GraphPointer): Generator<ConstraintComponent> {
   const graph = loadComponentsGraph()
-  const shapeProperties = [...shape.dataset.match(shape.term)]
-    .filter(({ predicate }) => !predicate.equals(sh.property))
+  const shapeProperties = new TermSet([...shape.dataset.match(shape.term)]
+    .map(({ predicate }) => predicate))
 
-  for (const { predicate: parameter, object } of shapeProperties) {
+  for (const parameter of shapeProperties) {
     const componentType = graph.has(sh.path, parameter).in(sh.parameter).toArray().shift()
     if (!componentType) {
       continue
@@ -26,7 +27,14 @@ export default function * (shape: GraphPointer): Generator<ConstraintComponent> 
       continue
     }
 
-    yield constraintComponent.fromPointer(shape.node(object))
+    const constraintValues = shape.out(parameter)
+    if ('fromPointers' in constraintComponent) {
+      yield constraintComponent.fromPointers(constraintValues)
+    } else {
+      for (const constraintValue of constraintValues.toArray()) {
+        yield constraintComponent.fromPointer(constraintValue)
+      }
+    }
   }
 }
 

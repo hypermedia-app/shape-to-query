@@ -1,6 +1,6 @@
 import { GraphPointer } from 'clownface'
-import { fromNode, ShaclPropertyPath } from 'clownface-shacl-path'
-import { sparql } from '@tpluscode/sparql-builder'
+import { fromNode, ShaclPropertyPath, toSparql } from 'clownface-shacl-path'
+import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { ShapePatterns, union } from '../lib/shapePatterns'
 import { FocusNode } from '../lib/FocusNode'
 import { VariableSequence } from '../lib/variableSequence'
@@ -22,6 +22,7 @@ interface Parameters {
 
 export interface PropertyShape {
   buildPatterns(arg: Parameters): ShapePatterns
+  buildConstraints(arg: Parameters): SparqlTemplateResult
 }
 
 export default class implements PropertyShape {
@@ -29,10 +30,10 @@ export default class implements PropertyShape {
   private readonly constraints: ReadonlyArray<ConstraintComponent>
   private readonly path: ShaclPropertyPath
 
-  constructor(path: GraphPointer, { rules = [], constraints = [] }: Components = {}) {
+  constructor(private readonly _path: GraphPointer, { rules = [], constraints = [] }: Components = {}) {
     this.rules = rules
     this.constraints = constraints
-    this.path = fromNode(path)
+    this.path = fromNode(_path)
   }
 
   buildPatterns({ focusNode, variable }: Parameters): ShapePatterns {
@@ -54,9 +55,9 @@ export default class implements PropertyShape {
     }
 
     const deepPatterns = this.constraints
-      .filter(c => c instanceof NodeConstraintComponent)
+      .filter((c): c is NodeConstraintComponent => c instanceof NodeConstraintComponent)
       .map((nodeConstraint): ShapePatterns => {
-        const result = nodeConstraint.buildPatterns({ focusNode: pathEnd, variable })
+        const result = nodeConstraint.shape.buildPatterns({ focusNode: pathEnd, variable })
 
         return {
           constructClause: result.constructClause,
@@ -72,5 +73,26 @@ export default class implements PropertyShape {
     }
 
     return patterns
+  }
+
+  buildConstraints({ focusNode, variable }: Parameters): SparqlTemplateResult {
+    if (!this.constraints.length) {
+      return sparql``
+    }
+
+    const valueNode = variable()
+
+    const propertyPath = toSparql(this._path)
+    const constraints = this.constraints.map(c => c.buildPatterns({
+      focusNode,
+      valueNode,
+      propertyPath,
+      variable,
+    }))
+
+    return sparql`
+      ${focusNode} ${propertyPath} ${valueNode} .
+      ${constraints}
+    `
   }
 }

@@ -1,5 +1,5 @@
 import { GraphPointer } from 'clownface'
-import { flatten, ShapePatterns } from '../../lib/shapePatterns'
+import { SparqlTemplateResult, sparql } from '@tpluscode/sparql-builder'
 import { NodeShape } from '../NodeShape'
 import { fromNode } from '../fromNode'
 import { ConstraintComponent, Parameters } from './ConstraintComponent'
@@ -17,7 +17,7 @@ export class AndConstraintComponent implements ConstraintComponent {
     return new AndConstraintComponent(inner)
   }
 
-  buildPatterns(arg: Parameters): ShapePatterns {
-    return flatten(...this.inner.map(inner => inner.buildPatterns(arg)))
+  buildPatterns(arg: Parameters): SparqlTemplateResult {
+    return sparql`${this.inner.map(inner => inner.buildConstraints(arg))}`
   }
 }
