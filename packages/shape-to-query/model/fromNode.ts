@@ -1,9 +1,9 @@
 import { Term } from 'rdf-js'
 import { GraphPointer, MultiPointer } from 'clownface'
-import { sh, xsd } from '@tpluscode/rdf-ns-builders/loose'
+import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isGraphPointer, isLiteral, isNamedNode } from 'is-graph-pointer'
 import TermMap from '@rdfjs/term-map'
-import $rdf from 'rdf-ext'
+import { TRUE } from '../lib/rdf'
 import NodeShapeImpl, { NodeShape } from './NodeShape'
 import * as target from './target'
 import PropertyShape from './PropertyShape'
@@ -11,8 +11,6 @@ import { PropertyValueRule } from './Rule'
 import { FocusNodeExpression } from './nodeExpression/FocusNodeExpression'
 import { ConstantTermExpression } from './nodeExpression/ConstantTermExpression'
 import createConstraints from './constraint/factory'
-
-const TRUE = $rdf.literal('true', xsd.boolean)
 
 function nodeShape(pointer: GraphPointer): NodeShape {
   const properties = pointer

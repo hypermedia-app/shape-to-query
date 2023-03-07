@@ -6,6 +6,7 @@ import $rdf from 'rdf-ext'
 import loadShacl from '@zazuko/rdf-vocabularies/datasets/sh'
 import loadDash from '@zazuko/rdf-vocabularies/datasets/dash'
 import TermSet from '@rdfjs/term-set'
+import { TRUE } from '../../lib/rdf'
 import { ConstraintComponent } from './ConstraintComponent'
 import { constraintComponents } from './index'
 
@@ -32,7 +33,9 @@ export default function * (shape: GraphPointer): Generator<ConstraintComponent> 
       yield constraintComponent.fromPointers(constraintValues)
     } else {
       for (const constraintValue of constraintValues.toArray()) {
-        yield constraintComponent.fromPointer(constraintValue)
+        if (!TRUE.equals(constraintValue.out(sh.deactivated).term)) {
+          yield constraintComponent.fromPointer(constraintValue)
+        }
       }
     }
   }
