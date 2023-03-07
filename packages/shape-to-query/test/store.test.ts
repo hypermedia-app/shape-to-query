@@ -268,7 +268,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result.toCanonical()).to.eq(expected.toCanonical())
     })
 
-    it.skip('sh:or nested in sh:node', async () => {
+    it('sh:or nested in sh:node', async () => {
       // given
       const shape = await parse`
         <> 
@@ -297,7 +297,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result.toCanonical()).to.eq(expected.toCanonical())
     })
 
-    it.skip('sh:hasValue filters entire focus nodes', async () => { // given
+    it('sh:hasValue filters entire focus nodes', async () => { // given
       const shape = await parse`
         <> 
           ${sh.property} [ 
