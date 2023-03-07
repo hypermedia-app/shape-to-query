@@ -1,12 +1,14 @@
 import { GraphPointer } from 'clownface'
 import { SparqlTemplateResult, sparql } from '@tpluscode/sparql-builder'
 import { UNION } from '@tpluscode/sparql-builder/expressions'
+import { sh } from '@tpluscode/rdf-ns-builders'
 import { NodeShape } from '../NodeShape'
 import { fromNode } from '../fromNode'
 import { ConstraintComponent, Parameters } from './ConstraintComponent'
 
-export class OrConstraintComponent implements ConstraintComponent {
+export class OrConstraintComponent extends ConstraintComponent {
   constructor(public readonly inner: ReadonlyArray<NodeShape>) {
+    super(sh.OrConstraintComponent)
   }
 
   static fromPointer(parameter: GraphPointer) {

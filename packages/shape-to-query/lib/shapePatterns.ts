@@ -14,6 +14,10 @@ export const emptyPatterns: ShapePatterns = {
 }
 
 export function flatten(...patterns: ShapePatterns[]): ShapePatterns {
+  if (patterns.every(sp => sp === emptyPatterns)) {
+    return emptyPatterns
+  }
+
   const whereClause = patterns.reduce((prev, next) => sparql`${prev}\n${next.whereClause}`, sparql``)
 
   return {
@@ -28,8 +32,12 @@ function unique(...construct: BaseQuad[][]): BaseQuad[] {
 }
 
 export function union(...patterns: ShapePatterns[]): ShapePatterns {
+  if (patterns.length === 0) {
+    return emptyPatterns
+  }
+
   return {
     constructClause: unique(patterns.flatMap(p => p.constructClause)),
-    whereClause: sparql`${UNION(...patterns.map(({ whereClause }) => whereClause))}`,
+    whereClause: sparql`${UNION(...patterns.map(({ whereClause }) => whereClause).filter(Boolean))}`,
   }
 }

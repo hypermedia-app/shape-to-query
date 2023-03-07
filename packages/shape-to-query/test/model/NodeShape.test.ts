@@ -4,6 +4,8 @@ import $rdf from 'rdf-ext'
 import { foaf, rdf } from '@tpluscode/rdf-ns-builders'
 import NodeShape from '../../model/NodeShape'
 import { createVariableSequence } from '../../lib/variableSequence'
+import { PropertyShape } from '../../model/PropertyShape'
+import { OrConstraintComponent } from '../../model/constraint/or'
 
 describe('model/NodeShape', () => {
   before(() => import('../sparql'))
@@ -89,7 +91,7 @@ describe('model/NodeShape', () => {
   describe('properties', () => {
     it('unions all where properties', () => {
       // given
-      const properties = [{
+      const properties: PropertyShape[] = [{
         buildConstraints: () => '',
         buildPatterns: () => ({
           constructClause: [],
@@ -118,6 +120,22 @@ describe('model/NodeShape', () => {
   })
 
   describe('constraints', () => {
-    it('')
+    describe('sh:or', () => {
+      it('skips alternatives with no properties', () => {
+        // given
+        const or = new OrConstraintComponent([
+          new NodeShape([], [], []),
+          new NodeShape([], [], []),
+        ])
+        const shape = new NodeShape([], [], [or])
+
+        // when
+        const focusNode = $rdf.namedNode('f')
+        const { whereClause } = shape.buildPatterns({ focusNode, variable })
+
+        // then
+        expect(whereClause).to.equalPatterns('')
+      })
+    })
   })
 })
