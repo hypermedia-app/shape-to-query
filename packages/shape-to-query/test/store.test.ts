@@ -320,5 +320,31 @@ describe('@hydrofoil/shape-to-query', () => {
       `
       expect(result.toCanonical()).to.eq(expected.toCanonical())
     })
+
+    it('filtering property by sh:in', async () => {
+      const shape = await parse`
+        <> 
+          ${sh.property} [ 
+            ${sh.path} ${schema.givenName} ;
+          ], [ 
+            ${sh.path} ${schema.jobTitle} ;
+            ${sh.in} ( "theoretical physicist" "neurobiologist" "microbiologist" ) ;
+          ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${tbbt('amy-farrah-fowler')} ${schema.givenName} "Amy" ;
+                                             ${schema.jobTitle} "neurobiologist" .
+        ${tbbt('sheldon-cooper')} ${schema.givenName} "Sheldon" ;
+                                          ${schema.jobTitle} "theoretical physicist" .
+        ${tbbt('bernadette-rostenkowski')} ${schema.givenName} "Bernadette" ;
+                                                   ${schema.jobTitle} "microbiologist" .
+      `
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
+    })
   })
 })
