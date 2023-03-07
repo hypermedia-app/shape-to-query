@@ -1,13 +1,14 @@
 import { GraphPointer } from 'clownface'
 import { fromNode, ShaclPropertyPath, toSparql } from 'clownface-shacl-path'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import { ShapePatterns, union } from '../lib/shapePatterns'
+import { flatten, ShapePatterns, union } from '../lib/shapePatterns'
 import { FocusNode } from '../lib/FocusNode'
 import { VariableSequence } from '../lib/variableSequence'
 import PathVisitor from '../lib/PathVisitor'
 import { Rule } from './Rule'
 import { ConstraintComponent } from './constraint/ConstraintComponent'
 import { NodeConstraintComponent } from './constraint/node'
+import { OrConstraintComponent } from './constraint/or'
 
 interface Components {
   rules?: Rule[]
@@ -22,7 +23,7 @@ interface Parameters {
 
 export interface PropertyShape {
   buildPatterns(arg: Parameters): ShapePatterns
-  buildConstraints(arg: Parameters): SparqlTemplateResult
+  buildConstraints(arg: Parameters): string | SparqlTemplateResult
 }
 
 export default class implements PropertyShape {
@@ -54,6 +55,13 @@ export default class implements PropertyShape {
       })
     }
 
+    const logical = union(
+      ...this.constraints
+        .filter((l): l is OrConstraintComponent => l instanceof OrConstraintComponent)
+        .flatMap(l => l.inner.map(i => i.buildPatterns({ focusNode: pathEnd, variable }))),
+    )
+    patterns = flatten(patterns, logical)
+
     const deepPatterns = this.constraints
       .filter((c): c is NodeConstraintComponent => c instanceof NodeConstraintComponent)
       .map((nodeConstraint): ShapePatterns => {
@@ -75,9 +83,9 @@ export default class implements PropertyShape {
     return patterns
   }
 
-  buildConstraints({ focusNode, variable }: Parameters): SparqlTemplateResult {
+  buildConstraints({ focusNode, variable }: Parameters): string | SparqlTemplateResult {
     if (!this.constraints.length) {
-      return sparql``
+      return ''
     }
 
     const valueNode = variable()
@@ -88,7 +96,11 @@ export default class implements PropertyShape {
       valueNode,
       propertyPath,
       variable,
-    }))
+    })).filter(Boolean)
+
+    if (constraints.length === 0) {
+      return ''
+    }
 
     return sparql`
       ${focusNode} ${propertyPath} ${valueNode} .

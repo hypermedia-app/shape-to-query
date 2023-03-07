@@ -1,53 +1,38 @@
 import { expect } from 'chai'
-import $rdf from 'rdf-ext'
-import { rdf, sh } from '@tpluscode/rdf-ns-builders'
-import { sparql } from '@tpluscode/sparql-builder'
+import { sh } from '@tpluscode/rdf-ns-builders'
 import { GraphPointer } from 'clownface'
 import { AndConstraintComponent } from '../../../model/constraint/and'
-import { createVariableSequence } from '../../../lib/variableSequence'
 import { parse } from '../../nodeFactory'
+import { NodeShape } from '../../../model/NodeShape'
+import { emptyPatterns } from '../../../lib/shapePatterns'
 
 describe('model/constraint/and', () => {
   before(() => import('../../sparql'))
 
-  const variable = createVariableSequence('o')
-
   it('combines all inner constraints where', () => {
     // given
-    const foo = {
-      buildPatterns: ({ focusNode }) => ({
-        constructClause: [$rdf.quad(focusNode, rdf.type, $rdf.namedNode('Foo'))],
-        whereClause: 'foo constraint',
-      }),
+    const foo: NodeShape = {
+      buildConstraints: () => 'foo constraint',
+      buildPatterns: () => emptyPatterns,
     }
     const bar = {
-      buildPatterns: ({ focusNode }) => ({
-        constructClause: [$rdf.quad(focusNode, rdf.type, $rdf.namedNode('Bar'))],
-        whereClause: 'bar constraint',
-      }),
+      buildConstraints: () => 'bar constraint',
+      buildPatterns: () => emptyPatterns,
     }
     const baz = {
-      buildPatterns: ({ focusNode }) => ({
-        constructClause: [$rdf.quad(focusNode, rdf.type, $rdf.namedNode('Baz'))],
-        whereClause: 'baz constraint',
-      }),
+      buildConstraints: () => 'baz constraint',
+      buildPatterns: () => emptyPatterns,
     }
     const constraint = new AndConstraintComponent([foo, bar, baz])
 
     // when
-    const focusNode = $rdf.variable('this')
-    const { whereClause, constructClause } = constraint.buildPatterns({ focusNode, variable })
+    const whereClause = constraint.buildPatterns(<any>{})
 
     // then
     expect(whereClause).to.equalPatterns(`
       foo constraint
       bar constraint
       baz constraint
-    `)
-    expect(sparql`${constructClause}`).to.equalPatterns(`
-      ?this rdf:type <Foo> .
-      ?this rdf:type <Bar> .
-      ?this rdf:type <Baz> .
     `)
   })
 

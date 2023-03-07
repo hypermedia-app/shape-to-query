@@ -61,4 +61,19 @@ describe('model/PropertyShape', () => {
       }`)
     })
   })
+
+  describe('buildConstraints', () => {
+    it('returns empty string when property has no constraints', () => {
+      // given
+      const path = namedNode(schema.knows)
+      const shape = new PropertyShape(path)
+
+      // when
+      const focusNode = $rdf.variable('this')
+      const constraints = shape.buildConstraints({ focusNode, variable })
+
+      // then
+      expect(constraints).to.eq('')
+    })
+  })
 })

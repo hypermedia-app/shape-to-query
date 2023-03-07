@@ -90,11 +90,13 @@ describe('model/NodeShape', () => {
     it('unions all where properties', () => {
       // given
       const properties = [{
+        buildConstraints: () => '',
         buildPatterns: () => ({
           constructClause: [],
           whereClause: 'foo bar baz',
         }),
       }, {
+        buildConstraints: () => '',
         buildPatterns: () => ({
           constructClause: [],
           whereClause: 'A B C',
@@ -113,5 +115,9 @@ describe('model/NodeShape', () => {
         A B C
       }`)
     })
+  })
+
+  describe('constraints', () => {
+    it('')
   })
 })

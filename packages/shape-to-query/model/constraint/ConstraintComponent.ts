@@ -11,5 +11,5 @@ export interface Parameters {
 }
 
 export interface ConstraintComponent {
-  buildPatterns(arg: Parameters): SparqlTemplateResult | SparqlTemplateResult[]
+  buildPatterns(arg: Parameters): string | SparqlTemplateResult | SparqlTemplateResult[]
 }
