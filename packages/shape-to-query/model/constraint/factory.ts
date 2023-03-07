@@ -41,16 +41,14 @@ export default function * (shape: GraphPointer): Generator<ConstraintComponent> 
   }
 }
 
+let dataset: DatasetCore
+
 function loadComponentsGraph() {
-  let dataset: DatasetCore
+  if (!dataset) {
+    dataset = $rdf.dataset()
+      .addAll(loadShacl($rdf))
+      .addAll(loadDash($rdf))
+  }
 
-  return (() => {
-    if (!dataset) {
-      dataset = $rdf.dataset()
-        .addAll(loadShacl($rdf))
-        .addAll(loadDash($rdf))
-    }
-
-    return clownface({ dataset })
-  })()
+  return clownface({ dataset })
 }
