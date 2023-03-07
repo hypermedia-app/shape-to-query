@@ -346,5 +346,47 @@ describe('@hydrofoil/shape-to-query', () => {
       `
       expect(result.toCanonical()).to.eq(expected.toCanonical())
     })
+
+    it('filtering deep inside sh:node', async () => {
+      const shape = await parse`
+        <> 
+          ${sh.targetClass} ${schema.Person} ;
+          ${sh.property}
+            [
+              ${sh.path} ${schema.givenName} ;
+            ],
+            [
+              ${sh.path} [ 
+                ${sh.alternativePath} ( ${schema.knows} ${schema.parent} )
+              ] ;
+              ${sh.node}
+                [
+                  ${sh.property}
+                    [
+                      ${sh.path} ${schema.address} ;
+                      ${sh.node}
+                        [
+                          ${sh.property}
+                            [
+                              ${sh.path} ${schema.addressRegion} ;
+                              ${sh.hasValue} "TX" ;
+                            ]
+                        ]
+                    ]
+                ]
+            ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+      const filtered = result.match(null, schema.givenName)
+
+      // then
+      const expected = await raw`
+        ${tbbt('leonard-hofstadter')} ${schema.givenName} "Leonard" .
+        ${tbbt('sheldon-cooper')} ${schema.givenName} "Sheldon" .
+      `
+      expect(filtered.toCanonical()).to.eq(expected.toCanonical())
+    })
   })
 })
