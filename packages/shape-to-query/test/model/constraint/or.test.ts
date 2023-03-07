@@ -34,4 +34,31 @@ describe('model/constraint/or', () => {
       baz constraint
     }`)
   })
+
+  it('skips constraints which returned empty', () => {
+    // given
+    const foo: NodeShape = {
+      buildConstraints: () => 'foo constraint',
+      buildPatterns: () => emptyPatterns,
+    }
+    const bar = {
+      buildConstraints: () => '',
+      buildPatterns: () => emptyPatterns,
+    }
+    const baz = {
+      buildConstraints: () => 'baz constraint',
+      buildPatterns: () => emptyPatterns,
+    }
+    const constraint = new OrConstraintComponent([foo, bar, baz])
+
+    // when
+    const whereClause = constraint.buildPatterns(<any>{})
+
+    // then
+    expect(whereClause).to.equalPatterns(`{
+      foo constraint
+    } UNION {
+      baz constraint
+    }`)
+  })
 })
