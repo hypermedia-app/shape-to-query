@@ -87,7 +87,12 @@ When there are multiple target nodes, a variable is used for the root focus node
 
 ### Logical Constraint Components ### {#shacl-logical-constraints}
 
+The elements of a `sh:or` list are shapes and thus, they can be used both to define alternative paths to construct in the constructed graph, 
+or add filters to filter out according to the shapes' constraints.
+
 #### sh:or #### {#shacl-or}
+
+Note: Base spec: [[shacl#OrConstraintComponent]]
 
 <div class="example">
   Get `schema:givenName` and `schema:familyName` but only of those resources which have either `schema:parent` or `schema:children` properties

@@ -1,8 +1,5 @@
 import { expect } from 'chai'
-import { sh } from '@tpluscode/rdf-ns-builders'
-import { GraphPointer } from 'clownface'
 import { AndConstraintComponent } from '../../../model/constraint/and'
-import { parse } from '../../nodeFactory'
 import { NodeShape } from '../../../model/NodeShape'
 import { emptyPatterns } from '../../../lib/shapePatterns'
 
@@ -34,20 +31,5 @@ describe('model/constraint/and', () => {
       bar constraint
       baz constraint
     `)
-  })
-
-  describe('fromPointer', () => {
-    it('throws when parameter is not a list', async () => {
-      // given
-      const shape = await parse`
-        <> ${sh.or} [] .
-      `
-
-      // then
-      expect(() => {
-        // when
-        AndConstraintComponent.fromPointer(<GraphPointer>shape.out(sh.or))
-      }).to.throw
-    })
   })
 })
