@@ -18,7 +18,11 @@ interface ConstraintComponentFromPointers {
   fromPointers(parameter: MultiPointer): ConstraintComponent
 }
 
-type ConstraintComponentStatic = ConstraintComponentFromPointer | ConstraintComponentFromPointers
+interface ConstraintComponentFromList {
+  fromList(parameter: GraphPointer[]): ConstraintComponent
+}
+
+type ConstraintComponentStatic = ConstraintComponentFromPointer | ConstraintComponentFromPointers | ConstraintComponentFromList
 
 export const constraintComponents = new TermMap<Term, ConstraintComponentStatic>([
   [sh.AndConstraintComponent, AndConstraintComponent],

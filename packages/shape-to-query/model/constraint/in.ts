@@ -6,8 +6,8 @@ import { sh } from '@tpluscode/rdf-ns-builders'
 import { ConstraintComponent, Parameters } from './ConstraintComponent'
 
 export class InConstraintComponent extends ConstraintComponent {
-  static fromPointer(pointer: GraphPointer) {
-    return new InConstraintComponent([...pointer.list()!].map(({ term }) => term))
+  static fromList(pointers: GraphPointer[]) {
+    return new InConstraintComponent(pointers.map(({ term }) => term))
   }
 
   constructor(public values: Term[]) {

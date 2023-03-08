@@ -6,6 +6,7 @@ import $rdf from 'rdf-ext'
 import loadShacl from '@zazuko/rdf-vocabularies/datasets/sh'
 import loadDash from '@zazuko/rdf-vocabularies/datasets/dash'
 import TermSet from '@rdfjs/term-set'
+import { sparql } from '@tpluscode/sparql-builder'
 import { TRUE } from '../../lib/rdf'
 import { ConstraintComponent } from './ConstraintComponent'
 import { constraintComponents } from './index'
@@ -31,12 +32,22 @@ export default function * (shape: GraphPointer): Generator<ConstraintComponent> 
     const constraintValues = shape.out(parameter)
     if ('fromPointers' in constraintComponent) {
       yield constraintComponent.fromPointers(constraintValues)
-    } else {
-      for (const constraintValue of constraintValues.toArray()) {
-        if (!TRUE.equals(constraintValue.out(sh.deactivated).term)) {
-          yield constraintComponent.fromPointer(constraintValue)
-        }
+      continue
+    }
+    for (const constraintValue of constraintValues.toArray()) {
+      if (TRUE.equals(constraintValue.out(sh.deactivated).term)) {
+        continue
       }
+
+      if ('fromList' in constraintComponent) {
+        if (!constraintValue.isList()) {
+          throw new Error(sparql`Object of ${parameter} must be an RDF list`.toString({ prologue: false }))
+        }
+        const list = constraintValue.list()
+        yield constraintComponent.fromList([...list])
+        continue
+      }
+      yield constraintComponent.fromPointer(constraintValue)
     }
   }
 }
