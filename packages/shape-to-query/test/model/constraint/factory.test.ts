@@ -19,4 +19,16 @@ describe('model/constraint/factory', () => {
     // then
     expect(constraints).to.be.empty
   })
+
+  it('throws when a "fromList" constraint would be initialised from a non-list', async () => {
+    // given
+    const shape = await parse`
+      <>
+        ${sh.in} "not a list" ;
+      .
+    `
+
+    // then
+    expect(() => /* when */ createConstraints(shape)).to.throw
+  })
 })
