@@ -39,7 +39,7 @@ let shape: GraphPointer
 const queryString = constructQuery(shape).build()
 ```
 
-## About examples below
+## About examples below ## {#about-examples}
 
 All the examples shown in this documentation are based on a toy dataset [tbbt-ld](https://npm.im/tbbt-ld) which contains resources
 describing characters from the TV series The Big Bang Theory. To look nicer, the `localhost` URLs have been replaced with 
@@ -167,7 +167,7 @@ Advisement: `sh:hasValue` is not currently supported as property of the root nod
 
 Note: SHACL spec: [[shacl#InConstraintComponent]]
 
-Similar to [[#has-value]] but filters focus nodes whose property has values from the given set and no others.
+Similar to [[#shacl-has-value]] but filters focus nodes whose property has values from the given set and no others.
 
 <div class="example">
   Get `schema:givenName` and `schema:familyName` but only of those resources who know Sheldon Cooper or Stuart Bloom
