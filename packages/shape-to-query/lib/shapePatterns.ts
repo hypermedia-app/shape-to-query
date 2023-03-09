@@ -13,18 +13,31 @@ export const emptyPatterns: ShapePatterns = {
   constructClause: [],
 }
 
-export function merge(left: ShapePatterns, right: ShapePatterns): ShapePatterns {
+export function flatten(...patterns: ShapePatterns[]): ShapePatterns {
+  if (patterns.every(sp => sp === emptyPatterns)) {
+    return emptyPatterns
+  }
+
+  const whereClause = patterns.reduce((prev, next) => sparql`${prev}\n${next.whereClause}`, sparql``)
+
   return {
-    whereClause: sparql`${left.whereClause}\n${right.whereClause}`,
-    constructClause: [...left.constructClause, ...right.constructClause],
+    whereClause,
+    constructClause: unique(patterns.flatMap(p => p.constructClause)),
   }
 }
 
-export function unique(...construct: BaseQuad[][]): BaseQuad[] {
+function unique(...construct: BaseQuad[][]): BaseQuad[] {
   const set = new TermSet<BaseQuad>(construct.flatMap(arr => arr))
   return [...set]
 }
 
-export function toUnion(propertyPatterns: ShapePatterns[]): SparqlTemplateResult {
-  return sparql`${UNION(...propertyPatterns.map(({ whereClause }) => whereClause))}`
+export function union(...patterns: ShapePatterns[]): ShapePatterns {
+  if (patterns.length === 0) {
+    return emptyPatterns
+  }
+
+  return {
+    constructClause: unique(patterns.flatMap(p => p.constructClause)),
+    whereClause: sparql`${UNION(...patterns.map(({ whereClause }) => whereClause).filter(Boolean))}`,
+  }
 }

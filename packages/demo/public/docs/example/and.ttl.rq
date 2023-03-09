@@ -1,0 +1,13 @@
+PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource1 schema:knows ?resource2.
+  ?resource1 schema:jobTitle ?resource3.
+}
+WHERE {
+  ?resource1 schema:knows ?resource2;
+    schema:jobTitle ?resource3;
+    schema:knows ?resource5.
+  FILTER(EXISTS { ?resource1 schema:knows <https://tbbt.tv/sheldon-cooper>. })
+  ?resource1 schema:jobTitle ?resource6.
+  FILTER(EXISTS { ?resource1 schema:jobTitle "microbiologist". })
+}

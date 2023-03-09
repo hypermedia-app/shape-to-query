@@ -39,13 +39,21 @@ let shape: GraphPointer
 const queryString = constructQuery(shape).build()
 ```
 
+## About examples below ## {#about-examples}
+
+All the examples shown in this documentation are based on a toy dataset [tbbt-ld](https://npm.im/tbbt-ld) which contains resources
+describing characters from the TV series The Big Bang Theory. To look nicer, the `localhost` URLs have been replaced with 
+fictitious a `tbbt.tv` domain.
+
 # SHACL Constraints # {#shacl-constraints}
+
+Issue(42): Issue epic on GitHub
 
 ## Targets ## {#target}
 
 ### Node targets (`sh:targetNode`) ### {#target-node}
 
-Note: Base spec: [[shacl#targetNode]]
+Note: SHACL spec: [[shacl#targetNode]]
 
 A single `sh:targetNode` becomes the root subject, directly in the generated triple patterns
 
@@ -81,6 +89,103 @@ When there are multiple target nodes, a variable is used for the root focus node
   </s2q-snippet>
 </div>
 
+## Core Constraint Components ## {#shacl-core-components}
+
+### Logical Constraint Components ### {#shacl-logical-constraints}
+
+The elements of a `sh:or` list are shapes and thus, they can be used both to define alternative paths to construct in the constructed graph, 
+or add filters to filter out according to the shapes' constraints.
+
+#### sh:and #### {#shacl-and}
+
+Note: SHACL spec: [[shacl#AndConstraintComponent]]
+
+Combines all paths and constraints from the list of shapes.
+
+<div class="example">
+  Filter characters who know Sheldon Cooper and are a microbiologist 
+
+  <s2q-snippet>
+    <pre class="include-code">
+    path: example/and.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code">
+    path: example/and.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+#### sh:or #### {#shacl-or}
+
+Note: SHACL spec: [[shacl#OrConstraintComponent]]
+
+<div class="example">
+  Get `schema:givenName` and `schema:familyName` but only of those resources which have either `schema:parent` or `schema:children` properties
+
+  <s2q-snippet>
+    <pre class="include-code">
+    path: example/or.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code">
+    path: example/or.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+Issue: Add example of `sh:or` used in `sh:property` when more useful constraints are implemented 
+
+### Other Constraint Components ### {#shacl-other-components}
+
+#### sh:hasValue #### {#shacl-has-value}
+
+Note: SHACL spec: [[shacl#HasValueConstraintComponent]]
+
+Filters nodes whose property has the exact set of objects
+
+<div class="example">
+  Get `schema:givenName` and `schema:familyName` but only of those resources who know both Sheldon Cooper and Stuart Bloom
+
+  <s2q-snippet>
+    <pre class="include-code">
+    path: example/has-value.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code">
+    path: example/has-value.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+Advisement: `sh:hasValue` is not currently supported as property of the root node shape and will be ignored in such case
+
+#### sh:in #### {#shacl-in}
+
+Note: SHACL spec: [[shacl#InConstraintComponent]]
+
+Similar to [[#shacl-has-value]] but filters focus nodes whose property has values from the given set and no others.
+
+<div class="example">
+  Get `schema:givenName` and `schema:familyName` but only of those resources who know Sheldon Cooper or Stuart Bloom
+
+  <s2q-snippet>
+    <pre class="include-code">
+    path: example/in.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code">
+    path: example/in.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+Advisement: `sh:in` is not currently supported as property of the root node shape and will be ignored in such case
+
 # SHACL Advanced Features # {#shacl-advanced}
 
 Advisement: This section uses the currently published [[!shacl-af|SHACL Advanced Features]] spec as well as parts of the [Community Group Draft](https://w3c.github.io/shacl/shacl-af). The implementation may become outdated in time or deviate from the spec to accommodate for the specifics of generating queries.
@@ -96,6 +201,8 @@ Note: Because the result must be a triple patterns where the node expression's o
 Issue(20): Multiple objects of `sh:values` should form a `UNION`
 
 ### Focus node expression ### {#shacl-focus-node-expressions}
+
+Note: SHACL-AF spec: [[shacl-af#node-expressions-focus]]
 
 The object of the property at `sh:path` is the current focus node
 
@@ -120,6 +227,8 @@ The object of the property at `sh:path` is the current focus node
 Issue: the example above is quite nonsensical, just shows the mechanics of `sh:this`. Would be nice to come up with something more pragmatic
 
 ### Constant term expression ### {#shacl-constant-term-expressions}
+
+Note: SHACL-AF spec: [[shacl-af#node-expressions-constant]]
 
 The objects of `sh:values` become directly asserted as the objects of the property.
 

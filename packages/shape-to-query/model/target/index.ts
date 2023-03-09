@@ -1,0 +1,5 @@
+export { Target } from './Target'
+export { TargetClass } from './TargetClass'
+export { TargetNode } from './TargetNode'
+export { TargetSubjectsOf } from './TargetSubjectsOf'
+export { TargetObjectsOf } from './TargetObjectsOf'

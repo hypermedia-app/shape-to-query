@@ -1,0 +1,24 @@
+PREFIX schema: <http://schema.org/>
+PREFIX tbbt: <https://tbbt.tv/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+[
+  a sh:NodeShape ;
+  sh:and
+    (
+      [
+        sh:property
+          [
+            sh:path schema:knows ;
+            sh:hasValue tbbt:sheldon-cooper ;
+          ]
+      ]
+      [
+        sh:property
+          [
+            sh:path schema:jobTitle ;
+            sh:hasValue "microbiologist" ;
+          ]
+      ]
+    )
+] .

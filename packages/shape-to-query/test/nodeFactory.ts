@@ -1,4 +1,4 @@
-import { BlankNode, DatasetCore, NamedNode } from 'rdf-js'
+import { BlankNode, DatasetCore, Literal, NamedNode } from 'rdf-js'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import DatasetExt from 'rdf-ext/lib/Dataset'
 import $rdf from 'rdf-ext'
@@ -13,6 +13,10 @@ export function namedNode<Iri extends string = string>(term: Iri | NamedNode<Iri
 
 export function blankNode(label?: string): GraphPointer<BlankNode, DatasetExt> {
   return clownface({ dataset: $rdf.dataset() }).blankNode(label)
+}
+
+export function literal(value: string, dtOrLang?: string | NamedNode): GraphPointer<Literal, DatasetExt> {
+  return clownface({ dataset: $rdf.dataset() }).literal(value, dtOrLang)
 }
 
 export async function parse(...[strings, ...values]: Parameters<typeof turtle>): Promise<GraphPointer<NamedNode, DatasetExt>> {

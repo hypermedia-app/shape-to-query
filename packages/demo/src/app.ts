@@ -12,6 +12,10 @@ import { RdfEditor } from '@rdfjs-elements/rdf-editor/src/RdfEditor.js'
 import { SlInput } from '@shoelace-style/shoelace'
 import { isGraphPointer } from 'is-graph-pointer'
 import { turtle } from '@tpluscode/rdf-string'
+import sparql from 'sparqljs'
+
+const parser = new sparql.Parser()
+const generator = new sparql.Generator()
 
 const initialShape = turtle`[
   a ${sh.NodeShape} ;
@@ -64,12 +68,14 @@ export class App extends LitElement {
       return
     }
 
-    if (this.focusNode.value) {
-      this.query = constructQuery(this.shape, {
+    const query = this.focusNode.value
+      ? constructQuery(this.shape, {
         focusNode: $rdf.namedNode(this.focusNode.value),
-      }).build()
-    } else {
-      this.query = constructQuery(this.shape).build()
-    }
+      })
+      : constructQuery(this.shape)
+
+    const generated = query.build()
+    const parsed = parser.parse(generated)
+    this.query = generator.stringify(parsed)
   }
 }

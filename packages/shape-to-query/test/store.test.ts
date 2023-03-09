@@ -237,5 +237,156 @@ describe('@hydrofoil/shape-to-query', () => {
       `
       expect(result.toCanonical).to.eq(expected.toCanonical)
     })
+
+    it('sh:or merges multiple reused shapes in logical sum', async () => {
+      // given
+      const shape = await parse`
+        <> 
+          ${sh.or} ( _:blank <named> ) ;
+          ${sh.property} [ ${sh.path} ${schema.givenName} ] ;
+          ${sh.property}  [ ${sh.path} ${schema.familyName} ] .
+        
+        <named>
+          ${sh.property} [ ${sh.path} ${schema.parent} ] .
+        
+        _:blank
+          ${sh.property} [ ${sh.path} ${schema.children} ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${tbbt('sheldon-cooper')} ${schema.parent} ${tbbt('mary-cooper')} ;
+                                          ${schema.givenName} "Sheldon" ;
+                                          ${schema.familyName} "Cooper" .
+        ${tbbt('mary-cooper')} ${schema.children} ${tbbt('sheldon-cooper')} ;
+                                       ${schema.givenName} "Mary" ;
+                                       ${schema.familyName} "Cooper" .
+      `
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
+    })
+
+    it('sh:or nested in sh:node', async () => {
+      // given
+      const shape = await parse`
+        <> 
+          ${sh.property} [ 
+            ${sh.path} ${schema.familyName} ;
+            ${sh.or} (
+              [ 
+                ${sh.hasValue} "Cooper" ; 
+              ] 
+              [ 
+                ${sh.hasValue} "Bloom" ; 
+              ]
+            ) ;
+          ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${tbbt('sheldon-cooper')} ${schema.familyName} "Cooper" .
+        ${tbbt('mary-cooper')} ${schema.familyName} "Cooper" .
+        ${tbbt('stuart-bloom')} ${schema.familyName} "Bloom" .
+      `
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
+    })
+
+    it('sh:hasValue filters entire focus nodes', async () => { // given
+      const shape = await parse`
+        <> 
+          ${sh.property} [ 
+            ${sh.path} ${schema.givenName} ;
+          ], [ 
+            ${sh.path} ${schema.familyName} ;
+            ${sh.hasValue} "Cooper" ;
+          ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${tbbt('sheldon-cooper')} ${schema.givenName} "Sheldon" ;
+                                          ${schema.familyName} "Cooper" .
+        ${tbbt('mary-cooper')} ${schema.givenName} "Mary" ;
+                                       ${schema.familyName} "Cooper" .
+      `
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
+    })
+
+    it('filtering property by sh:in', async () => {
+      const shape = await parse`
+        <> 
+          ${sh.property} [ 
+            ${sh.path} ${schema.givenName} ;
+          ], [ 
+            ${sh.path} ${schema.jobTitle} ;
+            ${sh.in} ( "theoretical physicist" "neurobiologist" "microbiologist" ) ;
+          ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${tbbt('amy-farrah-fowler')} ${schema.givenName} "Amy" ;
+                                             ${schema.jobTitle} "neurobiologist" .
+        ${tbbt('sheldon-cooper')} ${schema.givenName} "Sheldon" ;
+                                          ${schema.jobTitle} "theoretical physicist" .
+        ${tbbt('bernadette-rostenkowski')} ${schema.givenName} "Bernadette" ;
+                                                   ${schema.jobTitle} "microbiologist" .
+      `
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
+    })
+
+    it('filtering deep inside sh:node', async () => {
+      const shape = await parse`
+        <> 
+          ${sh.targetClass} ${schema.Person} ;
+          ${sh.property}
+            [
+              ${sh.path} ${schema.givenName} ;
+            ],
+            [
+              ${sh.path} [ 
+                ${sh.alternativePath} ( ${schema.knows} ${schema.parent} )
+              ] ;
+              ${sh.node}
+                [
+                  ${sh.property}
+                    [
+                      ${sh.path} ${schema.address} ;
+                      ${sh.node}
+                        [
+                          ${sh.property}
+                            [
+                              ${sh.path} ${schema.addressRegion} ;
+                              ${sh.hasValue} "TX" ;
+                            ]
+                        ]
+                    ]
+                ]
+            ] .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+      const filtered = result.match(null, schema.givenName)
+
+      // then
+      const expected = await raw`
+        ${tbbt('leonard-hofstadter')} ${schema.givenName} "Leonard" .
+        ${tbbt('sheldon-cooper')} ${schema.givenName} "Sheldon" .
+      `
+      expect(filtered.toCanonical()).to.eq(expected.toCanonical())
+    })
   })
 })
