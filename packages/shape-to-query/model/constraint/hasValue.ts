@@ -13,7 +13,11 @@ export class HasValueConstraintComponent extends ConstraintComponent {
     return new HasValueConstraintComponent(pointer.terms)
   }
 
-  buildPatterns({ focusNode, propertyPath }: Parameters): SparqlTemplateResult {
+  buildPatterns({ focusNode, propertyPath }: Parameters): string | SparqlTemplateResult {
+    if (!propertyPath) {
+      return ''
+    }
+
     return sparql`FILTER EXISTS {
       ${focusNode} ${propertyPath} ${objectList(this.terms)}
     }`

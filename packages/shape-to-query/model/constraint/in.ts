@@ -14,7 +14,11 @@ export class InConstraintComponent extends ConstraintComponent {
     super(sh.InConstraintComponent)
   }
 
-  buildPatterns({ valueNode }: Parameters): SparqlTemplateResult {
+  buildPatterns({ valueNode, propertyPath }: Parameters): string | SparqlTemplateResult {
+    if (!propertyPath) {
+      return ''
+    }
+
     return sparql`FILTER (${valueNode} ${IN(...this.values)})`
   }
 }

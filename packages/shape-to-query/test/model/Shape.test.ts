@@ -5,6 +5,8 @@ import Shape from '../../model/Shape'
 import { emptyPatterns } from '../../lib/shapePatterns'
 import { createVariableSequence } from '../../lib/variableSequence'
 import { ConstraintComponent } from '../../model/constraint/ConstraintComponent'
+import { OrConstraintComponent } from '../../model/constraint/or'
+import { AndConstraintComponent } from '../../model/constraint/and'
 
 describe('lib/model/Shape', () => {
   before(() => import('../sparql'))
@@ -41,6 +43,65 @@ describe('lib/model/Shape', () => {
 
       // then
       expect(constraints).to.eq(emptyPatterns)
+    })
+
+    it('creates a UNION of sh:or-ed shapes', () => {
+      // given
+      const shape = new Shape([
+        new OrConstraintComponent([{
+          buildConstraints: () => '',
+          buildPatterns: () => ({
+            whereClause: 'foo shape',
+            constructClause: [],
+          }),
+        }, {
+          buildConstraints: () => '',
+          buildPatterns: () => ({
+            whereClause: 'bar shape',
+            constructClause: [],
+          }),
+        }]),
+      ])
+
+      // when
+      const focusNode = $rdf.namedNode('this')
+      const { whereClause } = shape.buildLogicalConstraints({ focusNode, variable })
+
+      // then
+      expect(whereClause).to.equalPatterns(`{
+        foo shape
+      } UNION {
+        bar shape
+      }`)
+    })
+
+    it('creates a sum of sh:and-ed shapes', () => {
+      // given
+      const shape = new Shape([
+        new AndConstraintComponent([{
+          buildConstraints: () => '',
+          buildPatterns: () => ({
+            whereClause: 'foo shape',
+            constructClause: [],
+          }),
+        }, {
+          buildConstraints: () => '',
+          buildPatterns: () => ({
+            whereClause: 'bar shape',
+            constructClause: [],
+          }),
+        }]),
+      ])
+
+      // when
+      const focusNode = $rdf.namedNode('this')
+      const { whereClause } = shape.buildLogicalConstraints({ focusNode, variable })
+
+      // then
+      expect(whereClause).to.equalPatterns(`
+        foo shape
+        bar shape
+      `)
     })
   })
 })
