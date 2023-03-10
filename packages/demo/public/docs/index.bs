@@ -51,14 +51,18 @@ Issue(42): Issue epic on GitHub
 
 ## Targets ## {#target}
 
+Targets are used to match specific focus nodes of a given Node Shape. The most common, and natural way is to define
+a target of the root shape. However, targets declared in nested shapes, such as when using [[#shacl-logical-constraints]] or 
+[[#shacl-node]], can also be used to narrow down the query results.
+
 ### Node targets (`sh:targetNode`) ### {#target-node}
 
 Note: SHACL spec: [[shacl#targetNode]]
 
-A single `sh:targetNode` becomes the root subject, directly in the generated triple patterns
+Whether there is one or multiple target nodes, a variable is used for the root focus node and the target nodes are provided as inline data using [[sparql11-query#inline-data|VALUES]] clause.
 
 <div class="example">
-  Single target node
+  Multiple target nodes
 
   <s2q-snippet>
     <pre class="include-code" slot="shape">
@@ -72,18 +76,81 @@ A single `sh:targetNode` becomes the root subject, directly in the generated tri
   </s2q-snippet>
 </div>
 
-When there are multiple target nodes, a variable is used for the root focus node and the target nodes are provided as inline data using [[sparql11-query#inline-data|VALUES]] claues.
+### Class-based Targets (`sh:targetClass`) ### {#target-class}
+
+Note: SHACL spec: [[shacl#targetClass]]
+
+Single target class is directly matched with the focus node
 
 <div class="example">
-  Multiple target nodes
+  Target resources of type `schema:Person`
 
   <s2q-snippet>
     <pre class="include-code" slot="shape">
-    path: example/targetNode-multi.ttl
+    path: example/targetClass.ttl
     highlight: turtle
     </pre>
     <pre class="include-code" slot="query">
-    path: example/targetNode-multi.ttl.rq
+    path: example/targetClass.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+Multiple target classes are rendered as `VALUES`
+
+<div class="example">
+  Target resources of type `schema:Person` **and** `foaf:Person`  
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/targetClass-multi.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/targetClass-multi.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+### Subjects-of targets (`sh:targetSubjectsOf`) ### {#target-subjects-of}
+
+Note: SHACL spec: [[shacl#targetSubjectsOf]]
+
+Targets resources which are the subject of a given predicate
+
+<div class="example">
+  Find resources which are parents
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/targetSubjectsOf.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/targetSubjectsOf.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+### Subjects-of targets (`sh:targetObjectsOf`) ### {#target-objects-of}
+
+Note: SHACL spec: [[shacl#targetObjectsOf]]
+
+Targets resources which are the object of a given predicate
+
+<div class="example">
+  Find resources which are children
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/targetObjectsOf.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/targetObjectsOf.ttl.rq
     highlight: sparql
     </pre>
   </s2q-snippet>

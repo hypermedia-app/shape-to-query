@@ -1,0 +1,9 @@
+PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource2 schema:children ?resource1.
+  ?resource1 schema:name ?resource3.
+}
+WHERE {
+  ?resource2 schema:children ?resource1.
+  ?resource1 schema:name ?resource3.
+}

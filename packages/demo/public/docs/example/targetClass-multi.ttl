@@ -1,10 +1,10 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX schema: <http://schema.org/>
-PREFIX tbbt: <https://tbbt.tv/>
 PREFIX sh: <http://www.w3.org/ns/shacl#>
 
 [
   a sh:NodeShape ;
-  sh:targetNode tbbt:sheldon-cooper, tbbt:penny ;
+  sh:targetClass schema:Person, foaf:Person ;
   sh:property
     [
       sh:path schema:name ;
