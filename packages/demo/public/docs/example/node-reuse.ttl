@@ -1,0 +1,25 @@
+PREFIX schema: <http://schema.org/>
+PREFIX tbbt: <https://tbbt.tv/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+[
+  a sh:NodeShape ;
+  sh:node <PersonShape> ;
+  sh:property
+    [
+      sh:path schema:parent ; sh:node <PersonShape> ;
+    ] ,
+    [
+      sh:path schema:children ; sh:node <PersonShape> ;
+    ] ;
+] .
+
+<PersonShape>
+  sh:property
+    [
+      sh:path schema:givenName ;
+    ],
+    [
+      sh:path schema:familyName ;
+    ] ;
+.

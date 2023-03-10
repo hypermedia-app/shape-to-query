@@ -205,6 +205,48 @@ Note: SHACL spec: [[shacl#OrConstraintComponent]]
 
 Issue: Add example of `sh:or` used in `sh:property` when more useful constraints are implemented 
 
+### Shape-based Constraint Components ### {#shacl-shape-based-constraints}
+
+#### sh:node #### {#shacl-node}
+
+When added to a shape, `sh:node` allows to restrict a given value node to another shape. 
+
+The is most commonly use case is describing deep graph structures (as an alternative to complex [[shacl#property-paths|SHACL Property Paths]]).
+
+<div class="example">
+  Find names of the root focus node(s) and objects of their `schema:knows` property
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/node-deep.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/node-deep.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+By reusing a shape, it is also possible to apply it to multiple subgraphs.
+
+<div class="example">
+  Describes the root focus node and objects of `schema:parent` and `schema:children` using the same `PersonShape`  
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/node-reuse.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/node-reuse.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+Issue(99): Support recursive shapes using `sh:node`
+
 ### Other Constraint Components ### {#shacl-other-components}
 
 #### sh:hasValue #### {#shacl-has-value}

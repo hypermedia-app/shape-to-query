@@ -1,0 +1,32 @@
+PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource1 schema:parent ?resource2.
+  ?resource2 schema:givenName ?resource3.
+  ?resource2 schema:familyName ?resource4.
+  ?resource1 schema:children ?resource5.
+  ?resource5 schema:givenName ?resource6.
+  ?resource5 schema:familyName ?resource7.
+}
+WHERE {
+  {
+    { ?resource1 schema:parent ?resource2. }
+    UNION
+    {
+      ?resource1 schema:parent ?resource2.
+      { ?resource2 schema:givenName ?resource3. }
+      UNION
+      { ?resource2 schema:familyName ?resource4. }
+    }
+  }
+  UNION
+  {
+    { ?resource1 schema:children ?resource5. }
+    UNION
+    {
+      ?resource1 schema:children ?resource5.
+      { ?resource5 schema:givenName ?resource6. }
+      UNION
+      { ?resource5 schema:familyName ?resource7. }
+    }
+  }
+}
