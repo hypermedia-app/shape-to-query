@@ -1,3 +1,8 @@
 PREFIX schema: <http://schema.org/>
-CONSTRUCT { <https://tbbt.tv/sheldon-cooper> schema:name ?resource2. }
-WHERE { <https://tbbt.tv/sheldon-cooper> schema:name ?resource2. }
+CONSTRUCT { ?resource1 schema:name ?resource2. }
+WHERE {
+  VALUES ?resource1 {
+    <https://tbbt.tv/sheldon-cooper>
+  }
+  ?resource1 schema:name ?resource2.
+}
