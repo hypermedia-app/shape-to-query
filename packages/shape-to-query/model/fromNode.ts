@@ -1,15 +1,14 @@
 import { Term } from 'rdf-js'
 import { GraphPointer, MultiPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
-import { isGraphPointer, isLiteral, isNamedNode } from 'is-graph-pointer'
+import { isGraphPointer, isNamedNode } from 'is-graph-pointer'
 import TermMap from '@rdfjs/term-map'
 import { TRUE } from '../lib/rdf'
 import NodeShapeImpl, { NodeShape } from './NodeShape'
 import * as target from './target'
 import PropertyShape from './PropertyShape'
 import { PropertyValueRule } from './Rule'
-import { FocusNodeExpression } from './nodeExpression/FocusNodeExpression'
-import { ConstantTermExpression } from './nodeExpression/ConstantTermExpression'
+import { fromNode as nodeExpression } from './nodeExpression'
 import createConstraints from './constraint/factory'
 
 function nodeShape(pointer: GraphPointer): NodeShape {
@@ -66,18 +65,6 @@ function propertyRule(path: GraphPointer) {
 
     return new PropertyValueRule(path.term, nodeExpression(expression))
   }
-}
-
-export function nodeExpression(pointer: GraphPointer) {
-  if (pointer.term.equals(sh.this)) {
-    return new FocusNodeExpression()
-  }
-
-  if (isLiteral(pointer) || isNamedNode(pointer)) {
-    return new ConstantTermExpression(pointer.term)
-  }
-
-  throw new Error('Unsupported node expression')
 }
 
 export { nodeShape as fromNode }
