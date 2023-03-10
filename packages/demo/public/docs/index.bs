@@ -11,7 +11,7 @@ URL: https://shape-to-query.hypermedia.app/docs
 </pre>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.1.0/dist/themes/light.css" />
-<script type="module" src="./lib/s2q-snippet.js" async defer>
+<script type="module" src="./lib/s2q-snippet.js">
 </script>
 
 # Introduction # {#introduction}
@@ -61,11 +61,11 @@ A single `sh:targetNode` becomes the root subject, directly in the generated tri
   Single target node
 
   <s2q-snippet>
-    <pre class="include-code">
+    <pre class="include-code" slot="shape">
     path: example/targetNode.ttl
     highlight: turtle
     </pre>
-    <pre class="include-code">
+    <pre class="include-code" slot="query">
     path: example/targetNode.ttl.rq
     highlight: sparql
     </pre>
@@ -78,11 +78,11 @@ When there are multiple target nodes, a variable is used for the root focus node
   Multiple target nodes
 
   <s2q-snippet>
-    <pre class="include-code">
+    <pre class="include-code" slot="shape">
     path: example/targetNode-multi.ttl
     highlight: turtle
     </pre>
-    <pre class="include-code">
+    <pre class="include-code" slot="query">
     path: example/targetNode-multi.ttl.rq
     highlight: sparql
     </pre>
@@ -106,11 +106,11 @@ Combines all paths and constraints from the list of shapes.
   Filter characters who know Sheldon Cooper and are a microbiologist 
 
   <s2q-snippet>
-    <pre class="include-code">
+    <pre class="include-code" slot="shape">
     path: example/and.ttl
     highlight: turtle
     </pre>
-    <pre class="include-code">
+    <pre class="include-code" slot="query">
     path: example/and.ttl.rq
     highlight: sparql
     </pre>
@@ -125,11 +125,11 @@ Note: SHACL spec: [[shacl#OrConstraintComponent]]
   Get `schema:givenName` and `schema:familyName` but only of those resources which have either `schema:parent` or `schema:children` properties
 
   <s2q-snippet>
-    <pre class="include-code">
+    <pre class="include-code" slot="shape">
     path: example/or.ttl
     highlight: turtle
     </pre>
-    <pre class="include-code">
+    <pre class="include-code" slot="query">
     path: example/or.ttl.rq
     highlight: sparql
     </pre>
@@ -150,11 +150,11 @@ Filters nodes whose property has the exact set of objects
   Get `schema:givenName` and `schema:familyName` but only of those resources who know both Sheldon Cooper and Stuart Bloom
 
   <s2q-snippet>
-    <pre class="include-code">
+    <pre class="include-code" slot="shape">
     path: example/has-value.ttl
     highlight: turtle
     </pre>
-    <pre class="include-code">
+    <pre class="include-code" slot="query">
     path: example/has-value.ttl.rq
     highlight: sparql
     </pre>
@@ -173,11 +173,11 @@ Similar to [[#shacl-has-value]] but filters focus nodes whose property has value
   Get `schema:givenName` and `schema:familyName` but only of those resources who know Sheldon Cooper or Stuart Bloom
 
   <s2q-snippet>
-    <pre class="include-code">
+    <pre class="include-code" slot="shape">
     path: example/in.ttl
     highlight: turtle
     </pre>
-    <pre class="include-code">
+    <pre class="include-code" slot="query">
     path: example/in.ttl.rq
     highlight: sparql
     </pre>
@@ -211,12 +211,12 @@ The object of the property at `sh:path` is the current focus node
 
   <s2q-snippet>
 
-  <pre class="include-code">
+  <pre class="include-code" slot="shape">
   path: example/values-focus-node.ttl
   highlight: turtle
   </pre>
 
-  <pre class="include-code">
+  <pre class="include-code" slot="query">
   path: example/values-focus-node.ttl.rq
   highlight: sparql
   </pre>
@@ -237,12 +237,12 @@ The objects of `sh:values` become directly asserted as the objects of the proper
 
   <s2q-snippet>
   
-  <pre class="include-code">
+  <pre class="include-code" slot="shape">
   path: example/values-constant.ttl
   highlight: turtle
   </pre>
   
-  <pre class="include-code">
+  <pre class="include-code" slot="query">
   path: example/values-constant.ttl.rq
   highlight: sparql
   </pre>

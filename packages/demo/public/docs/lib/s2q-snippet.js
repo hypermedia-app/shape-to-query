@@ -8,12 +8,8 @@ import { html, LitElement } from 'https://unpkg.com/lit?module'
 setBasePath('https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.1.0/dist/')
 
 customElements.define('s2q-snippet', class extends LitElement {
-  connectedCallback() {
-    const [shape, query] = this.querySelectorAll('pre')
-    shape.slot = 'shape'
-    query.slot = 'query'
-
-    super.connectedCallback()
+  firstUpdated() {
+    this.renderRoot.querySelector('sl-tab-group').show('query')
   }
 
   render() {
