@@ -1,5 +1,18 @@
 # @hydrofoil/shape-to-query
 
+## 0.5.0
+
+### Minor Changes
+
+- 47032e6: This is a big internal refactoring which streamlines the handling of targets and constraints, making the library easily extensible
+
+### Patch Changes
+
+- a956b88: `sh:and` constraint (closes #58)
+- 5066298: Most basic Constant Term Expression
+- 5639825: Focus node expression (closes #22)
+- 3274eca: Added support for `sh:or` constraint
+
 ## 0.4.0
 
 ### Minor Changes
