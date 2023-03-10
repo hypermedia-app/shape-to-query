@@ -1,5 +1,5 @@
 <pre class='metadata'>
-Title: shape-to-query
+Title: @hydrofoil/shape-to-query
 Shortname: s2q
 Editor: Tomasz Pluskiewicz
 Abstract: Library for generating SPARQL from SHACL Shapes
