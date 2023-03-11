@@ -26,6 +26,12 @@ describe('model/nodeExpression/ConstantTermExpression', () => {
     })
   })
 
+  describe('fromPointer', () => {
+    it('throws when pointer is blank node', () => {
+      expect(() => ConstantTermExpression.fromPointer(blankNode())).to.throw()
+    })
+  })
+
   describe('buildPatterns', () => {
     it('binds const as subject', () => {
       // given
