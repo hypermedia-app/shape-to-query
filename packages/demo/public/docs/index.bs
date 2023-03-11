@@ -309,7 +309,7 @@ Note: Because the result must be a triple patterns where the node expression's o
 
 Issue(20): Multiple objects of `sh:values` should form a `UNION`
 
-### Focus node expression ### {#shacl-focus-node-expressions}
+### Focus Node Expression ### {#shacl-focus-node-expressions}
 
 Note: SHACL-AF spec: [[shacl-af#node-expressions-focus]]
 
@@ -335,7 +335,7 @@ The object of the property at `sh:path` is the current focus node
 
 Issue: the example above is quite nonsensical, just shows the mechanics of `sh:this`. Would be nice to come up with something more pragmatic
 
-### Constant term expression ### {#shacl-constant-term-expressions}
+### Constant Term Expression ### {#shacl-constant-term-expressions}
 
 Note: SHACL-AF spec: [[shacl-af#node-expressions-constant]]
 
