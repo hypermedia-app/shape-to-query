@@ -3,15 +3,13 @@ import { expect } from 'chai'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import Shape from '../../model/Shape'
 import { emptyPatterns } from '../../lib/shapePatterns'
-import { createVariableSequence } from '../../lib/variableSequence'
 import { ConstraintComponent } from '../../model/constraint/ConstraintComponent'
 import { OrConstraintComponent } from '../../model/constraint/or'
 import { AndConstraintComponent } from '../../model/constraint/and'
+import { variable } from '../variable'
 
 describe('lib/model/Shape', () => {
   before(() => import('../sparql'))
-
-  const variable = createVariableSequence('s')
 
   describe('buildLogicalConstraints', () => {
     it('returns empty patterns when there are no constraints', () => {

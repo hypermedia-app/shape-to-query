@@ -4,12 +4,10 @@ import $rdf from 'rdf-ext'
 import { sparql } from '@tpluscode/sparql-builder'
 import PropertyShape from '../../model/PropertyShape'
 import { namedNode } from '../nodeFactory'
-import { createVariableSequence } from '../../lib/variableSequence'
+import { variable } from '../variable'
 
 describe('model/PropertyShape', () => {
   before(() => import('../sparql'))
-
-  const variable = createVariableSequence('p')
 
   describe('buildPatterns', () => {
     it('creates path patterns', () => {
