@@ -90,7 +90,33 @@ describe('model/nodeExpression/PathExpression', () => {
       expect(() => {
         // when
         PathExpression.fromPointer(pointer, factory)
-      }).to.throw
+      }).to.throw()
+    })
+
+    it('throws sh:path has multiple values', () => {
+      // given
+      const pointer = blankNode()
+        .addOut(sh.path, schema.knows)
+        .addOut(sh.path, blankNode())
+        .addOut(sh.nodes, blankNode())
+
+      // then
+      expect(() => {
+        // when
+        PathExpression.fromPointer(pointer, factory)
+      }).to.throw()
+    })
+
+    it('throws sh:path is missing', () => {
+      // given
+      const pointer = blankNode()
+        .addOut(sh.nodes, blankNode())
+
+      // then
+      expect(() => {
+        // when
+        PathExpression.fromPointer(pointer, factory)
+      }).to.throw()
     })
   })
 

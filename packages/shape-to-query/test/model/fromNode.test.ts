@@ -38,7 +38,7 @@ describe('model/fromNode', () => {
       expect(() => {
         // when
         propertyShape(pointer)
-      }).to.throw
+      }).to.throw()
     })
 
     it('throws when property has multiple paths', async () => {
@@ -51,7 +51,7 @@ describe('model/fromNode', () => {
       expect(() => {
         // when
         propertyShape(pointer)
-      }).to.throw
+      }).to.throw()
     })
 
     it('throws when property has rule and non-iri path', async () => {
@@ -64,7 +64,7 @@ describe('model/fromNode', () => {
       expect(() => {
         // when
         propertyShape(pointer)
-      }).to.throw
+      }).to.throw()
     })
   })
 })
