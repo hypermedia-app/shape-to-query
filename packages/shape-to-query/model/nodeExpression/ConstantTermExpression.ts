@@ -9,14 +9,15 @@ import { NodeExpression, Parameters } from './index'
  * Implements constant node expressions and focus node expression
  */
 export class ConstantTermExpression implements NodeExpression {
-  private readonly node: NamedNode | Literal
+  constructor(private readonly node: NamedNode | Literal) {
+  }
 
-  constructor(pointer: GraphPointer) {
+  static fromPointer(pointer: GraphPointer) {
     if (!ConstantTermExpression.match(pointer)) {
       throw new Error('Constant term must be a named node or literal')
     }
 
-    this.node = pointer.term
+    return new ConstantTermExpression(pointer.term)
   }
 
   static match(pointer: GraphPointer): pointer is GraphPointer<NamedNode | Literal> {

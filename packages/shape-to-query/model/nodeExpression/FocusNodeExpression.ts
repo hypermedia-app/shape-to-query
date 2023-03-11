@@ -8,6 +8,10 @@ export class FocusNodeExpression implements NodeExpression {
     return term.equals(sh.this)
   }
 
+  static fromPointer() {
+    return new FocusNodeExpression()
+  }
+
   buildPatterns({ subject, object }: Parameters): SparqlTemplateResult {
     return sparql`BIND (${subject} as ${object})`
   }

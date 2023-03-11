@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import $rdf from 'rdf-ext'
 import { ConstantTermExpression } from '../../../model/nodeExpression/ConstantTermExpression'
 import { blankNode, literal, namedNode } from '../../nodeFactory'
+import { variable } from '../../variable'
 
 describe('model/nodeExpression/ConstantTermExpression', () => {
   before(() => import('../../sparql'))
@@ -28,12 +29,13 @@ describe('model/nodeExpression/ConstantTermExpression', () => {
   describe('buildPatterns', () => {
     it('binds const as subject', () => {
       // given
-      const expr = new ConstantTermExpression(namedNode(schema.Person))
+      const expr = new ConstantTermExpression(schema.Person)
 
       // when
       const patterns = expr.buildPatterns({
         subject: $rdf.variable('foo'),
         object: $rdf.variable('bar'),
+        variable,
       })
 
       // then

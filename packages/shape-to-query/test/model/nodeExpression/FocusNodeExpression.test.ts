@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import $rdf from 'rdf-ext'
 import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpression'
 import { namedNode } from '../../nodeFactory'
+import { variable } from '../../variable'
 
 describe('model/nodeExpression/FocusNodeExpression', () => {
   before(() => import('../../sparql'))
@@ -22,6 +23,7 @@ describe('model/nodeExpression/FocusNodeExpression', () => {
       const patterns = expr.buildPatterns({
         subject: $rdf.variable('foo'),
         object: $rdf.variable('bar'),
+        variable,
       })
 
       // then
