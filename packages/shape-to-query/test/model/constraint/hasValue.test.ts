@@ -2,11 +2,9 @@ import { expect } from 'chai'
 import $rdf from 'rdf-ext'
 import { ex } from '../../namespace'
 import { HasValueConstraintComponent } from '../../../model/constraint/hasValue'
-import { createVariableSequence } from '../../../lib/variableSequence'
+import { variable } from '../../variable'
 
 describe('model/constraint/hasValue', () => {
-  const variable = createVariableSequence('hv')
-
   it('returns empty patterns when used in the root shape', () => {
     // given
     const constraint = new HasValueConstraintComponent([ex.foo, ex.bar])

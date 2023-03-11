@@ -39,6 +39,7 @@ export default class extends Shape implements PropertyShape {
       const rulePatterns = this.rules.map(r => r.buildPatterns({
         focusNode,
         objectNode,
+        variable,
       }))
       patterns = union(...rulePatterns)
     } else {

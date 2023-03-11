@@ -309,7 +309,7 @@ Note: Because the result must be a triple patterns where the node expression's o
 
 Issue(20): Multiple objects of `sh:values` should form a `UNION`
 
-### Focus node expression ### {#shacl-focus-node-expressions}
+### Focus Node Expression ### {#shacl-focus-node-expressions}
 
 Note: SHACL-AF spec: [[shacl-af#node-expressions-focus]]
 
@@ -335,7 +335,7 @@ The object of the property at `sh:path` is the current focus node
 
 Issue: the example above is quite nonsensical, just shows the mechanics of `sh:this`. Would be nice to come up with something more pragmatic
 
-### Constant term expression ### {#shacl-constant-term-expressions}
+### Constant Term Expression ### {#shacl-constant-term-expressions}
 
 Note: SHACL-AF spec: [[shacl-af#node-expressions-constant]]
 
@@ -356,5 +356,49 @@ The objects of `sh:values` become directly asserted as the objects of the proper
   highlight: sparql
   </pre>
   
+  </s2q-snippet>
+</div>
+
+### Path Expressions ### {#shacl-path-expression}
+
+Note: SHACL-AF spec: [[shacl-af#node-expressions-path]]
+
+Path expression is the simplest possible expression which select focus node objects at a specified path.
+
+<div class="example">
+  Find resource's parent names 
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/path.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/path.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+Optionally, a path expression can have one value of `sh:nodes` property which defines the set of subjects for the path.
+
+<div class="example">
+  Find the people known to parents and spouse
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/path-nodes.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/path-nodes.ttl.rq
+  highlight: sparql
+  </pre>
+
   </s2q-snippet>
 </div>

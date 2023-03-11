@@ -17,7 +17,7 @@ const parser = new sparql.Parser()
 const generator = new sparql.Generator();
 
 (async function () {
-  const shapeGraphs = await globby('*.ttl', { cwd })
+  const shapeGraphs = await globby('**/*.ttl', { cwd })
 
   await Promise.all(shapeGraphs.map(toAbsolutePath).map(async shapeGraphPath => {
     let generated

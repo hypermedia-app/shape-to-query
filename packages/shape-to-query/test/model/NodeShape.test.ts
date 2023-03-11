@@ -3,14 +3,12 @@ import { sparql } from '@tpluscode/sparql-builder'
 import $rdf from 'rdf-ext'
 import { foaf, rdf } from '@tpluscode/rdf-ns-builders'
 import NodeShape from '../../model/NodeShape'
-import { createVariableSequence } from '../../lib/variableSequence'
 import { PropertyShape } from '../../model/PropertyShape'
 import { OrConstraintComponent } from '../../model/constraint/or'
+import { variable } from '../variable'
 
 describe('model/NodeShape', () => {
   before(() => import('../sparql'))
-
-  const variable = createVariableSequence('n')
 
   describe('targets', () => {
     it('unions all targets in where clause', () => {
