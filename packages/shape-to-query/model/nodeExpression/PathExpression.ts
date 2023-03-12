@@ -3,6 +3,7 @@ import { isBlankNode, isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { toSparql } from 'clownface-shacl-path'
+import { getOne, getOneOrZero } from './util'
 import { NodeExpressionFactory, NodeExpression, Parameters } from './index'
 
 export class PathExpression implements NodeExpression {
@@ -11,16 +12,10 @@ export class PathExpression implements NodeExpression {
   }
 
   static fromPointer(pointer: GraphPointer, fromNode: NodeExpressionFactory) {
-    const path = pointer.out(sh.path)
-    const nodes = pointer.out(sh.nodes)
-    if (!isGraphPointer(path)) {
-      throw new Error('sh:path must have a single object')
-    }
-    if (nodes.terms.length > 1) {
-      throw new Error('sh:nodes must have a single object')
-    }
+    const path = getOne(pointer, sh.path)
+    const nodes = getOneOrZero(pointer, sh.nodes)
 
-    if (isGraphPointer(nodes)) {
+    if (nodes) {
       return new PathExpression(toSparql(path), fromNode(nodes))
     }
 

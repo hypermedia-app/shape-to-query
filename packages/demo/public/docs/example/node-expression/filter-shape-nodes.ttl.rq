@@ -1,0 +1,21 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource1 rdf:type schema:Person.
+  ?resource1 <http://example.org/motherName> ?resource3.
+  ?resource1 <http://example.org/fatherName> ?resource7.
+}
+WHERE {
+  ?resource1 rdf:type schema:Person.
+  {
+    ?resource1 (schema:parent/schema:givenName) ?resource3.
+    ?resource3 schema:gender ?resource5.
+    FILTER(?resource5 = schema:Female)
+  }
+  UNION
+  {
+    ?resource1 (schema:parent/schema:givenName) ?resource7.
+    ?resource7 schema:gender ?resource9.
+    FILTER(?resource9 = schema:Male)
+  }
+}
