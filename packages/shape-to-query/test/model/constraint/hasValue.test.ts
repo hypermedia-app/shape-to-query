@@ -1,5 +1,6 @@
 import { expect } from 'chai'
 import $rdf from 'rdf-ext'
+import { sparql } from '@tpluscode/sparql-builder'
 import { ex } from '../../namespace'
 import { HasValueConstraintComponent } from '../../../model/constraint/hasValue'
 import { variable } from '../../variable'
@@ -18,5 +19,23 @@ describe('model/constraint/hasValue', () => {
 
     // then
     expect(whereClause).to.eq('')
+  })
+
+  it('generates equality filter for single term', () => {
+    // given
+    const constraint = new HasValueConstraintComponent([ex.foo])
+
+    // when
+    const whereClause = constraint.buildPatterns({
+      focusNode: $rdf.namedNode('foo'),
+      valueNode: variable(),
+      variable,
+      propertyPath: sparql`path`,
+    })
+
+    // then
+    expect(whereClause).to.equalPatterns(sparql`
+      FILTER ( ?x = ${ex.foo} )
+    `)
   })
 })

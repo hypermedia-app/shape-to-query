@@ -3,16 +3,13 @@ CONSTRUCT {
   ?resource1 schema:givenName ?resource2.
   ?resource1 schema:familyName ?resource3.
   ?resource1 schema:knows ?resource4.
-  ?resource1 schema:jobTitle ?resource5.
 }
 WHERE {
   { ?resource1 schema:givenName ?resource2. }
   UNION
   { ?resource1 schema:familyName ?resource3. }
-  ?resource1 schema:knows ?resource4;
-    schema:jobTitle ?resource5;
-    schema:knows ?resource7.
-  FILTER(EXISTS { ?resource1 schema:knows <https://tbbt.tv/sheldon-cooper>. })
-  ?resource1 schema:jobTitle ?resource8.
-  FILTER(EXISTS { ?resource1 schema:jobTitle "microbiologist". })
+  UNION
+  { ?resource1 schema:knows ?resource4. }
+  ?resource1 schema:knows ?resource6.
+  FILTER(?resource6 IN(<https://tbbt.tv/sheldon-cooper>, <https://tbbt.tv/stuart-bloom>))
 }

@@ -6,22 +6,9 @@ PREFIX sh: <http://www.w3.org/ns/shacl#>
   a sh:NodeShape ;
   sh:property
     [ sh:path schema:givenName ],
-    [ sh:path schema:familyName ] ;
-  sh:and
-    (
-      [
-        sh:property
-          [
-            sh:path schema:knows ;
-            sh:hasValue tbbt:sheldon-cooper
-          ]
-      ]
-      [
-        sh:property
-          [
-            sh:path schema:jobTitle ;
-            sh:hasValue "microbiologist"
-          ]
-      ]
-    )
+    [ sh:path schema:familyName ],
+    [
+      sh:path schema:knows ;
+      sh:in ( tbbt:sheldon-cooper tbbt:stuart-bloom ) ;
+    ]
 ] .

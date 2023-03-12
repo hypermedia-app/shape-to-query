@@ -6,6 +6,7 @@ import { VariableSequence } from '../../lib/variableSequence'
 import { ConstantTermExpression } from './ConstantTermExpression'
 import { FocusNodeExpression } from './FocusNodeExpression'
 import { PathExpression } from './PathExpression'
+import { FilterShapeExpression } from './FilterShapeExpression'
 
 export interface Parameters {
   subject: FocusNode
@@ -30,6 +31,7 @@ export const nodeExpressions: NodeExpressionStatic[] = [
   ConstantTermExpression,
   FocusNodeExpression,
   PathExpression,
+  FilterShapeExpression,
 ]
 
 export const fromNode: NodeExpressionFactory = (pointer: GraphPointer): NodeExpression => {

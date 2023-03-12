@@ -53,7 +53,7 @@ describe('model/nodeExpression/PathExpression', () => {
   })
 
   describe('fromPointer', () => {
-    it('defaults nodes to focus node expression', () => {
+    it('constructs without sh:nodes', () => {
       // given
       const pointer = blankNode()
         .addOut(sh.path, schema.knows)
@@ -79,7 +79,7 @@ describe('model/nodeExpression/PathExpression', () => {
       expect(factory).to.have.been.calledWith(sinon.match(actual => actual.term.equals(nodes.term)))
     })
 
-    it('throws sh:nodes has multiple values', () => {
+    it('throws when sh:nodes has multiple values', () => {
       // given
       const pointer = blankNode()
         .addOut(sh.path, schema.knows)
@@ -93,7 +93,7 @@ describe('model/nodeExpression/PathExpression', () => {
       }).to.throw()
     })
 
-    it('throws sh:path has multiple values', () => {
+    it('throws when sh:path has multiple values', () => {
       // given
       const pointer = blankNode()
         .addOut(sh.path, schema.knows)
@@ -107,7 +107,7 @@ describe('model/nodeExpression/PathExpression', () => {
       }).to.throw()
     })
 
-    it('throws sh:path is missing', () => {
+    it('throws when sh:path is missing', () => {
       // given
       const pointer = blankNode()
         .addOut(sh.nodes, blankNode())
