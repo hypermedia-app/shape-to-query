@@ -26,12 +26,16 @@ export default class extends Shape implements NodeShape {
       targets = union(...this.targets.flatMap(target => target.buildPatterns(<any>arg)))
     }
 
+    const rootPatterns = sparql`${arg.rootPatterns}\n${targets.whereClause}`
     let properties: ShapePatterns = emptyPatterns
     if (this.properties.length) {
-      properties = union(...this.properties.map(p => p.buildPatterns(arg)))
+      properties = union(...this.properties.map(p => p.buildPatterns({
+        ...arg,
+        rootPatterns,
+      })))
     }
 
-    const logical = this.buildLogicalConstraints(arg)
+    const logical = this.buildLogicalConstraints({ ...arg, rootPatterns })
 
     return flatten(targets, properties, logical)
   }

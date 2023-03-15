@@ -7,7 +7,7 @@ import { blankNode } from '../../nodeFactory'
 import { FilterShapeExpression } from '../../../model/nodeExpression/FilterShapeExpression'
 import { variable } from '../../variable'
 import { NodeShape } from '../../../model/NodeShape'
-import { NodeExpression } from '../../../model/nodeExpression'
+import { NodeExpression } from '../../../model/nodeExpression/NodeExpression'
 
 describe('model/nodeExpression/FilterShapeExpression', () => {
   let factory: sinon.SinonSpy
@@ -132,6 +132,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
         subject,
         object,
         variable,
+        rootPatterns: undefined,
       })
 
       // then
@@ -158,6 +159,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
         subject,
         object,
         variable,
+        rootPatterns: undefined,
       })
 
       // then

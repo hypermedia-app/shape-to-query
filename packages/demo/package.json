@@ -7,7 +7,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "postinstall": "node --no-warnings --loader ts-node/esm public/docs/example/build.js",
+    "postinstall": "node --no-warnings --loader ts-node/esm/transpile-only public/docs/example/build.js",
     "serve": "vite",
     "build": "vite build"
   },

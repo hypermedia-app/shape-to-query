@@ -5,7 +5,8 @@ import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { fromNode as shape } from '../fromNode'
 import { NodeShape } from '../NodeShape'
 import { getOne, getOneOrZero } from './util'
-import { NodeExpression, NodeExpressionFactory, Parameters } from './index'
+import { NodeExpression, Parameters } from './NodeExpression'
+import { NodeExpressionFactory } from './index'
 
 export class FilterShapeExpression implements NodeExpression {
   constructor(public readonly shape: NodeShape, public readonly nodes?: NodeExpression) {
@@ -27,13 +28,13 @@ export class FilterShapeExpression implements NodeExpression {
     return new FilterShapeExpression(filterShape)
   }
 
-  buildPatterns({ subject, object, variable }: Parameters): SparqlTemplateResult {
+  buildPatterns({ subject, object, variable, rootPatterns }: Parameters): SparqlTemplateResult {
     if (!this.nodes) {
-      return sparql`${this.shape.buildConstraints({ focusNode: subject, valueNode: object, variable })}`
+      return sparql`${this.shape.buildConstraints({ focusNode: subject, valueNode: object, variable, rootPatterns })}`
     }
 
     return sparql`
-      ${this.nodes.buildPatterns({ subject, object, variable })}
-      ${this.shape.buildConstraints({ focusNode: object, valueNode: variable(), variable })}`
+      ${this.nodes.buildPatterns({ subject, object, variable, rootPatterns })}
+      ${this.shape.buildConstraints({ focusNode: object, valueNode: variable(), variable, rootPatterns })}`
   }
 }
