@@ -5,7 +5,8 @@ CONSTRUCT {
   ?resource1 schema:knows ?resource3.
 }
 WHERE {
-  ?resource1 rdf:type schema:Person;
-    (schema:address/schema:addressRegion) ?resource4.
-  FILTER(?resource4 = "CA")
+  ?resource1 rdf:type schema:Person.
+  BIND(?resource1 AS ?resource3)
+  ?resource3 (schema:address/schema:addressRegion) ?resource5.
+  FILTER(?resource5 = "CA")
 }

@@ -369,8 +369,6 @@ The expression requires the presence of exactly on value of `sh:filterShape` pro
 It will be used to filter the values of said property to only those conforming to that shape.
 
 <div class="example">
-  Filter the `schema:knows` property to only those resources which have Californian address
-
   <s2q-snippet>
 
   <pre class="include-code" slot="shape">
@@ -385,6 +383,8 @@ It will be used to filter the values of said property to only those conforming t
 
   </s2q-snippet>
 </div>
+
+Issue: The above example is nonsensical. Should come up with a better use of `sh:filterShape` without `sh:nodes`
 
 Additionally, `sh:nodes` property can be used to select different set of values nodes for that property.
 
