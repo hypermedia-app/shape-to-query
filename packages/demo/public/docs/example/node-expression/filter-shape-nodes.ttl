@@ -11,12 +11,17 @@ PREFIX sh: <http://www.w3.org/ns/shacl#>
       sh:path ex:motherName ;
       sh:values
         [
-          sh:nodes [ sh:path (schema:parent schema:givenName) ];
-          sh:filterShape
+          sh:path schema:givenName ;
+          sh:nodes
             [
-              sh:property
+              sh:nodes [ sh:path schema:parent ] ;
+              sh:filterShape
                 [
-                  sh:path schema:gender ; sh:hasValue schema:Female ;
+                  sh:property
+                    [
+                      sh:path schema:gender ;
+                      sh:hasValue schema:Female ;
+                    ] ;
                 ] ;
             ] ;
         ] ;
@@ -25,12 +30,17 @@ PREFIX sh: <http://www.w3.org/ns/shacl#>
       sh:path ex:fatherName ;
       sh:values
         [
-          sh:nodes [ sh:path (schema:parent schema:givenName) ] ;
-          sh:filterShape
+          sh:path schema:givenName ;
+          sh:nodes
             [
-              sh:property
+              sh:nodes [ sh:path schema:parent ] ;
+              sh:filterShape
                 [
-                  sh:path schema:gender ; sh:hasValue schema:Male ;
+                  sh:property
+                    [
+                      sh:path schema:gender ;
+                      sh:hasValue schema:Male ;
+                    ] ;
                 ] ;
             ] ;
         ] ;
