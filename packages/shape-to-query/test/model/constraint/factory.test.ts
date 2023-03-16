@@ -29,6 +29,6 @@ describe('model/constraint/factory', () => {
     `
 
     // then
-    expect(() => /* when */ createConstraints(shape)).to.throw
+    expect(() => /* when */ [...createConstraints(shape)]).to.throw()
   })
 })

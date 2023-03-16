@@ -1,21 +1,33 @@
+import { sh } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import $rdf from 'rdf-ext'
 import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpression'
+import { namedNode } from '../../nodeFactory'
+import { variable } from '../../variable'
 
 describe('model/nodeExpression/FocusNodeExpression', () => {
   before(() => import('../../sparql'))
 
-  it('binds const as subject', () => {
-    // given
-    const expr = new FocusNodeExpression()
-
-    // when
-    const patterns = expr.buildPatterns({
-      subject: $rdf.variable('foo'),
-      object: $rdf.variable('bar'),
+  describe('match', () => {
+    it('return true when value is sh:this', () => {
+      expect(FocusNodeExpression.match(namedNode(sh.this))).to.be.true
     })
+  })
 
-    // then
-    expect(patterns).to.equalPatternsVerbatim('BIND(?foo as ?bar)')
+  describe('buildPatterns', () => {
+    it('binds const as subject', () => {
+      // given
+      const expr = new FocusNodeExpression()
+
+      // when
+      const patterns = expr.buildPatterns({
+        subject: $rdf.variable('foo'),
+        object: $rdf.variable('bar'),
+        variable,
+      })
+
+      // then
+      expect(patterns).to.equalPatternsVerbatim('BIND(?foo as ?bar)')
+    })
   })
 })
