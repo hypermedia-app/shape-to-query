@@ -38,4 +38,22 @@ describe('model/constraint/hasValue', () => {
       FILTER ( ?x = ${ex.foo} )
     `)
   })
+
+  it('generates EXISTS filter for multiple terms', () => {
+    // given
+    const constraint = new HasValueConstraintComponent([ex.bar, ex.baz])
+
+    // when
+    const whereClause = constraint.buildPatterns({
+      focusNode: $rdf.namedNode('foo'),
+      valueNode: variable(),
+      variable,
+      propertyPath: sparql`path`,
+    })
+
+    // then
+    expect(whereClause).to.equalPatterns(sparql`
+      FILTER EXISTS { <foo> path ${ex.bar}, ${ex.baz} }
+    `)
+  })
 })

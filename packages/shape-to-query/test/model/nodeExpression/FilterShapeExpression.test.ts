@@ -8,6 +8,7 @@ import { FilterShapeExpression } from '../../../model/nodeExpression/FilterShape
 import { variable } from '../../variable'
 import { NodeShape } from '../../../model/NodeShape'
 import { NodeExpression } from '../../../model/nodeExpression/NodeExpression'
+import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpression'
 
 describe('model/nodeExpression/FilterShapeExpression', () => {
   let factory: sinon.SinonSpy
@@ -55,7 +56,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       const expr = FilterShapeExpression.fromPointer(pointer, factory)
 
       // then
-      expect(expr.nodes).to.be.undefined
+      expect(expr.nodes).to.be.instanceof(FocusNodeExpression)
     })
 
     it('constructs with sh:nodes', () => {
@@ -137,7 +138,8 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
 
       // then
       expect(patterns).to.equalPatterns(`
-        <this> path ?obj .
+        BIND ( <this> as ?foo )
+        ?foo path ?bar .
       `)
     })
 
