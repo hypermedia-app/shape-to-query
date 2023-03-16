@@ -62,13 +62,6 @@ export default class extends Shape implements PropertyShape {
           rootPatterns: sparql`${rootPatterns}\n${patterns.whereClause}`,
         })
 
-        /*        let whereClause: any
-        if ('build' in result.whereClause) {
-          // whereClause = sparql`{ ${result.whereClause.WHERE`${patterns.whereClause}`}`
-        } else {
-          whereClause = sparql`${patterns.whereClause}\n${result.whereClause}`
-        } */
-
         return {
           constructClause: result.constructClause,
           whereClause: sparql`
