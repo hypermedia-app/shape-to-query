@@ -31,30 +31,29 @@ prefix roadshow: <https://hypermedia.app/roadshow#>
                       sh:offset 78 ;
                       sh:nodes
                         [
-                          sh:path [ sh:inversePath rdf:type ] ;
+                          sh:orderBy [ sh:path rdfs:label ] ;
                           sh:nodes
                             [
-                              sh:path hydra:object ;
+                              sh:path [ sh:inversePath rdf:type ] ;
                               sh:nodes
                                 [
-
-                                #sh:orderBy [ sh:path rdfs:label ] ;
-                                #sh:nodes
-                                # [
-                                  sh:filterShape
-                                    [
-                                      sh:property
-                                        [
-                                          sh:path hydra:property ;
-                                          sh:hasValue rdf:type ;
-                                        ] ;
-                                    ] ;
+                                  sh:path hydra:object ;
                                   sh:nodes
                                     [
-                                      sh:path ( [ sh:zeroOrMorePath rdf:type ] hydra:memberAssertion )
+                                      sh:filterShape
+                                        [
+                                          sh:property
+                                            [
+                                              sh:path hydra:property ;
+                                              sh:hasValue rdf:type ;
+                                            ] ;
+                                        ] ;
+                                      sh:nodes
+                                        [
+                                          sh:path ( [ sh:zeroOrMorePath rdf:type ] hydra:memberAssertion )
+                                        ] ;
                                     ] ;
                                 ] ;
-                            # ] ;
                             ] ;
                         ] ;
                     ] ;
