@@ -1,5 +1,5 @@
 <pre class='metadata'>
-Title: shape-to-query
+Title: @hydrofoil/shape-to-query
 Shortname: s2q
 Editor: Tomasz Pluskiewicz
 Abstract: Library for generating SPARQL from SHACL Shapes
@@ -453,3 +453,5 @@ Optionally, a path expression can have one value of `sh:nodes` property which de
 ## Read-world examples ## {#real-world-examples}
 
 ### Filtering and paging a `hydra:Collection` ### {#example-hydra-collection}
+
+Issue: Implement `sh:limit`, `sh:offset` and `ah:orderBy`
