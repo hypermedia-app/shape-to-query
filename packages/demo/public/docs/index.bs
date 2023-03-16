@@ -359,6 +359,53 @@ The objects of `sh:values` become directly asserted as the objects of the proper
   </s2q-snippet>
 </div>
 
+### Filter Shape Expressions ### {#shacl-filter-shape-expression}
+
+Note: SHACL-AF spec: [[shacl-af#node-expressions-filter-shape]]
+
+Filter shapes restricts the selected values to only those conforming to the shape set to `sh:filterShape` property.
+
+The expression requires the presence of exactly on value of `sh:filterShape` property, value of which must be SHACL Shape.
+It will be used to filter the values of said property to only those conforming to that shape.
+
+<div class="example">
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/filter-shape.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/filter-shape.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+Issue: The above example is nonsensical. Should come up with a better use of `sh:filterShape` without `sh:nodes`
+
+Additionally, `sh:nodes` property can be used to select different set of values nodes for that property.
+
+<div class="example">
+  Calculates separate properties for parents' names by filtering on their respective gender
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/filter-shape-nodes.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/filter-shape-nodes.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
 ### Path Expressions ### {#shacl-path-expression}
 
 Note: SHACL-AF spec: [[shacl-af#node-expressions-path]]
@@ -402,3 +449,9 @@ Optionally, a path expression can have one value of `sh:nodes` property which de
 
   </s2q-snippet>
 </div>
+
+## Read-world examples ## {#real-world-examples}
+
+### Filtering and paging a `hydra:Collection` ### {#example-hydra-collection}
+
+Issue: Implement `sh:limit`, `sh:offset` and `ah:orderBy`

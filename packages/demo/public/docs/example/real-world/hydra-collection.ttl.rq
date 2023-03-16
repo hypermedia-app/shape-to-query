@@ -1,0 +1,13 @@
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+CONSTRUCT { ?resource1 hydra:member ?resource3. }
+WHERE {
+  VALUES ?resource1 {
+    <https://new.wikibus.org/brands>
+  }
+  ?resource1 ((rdf:type*)/hydra:memberAssertion) ?resource5.
+  ?resource5 hydra:property ?resource7.
+  FILTER(?resource7 = rdf:type)
+  ?resource5 hydra:object ?resource4.
+  ?resource4 ^rdf:type ?resource3.
+}
