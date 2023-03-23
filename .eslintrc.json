@@ -9,12 +9,6 @@
   },
   "overrides": [
     {
-      "files": "packages/shape-to-query/**",
-      "rules": {
-        "require-extensions/require-extensions": "off"
-      }
-    },
-    {
       "files": ["packages/shape-to-query/test/**"],
       "rules": {
         "import/no-extraneous-dependencies": ["error", {"devDependencies": true}]

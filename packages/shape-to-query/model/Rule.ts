@@ -1,8 +1,8 @@
 import { NamedNode, Variable } from 'rdf-js'
 import $rdf from 'rdf-ext'
-import { FocusNode } from '../lib/FocusNode'
-import { ShapePatterns } from '../lib/shapePatterns'
-import { VariableSequence } from '../lib/variableSequence'
+import { FocusNode } from '../lib/FocusNode.js'
+import { ShapePatterns } from '../lib/shapePatterns.js'
+import { VariableSequence } from '../lib/variableSequence.js'
 import { NodeExpression } from './nodeExpression'
 
 interface Parameters {

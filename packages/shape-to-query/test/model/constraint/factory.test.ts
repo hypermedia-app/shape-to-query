@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import createConstraints from '../../../model/constraint/factory'
-import { parse } from '../../nodeFactory'
+import createConstraints from '../../../model/constraint/factory.js'
+import { parse } from '../../nodeFactory.js'
 
 describe('model/constraint/factory', () => {
   it('skips deactivated constraints', async () => {

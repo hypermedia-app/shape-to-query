@@ -3,7 +3,7 @@ import $rdf from 'rdf-ext'
 import { expect } from 'chai'
 import clownface from 'clownface'
 import { TargetNode } from '../../../model/target'
-import { createVariableSequence } from '../../../lib/variableSequence'
+import { createVariableSequence } from '../../../lib/variableSequence.js'
 
 describe('model/TargetNode', () => {
   before(() => import('../../sparql'))

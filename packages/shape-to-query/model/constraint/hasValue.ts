@@ -2,7 +2,7 @@ import { Term } from 'rdf-js'
 import { SparqlTemplateResult, sparql } from '@tpluscode/sparql-builder'
 import { MultiPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { ConstraintComponent, Parameters } from './ConstraintComponent'
+import { ConstraintComponent, Parameters } from './ConstraintComponent.js'
 
 export class HasValueConstraintComponent extends ConstraintComponent {
   constructor(public readonly terms: ReadonlyArray<Term>) {

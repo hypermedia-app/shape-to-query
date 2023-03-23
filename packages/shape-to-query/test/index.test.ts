@@ -5,9 +5,9 @@ import { expect } from 'chai'
 import { sparql } from '@tpluscode/rdf-string'
 import type { GraphPointer } from 'clownface'
 import { constructQuery, deleteQuery, shapeToPatterns } from '..'
-import { ex } from './namespace'
-import { parse } from './nodeFactory'
-import './sparql'
+import { ex } from './namespace.js'
+import { parse } from './nodeFactory.js'
+import './sparql.js'
 
 describe('@hydrofoil/shape-to-query', () => {
   describe('shapeToPatterns', () => {

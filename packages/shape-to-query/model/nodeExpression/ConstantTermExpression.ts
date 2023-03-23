@@ -3,7 +3,7 @@ import { SparqlTemplateResult, sparql } from '@tpluscode/sparql-builder'
 import { GraphPointer } from 'clownface'
 import { isLiteral, isNamedNode } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { NodeExpression, Parameters } from './index'
+import { NodeExpression, Parameters } from './index.js'
 
 export class ConstantTermExpression implements NodeExpression {
   constructor(private readonly node: NamedNode | Literal) {

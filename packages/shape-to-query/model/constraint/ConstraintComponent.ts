@@ -1,7 +1,7 @@
 import { NamedNode, Variable } from 'rdf-js'
 import { SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import { VariableSequence } from '../../lib/variableSequence'
-import { FocusNode } from '../../lib/FocusNode'
+import { VariableSequence } from '../../lib/variableSequence.js'
+import { FocusNode } from '../../lib/FocusNode.js'
 
 export interface Parameters {
   focusNode: FocusNode

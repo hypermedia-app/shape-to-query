@@ -2,9 +2,9 @@ import { schema } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import $rdf from 'rdf-ext'
 import { sparql } from '@tpluscode/sparql-builder'
-import PropertyShape from '../../model/PropertyShape'
-import { namedNode } from '../nodeFactory'
-import { variable } from '../variable'
+import PropertyShape from '../../model/PropertyShape.js'
+import { namedNode } from '../nodeFactory.js'
+import { variable } from '../variable.js'
 
 describe('model/PropertyShape', () => {
   before(() => import('../sparql'))

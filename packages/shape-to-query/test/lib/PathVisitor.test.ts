@@ -3,10 +3,10 @@ import { fromNode } from 'clownface-shacl-path'
 import { expect } from 'chai'
 import { GraphPointer } from 'clownface'
 import { sparql } from '@tpluscode/sparql-builder'
-import { parse } from '../nodeFactory'
-import PathVisitor from '../../lib/PathVisitor'
-import { createVariableSequence, VariableSequence } from '../../lib/variableSequence'
-import '../sparql'
+import { parse } from '../nodeFactory.js'
+import PathVisitor from '../../lib/PathVisitor.js'
+import { createVariableSequence, VariableSequence } from '../../lib/variableSequence.js'
+import '../sparql.js'
 
 describe('lib/PathVisitor', () => {
   let variable: VariableSequence

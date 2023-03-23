@@ -7,8 +7,8 @@ import { expect } from 'chai'
 import $rdf from 'rdf-ext'
 import { schema, sh } from '@tpluscode/rdf-ns-builders'
 import namespace from '@rdfjs/namespace'
-import { constructQuery } from '../lib/shapeToQuery'
-import { parse, raw } from './nodeFactory'
+import { constructQuery } from '../lib/shapeToQuery.js'
+import { parse, raw } from './nodeFactory.js'
 
 const tbbt = namespace('http://localhost:8080/data/person/')
 

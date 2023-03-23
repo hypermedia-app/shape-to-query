@@ -1,10 +1,10 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { emptyPatterns, flatten, union } from '../lib/shapePatterns'
-import { FocusNode } from '../lib/FocusNode'
-import { VariableSequence } from '../lib/variableSequence'
-import { ConstraintComponent } from './constraint/ConstraintComponent'
-import type { OrConstraintComponent } from './constraint/or'
-import type { AndConstraintComponent } from './constraint/and'
+import { emptyPatterns, flatten, union } from '../lib/shapePatterns.js'
+import { FocusNode } from '../lib/FocusNode.js'
+import { VariableSequence } from '../lib/variableSequence.js'
+import { ConstraintComponent } from './constraint/ConstraintComponent.js'
+import type { OrConstraintComponent } from './constraint/or.js'
+import type { AndConstraintComponent } from './constraint/and.js'
 
 export interface BuildParameters {
   focusNode: FocusNode

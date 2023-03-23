@@ -1,9 +1,9 @@
 import { expect } from 'chai'
 import $rdf from 'rdf-ext'
 import { sparql } from '@tpluscode/sparql-builder'
-import { ex } from '../../namespace'
-import { HasValueConstraintComponent } from '../../../model/constraint/hasValue'
-import { variable } from '../../variable'
+import { ex } from '../../namespace.js'
+import { HasValueConstraintComponent } from '../../../model/constraint/hasValue.js'
+import { variable } from '../../variable.js'
 
 describe('model/constraint/hasValue', () => {
   it('returns empty patterns when used in the root shape', () => {

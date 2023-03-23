@@ -1,7 +1,7 @@
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { GraphPointer } from 'clownface'
-import { NodeExpression, Parameters } from './index'
+import { NodeExpression, Parameters } from './index.js'
 
 export class FocusNodeExpression implements NodeExpression {
   static match({ term }: GraphPointer) {

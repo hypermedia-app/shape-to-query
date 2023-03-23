@@ -1,12 +1,12 @@
 import { Variable } from 'rdf-js'
 import { SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { GraphPointer } from 'clownface'
-import { FocusNode } from '../../lib/FocusNode'
-import { VariableSequence } from '../../lib/variableSequence'
-import { ConstantTermExpression } from './ConstantTermExpression'
-import { FocusNodeExpression } from './FocusNodeExpression'
-import { PathExpression } from './PathExpression'
-import { FilterShapeExpression } from './FilterShapeExpression'
+import { FocusNode } from '../../lib/FocusNode.js'
+import { VariableSequence } from '../../lib/variableSequence.js'
+import { ConstantTermExpression } from './ConstantTermExpression.js'
+import { FocusNodeExpression } from './FocusNodeExpression.js'
+import { PathExpression } from './PathExpression.js'
+import { FilterShapeExpression } from './FilterShapeExpression.js'
 
 export interface Parameters {
   subject: FocusNode

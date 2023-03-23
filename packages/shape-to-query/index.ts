@@ -1,5 +1,5 @@
-export { shapeToPatterns } from './lib/shapeToPatterns'
+export { shapeToPatterns } from './lib/shapeToPatterns.js'
 export {
   constructQuery,
   deleteQuery,
-} from './lib/shapeToQuery'
+} from './lib/shapeToQuery.js'

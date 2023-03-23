@@ -1,9 +1,9 @@
 import { GraphPointer } from 'clownface'
 import { SparqlTemplateResult, sparql } from '@tpluscode/sparql-builder'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { NodeShape } from '../NodeShape'
-import { fromNode } from '../fromNode'
-import { ConstraintComponent, Parameters } from './ConstraintComponent'
+import { NodeShape } from '../NodeShape.js'
+import { fromNode } from '../fromNode.js'
+import { ConstraintComponent, Parameters } from './ConstraintComponent.js'
 
 export class AndConstraintComponent extends ConstraintComponent {
   constructor(public readonly inner: ReadonlyArray<NodeShape>) {

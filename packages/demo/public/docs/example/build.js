@@ -2,8 +2,7 @@
 import { writeFile } from 'fs/promises'
 import * as url from 'url'
 import * as path from 'path'
-// eslint-disable-next-line import/default
-import shapeTo from '@hydrofoil/shape-to-query/index.js'
+import * as shapeTo from '@hydrofoil/shape-to-query/index.js'
 import { fromFile } from 'rdf-utils-fs'
 import $rdf from 'rdf-ext'
 import { rdf, sh } from '@tpluscode/rdf-ns-builders'

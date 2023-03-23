@@ -1,7 +1,7 @@
 import { expect } from 'chai'
-import { AndConstraintComponent } from '../../../model/constraint/and'
-import { NodeShape } from '../../../model/NodeShape'
-import { emptyPatterns } from '../../../lib/shapePatterns'
+import { AndConstraintComponent } from '../../../model/constraint/and.js'
+import { NodeShape } from '../../../model/NodeShape.js'
+import { emptyPatterns } from '../../../lib/shapePatterns.js'
 
 describe('model/constraint/and', () => {
   before(() => import('../../sparql'))
