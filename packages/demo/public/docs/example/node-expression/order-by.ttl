@@ -1,0 +1,21 @@
+PREFIX ex: <http://example.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+[
+  a sh:NodeShape ;
+  sh:property
+    [
+      sh:path ex:latestArticles ;
+      sh:values
+        [
+          sh:limit 10 ;
+          sh:nodes
+            [
+              sh:nodes [ sh:path schema:publication ] ;
+              sh:orderBy [ sh:path schema:datePublished ] ;
+              sh:desc true ;
+            ] ;
+        ] ;
+    ] ;
+] .

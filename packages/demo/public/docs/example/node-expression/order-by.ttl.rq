@@ -1,0 +1,12 @@
+PREFIX schema: <http://schema.org/>
+CONSTRUCT { ?resource1 <http://example.org/latestArticles> ?resource3. }
+WHERE {
+  {
+    SELECT ?resource1 ?resource3 WHERE {
+      ?resource1 schema:publication ?resource3.
+      OPTIONAL { ?resource3 schema:datePublished ?resource4. }
+    }
+    ORDER BY DESC (?resource4)
+    LIMIT 10
+  }
+}
