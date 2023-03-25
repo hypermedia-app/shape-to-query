@@ -877,14 +877,14 @@
   resolved "https://registry.yarnpkg.com/@rdfjs/sink/-/sink-1.0.3.tgz#cdbb4ecf0ff34e6ad6c301a5bc221508c820568c"
   integrity sha512-2KfYa8mAnptRNeogxhQqkWNXqfYVWO04jQThtXKepySrIwYmz83+WlevQtA4VDLFe+kFd2TwgL29ekPe5XVUfA==
 
-"@rdfjs/term-map@^1", "@rdfjs/term-map@^1.0.0":
+"@rdfjs/term-map@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@rdfjs/term-map/-/term-map-1.1.0.tgz#253b863ca3f8c0f8c3b05ec5df301c6a0a05ba58"
   integrity sha512-utCLVQEZdEL664XoYuBQwMIk0Q5MD6qNPEt12DcmuAlQUS0b0kQ+WL50wyJP1BpWYjOJLokIVTUtphZWnj25BQ==
   dependencies:
     "@rdfjs/to-ntriples" "^2.0.0"
 
-"@rdfjs/term-map@^2.0.0":
+"@rdfjs/term-map@^2", "@rdfjs/term-map@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@rdfjs/term-map/-/term-map-2.0.0.tgz#6360314e9b62a1d540b213865403130721be1123"
   integrity sha512-z0K8AgLsJGTrh+dGkXNl/oT9vBdMei4xq1MIeGN360oimA81Q+ruQUKFCbYNRRZS03tVHPBzqXUal/DezFGPEA==
@@ -1178,12 +1178,12 @@
   dependencies:
     rdf-js "^4.0.2"
 
-"@types/rdfjs__term-map@^1":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@types/rdfjs__term-map/-/rdfjs__term-map-1.0.2.tgz#c135bf857888e0516c7ec1b3dc2b82e0f5ad1a3a"
-  integrity sha512-Ae674zmrAHh9zl4uLL9cGdYt77ugUOMIvn0z+uA6RHOwBQZn1LrXcjGK37cBwbxvw7bZ0NYPtcDbn5Vs8f/+ZQ==
+"@types/rdfjs__term-map@^2":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@types/rdfjs__term-map/-/rdfjs__term-map-2.0.3.tgz#44b5b5b8d9515d66d2f2c8aee295a022babae194"
+  integrity sha512-yoXUFl3F4OLgZ6rR1XV8iBEE8YUt88SDermutJTe7eU4ntyqpJvTuGfYrnQqUFdRUntrjhzV/kXJOvyvD/5q6g==
   dependencies:
-    rdf-js "^4.0.2"
+    "@rdfjs/types" "*"
 
 "@types/rdfjs__term-set@^1":
   version "1.0.3"
