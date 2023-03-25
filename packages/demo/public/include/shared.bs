@@ -1,0 +1,20 @@
+<pre class=biblio>
+{
+	"s2q-concepts": {
+		"href": "../concepts",
+		"title": "@hydrofoil/shape-to-query Conceptual Guides"
+	},
+	"s2q-docs": {
+		"href": "../docs",
+		"title": "@hydrofoil/shape-to-query"
+	},
+	"s2q-how-tos": {
+		"href": "../how-tos",
+		"title": "@hydrofoil/shape-to-query How-Tos"
+	}
+}
+</pre>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.1.0/dist/themes/light.css" />
+<script type="module" src="../lib/s2q-snippet.js">
+</script>

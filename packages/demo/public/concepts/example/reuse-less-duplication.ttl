@@ -1,0 +1,47 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+<http://example.com/people>
+  a hydra:Collection ;
+  hydra:memberAssertion
+    [
+      hydra:property rdf:type ;
+      hydra:object schema:Person ;
+    ] ;
+.
+
+[
+  a sh:NodeShape ;
+  sh:targetNode <http://example.com/people> ;
+  sh:property
+    [
+      sh:path hydra:member ;
+      sh:values _:collectionMembers ;
+    ],
+    [
+      sh:path hydra:totalItems ;
+      sh:values [ sh:count _:collectionMembers ] ;
+    ] ;
+] .
+
+_:collectionMembers
+  sh:path [ sh:inversePath rdf:type ] ;
+  sh:nodes
+    [
+      sh:path hydra:object ;
+      sh:nodes
+        [
+          sh:filterShape
+            [
+              sh:property [ sh:path hydra:property ; sh:hasValue rdf:type ] ;
+            ] ;
+          sh:nodes
+            [
+              sh:path ( [ sh:zeroOrMorePath rdf:type ] hydra:memberAssertion )
+            ] ;
+        ] ;
+    ] ;
+.
