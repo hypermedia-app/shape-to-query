@@ -18,7 +18,7 @@
     "@rdfjs/term-map": "^1",
     "@rdfjs/term-set": "^1",
     "@tpluscode/rdf-ns-builders": "^2.0.1",
-    "@tpluscode/sparql-builder": "^0.3.30",
+    "@tpluscode/sparql-builder": "^0.4.1",
     "@zazuko/rdf-vocabularies": "*",
     "clownface": "^1.5.1",
     "clownface-shacl-path": "^1.5.1",
