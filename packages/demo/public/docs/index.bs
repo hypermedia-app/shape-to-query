@@ -450,6 +450,28 @@ Optionally, a path expression can have one value of `sh:nodes` property which de
   </s2q-snippet>
 </div>
 
+### Count Expressions ### {#shacl-count-expression}
+
+Note: SHACL-AF spec: [[shacl-af#count]]
+
+<div class="example">
+  Count the number of articles
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/count.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/count.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
 ### OrderBy Expressions ### {#shacl-orderBy-expression}
 
 Note: SHACL-AF spec: [[shacl-af#orderBy]]

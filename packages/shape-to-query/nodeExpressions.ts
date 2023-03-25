@@ -5,6 +5,7 @@ import { PathExpression } from './model/nodeExpression/PathExpression'
 import { FilterShapeExpression } from './model/nodeExpression/FilterShapeExpression'
 import { OffsetExpression } from './model/nodeExpression/OffsetExpression'
 import { OrderByExpression } from './model/nodeExpression/OrderByExpression'
+import { CountExpression } from './model/nodeExpression/CountExpression'
 import { LimitExpression } from './model/nodeExpression/LimitExpression'
 import { NodeExpressionFactory, NodeExpressionStatic } from './model/nodeExpression'
 import { NodeExpression } from './model/nodeExpression/NodeExpression'
@@ -20,6 +21,7 @@ export {
   LimitExpression,
   OffsetExpression,
   OrderByExpression,
+  CountExpression,
 }
 
 export const nodeExpressions: NodeExpressionStatic[] = [
@@ -30,6 +32,7 @@ export const nodeExpressions: NodeExpressionStatic[] = [
   LimitExpression,
   OffsetExpression,
   OrderByExpression,
+  CountExpression,
 ]
 
 export const fromNode: NodeExpressionFactory = (pointer: GraphPointer): NodeExpression => {

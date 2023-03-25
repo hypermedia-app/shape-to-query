@@ -16,4 +16,4 @@ services:
       context: .
       dockerfile: bikeshed.Dockerfile
     volumes:
-      - ./packages/demo/public/docs:/docs
+      - ./packages/demo/public:/html

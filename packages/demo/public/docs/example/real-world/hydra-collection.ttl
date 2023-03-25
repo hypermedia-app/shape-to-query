@@ -24,33 +24,41 @@ PREFIX sh: <http://www.w3.org/ns/shacl#>
                       sh:nodes
                         [
                           sh:orderBy [ sh:path rdfs:label ] ;
-                          sh:nodes
-                            [
-                              sh:path [ sh:inversePath rdf:type ] ;
-                              sh:nodes
-                                [
-                                  sh:path hydra:object ;
-                                  sh:nodes
-                                    [
-                                      sh:filterShape
-                                        [
-                                          sh:property
-                                            [
-                                              sh:path hydra:property ;
-                                              sh:hasValue rdf:type ;
-                                            ] ;
-                                        ] ;
-                                      sh:nodes
-                                        [
-                                          sh:path ( [ sh:zeroOrMorePath rdf:type ] hydra:memberAssertion )
-                                        ] ;
-                                    ] ;
-                                ] ;
-                            ] ;
+                          sh:nodes _:collectionMembers ;
                         ] ;
                     ] ;
+                ] ;
+            ],
+            [
+              sh:path hydra:totalItems ;
+              sh:values
+                [
+                  sh:count _:collectionMembers ;
                 ] ;
             ] ;
         ] ;
     ] ;
 ] .
+
+_:collectionMembers
+  sh:path [ sh:inversePath rdf:type ] ;
+  sh:nodes
+    [
+      sh:path hydra:object ;
+      sh:nodes
+        [
+          sh:filterShape
+            [
+              sh:property
+                [
+                  sh:path hydra:property ;
+                  sh:hasValue rdf:type ;
+                ] ;
+            ] ;
+          sh:nodes
+            [
+              sh:path ( [ sh:zeroOrMorePath rdf:type ] hydra:memberAssertion )
+            ] ;
+        ] ;
+    ] ;
+.
