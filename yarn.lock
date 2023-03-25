@@ -1027,10 +1027,10 @@
     "@tpluscode/rdf-ns-builders" "^2"
     "@zazuko/rdf-vocabularies" ">=2023.01.17"
 
-"@tpluscode/sparql-builder@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@tpluscode/sparql-builder/-/sparql-builder-0.4.0.tgz#02553cbe68e1f4e7f824cbdb6b44d11bf1643681"
-  integrity sha512-CWZh+A6/qTECZq6hQe0m+ixtmH9Qs3Xc0bCjw7SFXWUsYvtfXdPQvos8DS4aJ3ytnH5aQsUlM3pD5aDF7Gv0mA==
+"@tpluscode/sparql-builder@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@tpluscode/sparql-builder/-/sparql-builder-0.4.1.tgz#2ed8cb1b67183fe011a1d7e4b699dea0f0189d40"
+  integrity sha512-2crjaFhksn+HQkaRB7yAhQdOCTvwy6a6AIyxrjcgkB5VJf/OzfNE/6Hp1el/I4A0aCjFSjtjS9rR3cNFMeMB/Q==
   dependencies:
     "@rdf-esm/data-model" "^0.5.4"
     "@rdf-esm/term-set" "^0.5.0"

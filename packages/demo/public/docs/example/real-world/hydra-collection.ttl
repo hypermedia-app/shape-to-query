@@ -1,16 +1,8 @@
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-prefix ex: <http://example.org/>
-base <https://new.wikibus.org/>
-PREFIX dash: <http://datashapes.org/dash#>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX schema: <http://schema.org/>
-prefix canvas: <https://themes.semicolonweb.com/canvas/>
-PREFIX wba: <https://wikibus.org/api#>
 PREFIX sh: <http://www.w3.org/ns/shacl#>
-prefix roadshow: <https://hypermedia.app/roadshow#>
 
 [
   a sh:NodeShape ;
