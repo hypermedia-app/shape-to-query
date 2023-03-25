@@ -25,7 +25,7 @@ export class PropertyValueRule implements Rule {
     const result = this.nodeExpression.buildPatterns({ subject: focusNode, object: objectNode, variable, rootPatterns })
     let whereClause: SparqlTemplateResult
     if ('build' in result) {
-      whereClause = sparql`{ ${result.WHERE`${rootPatterns}`} }`
+      whereClause = sparql`${result.WHERE`${rootPatterns}`}`
     } else {
       whereClause = result
     }

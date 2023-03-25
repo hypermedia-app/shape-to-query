@@ -7,12 +7,10 @@ CONSTRUCT {
 WHERE {
   ?resource1 rdf:type schema:Person.
   {
-    {
-      SELECT ?resource1 ?resource3 WHERE {
-        ?resource1 schema:parent ?resource3;
-          rdf:type schema:Person.
-      }
-      OFFSET 1
+    SELECT ?resource1 ?resource3 WHERE {
+      ?resource1 schema:parent ?resource3;
+        rdf:type schema:Person.
     }
+    OFFSET 1
   }
 }
