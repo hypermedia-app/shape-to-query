@@ -14,29 +14,49 @@ prefix roadshow: <https://hypermedia.app/roadshow#>
 
 [
   a sh:NodeShape ;
-  sh:targetNode <https://new.wikibus.org/brands> ;
+  sh:targetNode <https://new.wikibus.org/page/brands> ;
   sh:property
     [
-      sh:path hydra:member ;
-      sh:values
+      sh:path schema:mainEntity ;
+      sh:node
         [
-          sh:path [ sh:inversePath rdf:type ] ;
-          sh:nodes
+          sh:property
             [
-              sh:path hydra:object ;
-              sh:nodes
+              sh:path hydra:member ;
+              sh:values
                 [
-                  sh:filterShape
-                    [
-                      sh:property
-                        [
-                          sh:path hydra:property ;
-                          sh:hasValue rdf:type ;
-                        ] ;
-                    ] ;
+                  sh:limit 39 ;
                   sh:nodes
                     [
-                      sh:path ( [ sh:zeroOrMorePath rdf:type ] hydra:memberAssertion )
+                      sh:offset 78 ;
+                      sh:nodes
+                        [
+                          sh:path [ sh:inversePath rdf:type ] ;
+                          sh:nodes
+                            [
+                              sh:path hydra:object ;
+                              sh:nodes
+                                [
+
+                                #sh:orderBy [ sh:path rdfs:label ] ;
+                                #sh:nodes
+                                # [
+                                  sh:filterShape
+                                    [
+                                      sh:property
+                                        [
+                                          sh:path hydra:property ;
+                                          sh:hasValue rdf:type ;
+                                        ] ;
+                                    ] ;
+                                  sh:nodes
+                                    [
+                                      sh:path ( [ sh:zeroOrMorePath rdf:type ] hydra:memberAssertion )
+                                    ] ;
+                                ] ;
+                            # ] ;
+                            ] ;
+                        ] ;
                     ] ;
                 ] ;
             ] ;

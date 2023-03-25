@@ -1,13 +1,32 @@
+PREFIX schema: <http://schema.org/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-CONSTRUCT { ?resource1 hydra:member ?resource3. }
+CONSTRUCT {
+  ?resource1 schema:mainEntity ?resource2.
+  ?resource2 hydra:member ?resource4.
+}
 WHERE {
   VALUES ?resource1 {
-    <https://new.wikibus.org/brands>
+    <https://new.wikibus.org/page/brands>
   }
-  ?resource1 ((rdf:type*)/hydra:memberAssertion) ?resource5.
-  ?resource5 hydra:property ?resource7.
-  FILTER(?resource7 = rdf:type)
-  ?resource5 hydra:object ?resource4.
-  ?resource4 ^rdf:type ?resource3.
+  { ?resource1 schema:mainEntity ?resource2. }
+  UNION
+  {
+    ?resource1 schema:mainEntity ?resource2.
+    {
+      SELECT ?resource2 ?resource4 WHERE {
+        ?resource2 ((rdf:type*)/hydra:memberAssertion) ?resource6.
+        ?resource6 hydra:property ?resource8.
+        FILTER(?resource8 = rdf:type)
+        ?resource6 hydra:object ?resource5.
+        ?resource5 ^rdf:type ?resource4.
+        VALUES ?resource1 {
+          <https://new.wikibus.org/page/brands>
+        }
+        ?resource1 schema:mainEntity ?resource2.
+      }
+      OFFSET 78
+      LIMIT 39
+    }
+  }
 }

@@ -30,7 +30,7 @@ export default class extends Shape implements PropertyShape {
     this.path = fromNode(_path)
   }
 
-  buildPatterns({ focusNode, variable }: BuildParameters): ShapePatterns {
+  buildPatterns({ focusNode, variable, rootPatterns }: BuildParameters): ShapePatterns {
     const pathEnd = variable()
     const visitor = new PathVisitor(variable)
     let patterns: ShapePatterns
@@ -40,6 +40,7 @@ export default class extends Shape implements PropertyShape {
         focusNode,
         objectNode,
         variable,
+        rootPatterns,
       }))
       patterns = union(...rulePatterns)
     } else {
@@ -49,13 +50,17 @@ export default class extends Shape implements PropertyShape {
       })
     }
 
-    const logical = this.buildLogicalConstraints({ focusNode, variable })
+    const logical = this.buildLogicalConstraints({ focusNode, variable, rootPatterns })
     patterns = flatten(patterns, logical)
 
     const deepPatterns = this.constraints
       .filter((c): c is NodeConstraintComponent => c.type.equals(sh.NodeConstraintComponent))
       .map((nodeConstraint): ShapePatterns => {
-        const result = nodeConstraint.shape.buildPatterns({ focusNode: pathEnd, variable })
+        const result = nodeConstraint.shape.buildPatterns({
+          focusNode: pathEnd,
+          variable,
+          rootPatterns: sparql`${rootPatterns}\n${patterns.whereClause}`,
+        })
 
         return {
           constructClause: result.constructClause,
@@ -73,7 +78,7 @@ export default class extends Shape implements PropertyShape {
     return patterns
   }
 
-  buildConstraints({ focusNode, variable }: BuildParameters): string | SparqlTemplateResult {
+  buildConstraints({ focusNode, variable, rootPatterns }: BuildParameters): string | SparqlTemplateResult {
     if (!this.constraints.length) {
       return ''
     }
@@ -86,6 +91,7 @@ export default class extends Shape implements PropertyShape {
       valueNode,
       propertyPath,
       variable,
+      rootPatterns,
     })).filter(Boolean)
 
     if (constraints.length === 0) {

@@ -6,7 +6,8 @@ import { fromNode as shape } from '../fromNode'
 import { NodeShape } from '../NodeShape'
 import { getOne, getOneOrZero } from './util'
 import { FocusNodeExpression } from './FocusNodeExpression'
-import { NodeExpression, NodeExpressionFactory, Parameters } from './index'
+import { NodeExpression, Parameters } from './NodeExpression'
+import { NodeExpressionFactory } from './index'
 
 export class FilterShapeExpression implements NodeExpression {
   constructor(public readonly shape: NodeShape, public readonly nodes: NodeExpression = new FocusNodeExpression()) {
@@ -28,12 +29,12 @@ export class FilterShapeExpression implements NodeExpression {
     return new FilterShapeExpression(filterShape)
   }
 
-  buildPatterns({ subject, object, variable }: Parameters): SparqlTemplateResult {
+  buildPatterns({ subject, object, variable, rootPatterns }: Parameters): SparqlTemplateResult {
     const focusNode = object
     const valueNode = variable()
 
     return sparql`
-      ${this.nodes.buildPatterns({ subject, object, variable })}
-      ${this.shape.buildConstraints({ focusNode, valueNode, variable })}`
+      ${this.nodes.buildPatterns({ subject, object, variable, rootPatterns })}
+      ${this.shape.buildConstraints({ focusNode, valueNode, variable, rootPatterns })}`
   }
 }
