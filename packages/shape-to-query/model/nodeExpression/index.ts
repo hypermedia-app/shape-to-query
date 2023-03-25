@@ -7,6 +7,7 @@ import { LimitExpression } from './LimitExpression'
 import { OffsetExpression } from './OffsetExpression'
 import { NodeExpression } from './NodeExpression'
 import { OrderByExpression } from './OrderByExpression'
+import { CountExpression } from './CountExpression'
 
 export interface NodeExpressionFactory {
   (pointer: GraphPointer): NodeExpression
@@ -25,6 +26,7 @@ export const nodeExpressions: NodeExpressionStatic[] = [
   LimitExpression,
   OffsetExpression,
   OrderByExpression,
+  CountExpression,
 ]
 
 export const fromNode: NodeExpressionFactory = (pointer: GraphPointer): NodeExpression => {
