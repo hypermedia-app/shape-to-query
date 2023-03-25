@@ -1,4 +1,4 @@
-import { SELECT, Select, SparqlTemplateResult } from '@tpluscode/sparql-builder'
+import { SELECT, Select } from '@tpluscode/sparql-builder'
 import { GraphPointer } from 'clownface'
 import { isGraphPointer, isLiteral } from 'is-graph-pointer'
 import { xsd } from '@tpluscode/rdf-ns-builders'
@@ -25,7 +25,7 @@ export class OffsetExpression implements NodeExpression {
   constructor(private readonly offset: number, private readonly nodes: NodeExpression) {
   }
 
-  buildPatterns(arg: Parameters): Select | SparqlTemplateResult {
+  buildPatterns(arg: Parameters): Select {
     const selectOrPatterns = this.nodes.buildPatterns(arg)
     let select: Select
 
