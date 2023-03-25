@@ -5,6 +5,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 CONSTRUCT {
   ?resource1 schema:mainEntity ?resource2.
   ?resource2 hydra:member ?resource4.
+  ?resource2 hydra:totalItems ?resource11.
 }
 WHERE {
   VALUES ?resource1 {
@@ -30,6 +31,20 @@ WHERE {
       ORDER BY (?resource5)
       OFFSET 78
       LIMIT 39
+    }
+    UNION
+    {
+      SELECT (COUNT(?resource12) AS ?resource11) WHERE {
+        ?resource2 ((rdf:type*)/hydra:memberAssertion) ?resource14.
+        ?resource14 hydra:property ?resource16.
+        FILTER(?resource16 = rdf:type)
+        ?resource14 hydra:object ?resource13.
+        ?resource13 ^rdf:type ?resource12.
+        VALUES ?resource1 {
+          <https://new.wikibus.org/page/brands>
+        }
+        ?resource1 schema:mainEntity ?resource2.
+      }
     }
   }
 }
