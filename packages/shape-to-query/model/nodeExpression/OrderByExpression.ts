@@ -1,7 +1,7 @@
 import { GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
-import { SELECT, Select, SparqlTemplateResult } from '@tpluscode/sparql-builder'
+import { SELECT, Select } from '@tpluscode/sparql-builder'
 import { TRUE } from '../../lib/rdf'
 import { getOne } from './util'
 import { NodeExpression, Parameters } from './NodeExpression'
@@ -21,12 +21,12 @@ export class OrderByExpression implements NodeExpression {
   }
 
   constructor(
-    private readonly orderExpression: NodeExpression,
-    private readonly nodes: NodeExpression,
-    private readonly descending: boolean) {
+    public readonly orderExpression: NodeExpression,
+    public readonly nodes: NodeExpression,
+    public readonly descending = false) {
   }
 
-  buildPatterns(arg: Parameters): Select | SparqlTemplateResult {
+  buildPatterns(arg: Parameters): Select {
     const orderVariable = arg.variable()
     const selectOrPatterns = this.nodes.buildPatterns(arg)
     const orderPatterns = this.orderExpression.buildPatterns({
@@ -42,6 +42,6 @@ export class OrderByExpression implements NodeExpression {
       select = SELECT`${arg.subject} ${arg.object}`.WHERE`${selectOrPatterns}`
     }
 
-    return select.WHERE`${orderPatterns}`.ORDER().BY(orderVariable, this.descending)
+    return select.WHERE`OPTIONAL { ${orderPatterns} }`.ORDER().BY(orderVariable, this.descending)
   }
 }

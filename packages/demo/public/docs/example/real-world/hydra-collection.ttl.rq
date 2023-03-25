@@ -21,7 +21,7 @@ WHERE {
         FILTER(?resource9 = rdf:type)
         ?resource7 hydra:object ?resource6.
         ?resource6 ^rdf:type ?resource4.
-        ?resource4 rdfs:label ?resource5.
+        OPTIONAL { ?resource4 rdfs:label ?resource5. }
         VALUES ?resource1 {
           <https://new.wikibus.org/page/brands>
         }
