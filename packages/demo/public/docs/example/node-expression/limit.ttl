@@ -1,0 +1,17 @@
+PREFIX schema: <http://schema.org/>
+PREFIX ex: <http://example.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+[
+  a sh:NodeShape ;
+  sh:targetClass schema:Person ;
+  sh:property
+    [
+      sh:path ex:oneParent ;
+      sh:values
+        [
+          sh:limit 1 ;
+          sh:nodes [ sh:path schema:parent ] ;
+        ] ;
+    ] ;
+] .
