@@ -13,7 +13,7 @@ describe('model/nodeExpression/LimitExpression', () => {
 
   before(() => import('../../sparql'))
   beforeEach(() => {
-    factory = sinon.spy()
+    factory = sinon.stub().returns({})
   })
 
   describe('match', () => {
@@ -67,7 +67,7 @@ describe('model/nodeExpression/LimitExpression', () => {
       expect(() => {
         // when
         LimitExpression.fromPointer(pointer, factory)
-      }).to.throw
+      }).to.throw()
     })
 
     it('throws when limit is not a literal', () => {
@@ -80,7 +80,22 @@ describe('model/nodeExpression/LimitExpression', () => {
       expect(() => {
         // when
         LimitExpression.fromPointer(pointer, factory)
-      }).to.throw
+      }).to.throw()
+    })
+
+    it('return an instance of LimitExpression', () => {
+      // given
+      const pointer = blankNode()
+        .addOut(sh.limit, 15)
+        .addOut(sh.nodes, blankNode())
+
+      // when
+      const expr = LimitExpression.fromPointer(pointer, factory)
+
+      // then
+      expect(expr).to.be.instanceof(LimitExpression)
+      expect(expr).to.have.property('limit', 15)
+      expect(expr).to.have.property('nodes').to.be.ok
     })
   })
 

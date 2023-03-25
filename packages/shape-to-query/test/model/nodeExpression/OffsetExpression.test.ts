@@ -13,7 +13,7 @@ describe('model/nodeExpression/OffsetExpression', () => {
 
   before(() => import('../../sparql'))
   beforeEach(() => {
-    factory = sinon.spy()
+    factory = sinon.stub().returns({})
   })
 
   describe('match', () => {
@@ -67,7 +67,7 @@ describe('model/nodeExpression/OffsetExpression', () => {
       expect(() => {
         // when
         OffsetExpression.fromPointer(pointer, factory)
-      }).to.throw
+      }).to.throw()
     })
 
     it('throws when offset is not a literal', () => {
@@ -80,7 +80,22 @@ describe('model/nodeExpression/OffsetExpression', () => {
       expect(() => {
         // when
         OffsetExpression.fromPointer(pointer, factory)
-      }).to.throw
+      }).to.throw()
+    })
+
+    it('return an instance of OffsetExpression', () => {
+      // given
+      const pointer = blankNode()
+        .addOut(sh.offset, 5)
+        .addOut(sh.nodes, blankNode())
+
+      // when
+      const expr = OffsetExpression.fromPointer(pointer, factory)
+
+      // then
+      expect(expr).to.be.instanceof(OffsetExpression)
+      expect(expr).to.have.property('offset', 5)
+      expect(expr).to.have.property('nodes').to.be.ok
     })
   })
 
