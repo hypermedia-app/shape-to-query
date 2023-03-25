@@ -6,6 +6,7 @@ import { FilterShapeExpression } from './FilterShapeExpression'
 import { LimitExpression } from './LimitExpression'
 import { OffsetExpression } from './OffsetExpression'
 import { NodeExpression } from './NodeExpression'
+import { OrderByExpression } from './OrderByExpression'
 
 export interface NodeExpressionFactory {
   (pointer: GraphPointer): NodeExpression
@@ -23,6 +24,7 @@ export const nodeExpressions: NodeExpressionStatic[] = [
   FilterShapeExpression,
   LimitExpression,
   OffsetExpression,
+  OrderByExpression,
 ]
 
 export const fromNode: NodeExpressionFactory = (pointer: GraphPointer): NodeExpression => {

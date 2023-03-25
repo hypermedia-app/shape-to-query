@@ -1,6 +1,7 @@
 PREFIX schema: <http://schema.org/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 CONSTRUCT {
   ?resource1 schema:mainEntity ?resource2.
   ?resource2 hydra:member ?resource4.
@@ -15,16 +16,18 @@ WHERE {
     ?resource1 schema:mainEntity ?resource2.
     {
       SELECT ?resource2 ?resource4 WHERE {
-        ?resource2 ((rdf:type*)/hydra:memberAssertion) ?resource6.
-        ?resource6 hydra:property ?resource8.
-        FILTER(?resource8 = rdf:type)
-        ?resource6 hydra:object ?resource5.
-        ?resource5 ^rdf:type ?resource4.
+        ?resource2 ((rdf:type*)/hydra:memberAssertion) ?resource7.
+        ?resource7 hydra:property ?resource9.
+        FILTER(?resource9 = rdf:type)
+        ?resource7 hydra:object ?resource6.
+        ?resource6 ^rdf:type ?resource4.
+        OPTIONAL { ?resource4 rdfs:label ?resource5. }
         VALUES ?resource1 {
           <https://new.wikibus.org/page/brands>
         }
         ?resource1 schema:mainEntity ?resource2.
       }
+      ORDER BY (?resource5)
       OFFSET 78
       LIMIT 39
     }

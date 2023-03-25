@@ -450,6 +450,32 @@ Optionally, a path expression can have one value of `sh:nodes` property which de
   </s2q-snippet>
 </div>
 
+### OrderBy Expressions ### {#shacl-orderBy-expression}
+
+Note: SHACL-AF spec: [[shacl-af#orderBy]]
+
+Use `sh:orderBy` to sort a set of focus nodes by a property from the specific path
+
+<div class="example">
+  Find 10 most recent articles
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/order-by.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/order-by.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+Note: `sh:desc` is optional and defaults to `false`
+
 ### Limit Expressions ### {#shacl-limit}
 
 Note: SHACL-AF spec: [[shacl-af#limit]]
