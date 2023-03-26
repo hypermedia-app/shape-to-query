@@ -1,6 +1,6 @@
 import { DatasetCore } from 'rdf-js'
 import { Assertion } from 'chai'
-import { toCanonical } from 'rdf-dataset-ext'
+import toCanonical from 'rdf-dataset-ext/toCanonical.js'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
