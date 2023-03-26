@@ -7,10 +7,12 @@ import StreamClient from 'sparql-http-client'
 import { fromFile } from 'rdf-utils-fs'
 import { expect } from 'chai'
 import $rdf from 'rdf-ext'
-import { schema, sh } from '@tpluscode/rdf-ns-builders'
+import { hydra, rdf, schema } from '@tpluscode/rdf-ns-builders'
 import namespace from '@rdfjs/namespace'
+import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { constructQuery } from '../lib/shapeToQuery.js'
 import { parse, raw } from './nodeFactory.js'
+import { ex } from './namespace.js'
 import './chai-dataset.js'
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
@@ -34,8 +36,8 @@ describe('@hydrofoil/shape-to-query', () => {
       resources: ['http://localhost:3030'],
     })
 
-    const tbbt = require.resolve('tbbt-ld/dist/tbbt.nq')
-    await client.store.put(fromFile(tbbt))
+    await client.store.put(fromFile(require.resolve('tbbt-ld/dist/tbbt.nq')))
+    await client.store.post(fromFile(require.resolve('./store-data.trig')))
   })
 
   context('executing queries', () => {
@@ -393,6 +395,47 @@ describe('@hydrofoil/shape-to-query', () => {
         ${tbbt('sheldon-cooper')} ${schema.givenName} "Sheldon" .
       `
       expect(filtered).to.equalDataset(expected)
+    })
+
+    it('chaining properties from a subquery with sh:node', async () => {
+      // given
+      const shape = await parse`
+        <> 
+          ${sh.targetNode} ${ex.people} ;
+          ${sh.property} [
+            ${sh.path} ${hydra.member} ;
+            ${sh.values} [
+              ${sh.filterShape} [
+                ${sh.property} [
+                  ${sh.path} ${schema.jobTitle} ;
+                  ${sh.hasValue} "neurobiologist" ;
+                ] ;
+              ] ;
+              ${sh.nodes} [
+                ${sh.path} [ ${sh.inversePath} ${rdf.type} ] ;
+                ${sh.nodes} [
+                  ${sh.path} ${ex.memberType} ;
+                ] ;
+              ]
+            ] ;
+            ${sh.node} [
+              ${sh.property} [
+                ${sh.path} ${schema.givenName} ;
+              ] ;
+            ] ;
+          ]
+        .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${ex.people} ${hydra.member} ${tbbt('amy-farrah-fowler')} .
+        ${tbbt('amy-farrah-fowler')} ${schema.givenName} "Amy" .
+      `
+      expect(result).to.equalDataset(expected)
     })
   })
 })
