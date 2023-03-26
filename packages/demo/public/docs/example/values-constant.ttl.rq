@@ -1,13 +1,13 @@
 PREFIX schema: <http://schema.org/>
 CONSTRUCT {
-  ?resource1 schema:givenName ?resource3.
-  ?resource1 schema:familyName ?resource5.
+  ?resource1 schema:givenName ?resource2.
+  ?resource1 schema:familyName ?resource3.
 }
 WHERE {
   VALUES ?resource1 {
     <https://tbbt.tv/sheldon-cooper>
   }
-  { BIND("Sheldon" AS ?resource3) }
+  { BIND("Sheldon" AS ?resource2) }
   UNION
-  { BIND("Cooper" AS ?resource5) }
+  { BIND("Cooper" AS ?resource3) }
 }
