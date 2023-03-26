@@ -35,10 +35,9 @@ export default class extends Shape implements PropertyShape {
     const visitor = new PathVisitor(variable)
     let patterns: ShapePatterns
     if (this.rules.length) {
-      const objectNode = variable()
       const rulePatterns = this.rules.map(r => r.buildPatterns({
         focusNode,
-        objectNode,
+        objectNode: pathEnd,
         variable,
         rootPatterns,
       }))

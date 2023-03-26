@@ -1,0 +1,11 @@
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX ex: <http://example.org/>
+
+ex:people {
+  ex:people
+    a hydra:Collection ;
+    ex:memberType schema:Person ;
+  .
+}
