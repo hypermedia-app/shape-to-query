@@ -7,7 +7,7 @@ import { blankNode } from '../../nodeFactory.js'
 import { FilterShapeExpression } from '../../../model/nodeExpression/FilterShapeExpression.js'
 import { variable } from '../../variable.js'
 import { NodeShape } from '../../../model/NodeShape.js'
-import { NodeExpression } from '../../../model/nodeExpression'
+import { NodeExpression } from '../../../model/nodeExpression/NodeExpression.js'
 import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpression.js'
 
 describe('model/nodeExpression/FilterShapeExpression', () => {
@@ -133,6 +133,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
         subject,
         object,
         variable,
+        rootPatterns: undefined,
       })
 
       // then
@@ -160,6 +161,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
         subject,
         object,
         variable,
+        rootPatterns: undefined,
       })
 
       // then

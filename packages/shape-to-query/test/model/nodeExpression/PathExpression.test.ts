@@ -128,7 +128,7 @@ describe('model/nodeExpression/PathExpression', () => {
       // when
       const subject = sh.this
       const object = $rdf.variable('obj')
-      const patterns = expr.buildPatterns({ subject, object, variable })
+      const patterns = expr.buildPatterns({ subject, object, variable, rootPatterns: undefined })
 
       // then
       expect(patterns).to.equalPatternsVerbatim('sh:this schema:knows/schema:familyName ?obj .')
@@ -144,7 +144,7 @@ describe('model/nodeExpression/PathExpression', () => {
       // when
       const subject = $rdf.namedNode('sub')
       const object = $rdf.variable('obj')
-      const patterns = expr.buildPatterns({ subject, object, variable })
+      const patterns = expr.buildPatterns({ subject, object, variable, rootPatterns: undefined })
 
       // then
       expect(patterns).to.equalPatterns(`

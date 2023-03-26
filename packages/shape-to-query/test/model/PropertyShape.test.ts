@@ -17,7 +17,7 @@ describe('model/PropertyShape', () => {
 
       // when
       const focusNode = $rdf.namedNode('foo')
-      const { whereClause, constructClause } = shape.buildPatterns({ focusNode, variable })
+      const { whereClause, constructClause } = shape.buildPatterns({ focusNode, variable, rootPatterns: undefined })
 
       // then
       expect(whereClause).to.equalPatterns('<foo> schema:knows ?resource .')
@@ -42,7 +42,7 @@ describe('model/PropertyShape', () => {
 
       // when
       const focusNode = $rdf.variable('this')
-      const { whereClause, constructClause } = shape.buildPatterns({ focusNode, variable })
+      const { whereClause, constructClause } = shape.buildPatterns({ focusNode, variable, rootPatterns: undefined })
 
       // then
       const query = sparql`CONSTRUCT { ${constructClause} } WHERE { ${whereClause} }`
@@ -68,7 +68,7 @@ describe('model/PropertyShape', () => {
 
       // when
       const focusNode = $rdf.variable('this')
-      const constraints = shape.buildConstraints({ focusNode, variable })
+      const constraints = shape.buildConstraints({ focusNode, variable, rootPatterns: undefined })
 
       // then
       expect(constraints).to.eq('')

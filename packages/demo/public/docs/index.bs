@@ -450,6 +450,106 @@ Optionally, a path expression can have one value of `sh:nodes` property which de
   </s2q-snippet>
 </div>
 
+### Count Expressions ### {#shacl-count-expression}
+
+Note: SHACL-AF spec: [[shacl-af#count]]
+
+<div class="example">
+  Count the number of articles
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/count.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/count.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+### OrderBy Expressions ### {#shacl-orderBy-expression}
+
+Note: SHACL-AF spec: [[shacl-af#orderBy]]
+
+Use `sh:orderBy` to sort a set of focus nodes by a property from the specific path
+
+<div class="example">
+  Find 10 most recent articles
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/order-by.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/order-by.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+Note: `sh:desc` is optional and defaults to `false`
+
+### Limit Expressions ### {#shacl-limit}
+
+Note: SHACL-AF spec: [[shacl-af#limit]]
+
+Returns the first N nodes from the inner node expression
+
+<div class="example">
+  Select only one value of a resource's `schema:parent` property
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/limit.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/limit.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+Note: `sh:limit` makes most sense when combined with `sh:orderBy` or `sh:select`
+
+### Offset Expressions ### {#shacl-offset}
+
+Note: SHACL-AF spec: [[shacl-af#offset]]
+
+Skips a number of nodes from the inner node expression
+
+<div class="example">
+  Select only one value of a resource's `schema:parent` property
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/offset.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/offset.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+Note: `sh:offset` makes most sense when combined with `sh:limit` and `sh:orderBy` or `sh:select`
+
 ## Read-world examples ## {#real-world-examples}
 
 ### Filtering and paging a `hydra:Collection` ### {#example-hydra-collection}

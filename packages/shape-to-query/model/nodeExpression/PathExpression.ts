@@ -4,7 +4,8 @@ import { sh } from '@tpluscode/rdf-ns-builders'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { toSparql } from 'clownface-shacl-path'
 import { getOne, getOneOrZero } from './util.js'
-import { NodeExpressionFactory, NodeExpression, Parameters } from './index.js'
+import { NodeExpression, Parameters } from './NodeExpression.js'
+import { NodeExpressionFactory } from './index.js'
 
 export class PathExpression implements NodeExpression {
   static match(pointer: GraphPointer) {
@@ -25,11 +26,11 @@ export class PathExpression implements NodeExpression {
   constructor(public readonly path: SparqlTemplateResult, public readonly nodes?: NodeExpression) {
   }
 
-  buildPatterns({ subject, object, variable }: Parameters): SparqlTemplateResult {
+  buildPatterns({ subject, object, variable, rootPatterns }: Parameters): SparqlTemplateResult {
     if (this.nodes) {
       const joined = variable()
       return sparql`
-        ${this.nodes.buildPatterns({ subject, object: joined, variable })}
+        ${this.nodes.buildPatterns({ subject, object: joined, variable, rootPatterns })}
         ${joined} ${this.path} ${object} .
       `
     }

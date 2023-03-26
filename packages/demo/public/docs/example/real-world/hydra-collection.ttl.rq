@@ -1,13 +1,50 @@
+PREFIX schema: <http://schema.org/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-CONSTRUCT { ?resource1 hydra:member ?resource3. }
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+CONSTRUCT {
+  ?resource1 schema:mainEntity ?resource2.
+  ?resource2 hydra:member ?resource4.
+  ?resource2 hydra:totalItems ?resource11.
+}
 WHERE {
   VALUES ?resource1 {
-    <https://new.wikibus.org/brands>
+    <https://new.wikibus.org/page/brands>
   }
-  ?resource1 ((rdf:type*)/hydra:memberAssertion) ?resource5.
-  ?resource5 hydra:property ?resource7.
-  FILTER(?resource7 = rdf:type)
-  ?resource5 hydra:object ?resource4.
-  ?resource4 ^rdf:type ?resource3.
+  { ?resource1 schema:mainEntity ?resource2. }
+  UNION
+  {
+    ?resource1 schema:mainEntity ?resource2.
+    {
+      SELECT ?resource2 ?resource4 WHERE {
+        ?resource2 ((rdf:type*)/hydra:memberAssertion) ?resource7.
+        ?resource7 hydra:property ?resource9.
+        FILTER(?resource9 = rdf:type)
+        ?resource7 hydra:object ?resource6.
+        ?resource6 ^rdf:type ?resource4.
+        OPTIONAL { ?resource4 rdfs:label ?resource5. }
+        VALUES ?resource1 {
+          <https://new.wikibus.org/page/brands>
+        }
+        ?resource1 schema:mainEntity ?resource2.
+      }
+      ORDER BY (?resource5)
+      OFFSET 78
+      LIMIT 39
+    }
+    UNION
+    {
+      SELECT (COUNT(?resource12) AS ?resource11) WHERE {
+        ?resource2 ((rdf:type*)/hydra:memberAssertion) ?resource14.
+        ?resource14 hydra:property ?resource16.
+        FILTER(?resource16 = rdf:type)
+        ?resource14 hydra:object ?resource13.
+        ?resource13 ^rdf:type ?resource12.
+        VALUES ?resource1 {
+          <https://new.wikibus.org/page/brands>
+        }
+        ?resource1 schema:mainEntity ?resource2.
+      }
+    }
+  }
 }

@@ -8,6 +8,7 @@ export interface Parameters {
   valueNode: Variable
   variable: VariableSequence
   propertyPath?: SparqlTemplateResult
+  rootPatterns: SparqlTemplateResult
 }
 
 export abstract class ConstraintComponent {

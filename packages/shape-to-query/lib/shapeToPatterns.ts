@@ -1,5 +1,6 @@
 import { NamedNode } from 'rdf-js'
 import type { GraphPointer } from 'clownface'
+import { sparql } from '@tpluscode/sparql-builder'
 import { fromNode } from '../model/fromNode.js'
 import { flatten, ShapePatterns } from './shapePatterns.js'
 import { createVariableSequence } from './variableSequence.js'
@@ -18,6 +19,7 @@ export function shapeToPatterns(shape: GraphPointer, options: Options = {}): Sha
   const properties = nodeShape.buildPatterns({
     focusNode,
     variable,
+    rootPatterns: sparql``,
   })
 
   const constraints = {
@@ -26,6 +28,7 @@ export function shapeToPatterns(shape: GraphPointer, options: Options = {}): Sha
       focusNode,
       valueNode: variable(),
       variable,
+      rootPatterns: sparql``,
     }),
   }
 

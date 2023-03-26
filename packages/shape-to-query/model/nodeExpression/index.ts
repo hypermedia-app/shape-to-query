@@ -1,22 +1,13 @@
-import { Variable } from 'rdf-js'
-import { SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { GraphPointer } from 'clownface'
-import { FocusNode } from '../../lib/FocusNode.js'
-import { VariableSequence } from '../../lib/variableSequence.js'
 import { ConstantTermExpression } from './ConstantTermExpression.js'
 import { FocusNodeExpression } from './FocusNodeExpression.js'
 import { PathExpression } from './PathExpression.js'
 import { FilterShapeExpression } from './FilterShapeExpression.js'
-
-export interface Parameters {
-  subject: FocusNode
-  object: Variable
-  variable: VariableSequence
-}
-
-export interface NodeExpression {
-  buildPatterns(arg: Parameters): SparqlTemplateResult
-}
+import { LimitExpression } from './LimitExpression.js'
+import { OffsetExpression } from './OffsetExpression.js'
+import { NodeExpression } from './NodeExpression.js'
+import { OrderByExpression } from './OrderByExpression.js'
+import { CountExpression } from './CountExpression.js'
 
 export interface NodeExpressionFactory {
   (pointer: GraphPointer): NodeExpression
@@ -32,6 +23,10 @@ export const nodeExpressions: NodeExpressionStatic[] = [
   FocusNodeExpression,
   PathExpression,
   FilterShapeExpression,
+  LimitExpression,
+  OffsetExpression,
+  OrderByExpression,
+  CountExpression,
 ]
 
 export const fromNode: NodeExpressionFactory = (pointer: GraphPointer): NodeExpression => {

@@ -18,7 +18,7 @@ describe('lib/model/Shape', () => {
 
       // when
       const focusNode = $rdf.namedNode('this')
-      const constraints = shape.buildLogicalConstraints({ focusNode, variable })
+      const constraints = shape.buildLogicalConstraints({ focusNode, variable, rootPatterns: undefined })
 
       // then
       expect(constraints).to.eq(emptyPatterns)
@@ -37,7 +37,7 @@ describe('lib/model/Shape', () => {
 
       // when
       const focusNode = $rdf.namedNode('this')
-      const constraints = shape.buildLogicalConstraints({ focusNode, variable })
+      const constraints = shape.buildLogicalConstraints({ focusNode, variable, rootPatterns: undefined })
 
       // then
       expect(constraints).to.eq(emptyPatterns)
@@ -63,7 +63,7 @@ describe('lib/model/Shape', () => {
 
       // when
       const focusNode = $rdf.namedNode('this')
-      const { whereClause } = shape.buildLogicalConstraints({ focusNode, variable })
+      const { whereClause } = shape.buildLogicalConstraints({ focusNode, variable, rootPatterns: undefined })
 
       // then
       expect(whereClause).to.equalPatterns(`{
@@ -93,7 +93,7 @@ describe('lib/model/Shape', () => {
 
       // when
       const focusNode = $rdf.namedNode('this')
-      const { whereClause } = shape.buildLogicalConstraints({ focusNode, variable })
+      const { whereClause } = shape.buildLogicalConstraints({ focusNode, variable, rootPatterns: undefined })
 
       // then
       expect(whereClause).to.equalPatterns(`

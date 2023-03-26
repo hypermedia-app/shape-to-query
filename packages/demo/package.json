@@ -7,7 +7,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "postinstall": "node --no-warnings --loader ts-node/esm public/docs/example/build.js",
+    "postinstall": "node --no-warnings --loader ts-node/esm/transpile-only public/docs/example/build.js",
     "serve": "vite",
     "build": "vite build"
   },
@@ -16,7 +16,7 @@
     "@hydrofoil/shape-to-query": "^0.4.0",
     "@rdfjs-elements/rdf-editor": "^0.5.4",
     "@rdfjs-elements/sparql-editor": "^0.2.0",
-    "@shoelace-style/shoelace": "^2.2.0",
+    "@shoelace-style/shoelace": "^2.3.0",
     "@tpluscode/rdf-ns-builders": "^3.0.2",
     "@tpluscode/rdf-string": "^1.0.1",
     "is-graph-pointer": "^2",

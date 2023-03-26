@@ -8,6 +8,8 @@ import { OrConstraintComponent } from '../../model/constraint/or.js'
 import { variable } from '../variable.js'
 
 describe('model/NodeShape', () => {
+  const rootPatterns = undefined
+
   before(() => import('../sparql'))
 
   describe('targets', () => {
@@ -23,7 +25,7 @@ describe('model/NodeShape', () => {
 
       // when
       const focusNode = $rdf.variable('s')
-      const { whereClause } = shape.buildPatterns({ focusNode, variable })
+      const { whereClause } = shape.buildPatterns({ focusNode, variable, rootPatterns })
 
       // then
       expect(whereClause).to.equalPatterns(`{
@@ -52,7 +54,7 @@ describe('model/NodeShape', () => {
 
       // when
       const focusNode = $rdf.variable('s')
-      const construct = sparql`${shape.buildPatterns({ focusNode, variable }).constructClause}`
+      const construct = sparql`${shape.buildPatterns({ focusNode, variable, rootPatterns }).constructClause}`
 
       // then
       expect(construct).to.equalPatterns(`
@@ -78,7 +80,7 @@ describe('model/NodeShape', () => {
 
       // when
       const focusNode = $rdf.namedNode('foo')
-      const { whereClause, constructClause } = shape.buildPatterns({ focusNode, variable })
+      const { whereClause, constructClause } = shape.buildPatterns({ focusNode, variable, rootPatterns })
 
       // then
       expect(whereClause).to.equalPatterns('')
@@ -106,7 +108,7 @@ describe('model/NodeShape', () => {
 
       // when
       const focusNode = $rdf.namedNode('f')
-      const { whereClause } = shape.buildPatterns({ focusNode, variable })
+      const { whereClause } = shape.buildPatterns({ focusNode, variable, rootPatterns })
 
       // then
       expect(whereClause).to.equalPatterns(`{
@@ -129,7 +131,7 @@ describe('model/NodeShape', () => {
 
         // when
         const focusNode = $rdf.namedNode('f')
-        const { whereClause } = shape.buildPatterns({ focusNode, variable })
+        const { whereClause } = shape.buildPatterns({ focusNode, variable, rootPatterns })
 
         // then
         expect(whereClause).to.equalPatterns('')
