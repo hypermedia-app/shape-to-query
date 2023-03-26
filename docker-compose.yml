@@ -17,3 +17,4 @@ services:
       dockerfile: bikeshed.Dockerfile
     volumes:
       - ./packages/demo/public:/html
+      - ./packages/demo/public:/packages/demo/public
