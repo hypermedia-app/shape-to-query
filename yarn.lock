@@ -775,14 +775,14 @@
     "@rdfjs/sink-map" "^1.0.0"
     rdfxml-streaming-parser "^1.4.0"
 
-"@rdfjs/namespace@^1", "@rdfjs/namespace@^1.0.0", "@rdfjs/namespace@^1.1.0":
+"@rdfjs/namespace@^1.0.0", "@rdfjs/namespace@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@rdfjs/namespace/-/namespace-1.1.0.tgz#869cb9a9f37c4ab4c0a03b603baeb0b95487609f"
   integrity sha512-utO5rtaOKxk8B90qzaQ0N+J5WrCI28DtfAY/zExCmXE7cOfC5uRI/oMKbLaVEPj2P7uArekt/T4IPATtj7Tjug==
   dependencies:
     "@rdfjs/data-model" "^1.1.0"
 
-"@rdfjs/namespace@^2.0.0":
+"@rdfjs/namespace@^2", "@rdfjs/namespace@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@rdfjs/namespace/-/namespace-2.0.0.tgz#e6ca090f253505d95544c6482400c89e55fc9e1c"
   integrity sha512-cBBvNrlSOah4z7u2vS74Lxng/ivELy6tNPjx+G/Ag14up8z5xmX8njn+U/mJ+nlcXO7nDGK4rgaAq7jtl9S3CQ==
@@ -3192,10 +3192,17 @@ is-glob@^4.0.0, is-glob@^4.0.1, is-glob@^4.0.3, is-glob@~4.0.1:
   dependencies:
     is-extglob "^2.1.1"
 
-is-graph-pointer@^1.2.2, is-graph-pointer@^1.3.0:
+is-graph-pointer@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/is-graph-pointer/-/is-graph-pointer-1.3.0.tgz#e7b7bc04b5993c83b0cc3abe4e719a9bf6a5138f"
   integrity sha512-EN+CsvlI55+QVtBd8Taqxi6KQmsQ0RRjkTi6TCoAYkJV1OvSqS5Gi2ypmjQ6a1hRERr19MV1NSS06BM6WGY4rg==
+  dependencies:
+    "@types/clownface" "^1.5.0"
+
+is-graph-pointer@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/is-graph-pointer/-/is-graph-pointer-2.0.0.tgz#2a85a2caf83372cdadf6752b2fe646655408021c"
+  integrity sha512-iLwR54h6W1Fv0xq8THEYUd4uGb3ea0hY8jAd17CUangc1Z6FXLPNYfwp5NNN7Hzr0+kIqAYsxgv12shPas/qaA==
   dependencies:
     "@types/clownface" "^1.5.0"
 

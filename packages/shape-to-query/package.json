@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@tpluscode/rdf-string": "^0.2.26",
-    "@rdfjs/namespace": "^1",
+    "@rdfjs/namespace": "^2",
     "@types/chai": "^4.3.4",
     "@types/chai-string": "^1.4.2",
     "@types/clownface": "^1.5.2",
