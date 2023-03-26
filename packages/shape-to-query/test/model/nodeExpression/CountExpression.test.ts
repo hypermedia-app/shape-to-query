@@ -3,14 +3,14 @@ import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { sparql } from '@tpluscode/rdf-string'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import { CountExpression } from '../../../model/nodeExpression/CountExpression'
-import { blankNode, namedNode } from '../../nodeFactory'
-import { variable } from '../../variable'
+import { CountExpression } from '../../../model/nodeExpression/CountExpression.js'
+import { blankNode, namedNode } from '../../nodeFactory.js'
+import { variable } from '../../variable.js'
 
 describe('model/nodeExpression/CountExpression', () => {
   let factory: sinon.SinonSpy
 
-  before(() => import('../../sparql'))
+  before(() => import('../../sparql.js'))
   beforeEach(() => {
     factory = sinon.stub().returns({})
   })

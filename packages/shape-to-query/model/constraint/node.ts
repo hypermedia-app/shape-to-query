@@ -1,8 +1,8 @@
 import { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { fromNode } from '../fromNode'
-import { NodeShape } from '../NodeShape'
-import { ConstraintComponent, Parameters } from './ConstraintComponent'
+import { fromNode } from '../fromNode.js'
+import { NodeShape } from '../NodeShape.js'
+import { ConstraintComponent, Parameters } from './ConstraintComponent.js'
 
 export class NodeConstraintComponent extends ConstraintComponent {
   constructor(public readonly shape: NodeShape) {

@@ -4,9 +4,9 @@ import { isGraphPointer, isLiteral } from 'is-graph-pointer'
 import { xsd } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { fromRdf } from 'rdf-literal'
-import { getOne } from './util'
-import { NodeExpression, Parameters } from './NodeExpression'
-import { NodeExpressionFactory } from './index'
+import { getOne } from './util.js'
+import { NodeExpression, Parameters } from './NodeExpression.js'
+import { NodeExpressionFactory } from './index.js'
 
 export class OffsetExpression implements NodeExpression {
   static match(pointer: GraphPointer) {

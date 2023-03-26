@@ -1,15 +1,15 @@
 import $rdf from 'rdf-ext'
 import { expect } from 'chai'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import Shape from '../../model/Shape'
-import { emptyPatterns } from '../../lib/shapePatterns'
-import { ConstraintComponent } from '../../model/constraint/ConstraintComponent'
-import { OrConstraintComponent } from '../../model/constraint/or'
-import { AndConstraintComponent } from '../../model/constraint/and'
-import { variable } from '../variable'
+import Shape from '../../model/Shape.js'
+import { emptyPatterns } from '../../lib/shapePatterns.js'
+import { ConstraintComponent } from '../../model/constraint/ConstraintComponent.js'
+import { OrConstraintComponent } from '../../model/constraint/or.js'
+import { AndConstraintComponent } from '../../model/constraint/and.js'
+import { variable } from '../variable.js'
 
 describe('lib/model/Shape', () => {
-  before(() => import('../sparql'))
+  before(() => import('../sparql.js'))
 
   describe('buildLogicalConstraints', () => {
     it('returns empty patterns when there are no constraints', () => {

@@ -1,6 +1,6 @@
 import { Variable } from 'rdf-js'
-import { VariableSequence } from '../../lib/variableSequence'
-import { ShapePatterns } from '../../lib/shapePatterns'
+import { VariableSequence } from '../../lib/variableSequence.js'
+import { ShapePatterns } from '../../lib/shapePatterns.js'
 
 export interface Parameters {
   focusNode: Variable

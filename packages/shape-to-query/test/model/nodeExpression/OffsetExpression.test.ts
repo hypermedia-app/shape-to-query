@@ -4,14 +4,14 @@ import sinon from 'sinon'
 import { sparql } from '@tpluscode/rdf-string'
 import { schema } from '@tpluscode/rdf-ns-builders'
 import { SELECT } from '@tpluscode/sparql-builder'
-import { OffsetExpression } from '../../../model/nodeExpression/OffsetExpression'
-import { blankNode } from '../../nodeFactory'
-import { variable } from '../../variable'
+import { OffsetExpression } from '../../../model/nodeExpression/OffsetExpression.js'
+import { blankNode } from '../../nodeFactory.js'
+import { variable } from '../../variable.js'
 
 describe('model/nodeExpression/OffsetExpression', () => {
   let factory: sinon.SinonSpy
 
-  before(() => import('../../sparql'))
+  before(() => import('../../sparql.js'))
   beforeEach(() => {
     factory = sinon.stub().returns({})
   })

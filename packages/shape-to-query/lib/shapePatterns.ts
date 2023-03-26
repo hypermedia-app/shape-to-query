@@ -1,5 +1,5 @@
 import { BaseQuad } from 'rdf-js'
-import TermSet from '@rdfjs/term-set'
+import $rdf from 'rdf-ext'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { UNION } from '@tpluscode/sparql-builder/expressions'
 
@@ -27,7 +27,7 @@ export function flatten(...patterns: ShapePatterns[]): ShapePatterns {
 }
 
 function unique(...construct: BaseQuad[][]): BaseQuad[] {
-  const set = new TermSet<BaseQuad>(construct.flatMap(arr => arr))
+  const set = $rdf.termSet(construct.flatMap(arr => arr))
   return [...set]
 }
 

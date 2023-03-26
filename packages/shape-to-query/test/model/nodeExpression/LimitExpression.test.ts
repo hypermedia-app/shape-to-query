@@ -4,14 +4,14 @@ import { sparql } from '@tpluscode/rdf-string'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import { SELECT } from '@tpluscode/sparql-builder'
-import { LimitExpression } from '../../../model/nodeExpression/LimitExpression'
-import { blankNode } from '../../nodeFactory'
-import { variable } from '../../variable'
+import { LimitExpression } from '../../../model/nodeExpression/LimitExpression.js'
+import { blankNode } from '../../nodeFactory.js'
+import { variable } from '../../variable.js'
 
 describe('model/nodeExpression/LimitExpression', () => {
   let factory: sinon.SinonSpy
 
-  before(() => import('../../sparql'))
+  before(() => import('../../sparql.js'))
   beforeEach(() => {
     factory = sinon.stub().returns({})
   })

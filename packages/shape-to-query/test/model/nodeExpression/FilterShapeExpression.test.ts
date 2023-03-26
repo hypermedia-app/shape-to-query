@@ -3,12 +3,12 @@ import { expect } from 'chai'
 import sinon from 'sinon'
 import $rdf from 'rdf-ext'
 import { sparql } from '@tpluscode/sparql-builder'
-import { blankNode } from '../../nodeFactory'
-import { FilterShapeExpression } from '../../../model/nodeExpression/FilterShapeExpression'
-import { variable } from '../../variable'
-import { NodeShape } from '../../../model/NodeShape'
-import { NodeExpression } from '../../../model/nodeExpression/NodeExpression'
-import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpression'
+import { blankNode } from '../../nodeFactory.js'
+import { FilterShapeExpression } from '../../../model/nodeExpression/FilterShapeExpression.js'
+import { variable } from '../../variable.js'
+import { NodeShape } from '../../../model/NodeShape.js'
+import { NodeExpression } from '../../../model/nodeExpression/NodeExpression.js'
+import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpression.js'
 
 describe('model/nodeExpression/FilterShapeExpression', () => {
   let factory: sinon.SinonSpy

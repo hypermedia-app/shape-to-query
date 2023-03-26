@@ -1,19 +1,18 @@
 import { DatasetCore } from 'rdf-js'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { shrink } from '@zazuko/rdf-vocabularies'
+import { shrink } from '@zazuko/prefixes'
 import clownface, { GraphPointer } from 'clownface'
 import $rdf from 'rdf-ext'
-import loadShacl from '@zazuko/rdf-vocabularies/datasets/sh'
-import loadDash from '@zazuko/rdf-vocabularies/datasets/dash'
-import TermSet from '@rdfjs/term-set'
+import loadShacl from '@vocabulary/sh'
+import loadDash from '@vocabulary/dash'
 import { sparql } from '@tpluscode/sparql-builder'
-import { TRUE } from '../../lib/rdf'
-import { ConstraintComponent } from './ConstraintComponent'
-import { constraintComponents } from './index'
+import { TRUE } from '../../lib/rdf.js'
+import { ConstraintComponent } from './ConstraintComponent.js'
+import { constraintComponents } from './index.js'
 
 export default function * (shape: GraphPointer): Generator<ConstraintComponent> {
   const graph = loadComponentsGraph()
-  const shapeProperties = new TermSet([...shape.dataset.match(shape.term)]
+  const shapeProperties = $rdf.termSet([...shape.dataset.match(shape.term)]
     .map(({ predicate }) => predicate))
 
   for (const parameter of shapeProperties) {
@@ -57,8 +56,8 @@ let dataset: DatasetCore
 function loadComponentsGraph() {
   if (!dataset) {
     dataset = $rdf.dataset()
-      .addAll(loadShacl($rdf))
-      .addAll(loadDash($rdf))
+      .addAll(loadShacl({ factory: $rdf }))
+      .addAll(loadDash({ factory: $rdf }))
   }
 
   return clownface({ dataset })

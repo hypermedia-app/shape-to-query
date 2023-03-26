@@ -1,15 +1,15 @@
 import { Term } from 'rdf-js'
-import { GraphPointer, MultiPointer } from 'clownface'
+import { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isGraphPointer, isNamedNode } from 'is-graph-pointer'
-import TermMap from '@rdfjs/term-map'
-import { TRUE } from '../lib/rdf'
-import { fromNode as nodeExpression } from '../nodeExpressions'
-import NodeShapeImpl, { NodeShape } from './NodeShape'
-import * as target from './target'
-import PropertyShape from './PropertyShape'
-import { PropertyValueRule } from './Rule'
-import createConstraints from './constraint/factory'
+import $rdf from 'rdf-ext'
+import { TRUE } from '../lib/rdf.js'
+import { fromNode as nodeExpression } from '../nodeExpressions.js'
+import NodeShapeImpl, { NodeShape } from './NodeShape.js'
+import * as target from './target/index.js'
+import PropertyShape from './PropertyShape.js'
+import { PropertyValueRule } from './Rule.js'
+import createConstraints from './constraint/factory.js'
 
 function nodeShape(pointer: GraphPointer): NodeShape {
   const properties = pointer
@@ -24,8 +24,12 @@ function nodeShape(pointer: GraphPointer): NodeShape {
   )
 }
 
+interface TargetConstructor {
+  new(...args: any[]): target.Target
+}
+
 function * targets(pointer: GraphPointer): Generator<target.Target> {
-  const targetMap = new TermMap<Term, { new(ptr: MultiPointer): target.Target }>([
+  const targetMap = $rdf.termMap<Term, TargetConstructor>([
     [sh.targetNode, target.TargetNode],
     [sh.targetClass, target.TargetClass],
     [sh.targetSubjectsOf, target.TargetSubjectsOf],

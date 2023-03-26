@@ -5,7 +5,7 @@ import $rdf from 'rdf-ext'
 import toStream from 'string-to-stream'
 import { turtle } from '@tpluscode/rdf-string'
 import { StreamParser } from 'n3'
-import { fromStream } from 'rdf-dataset-ext'
+import fromStream from 'rdf-dataset-ext/fromStream.js'
 
 export function namedNode<Iri extends string = string>(term: Iri | NamedNode<Iri>): GraphPointer<NamedNode, DatasetExt> {
   return clownface({ dataset: $rdf.dataset() }).namedNode(term)

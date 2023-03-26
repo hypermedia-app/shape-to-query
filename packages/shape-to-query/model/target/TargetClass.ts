@@ -5,8 +5,8 @@ import $rdf from 'rdf-ext'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import { isGraphPointer } from 'is-graph-pointer'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'
-import { ShapePatterns } from '../../lib/shapePatterns'
-import { Target, Parameters } from './Target'
+import { ShapePatterns } from '../../lib/shapePatterns.js'
+import { Target, Parameters } from './Target.js'
 
 export class TargetClass extends Target {
   constructor(public readonly classes: MultiPointer<NamedNode>) {

@@ -1,12 +1,12 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import $rdf from 'rdf-ext'
-import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpression'
-import { namedNode } from '../../nodeFactory'
-import { variable } from '../../variable'
+import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpression.js'
+import { namedNode } from '../../nodeFactory.js'
+import { variable } from '../../variable.js'
 
 describe('model/nodeExpression/FocusNodeExpression', () => {
-  before(() => import('../../sparql'))
+  before(() => import('../../sparql.js'))
 
   describe('match', () => {
     it('return true when value is sh:this', () => {

@@ -1,8 +1,8 @@
-import { GraphPointer } from 'clownface'
-import { NodeExpression } from './NodeExpression'
+import { AnyPointer, GraphPointer } from 'clownface'
+import { NodeExpression } from './NodeExpression.js'
 
 export interface NodeExpressionFactory {
-  (pointer: GraphPointer): NodeExpression
+  (pointer: AnyPointer): NodeExpression
 }
 
 export interface NodeExpressionStatic {

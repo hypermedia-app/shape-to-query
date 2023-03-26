@@ -3,11 +3,11 @@ import $rdf from 'rdf-ext'
 import { expect } from 'chai'
 import { sparql } from '@tpluscode/sparql-builder'
 import clownface from 'clownface'
-import { createVariableSequence } from '../../../lib/variableSequence'
-import { TargetSubjectsOf } from '../../../model/target'
+import { createVariableSequence } from '../../../lib/variableSequence.js'
+import { TargetSubjectsOf } from '../../../model/target/index.js'
 
 describe('model/TargetSubjectsOf', () => {
-  before(() => import('../../sparql'))
+  before(() => import('../../sparql.js'))
 
   const variable = createVariableSequence('t')
 

@@ -2,10 +2,10 @@ import { GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { SELECT, Select } from '@tpluscode/sparql-builder'
-import { TRUE } from '../../lib/rdf'
-import { getOne } from './util'
-import { NodeExpression, Parameters } from './NodeExpression'
-import { NodeExpressionFactory } from './index'
+import { TRUE } from '../../lib/rdf.js'
+import { getOne } from './util.js'
+import { NodeExpression, Parameters } from './NodeExpression.js'
+import { NodeExpressionFactory } from './index.js'
 
 export class OrderByExpression implements NodeExpression {
   static match(pointer: GraphPointer) {

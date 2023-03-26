@@ -2,9 +2,9 @@ import { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isBlankNode, isGraphPointer } from 'is-graph-pointer'
 import { SELECT } from '@tpluscode/sparql-builder'
-import { NodeExpression, Parameters } from './NodeExpression'
-import { getOne, getOneOrZero } from './util'
-import { NodeExpressionFactory } from './index'
+import { NodeExpression, Parameters } from './NodeExpression.js'
+import { getOne, getOneOrZero } from './util.js'
+import { NodeExpressionFactory } from './index.js'
 
 export class CountExpression implements NodeExpression {
   static match(pointer: GraphPointer) {

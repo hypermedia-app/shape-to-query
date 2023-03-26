@@ -1,4 +1,4 @@
 ignore:
-  - "mocha-setup.js"
+  - "mocha-setup.cjs"
   - "packages/demo"
   - "packages/shape-to-query/lib/types.ts"

@@ -2,12 +2,12 @@ import { GraphPointer } from 'clownface'
 import { fromNode, ShaclPropertyPath, toSparql } from 'clownface-shacl-path'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { flatten, ShapePatterns, union } from '../lib/shapePatterns'
-import PathVisitor from '../lib/PathVisitor'
-import { Rule } from './Rule'
-import { ConstraintComponent } from './constraint/ConstraintComponent'
-import type { NodeConstraintComponent } from './constraint/node'
-import Shape, { BuildParameters } from './Shape'
+import { flatten, ShapePatterns, union } from '../lib/shapePatterns.js'
+import PathVisitor from '../lib/PathVisitor.js'
+import { Rule } from './Rule.js'
+import { ConstraintComponent } from './constraint/ConstraintComponent.js'
+import type { NodeConstraintComponent } from './constraint/node.js'
+import Shape, { BuildParameters } from './Shape.js'
 
 interface Components {
   rules?: Rule[]

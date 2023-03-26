@@ -2,15 +2,15 @@ import { expect } from 'chai'
 import { sparql } from '@tpluscode/sparql-builder'
 import $rdf from 'rdf-ext'
 import { foaf, rdf } from '@tpluscode/rdf-ns-builders'
-import NodeShape from '../../model/NodeShape'
-import { PropertyShape } from '../../model/PropertyShape'
-import { OrConstraintComponent } from '../../model/constraint/or'
-import { variable } from '../variable'
+import NodeShape from '../../model/NodeShape.js'
+import { PropertyShape } from '../../model/PropertyShape.js'
+import { OrConstraintComponent } from '../../model/constraint/or.js'
+import { variable } from '../variable.js'
 
 describe('model/NodeShape', () => {
   const rootPatterns = undefined
 
-  before(() => import('../sparql'))
+  before(() => import('../sparql.js'))
 
   describe('targets', () => {
     it('unions all targets in where clause', () => {

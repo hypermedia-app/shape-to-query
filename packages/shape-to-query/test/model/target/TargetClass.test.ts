@@ -3,11 +3,11 @@ import $rdf from 'rdf-ext'
 import { foaf, rdf, schema } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import { sparql } from '@tpluscode/sparql-builder'
-import { TargetClass } from '../../../model/target'
-import { createVariableSequence } from '../../../lib/variableSequence'
+import { TargetClass } from '../../../model/target/index.js'
+import { createVariableSequence } from '../../../lib/variableSequence.js'
 
 describe('model/TargetClass', () => {
-  before(() => import('../../sparql'))
+  before(() => import('../../sparql.js'))
 
   const variable = createVariableSequence('c')
 

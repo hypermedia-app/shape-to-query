@@ -1,10 +1,10 @@
 import { NamedNode, Variable } from 'rdf-js'
 import $rdf from 'rdf-ext'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import { FocusNode } from '../lib/FocusNode'
-import { ShapePatterns } from '../lib/shapePatterns'
-import { VariableSequence } from '../lib/variableSequence'
-import { NodeExpression } from './nodeExpression/NodeExpression'
+import { FocusNode } from '../lib/FocusNode.js'
+import { ShapePatterns } from '../lib/shapePatterns.js'
+import { VariableSequence } from '../lib/variableSequence.js'
+import { NodeExpression } from './nodeExpression/NodeExpression.js'
 
 interface Parameters {
   focusNode: FocusNode

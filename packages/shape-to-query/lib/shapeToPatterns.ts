@@ -1,9 +1,9 @@
 import { NamedNode } from 'rdf-js'
 import type { GraphPointer } from 'clownface'
 import { sparql } from '@tpluscode/sparql-builder'
-import { fromNode } from '../model/fromNode'
-import { flatten, ShapePatterns } from './shapePatterns'
-import { createVariableSequence } from './variableSequence'
+import { fromNode } from '../model/fromNode.js'
+import { flatten, ShapePatterns } from './shapePatterns.js'
+import { createVariableSequence } from './variableSequence.js'
 
 export interface Options {
   focusNode?: NamedNode

@@ -2,8 +2,8 @@ import { schema } from '@tpluscode/rdf-ns-builders'
 import { SELECT, sparql } from '@tpluscode/sparql-builder'
 import { expect } from 'chai'
 import $rdf from 'rdf-ext'
-import { PropertyValueRule } from '../../model/Rule'
-import { variable } from '../variable'
+import { PropertyValueRule } from '../../model/Rule.js'
+import { variable } from '../variable.js'
 
 describe('model/Rule', () => {
   describe('PropertyValueRule', () => {

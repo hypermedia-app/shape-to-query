@@ -3,9 +3,9 @@ import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import sinon from 'sinon'
 import { SELECT, sparql } from '@tpluscode/sparql-builder'
 import { schema } from '@tpluscode/rdf-ns-builders'
-import { OrderByExpression } from '../../../model/nodeExpression/OrderByExpression'
-import { blankNode } from '../../nodeFactory'
-import { variable } from '../../variable'
+import { OrderByExpression } from '../../../model/nodeExpression/OrderByExpression.js'
+import { blankNode } from '../../nodeFactory.js'
+import { variable } from '../../variable.js'
 
 describe('model/nodeExpression/OrderByExpression', () => {
   let factory: sinon.SinonSpy

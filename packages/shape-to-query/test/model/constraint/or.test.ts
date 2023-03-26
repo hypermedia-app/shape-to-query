@@ -1,10 +1,10 @@
 import { expect } from 'chai'
-import { OrConstraintComponent } from '../../../model/constraint/or'
-import { NodeShape } from '../../../model/NodeShape'
-import { emptyPatterns } from '../../../lib/shapePatterns'
+import { OrConstraintComponent } from '../../../model/constraint/or.js'
+import { NodeShape } from '../../../model/NodeShape.js'
+import { emptyPatterns } from '../../../lib/shapePatterns.js'
 
 describe('model/constraint/or', () => {
-  before(() => import('../../sparql'))
+  before(() => import('../../sparql.js'))
 
   it('combines all inner constraints where in UNION', () => {
     // given

@@ -2,9 +2,8 @@
 import { writeFile } from 'fs/promises'
 import * as url from 'url'
 import * as path from 'path'
-// eslint-disable-next-line import/default
-import shapeTo from '@hydrofoil/shape-to-query'
-import Expressions from '@hydrofoil/shape-to-query/nodeExpressions.js'
+import * as shapeTo from '@hydrofoil/shape-to-query/index.js'
+import { nodeExpressions } from '@hydrofoil/shape-to-query/nodeExpressions.js'
 import { fromFile } from 'rdf-utils-fs'
 import $rdf from 'rdf-ext'
 import { rdf, sh } from '@tpluscode/rdf-ns-builders'
@@ -19,7 +18,7 @@ const toAbsolutePath = (arg) => path.resolve(cwd, arg)
 const parser = new sparql.Parser()
 const generator = new sparql.Generator()
 
-Expressions.nodeExpressions.push(
+nodeExpressions.push(
   HydraCollectionMemberExpression,
   ShorthandSubselectExpression,
 )
