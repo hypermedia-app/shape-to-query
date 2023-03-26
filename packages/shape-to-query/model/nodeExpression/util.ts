@@ -1,19 +1,23 @@
 import { NamedNode } from 'rdf-js'
-import { GraphPointer } from 'clownface'
+import { AnyPointer, GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 
-export function getOne(pointer: GraphPointer, prop: NamedNode) {
+interface Check<P extends GraphPointer> {
+  (arg: AnyPointer): arg is P
+}
+
+export function getOne<P extends GraphPointer>(pointer: P | GraphPointer, prop: NamedNode, check: Check<P> = <any>isGraphPointer): P {
   const object = pointer.out(prop)
-  if (!isGraphPointer(object)) {
+  if (!check(object)) {
     throw new Error(`${prop.value} must have a single object`)
   }
 
   return object
 }
 
-export function getOneOrZero(pointer: GraphPointer, prop: NamedNode) {
+export function getOneOrZero<P extends GraphPointer>(pointer: P | GraphPointer, prop: NamedNode, check: Check<P> = <any>isGraphPointer): P {
   const object = pointer.out(prop)
-  if (isGraphPointer(object)) {
+  if (check(object)) {
     return object
   }
 

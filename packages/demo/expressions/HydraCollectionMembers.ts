@@ -1,10 +1,11 @@
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { sparql } from '@tpluscode/sparql-builder'
 import namespace from '@rdfjs/namespace'
+import { NodeExpression, Parameters } from '@hydrofoil/shape-to-query/nodeExpressions.js'
 
 const ex = namespace('http://example.org/')
 
-export class HydraCollectionMemberExpression {
+export class HydraCollectionMemberExpression implements NodeExpression {
   static match(pointer) {
     return pointer.has(rdf.type, ex.HydraCollectionMembersExpression).terms.length > 0
   }
@@ -13,7 +14,7 @@ export class HydraCollectionMemberExpression {
     return new HydraCollectionMemberExpression()
   }
 
-  buildPatterns({ subject, variable, object }) {
+  buildPatterns({ subject, variable, object }: Parameters) {
     const memberAssertion = variable()
     const ma1o = variable()
     const ma1p = variable()

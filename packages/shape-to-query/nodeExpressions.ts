@@ -1,4 +1,5 @@
-import { GraphPointer } from 'clownface'
+import { AnyPointer } from 'clownface'
+import { isGraphPointer } from 'is-graph-pointer'
 import { ConstantTermExpression } from './model/nodeExpression/ConstantTermExpression.js'
 import { FocusNodeExpression } from './model/nodeExpression/FocusNodeExpression.js'
 import { PathExpression } from './model/nodeExpression/PathExpression.js'
@@ -10,7 +11,7 @@ import { LimitExpression } from './model/nodeExpression/LimitExpression.js'
 import { NodeExpressionFactory, NodeExpressionStatic } from './model/nodeExpression/index.js'
 import { NodeExpression } from './model/nodeExpression/NodeExpression.js'
 
-export type { NodeExpression, Parameters as NodeExpressionParameters } from './model/nodeExpression/NodeExpression.js'
+export type { NodeExpression, Parameters } from './model/nodeExpression/NodeExpression.js'
 export type { NodeExpressionFactory } from './model/nodeExpression/index.js'
 
 export {
@@ -35,7 +36,11 @@ export const nodeExpressions: NodeExpressionStatic[] = [
   CountExpression,
 ]
 
-export const fromNode: NodeExpressionFactory = (pointer: GraphPointer): NodeExpression => {
+export const fromNode: NodeExpressionFactory = (pointer: AnyPointer): NodeExpression => {
+  if (!isGraphPointer(pointer)) {
+    throw new Error('Expression must be a single RDF node')
+  }
+
   const match = nodeExpressions.filter(Class => Class.match(pointer)).shift()
   if (match) {
     return match.fromPointer(pointer, fromNode)

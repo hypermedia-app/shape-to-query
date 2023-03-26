@@ -19,7 +19,7 @@
     "@rdfjs-elements/sparql-editor": "^0.2.0",
     "@shoelace-style/shoelace": "^2.3.0",
     "@tpluscode/rdf-ns-builders": "^3.0.2",
-    "@tpluscode/rdf-string": "^1.0.1",
+    "@tpluscode/rdf-string": "^1.0.2",
     "@tpluscode/sparql-builder": "^1.0.0",
     "is-graph-pointer": "^2",
     "lit": "^2.6.1",
