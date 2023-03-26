@@ -1,5 +1,25 @@
 # @hydrofoil/shape-to-query
 
+## 0.5.0
+
+### Minor Changes
+
+- fd873ab: Package is now ESM-only
+- 47032e6: This is a big internal refactoring which streamlines the handling of targets and constraints, making the library easily extensible
+
+### Patch Changes
+
+- c3addda: When `sh:hasValue` has a single object, a simple equality filter will be used in query
+- 97a64fb: Implemented Filter Shape Expression (closes #25)
+- 46fe5f2: Support Count Expressions (`sh:count`) (closes #32)
+- a956b88: `sh:and` constraint (closes #58)
+- 5f3b683: Path Expression (closes #27)
+- b9aebcf: Added support for subqueries with `sh:limit` (closes #38) and `sh:offset` (closes #39)
+- 5066298: Most basic Constant Term Expression
+- 7629dec: Support `sh:orderBy` (closes #37)
+- 5639825: Focus node expression (closes #22)
+- 3274eca: Added support for `sh:or` constraint
+
 ## 0.4.0
 
 ### Minor Changes
