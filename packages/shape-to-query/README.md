@@ -17,15 +17,4 @@ let shape: GraphPointer
 const queryString = constructQuery(shape).build()
 ```
 
-For full documentation, see https://shape-to-query.hypermedia.app/docs.
-
-## Features
-
-* Targets
-  * [x] `sh:target(Class|Node|SubjectsOf|ObjectsOf)`
-  * [] SPARQL targets
-* Property constraints
-  * [] TBD
-* Query forms
-  * [x] `CONSTRUCT`
-  * [x] `DELETE`
+For full documentation, see [https://github.com/hypermedia-app/shape-to-query](https://github.com/hypermedia-app/shape-to-query)

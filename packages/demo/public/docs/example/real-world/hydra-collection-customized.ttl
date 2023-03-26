@@ -1,0 +1,36 @@
+PREFIX schema: <http://schema.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX ex: <http://example.org/>
+
+[
+  a sh:NodeShape ;
+  sh:targetNode <https://new.wikibus.org/brands> ;
+  sh:property
+    [
+      sh:path hydra:member ;
+      sh:values
+        [
+          ex:limit 39 ;
+          ex:offset 78 ;
+          ex:orderBy
+            (
+              [
+                sh:orderBy [ sh:path schema:dateModified ] ;
+                sh:desc true
+              ]
+              [ sh:orderBy [ sh:path rdfs:label ] ]
+            ) ;
+          sh:nodes [ a ex:HydraCollectionMembersExpression ] ;
+        ] ;
+    ],
+    [
+      sh:deactivated true ;
+      sh:path hydra:totalItems ;
+      sh:values
+        [
+          sh:count [ a ex:HydraCollectionMembersExpression ] ;
+        ] ;
+    ] ;
+] .

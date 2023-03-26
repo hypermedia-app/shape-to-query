@@ -1,0 +1,63 @@
+<pre class='metadata'>
+Title: @hydrofoil/shape-to-query Conceptual Guides
+Shortname: s2q-guides
+Abstract: This document explains patterns useful when building shapes using SHACL Advanced Features
+Editor: Tomasz Pluskiewicz
+Status: LD
+Markup Shorthands: markdown yes
+Repository: https://github.com/hypermedia-app/shape-to-query
+URL: https://shape-to-query.hypermedia.app/concepts/
+Block Elements: s2q-snippet
+</pre>
+
+<pre class=include>
+path: ../include/shared.bs
+</pre>
+
+# Conceptual Guides # {#top}
+
+## Shape reuse ## {#reuse}
+
+While working with [[SHACL-AF]] you may sometimes find repeatable patterns which deal with similar data. Such scenarios
+can easily lead to duplication as seen below.
+
+<div class="example">
+  Using Property Value Expression to populate `hydra:member` and `hydra:totalItems` properties of a collection
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/reuse-duplication.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path:example/reuse-duplication.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+In this not so trivial example you can see how many triples need to be duplicated to represent the node expression 
+which retrieves all elements of a collection. Once, used to find the actual members of that collection (people) and
+second time to get their count.
+
+This can be reduced by extracting the common node expression into a separate [[rdf11-primer#section-blank-node|blank node]]
+and referencing it in the two properties.
+
+<div class="example">
+  Node expression reused
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/reuse-less-duplication.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path:example/reuse-less-duplication.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+## Creating a more efficient DSL on top of SHACL-AF ## {#dsl} 
+
+Issue: TODO
