@@ -9,6 +9,7 @@ import { schema, sh } from '@tpluscode/rdf-ns-builders'
 import namespace from '@rdfjs/namespace'
 import { constructQuery } from '../lib/shapeToQuery.js'
 import { parse, raw } from './nodeFactory.js'
+import './chai-dataset.js'
 
 const tbbt = namespace('http://localhost:8080/data/person/')
 
@@ -55,7 +56,7 @@ describe('@hydrofoil/shape-to-query', () => {
         ${tbbt('sheldon-cooper')} ${schema.parent} ${tbbt('mary-cooper')} .
         ${tbbt('mary-cooper')} ${schema.givenName} "Mary" .
       `
-      expect(result.toCanonical()).to.eq(expected.toCanonical())
+      expect(result).to.equalDataset(expected)
     })
 
     it('sh:oneOrMore returns "second level" properties', async () => {
@@ -79,7 +80,7 @@ describe('@hydrofoil/shape-to-query', () => {
         ${tbbt('sheldon-cooper')} ${schema.parent} ${tbbt('mary-cooper')} .
         ${tbbt('mary-cooper')} ${schema.givenName} "Mary" .
       `
-      expect(result.toCanonical()).to.eq(expected.toCanonical())
+      expect(result).to.equalDataset(expected)
     })
 
     it('sh:zeroOrOne returns self and child properties', async () => {
@@ -104,7 +105,7 @@ describe('@hydrofoil/shape-to-query', () => {
         ${tbbt('howard-wolowitz')} ${schema.givenName} "Howard" .
         ${tbbt('bernadette-rostenkowski')} ${schema.givenName} "Bernadette" .
       `
-      expect(result.toCanonical()).to.eq(expected.toCanonical())
+      expect(result).to.equalDataset(expected)
     })
 
     it('sh:alternativePath chained last in a sequence', async () => {
@@ -141,7 +142,7 @@ describe('@hydrofoil/shape-to-query', () => {
           ${schema.streetAddress} "2311 North Los Robles Avenue, Aparment 4B" ;
         ] .
       `
-      expect(result.toCanonical()).to.eq(expected.toCanonical())
+      expect(result).to.equalDataset(expected)
     })
 
     it('sh:alternativePath chained first in a sequence', async () => {
@@ -174,7 +175,7 @@ describe('@hydrofoil/shape-to-query', () => {
         ${tbbt('rajesh-koothrappali')} ${schema.givenName} "Rajesh" .
         ${tbbt('sheldon-cooper')} ${schema.givenName} "Sheldon" .
       `
-      expect(result.toCanonical()).to.eq(expected.toCanonical())
+      expect(result).to.equalDataset(expected)
     })
 
     it('two sh:alternativePath in a sequence', async () => {
@@ -210,7 +211,7 @@ describe('@hydrofoil/shape-to-query', () => {
         ${tbbt('sheldon-cooper')} ${schema.givenName} "Sheldon" .
         ${tbbt('sheldon-cooper')} ${schema.familyName} "Cooper" .
       `
-      expect(result.toCanonical()).to.eq(expected.toCanonical())
+      expect(result).to.equalDataset(expected)
     })
 
     it('mix of sh:target', async () => {
@@ -265,7 +266,7 @@ describe('@hydrofoil/shape-to-query', () => {
                                        ${schema.givenName} "Mary" ;
                                        ${schema.familyName} "Cooper" .
       `
-      expect(result.toCanonical()).to.eq(expected.toCanonical())
+      expect(result).to.equalDataset(expected)
     })
 
     it('sh:or nested in sh:node', async () => {
@@ -294,7 +295,7 @@ describe('@hydrofoil/shape-to-query', () => {
         ${tbbt('mary-cooper')} ${schema.familyName} "Cooper" .
         ${tbbt('stuart-bloom')} ${schema.familyName} "Bloom" .
       `
-      expect(result.toCanonical()).to.eq(expected.toCanonical())
+      expect(result).to.equalDataset(expected)
     })
 
     it('sh:hasValue filters entire focus nodes', async () => { // given
@@ -318,7 +319,7 @@ describe('@hydrofoil/shape-to-query', () => {
         ${tbbt('mary-cooper')} ${schema.givenName} "Mary" ;
                                        ${schema.familyName} "Cooper" .
       `
-      expect(result.toCanonical()).to.eq(expected.toCanonical())
+      expect(result).to.equalDataset(expected)
     })
 
     it('filtering property by sh:in', async () => {
@@ -344,7 +345,7 @@ describe('@hydrofoil/shape-to-query', () => {
         ${tbbt('bernadette-rostenkowski')} ${schema.givenName} "Bernadette" ;
                                                    ${schema.jobTitle} "microbiologist" .
       `
-      expect(result.toCanonical()).to.eq(expected.toCanonical())
+      expect(result).to.equalDataset(expected)
     })
 
     it('filtering deep inside sh:node', async () => {
@@ -386,7 +387,7 @@ describe('@hydrofoil/shape-to-query', () => {
         ${tbbt('leonard-hofstadter')} ${schema.givenName} "Leonard" .
         ${tbbt('sheldon-cooper')} ${schema.givenName} "Sheldon" .
       `
-      expect(filtered.toCanonical()).to.eq(expected.toCanonical())
+      expect(filtered).to.equalDataset(expected)
     })
   })
 })

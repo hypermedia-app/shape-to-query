@@ -7,7 +7,7 @@ import { OffsetExpression } from './model/nodeExpression/OffsetExpression.js'
 import { OrderByExpression } from './model/nodeExpression/OrderByExpression.js'
 import { CountExpression } from './model/nodeExpression/CountExpression.js'
 import { LimitExpression } from './model/nodeExpression/LimitExpression.js'
-import { NodeExpressionFactory, NodeExpressionStatic } from './model/nodeExpression'
+import { NodeExpressionFactory, NodeExpressionStatic } from './model/nodeExpression/index.js'
 import { NodeExpression } from './model/nodeExpression/NodeExpression.js'
 
 export type { NodeExpression, Parameters as NodeExpressionParameters } from './model/nodeExpression/NodeExpression.js'

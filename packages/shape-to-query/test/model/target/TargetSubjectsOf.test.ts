@@ -4,7 +4,7 @@ import { expect } from 'chai'
 import { sparql } from '@tpluscode/sparql-builder'
 import clownface from 'clownface'
 import { createVariableSequence } from '../../../lib/variableSequence.js'
-import { TargetSubjectsOf } from '../../../model/target'
+import { TargetSubjectsOf } from '../../../model/target/index.js'
 
 describe('model/TargetSubjectsOf', () => {
   before(() => import('../../sparql'))

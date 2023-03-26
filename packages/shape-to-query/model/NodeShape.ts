@@ -2,7 +2,7 @@ import { Variable } from 'rdf-js'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { emptyPatterns, flatten, ShapePatterns, union } from '../lib/shapePatterns.js'
 import { PropertyShape } from './PropertyShape.js'
-import { Target } from './target'
+import { Target } from './target/index.js'
 import { ConstraintComponent } from './constraint/ConstraintComponent.js'
 import Shape, { BuildParameters } from './Shape.js'
 

@@ -15,24 +15,25 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
-    "@tpluscode/eslint-config": "^0.4.2",
+    "@tpluscode/eslint-config": "0.4.3",
     "@types/mocha": "^10.0.1",
     "@types/sinon-chai": "^3.2.9",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
     "c8": "^7.13.0",
-    "eslint-config-standard": "^17.0.0",
+    "eslint": ">=6",
+    "eslint-config-standard": ">=11",
     "eslint-import-resolver-typescript": "^3.5.3",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-n": "^15.6.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-require-extensions": "^0.1.2",
+    "eslint-plugin-import": ">=2",
+    "eslint-plugin-n": ">=15",
+    "eslint-plugin-node": ">=11",
+    "eslint-plugin-promise": ">=6",
+    "eslint-plugin-require-extensions": ">=0.1.3",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
     "mocha": "^10.2.0",
     "sinon-chai": "^3.7.0",
-    "standard": "^17.0.0",
+    "standard": ">=11",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5",
     "yarn-deduplicate": "^6.0.1"
@@ -44,9 +45,7 @@
     "watch-files": [
       "./**/*.ts"
     ],
-    "require": [
-      "mocha-setup.js"
-    ]
+    "loader": "ts-node/esm"
   },
   "lint-staged": {
     "*.{js,ts}": [

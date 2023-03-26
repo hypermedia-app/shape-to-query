@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import { fromNode, propertyShape } from '../../model/fromNode.js'
 import { parse } from '../nodeFactory.js'
 import { ex } from '../namespace.js'
-import { TargetNode } from '../../model/target'
+import { TargetNode } from '../../model/target/index.js'
 import NodeShape from '../../model/NodeShape.js'
 
 describe('model/fromNode', () => {
