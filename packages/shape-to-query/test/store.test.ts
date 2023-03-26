@@ -1,4 +1,6 @@
 import * as path from 'path'
+import * as url from 'url'
+import module from 'module'
 import * as compose from 'docker-compose'
 import waitOn from 'wait-on'
 import StreamClient from 'sparql-http-client'
@@ -10,6 +12,9 @@ import namespace from '@rdfjs/namespace'
 import { constructQuery } from '../lib/shapeToQuery.js'
 import { parse, raw } from './nodeFactory.js'
 import './chai-dataset.js'
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
+const require = module.createRequire(import.meta.url)
 
 const tbbt = namespace('http://localhost:8080/data/person/')
 

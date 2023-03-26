@@ -9,7 +9,7 @@ import { AndConstraintComponent } from '../../model/constraint/and.js'
 import { variable } from '../variable.js'
 
 describe('lib/model/Shape', () => {
-  before(() => import('../sparql'))
+  before(() => import('../sparql.js'))
 
   describe('buildLogicalConstraints', () => {
     it('returns empty patterns when there are no constraints', () => {

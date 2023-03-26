@@ -7,7 +7,7 @@ import { namedNode } from '../nodeFactory.js'
 import { variable } from '../variable.js'
 
 describe('model/PropertyShape', () => {
-  before(() => import('../sparql'))
+  before(() => import('../sparql.js'))
 
   describe('buildPatterns', () => {
     it('creates path patterns', () => {

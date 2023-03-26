@@ -4,7 +4,7 @@ import { NodeShape } from '../../../model/NodeShape.js'
 import { emptyPatterns } from '../../../lib/shapePatterns.js'
 
 describe('model/constraint/and', () => {
-  before(() => import('../../sparql'))
+  before(() => import('../../sparql.js'))
 
   it('combines all inner constraints where', () => {
     // given

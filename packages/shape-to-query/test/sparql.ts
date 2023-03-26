@@ -1,11 +1,11 @@
 import { Variable } from 'rdf-js'
 import { Assertion, AssertionError } from 'chai'
-import { Generator, Parser, SparqlQuery } from 'sparqljs'
+import sparql, { SparqlQuery } from 'sparqljs'
 import type { SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { createVariableSequence } from '../lib/variableSequence.js'
 
-const sparqlParser = new Parser()
-const generator = new Generator()
+const sparqlParser = new sparql.Parser()
+const generator = new sparql.Generator()
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

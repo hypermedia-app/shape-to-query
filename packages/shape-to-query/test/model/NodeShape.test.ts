@@ -10,7 +10,7 @@ import { variable } from '../variable.js'
 describe('model/NodeShape', () => {
   const rootPatterns = undefined
 
-  before(() => import('../sparql'))
+  before(() => import('../sparql.js'))
 
   describe('targets', () => {
     it('unions all targets in where clause', () => {

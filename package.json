@@ -45,6 +45,9 @@
     "watch-files": [
       "./**/*.ts"
     ],
+    "require": [
+      "mocha-setup.cjs"
+    ],
     "loader": "ts-node/esm"
   },
   "lint-staged": {

@@ -11,7 +11,7 @@ import { variable } from '../../variable.js'
 describe('model/nodeExpression/LimitExpression', () => {
   let factory: sinon.SinonSpy
 
-  before(() => import('../../sparql'))
+  before(() => import('../../sparql.js'))
   beforeEach(() => {
     factory = sinon.stub().returns({})
   })

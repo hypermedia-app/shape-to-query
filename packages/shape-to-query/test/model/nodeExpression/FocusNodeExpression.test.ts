@@ -6,7 +6,7 @@ import { namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
 
 describe('model/nodeExpression/FocusNodeExpression', () => {
-  before(() => import('../../sparql'))
+  before(() => import('../../sparql.js'))
 
   describe('match', () => {
     it('return true when value is sh:this', () => {

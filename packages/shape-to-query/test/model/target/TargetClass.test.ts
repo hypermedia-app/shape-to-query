@@ -7,7 +7,7 @@ import { TargetClass } from '../../../model/target/index.js'
 import { createVariableSequence } from '../../../lib/variableSequence.js'
 
 describe('model/TargetClass', () => {
-  before(() => import('../../sparql'))
+  before(() => import('../../sparql.js'))
 
   const variable = createVariableSequence('c')
 

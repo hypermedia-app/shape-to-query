@@ -6,7 +6,7 @@ import { blankNode, literal, namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
 
 describe('model/nodeExpression/ConstantTermExpression', () => {
-  before(() => import('../../sparql'))
+  before(() => import('../../sparql.js'))
 
   describe('match', () => {
     it('return true when value is literal', () => {

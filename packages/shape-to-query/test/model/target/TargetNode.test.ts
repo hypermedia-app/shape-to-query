@@ -6,7 +6,7 @@ import { TargetNode } from '../../../model/target/index.js'
 import { createVariableSequence } from '../../../lib/variableSequence.js'
 
 describe('model/TargetNode', () => {
-  before(() => import('../../sparql'))
+  before(() => import('../../sparql.js'))
 
   const variable = createVariableSequence('t')
 
