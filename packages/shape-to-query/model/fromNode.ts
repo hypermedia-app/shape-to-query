@@ -4,11 +4,11 @@ import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isGraphPointer, isNamedNode } from 'is-graph-pointer'
 import $rdf from 'rdf-ext'
 import { TRUE } from '../lib/rdf.js'
+import { fromNode as nodeExpression } from '../nodeExpressions.js'
 import NodeShapeImpl, { NodeShape } from './NodeShape.js'
 import * as target from './target/index.js'
 import PropertyShape from './PropertyShape.js'
 import { PropertyValueRule } from './Rule.js'
-import { fromNode as nodeExpression } from './nodeExpression/index.js'
 import createConstraints from './constraint/factory.js'
 
 function nodeShape(pointer: GraphPointer): NodeShape {

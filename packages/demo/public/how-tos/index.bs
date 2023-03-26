@@ -1,0 +1,29 @@
+<pre class='metadata'>
+Title: @hydrofoil/shape-to-query How-Tos
+Shortname: s2q-how-tos
+Abstract: Guides for efficiently using SHACL-AF with the @hydrofoil/shape-to-query library
+Editor: Tomasz Pluskiewicz
+Status: LD
+Markup Shorthands: markdown yes
+Repository: https://github.com/hypermedia-app/shape-to-query
+URL: https://shape-to-query.hypermedia.app/how-tos/
+Block Elements: s2q-snippet
+</pre>
+
+<pre class=include>
+path: ../include/shared.bs
+</pre>
+
+# How-To Guides # {#top}
+
+## How to implement a custom Node Expressions ## {#node-expression-custom}
+
+Note: before proceeding you may want to read [[s2q-concepts#dsl]]
+
+### How to implement a specialized SPARQL node expression ### {#node-expression-custom-sparql}
+
+Issue: implementing hydra member assertion query 
+
+### How to implement a compound node expression ### {#node-expressions-compound}
+
+Issue: implementing a limit/offset/order shorthand

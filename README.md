@@ -1,6 +1,11 @@
 # shape-to-query
+
 Generate SPARQL queries from SHACL Shapes
 
-For usage instructions, see [shape-to-query.hypermedia.app/docs](https://shape-to-query.hypermedia.app/docs)
+Documentation is written following [Diátaxis](https://diataxis.fr/) principles:
 
-For online demo, see [shape-to-query.hypermedia.app](https://shape-to-query.hypermedia.app/)
+1. [Concept guides](https://shape-to-query.hypermedia.app/concepts)
+1. [How-To guides](https://shape-to-query.hypermedia.app/how-tos)
+1. [Reference documentation](https://shape-to-query.hypermedia.app/docs)
+
+Finally, an online demo is available: [shape-to-query.hypermedia.app](https://shape-to-query.hypermedia.app/)

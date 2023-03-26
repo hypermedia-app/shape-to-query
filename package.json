@@ -8,8 +8,9 @@
     "test": "c8 --all --reporter=lcov mocha --recursive packages/**/*.test.ts",
     "prebuild": "npm run docs",
     "build": "yarn run --cwd=packages/demo build",
-    "docs": "docker-compose run bikeshed spec /docs/index.bs",
-    "docs:watch": "docker-compose run --publish 8000:8000 bikeshed serve /docs/index.bs",
+    "build:spec": "docker-compose run --rm bikeshed --allow-nonlocal-files spec",
+    "docs": "find packages/demo/public -type f -name index.bs -exec yarn build:spec {} \\;",
+    "docs:watch": "docker-compose run --rm --publish 8000:8000 bikeshed --allow-nonlocal-files serve",
     "release": "changeset publish"
   },
   "devDependencies": {

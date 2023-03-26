@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { fromNode } from '../../../model/nodeExpression'
+import { fromNode } from '../../../nodeExpressions.js'
 import { blankNode } from '../../nodeFactory.js'
 
 describe('model/nodeExpression/index', () => {
