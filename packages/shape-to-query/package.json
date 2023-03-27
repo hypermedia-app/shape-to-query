@@ -9,7 +9,9 @@
     "*.js",
     "*.d.ts",
     "lib/*.js",
-    "lib/*.d.ts"
+    "lib/*.d.ts",
+    "model/**/*.js",
+    "model/**/*.d.ts"
   ],
   "repository": {
     "type": "git",
