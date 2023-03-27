@@ -1,5 +1,11 @@
 # @hydrofoil/shape-to-query
 
+## 0.5.1
+
+### Patch Changes
+
+- 2ab7688: Missing many modules in package
+
 ## 0.5.0
 
 ### Minor Changes
