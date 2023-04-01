@@ -1006,10 +1006,10 @@
     commander "^7.2.0"
     fs-extra "^10.0.0"
 
-"@tpluscode/rdf-ns-builders@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@tpluscode/rdf-ns-builders/-/rdf-ns-builders-3.0.2.tgz#1e536e8369d634d70062967c89c1a2ff7dce7de7"
-  integrity sha512-uPHBaS1jvm5iLi0g81sST7cMthcViAedGNYxjnXMLB9eCw7E8CnwRYz+pf72QME5R3jaih4ly8eCNXkiV+MfNg==
+"@tpluscode/rdf-ns-builders@^3.0.2", "@tpluscode/rdf-ns-builders@^3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@tpluscode/rdf-ns-builders/-/rdf-ns-builders-3.0.3.tgz#5b20eb42714519c99f502b744d55a7e5b755610f"
+  integrity sha512-vmiFysMV7p2wCNW7Ly1MAAMaALiKmY3a7YDaMO6idi4w13w5bRU2i463ZY63+rzqCS2wWd7Vx0+mqUm9zQyUig==
   dependencies:
     "@rdfjs/data-model" "^2"
     "@rdfjs/namespace" "^2"
@@ -1412,6 +1412,11 @@
   version "1.9.8"
   resolved "https://registry.yarnpkg.com/@vanillawc/wc-codemirror/-/wc-codemirror-1.9.8.tgz#356727aa56ecf0672f3d6c57a768594df7a39232"
   integrity sha512-tdhzg+5MsTEml0at43IAYrwfwLY5l5r56I5l9WlDOheNjMZgAD5yoYYkK3RQY1Pi6JqLpVIxBi9LEqVQggHBPQ==
+
+"@vocabulary/dash-sparql@^1.0.0-rc.0":
+  version "1.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@vocabulary/dash-sparql/-/dash-sparql-1.0.0-rc.0.tgz#012fe23deb2c5f668937dca478e49ae1297a6071"
+  integrity sha512-869yll8v7X36Jpe50QhUl1cR/dRdfbGy8ZRLOxroscyqelL6jzojlpJfkMj2oLdvRScTJn+4fixS3HqNrvKwNg==
 
 "@vocabulary/dash@^1.0.0-rc.0":
   version "1.0.0-rc.0"
