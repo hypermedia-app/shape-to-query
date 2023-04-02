@@ -1,6 +1,7 @@
 import { schema, sh } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import $rdf from 'rdf-ext'
+import { sparql } from '@tpluscode/sparql-builder'
 import { ConstantTermExpression } from '../../../model/nodeExpression/ConstantTermExpression.js'
 import { blankNode, literal, namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
@@ -46,6 +47,24 @@ describe('model/nodeExpression/ConstantTermExpression', () => {
 
       // then
       expect(patterns).to.equalPatternsVerbatim('BIND(schema:Person as ?bar)')
+    })
+  })
+
+  describe('buildInlineExpression', () => {
+    it('returns subject', () => {
+      // given
+      const expr = new ConstantTermExpression(schema.Person)
+
+      // when
+      const { inline } = expr.buildInlineExpression({
+        subject: $rdf.variable('foo'),
+        object: $rdf.variable('bar'),
+        variable,
+        rootPatterns: sparql``,
+      })
+
+      // then
+      expect(inline).to.equalPatternsVerbatim('schema:Person')
     })
   })
 })

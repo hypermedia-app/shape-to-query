@@ -12,4 +12,12 @@ export interface Parameters {
 
 export interface NodeExpression {
   buildPatterns(arg: Parameters): Select | SparqlTemplateResult
+
+  /**
+   * Implemented to have the expression result inlined in the parent expression.
+   */
+  buildInlineExpression?(arg: Parameters): {
+    inline: SparqlTemplateResult
+    patterns?: SparqlTemplateResult
+  }
 }

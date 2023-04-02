@@ -15,4 +15,10 @@ export class FocusNodeExpression implements NodeExpression {
   buildPatterns({ subject, object }: Omit<Parameters, 'rootPatterns'>): SparqlTemplateResult {
     return sparql`BIND (${subject} as ${object})`
   }
+
+  buildInlineExpression(arg: Parameters) {
+    return {
+      inline: sparql`${arg.subject}`,
+    }
+  }
 }

@@ -1,7 +1,8 @@
-import { Term, Variable } from 'rdf-js'
+import { Term } from 'rdf-js'
 import { GraphPointer } from 'clownface'
 import { isGraphPointer, isLiteral } from 'is-graph-pointer'
-import { dashSparql, rdf, sh } from '@tpluscode/rdf-ns-builders'
+import { rdf, sh } from '@tpluscode/rdf-ns-builders'
+import { dashSparql } from '@tpluscode/rdf-ns-builders/loose'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { shrink } from '@zazuko/prefixes'
 import { fromRdf } from 'rdf-literal'
@@ -43,7 +44,7 @@ export abstract class FunctionExpression implements NodeExpression {
     const returnType = functionPtr.out(sh.returnType).term
 
     const expressionList = [...argumentList].map(createExpr)
-    if (symbol.value === '+') {
+    if (isGraphPointer(functionPtr.has(rdf.type, dashSparql.AdditiveExpression))) {
       return new AdditiveExpression(symbol.value, returnType, expressionList)
     }
 
@@ -63,17 +64,33 @@ export abstract class FunctionExpression implements NodeExpression {
     return sparql`${patterns}\nBIND(${this.boundExpression(expressions)} as ${args.object})`
   }
 
-  protected abstract boundExpression(args: Variable[]): SparqlTemplateResult
+  buildInlineExpression(args: Parameters) {
+    const { expressions, patterns } = this.evaluateArguments(args)
+    return {
+      patterns,
+      inline: sparql`(${this.boundExpression(expressions)})`,
+    }
+  }
 
-  private evaluateArguments({ subject, variable, rootPatterns }: Parameters) {
+  protected abstract boundExpression(args: SparqlTemplateResult[]): SparqlTemplateResult
+
+  private evaluateArguments(arg: Parameters) {
     return this.args.reduce((result, expr) => {
-      const next = variable()
+      if ('buildInlineExpression' in expr) {
+        const { inline, patterns } = expr.buildInlineExpression(arg)
+        return {
+          expressions: [...result.expressions, inline],
+          patterns: patterns ? sparql`${result.patterns}\n${patterns}` : result.patterns,
+        }
+      }
+
+      const next = arg.variable()
       return {
-        expressions: [...result.expressions, next],
-        patterns: sparql`${result.patterns}\n${expr.buildPatterns({ variable, rootPatterns, subject, object: next })}`,
+        expressions: [...result.expressions, sparql`${next}`],
+        patterns: sparql`${result.patterns}\n${expr.buildPatterns({ ...arg, object: next })}`,
       }
     }, {
-      expressions: <Variable[]>[],
+      expressions: <SparqlTemplateResult[]>[],
       patterns: sparql``,
     })
   }
@@ -85,7 +102,7 @@ export class AdditiveExpression extends FunctionExpression {
     assertFunctionArguments(this, args)
   }
 
-  protected boundExpression(args: Variable[]): SparqlTemplateResult {
+  protected boundExpression(args: SparqlTemplateResult[]): SparqlTemplateResult {
     const [first, ...rest] = args
     return rest.reduce((expr, arg) => {
       return sparql`${expr} ${this.symbol.value} ${arg}`
@@ -99,7 +116,7 @@ export class FunctionCallExpression extends FunctionExpression {
     assertFunctionArguments(this, args)
   }
 
-  protected boundExpression(args: Variable[]): SparqlTemplateResult {
+  protected boundExpression(args: SparqlTemplateResult[]): SparqlTemplateResult {
     const [first, ...rest] = args
     const argList = rest.reduce((list, arg) => sparql`${list}, ${arg}`, sparql`${first}`)
     const symbol = this.symbol.termType === 'Literal'
