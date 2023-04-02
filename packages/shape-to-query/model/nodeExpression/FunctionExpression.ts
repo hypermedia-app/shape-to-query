@@ -1,13 +1,16 @@
-import { Variable } from 'rdf-js'
+import { Term, Variable } from 'rdf-js'
 import { GraphPointer } from 'clownface'
-import { isGraphPointer } from 'is-graph-pointer'
+import { isGraphPointer, isLiteral } from 'is-graph-pointer'
 import { dashSparql, rdf, sh } from '@tpluscode/rdf-ns-builders'
-import { sparql } from '@tpluscode/sparql-builder'
+import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
+import { shrink } from '@zazuko/prefixes'
+import { fromRdf } from 'rdf-literal'
+import $rdf from 'rdf-ext'
 import vocabulary from '../../vocabulary.js'
 import { NodeExpression, Parameters } from './NodeExpression.js'
 import { NodeExpressionFactory } from './index.js'
 
-export class FunctionExpression implements NodeExpression {
+export abstract class FunctionExpression implements NodeExpression {
   static match(pointer: GraphPointer) {
     const [first, ...rest] = [...pointer.dataset.match(pointer.term)]
     const isSingleSubject = first && rest.length === 0
@@ -22,31 +25,95 @@ export class FunctionExpression implements NodeExpression {
 
   static fromPointer(pointer: GraphPointer, createExpr: NodeExpressionFactory) {
     const [first] = [...pointer.dataset.match(pointer.term)]
-    const functionPtr = vocabulary.node(first.predicate).has(rdf.type, sh.Function)
+    const functionPtr = vocabulary.node(first.predicate)
+    const argumentList = pointer.out(functionPtr).list()
+    if (!argumentList) {
+      throw new Error(`Object of ${shrink(functionPtr.term.value)} must be an RDF List`)
+    }
 
-    const args = [...pointer.out(functionPtr).list()].map(createExpr)
-    const symbol = functionPtr.out(dashSparql.symbol).value
+    const symbol = functionPtr.out(dashSparql.symbol).term || functionPtr.term
+    const parameters = functionPtr.out(sh.parameter).map(parameter => {
+      const order = parameter.out(sh.order)
+      return {
+        order: isLiteral(order) ? fromRdf(order.term) : 0,
+        datatype: parameter.out(sh.datatype).term,
+      }
+    })
+      .sort((l, r) => l.order - r.order)
+    const returnType = functionPtr.out(sh.returnType).term
 
-    return new FunctionExpression(symbol, args)
+    const expressionList = [...argumentList].map(createExpr)
+    if (symbol.value === '+') {
+      return new AdditiveExpression(symbol.value, returnType, expressionList)
+    }
+
+    return new FunctionCallExpression(symbol, parameters, returnType, expressionList)
   }
 
-  constructor(public symbol: string, public args: NodeExpression[]) {
+  protected constructor(
+    public symbol: Term,
+    public readonly parameters: ReadonlyArray<{ datatype?: Term }>,
+    public readonly returnType: Term | undefined,
+    public args: NodeExpression[]) {
   }
 
-  buildPatterns({ subject, object, variable, rootPatterns }: Parameters) {
-    const { args, patterns } = this.args.reduce((result, expr) => {
+  buildPatterns(args: Parameters) {
+    const { expressions, patterns } = this.evaluateArguments(args)
+
+    return sparql`${patterns}\nBIND(${this.boundExpression(expressions)} as ${args.object})`
+  }
+
+  protected abstract boundExpression(args: Variable[]): SparqlTemplateResult
+
+  private evaluateArguments({ subject, variable, rootPatterns }: Parameters) {
+    return this.args.reduce((result, expr) => {
       const next = variable()
       return {
-        args: [...result.args, next],
+        expressions: [...result.expressions, next],
         patterns: sparql`${result.patterns}\n${expr.buildPatterns({ variable, rootPatterns, subject, object: next })}`,
       }
     }, {
-      args: <Variable[]>[],
+      expressions: <Variable[]>[],
       patterns: sparql``,
     })
+  }
+}
 
+export class AdditiveExpression extends FunctionExpression {
+  constructor(symbol: string, returnType: Term | undefined, args: NodeExpression[]) {
+    super($rdf.literal(symbol), [], returnType, args)
+    assertFunctionArguments(this, args)
+  }
+
+  protected boundExpression(args: Variable[]): SparqlTemplateResult {
+    const [first, ...rest] = args
+    return rest.reduce((expr, arg) => {
+      return sparql`${expr} ${this.symbol.value} ${arg}`
+    }, sparql`${first}`)
+  }
+}
+
+export class FunctionCallExpression extends FunctionExpression {
+  constructor(symbol: Term, parameters: ReadonlyArray<{ datatype?: Term }>, returnType: Term | undefined, args: NodeExpression[]) {
+    super(symbol, parameters, returnType, args)
+    assertFunctionArguments(this, args)
+  }
+
+  protected boundExpression(args: Variable[]): SparqlTemplateResult {
     const [first, ...rest] = args
     const argList = rest.reduce((list, arg) => sparql`${list}, ${arg}`, sparql`${first}`)
-    return sparql`${patterns}\nBIND(${this.symbol}(${argList}) as ${object})`
+    const symbol = this.symbol.termType === 'Literal'
+      ? this.symbol.value
+      : this.symbol
+
+    return sparql`${symbol}(${argList})`
   }
+}
+
+function assertFunctionArguments(func: FunctionExpression, args: NodeExpression[]) {
+  if (func.parameters.length && args.length !== func.parameters.length) {
+    throw new Error(`Function ${shrink(func.symbol.value)} requires ${func.parameters.length} parameters`)
+  }
+
+  // TODO: check argument types
 }
