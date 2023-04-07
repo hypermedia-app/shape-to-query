@@ -2,3 +2,11 @@ ignore:
   - "mocha-setup.cjs"
   - "packages/demo"
   - "packages/shape-to-query/lib/types.ts"
+flag_management:
+  default_rules:
+    carryforward: true
+  individual_flags:
+    - name: unit-tests
+      carryforward: true
+    - name: query-tests
+      carryforward: true
