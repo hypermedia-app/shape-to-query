@@ -8,7 +8,7 @@ import { fromNode as nodeExpression } from '../nodeExpressions.js'
 import NodeShapeImpl, { NodeShape } from './NodeShape.js'
 import * as target from './target/index.js'
 import PropertyShape from './PropertyShape.js'
-import { PropertyValueRule } from './Rule.js'
+import { PropertyValueRule, TripleRule } from './Rule.js'
 import createConstraints from './constraint/factory.js'
 
 function nodeShape(pointer: GraphPointer): NodeShape {
@@ -17,10 +17,13 @@ function nodeShape(pointer: GraphPointer): NodeShape {
     .filter(p => !TRUE.equals(p.out(sh.deactivated).term))
     .map(propertyShape)
 
+  const rules = pointer.out(sh.rule).map(tripleRule)
+
   return new NodeShapeImpl(
     [...targets(pointer)],
     properties,
     [...createConstraints(pointer)],
+    rules,
   )
 }
 
@@ -69,6 +72,18 @@ function propertyRule(path: GraphPointer) {
 
     return new PropertyValueRule(path.term, nodeExpression(expression))
   }
+}
+
+function tripleRule(rule: GraphPointer) {
+  const subject = rule.out(sh.subject)
+  const predicate = rule.out(sh.predicate)
+  const object = rule.out(sh.object)
+
+  return new TripleRule(
+    nodeExpression(subject),
+    nodeExpression(predicate),
+    nodeExpression(object),
+  )
 }
 
 export { nodeShape as fromNode }
