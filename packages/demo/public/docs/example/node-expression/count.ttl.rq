@@ -2,13 +2,13 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX schema: <http://schema.org/>
 CONSTRUCT {
   ?resource1 rdf:type schema:Periodical.
-  ?resource1 <http://example.org/numberOfArticles> ?resource3.
+  ?resource1 <http://example.org/numberOfArticles> ?resource2.
 }
 WHERE {
   ?resource1 rdf:type schema:Periodical.
   {
-    SELECT (COUNT(?resource4) AS ?resource3) WHERE {
-      ?resource1 schema:publication ?resource4;
+    SELECT (COUNT(?resource3) AS ?resource2) WHERE {
+      ?resource1 schema:publication ?resource3;
         rdf:type schema:Periodical.
     }
   }
