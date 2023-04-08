@@ -21,8 +21,8 @@ export interface PropertyShape {
 }
 
 export default class extends Shape implements PropertyShape {
-  private readonly rules: ReadonlyArray<PropertyValueRule>
-  private readonly path: ShaclPropertyPath
+  public readonly rules: ReadonlyArray<PropertyValueRule>
+  public readonly path: ShaclPropertyPath
 
   constructor(private readonly _path: GraphPointer, { rules = [], constraints = [] }: Components = {}) {
     super(constraints)

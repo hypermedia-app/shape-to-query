@@ -23,8 +23,8 @@ export function literal(value: string, dtOrLang?: string | NamedNode): GraphPoin
   return clownface({ dataset: $rdf.dataset() }).literal(value, dtOrLang)
 }
 
-export async function parse(...[strings, ...values]: Parameters<typeof turtle>): Promise<GraphPointer<NamedNode, DatasetExt>> {
-  const dataset = await raw(strings, ...values)
+export function parse(...[strings, ...values]: Parameters<typeof turtle>): GraphPointer<NamedNode, DatasetExt> {
+  const dataset = raw(strings, ...values)
 
   return clownface({ dataset }).namedNode('')
 }

@@ -5,6 +5,7 @@ import { parse } from '../nodeFactory.js'
 import { ex } from '../namespace.js'
 import { TargetNode } from '../../model/target/index.js'
 import NodeShape from '../../model/NodeShape.js'
+import PropertyShape from '../../model/PropertyShape.js'
 
 describe('model/fromNode', () => {
   describe('nodeShape', () => {
@@ -24,6 +25,54 @@ describe('model/fromNode', () => {
         .to.have.property('values')
         .deep.contain.members([ex.Foo.value, ex.Bar.value])
       expect(more).to.be.empty
+    })
+
+    it('ignored deactivated rules', () => {
+      // given
+      const pointer = parse`
+        <> ${sh.rule}
+          [
+            ${sh.subject} ${sh.this} ;
+            ${sh.predicate} ${sh.this} ;
+            ${sh.object} ${sh.this} ;
+            ${sh.deactivated} true ;
+          ] ,
+          [
+            ${sh.subject} ${sh.this} ;
+            ${sh.predicate} ${sh.this} ;
+            ${sh.object} ${sh.this} ;
+            ${sh.deactivated} true ;
+          ] .
+      `
+
+      // when
+      const shape = <NodeShape>fromNode(pointer)
+
+      // then
+      expect(shape.rules).to.be.empty
+    })
+
+    it('creates with rules', () => {
+      // given
+      const pointer = parse`
+        <> ${sh.rule}
+          [
+            ${sh.subject} ${sh.this} ;
+            ${sh.predicate} ${sh.this} ;
+            ${sh.object} ${sh.this} ;
+          ] ,
+          [
+            ${sh.subject} ${sh.this} ;
+            ${sh.predicate} ${sh.this} ;
+            ${sh.object} ${sh.this} ;
+          ] .
+      `
+
+      // when
+      const shape = <NodeShape>fromNode(pointer)
+
+      // then
+      expect(shape.rules).to.have.length(2)
     })
   })
 
@@ -65,6 +114,22 @@ describe('model/fromNode', () => {
         // when
         propertyShape(pointer)
       }).to.throw()
+    })
+
+    it('creates with value rules', () => {
+      // given
+      const pointer = parse`
+        <> 
+          ${sh.path} ${ex.foo} ;
+          ${sh.values} ${sh.this} ;
+        .
+      `
+
+      // when
+      const shape = <PropertyShape>propertyShape(pointer)
+
+      // then
+      expect(shape.rules).to.have.length(1)
     })
   })
 })

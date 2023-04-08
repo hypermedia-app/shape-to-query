@@ -18,7 +18,7 @@ function nodeShape(pointer: GraphPointer): NodeShape {
     .filter(p => !TRUE.equals(p.out(sh.deactivated).term))
     .map(propertyShape)
 
-  const rules = pointer.out(sh.rule).map(tripleRule)
+  const rules = pointer.out(sh.rule).toArray().flatMap(tripleRule)
 
   return new NodeShapeImpl(
     [...targets(pointer)],
@@ -76,15 +76,19 @@ function propertyRule(path: GraphPointer) {
 }
 
 function tripleRule(rule: GraphPointer) {
+  if (TRUE.equals(rule.out(sh.deactivated).term)) {
+    return []
+  }
+
   const subject = rule.out(sh.subject)
   const predicate = rule.out(sh.predicate)
   const object = rule.out(sh.object)
 
-  return new TripleRule(
+  return [new TripleRule(
     nodeExpression(subject),
     nodeExpression(predicate),
     nodeExpression(object),
-  )
+  )]
 }
 
 export { nodeShape as fromNode }
