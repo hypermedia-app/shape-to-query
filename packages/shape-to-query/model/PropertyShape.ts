@@ -4,13 +4,13 @@ import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { flatten, ShapePatterns, union } from '../lib/shapePatterns.js'
 import PathVisitor from '../lib/PathVisitor.js'
-import { Rule } from './Rule.js'
+import { PropertyValueRule } from './rule/PropertyValueRule.js'
 import { ConstraintComponent } from './constraint/ConstraintComponent.js'
 import type { NodeConstraintComponent } from './constraint/node.js'
 import Shape, { BuildParameters } from './Shape.js'
 
 interface Components {
-  rules?: Rule[]
+  rules?: PropertyValueRule[]
 
   constraints?: ConstraintComponent[]
 }
@@ -21,8 +21,8 @@ export interface PropertyShape {
 }
 
 export default class extends Shape implements PropertyShape {
-  private readonly rules: ReadonlyArray<Rule>
-  private readonly path: ShaclPropertyPath
+  public readonly rules: ReadonlyArray<PropertyValueRule>
+  public readonly path: ShaclPropertyPath
 
   constructor(private readonly _path: GraphPointer, { rules = [], constraints = [] }: Components = {}) {
     super(constraints)

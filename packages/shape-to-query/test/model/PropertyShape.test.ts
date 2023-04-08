@@ -27,7 +27,7 @@ describe('model/PropertyShape', () => {
     it('binds rule patterns, unioned', () => {
       // given
       const path = namedNode(schema.knows)
-      const rules = [{
+      const rules: any = [{
         buildPatterns: ({ focusNode, objectNode }) => ({
           constructClause: [$rdf.quad(focusNode, schema.knows, objectNode)],
           whereClause: sparql`SELECT ${objectNode} { ... }`,

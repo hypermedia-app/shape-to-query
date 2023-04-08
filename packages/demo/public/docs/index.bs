@@ -585,3 +585,69 @@ Skips a number of nodes from the inner node expression
 </div>
 
 Note: `sh:offset` makes most sense when combined with `sh:limit` and `sh:orderBy` or `sh:select`
+
+
+## SHACL Rules ## {#shacl-rules}
+
+Note: SHACL-AF spec: [[shacl-af#rules]]
+
+SHACL Rules provide a way insert computed data (triples) into the data graph. 
+
+Any rule with `sh:deactivated true` will be ignored.
+
+### Triple Rules ### {#shacl-triple-rules}
+
+Note: SHACL-AF spec: [[shacl-af#TripleRule]]
+
+Triple rules are a generalised way to assert new statements in the data graph. They require the `subject`, `predicate` and
+`object` being provided as [[#shacl-advanced-node-expressions]].
+
+<div class="example">
+  Construct new `relatedTo` triples for all resources linked by the `children`, `parent`, or `spouse` predicates
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/rules/triple-rule.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/rules/triple-rule.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+Because any arbitrary node expressions can be used, the resulting triples can be unrelated to the focus nodes itself. 
+
+<div class="example">
+  In addition to triples about each `Person`, also return a new collection resource `ex:JobTitles` which gathers all
+  values of their respective `jobTitle` properties.
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/rules/triple-rule-unrelated.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/rules/triple-rule-unrelated.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+Note: That is a major difference from [[#shacl-property-value-rules]], which is equivalent of using `sh:this` as subject.
+
+### Property Value Rules ### {#shacl-property-value-rules}
+
+Note: SHACL-AF spec: [[shacl-af#PropertyValueRule]]
+
+Used throughout the [[#shacl-advanced-node-expressions]] examples, the `sh:values` is a specialised kind of triple rule 
+which binds computed values to triples with the current focus node subject and property being the value of `sh:path`.
+
+Note: An error will be thrown when the `sh:path` is not an IRI

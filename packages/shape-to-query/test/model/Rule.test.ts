@@ -2,7 +2,8 @@ import { schema } from '@tpluscode/rdf-ns-builders'
 import { SELECT, sparql } from '@tpluscode/sparql-builder'
 import { expect } from 'chai'
 import $rdf from 'rdf-ext'
-import { PropertyValueRule } from '../../model/Rule.js'
+import PropertyValueRule from '../../model/rule/PropertyValueRule.js'
+import TripleRule from '../../model/rule/TripleRule.js'
 import { variable } from '../variable.js'
 
 describe('model/Rule', () => {
@@ -48,6 +49,40 @@ describe('model/Rule', () => {
 
       // then
       expect(sparql`${constructClause}`).to.equalPatterns('<foo> schema:knows ?bar .')
+    })
+  })
+
+  describe('TripleRule', () => {
+    describe('buildPatterns', () => {
+      it('constructs the result of subject/predicate/object', () => {
+        // given
+        const subject = {
+          buildPatterns: ({ object }) => sparql`BIND(S as ${object})`,
+        }
+        const predicate = {
+          buildPatterns: ({ object }) => sparql`BIND(P as ${object})`,
+        }
+        const object = {
+          buildPatterns: ({ object }) => sparql`BIND(O as ${object})`,
+        }
+        const rule = new TripleRule(subject, predicate, object)
+
+        // when
+        const patterns = rule.buildPatterns({
+          variable,
+          rootPatterns: undefined,
+          focusNode: $rdf.namedNode('foo'),
+        })
+
+        // then
+        expect(sparql`${patterns.constructClause}\n${patterns.whereClause}`)
+          .to.equalPatterns(`
+            ?s ?p ?o .
+            BIND(S as ?s)
+            BIND(P as ?p)
+            BIND(O as ?o)
+          `)
+      })
     })
   })
 })

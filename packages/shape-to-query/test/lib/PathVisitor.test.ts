@@ -114,7 +114,7 @@ describe('lib/PathVisitor', () => {
   })
 
   interface Iit {
-    shape: Promise<GraphPointer>
+    shape: GraphPointer
     expectedWherePatterns: string
     expectedConstructPatterns?: string
   }

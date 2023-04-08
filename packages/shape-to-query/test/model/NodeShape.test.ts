@@ -21,7 +21,7 @@ describe('model/NodeShape', () => {
           whereClause: sparql`target ${i}`,
         }),
       }))
-      const shape = new NodeShape(targets, [], [])
+      const shape = new NodeShape(targets, [], [], [])
 
       // when
       const focusNode = $rdf.variable('s')
@@ -50,7 +50,7 @@ describe('model/NodeShape', () => {
           whereClause: sparql``,
         }),
       }]
-      const shape = new NodeShape(targets, [], [])
+      const shape = new NodeShape(targets, [], [], [])
 
       // when
       const focusNode = $rdf.variable('s')
@@ -76,7 +76,7 @@ describe('model/NodeShape', () => {
           whereClause: sparql``,
         }),
       }]
-      const shape = new NodeShape(targets, [], [])
+      const shape = new NodeShape(targets, [], [], [])
 
       // when
       const focusNode = $rdf.namedNode('foo')
@@ -104,7 +104,7 @@ describe('model/NodeShape', () => {
           whereClause: 'A B C',
         }),
       }]
-      const shape = new NodeShape([], properties, [])
+      const shape = new NodeShape([], properties, [], [])
 
       // when
       const focusNode = $rdf.namedNode('f')
@@ -124,10 +124,10 @@ describe('model/NodeShape', () => {
       it('skips alternatives with no properties', () => {
         // given
         const or = new OrConstraintComponent([
-          new NodeShape([], [], []),
-          new NodeShape([], [], []),
+          new NodeShape([], [], [], []),
+          new NodeShape([], [], [], []),
         ])
-        const shape = new NodeShape([], [], [or])
+        const shape = new NodeShape([], [], [or], [])
 
         // when
         const focusNode = $rdf.namedNode('f')
@@ -136,6 +136,26 @@ describe('model/NodeShape', () => {
         // then
         expect(whereClause).to.equalPatterns('')
       })
+    })
+  })
+
+  describe('rules', () => {
+    it('unions them', () => {
+      const rules = [{
+        buildPatterns: () => ({ constructClause: [], whereClause: sparql`A` }),
+      }, {
+        buildPatterns: () => ({ constructClause: [], whereClause: sparql`B` }),
+      }, {
+        buildPatterns: () => ({ constructClause: [], whereClause: sparql`C` }),
+      }]
+      const shape = new NodeShape([], [], [], rules)
+
+      // when
+      const focusNode = $rdf.namedNode('f')
+      const result = shape.buildPatterns({ focusNode, variable, rootPatterns })
+
+      // then
+      expect(result.whereClause).to.equalPatterns('{ A } UNION { B } UNION { C }')
     })
   })
 })

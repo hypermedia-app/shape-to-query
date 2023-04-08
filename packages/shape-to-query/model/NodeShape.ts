@@ -5,6 +5,7 @@ import { PropertyShape } from './PropertyShape.js'
 import { Target } from './target/index.js'
 import { ConstraintComponent } from './constraint/ConstraintComponent.js'
 import Shape, { BuildParameters } from './Shape.js'
+import { Rule } from './rule/Rule.js'
 
 export interface NodeShape {
   buildPatterns(arg: BuildParameters): ShapePatterns
@@ -16,6 +17,7 @@ export default class extends Shape implements NodeShape {
     public readonly targets: ReadonlyArray<Target>,
     public readonly properties: ReadonlyArray<PropertyShape>,
     constraints: ReadonlyArray<ConstraintComponent>,
+    public readonly rules: ReadonlyArray<Rule>,
   ) {
     super(constraints)
   }
@@ -34,10 +36,14 @@ export default class extends Shape implements NodeShape {
         rootPatterns,
       })))
     }
+    let rules = emptyPatterns
+    if (this.rules.length) {
+      rules = union(...this.rules.map(r => r.buildPatterns({ ...arg, rootPatterns })))
+    }
 
     const logical = this.buildLogicalConstraints({ ...arg, rootPatterns })
 
-    return flatten(targets, properties, logical)
+    return flatten(targets, properties, rules, logical)
   }
 
   buildConstraints(arg: BuildParameters & { valueNode: Variable }): string | SparqlTemplateResult {
