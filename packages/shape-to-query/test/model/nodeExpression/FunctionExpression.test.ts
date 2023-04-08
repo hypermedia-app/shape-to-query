@@ -423,7 +423,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
       }
 
       // when
-      const inlineExpr = new TestFunction(ex.fun).buildInlineExpression({
+      const result = new TestFunction(ex.fun).buildInlineExpression({
         variable,
         subject: variable(),
         object: $rdf.variable('foo'),
@@ -431,7 +431,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
       })
 
       // then
-      expect(inlineExpr).to.equalPatterns('(A = B)')
+      expect(result.inline).to.equalPatterns('(A = B)')
     })
   })
 })
