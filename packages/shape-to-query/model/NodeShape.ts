@@ -5,7 +5,7 @@ import { PropertyShape } from './PropertyShape.js'
 import { Target } from './target/index.js'
 import { ConstraintComponent } from './constraint/ConstraintComponent.js'
 import Shape, { BuildParameters } from './Shape.js'
-import { TripleRule } from './Rule.js'
+import { Rule } from './rule/Rule.js'
 
 export interface NodeShape {
   buildPatterns(arg: BuildParameters): ShapePatterns
@@ -17,7 +17,7 @@ export default class extends Shape implements NodeShape {
     public readonly targets: ReadonlyArray<Target>,
     public readonly properties: ReadonlyArray<PropertyShape>,
     constraints: ReadonlyArray<ConstraintComponent>,
-    public readonly rules: ReadonlyArray<TripleRule>,
+    public readonly rules: ReadonlyArray<Rule>,
   ) {
     super(constraints)
   }

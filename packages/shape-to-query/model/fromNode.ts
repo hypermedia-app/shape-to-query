@@ -8,8 +8,9 @@ import { fromNode as nodeExpression } from '../nodeExpressions.js'
 import NodeShapeImpl, { NodeShape } from './NodeShape.js'
 import * as target from './target/index.js'
 import PropertyShape from './PropertyShape.js'
-import { PropertyValueRule, TripleRule } from './Rule.js'
+import PropertyValueRule from './rule/PropertyValueRule.js'
 import createConstraints from './constraint/factory.js'
+import TripleRule from './rule/TripleRule.js'
 
 function nodeShape(pointer: GraphPointer): NodeShape {
   const properties = pointer

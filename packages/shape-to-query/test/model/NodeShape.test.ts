@@ -138,4 +138,24 @@ describe('model/NodeShape', () => {
       })
     })
   })
+
+  describe('rules', () => {
+    it('unions them', () => {
+      const rules = [{
+        buildPatterns: () => ({ constructClause: [], whereClause: sparql`A` }),
+      }, {
+        buildPatterns: () => ({ constructClause: [], whereClause: sparql`B` }),
+      }, {
+        buildPatterns: () => ({ constructClause: [], whereClause: sparql`C` }),
+      }]
+      const shape = new NodeShape([], [], [], rules)
+
+      // when
+      const focusNode = $rdf.namedNode('f')
+      const result = shape.buildPatterns({ focusNode, variable, rootPatterns })
+
+      // then
+      expect(result.whereClause).to.equalPatterns('{ A } UNION { B } UNION { C }')
+    })
+  })
 })
