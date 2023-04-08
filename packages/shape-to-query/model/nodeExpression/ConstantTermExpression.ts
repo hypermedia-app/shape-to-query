@@ -28,4 +28,10 @@ export class ConstantTermExpression implements NodeExpression {
   buildPatterns({ object }: Omit<Parameters, 'rootPatterns'>): SparqlTemplateResult {
     return sparql`BIND(${this.node} as ${object})`
   }
+
+  buildInlineExpression(arg: Parameters) {
+    return {
+      inline: sparql`${this.node}`,
+    }
+  }
 }

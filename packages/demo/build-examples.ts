@@ -12,6 +12,8 @@ import { globby } from 'globby'
 import { HydraCollectionMemberExpression } from './expressions/HydraCollectionMembers.js'
 import { ShorthandSubselectExpression } from './expressions/ShorthandSubselect.js'
 
+import './public/how-tos/example/palindrome/index.js'
+
 const cwd = url.fileURLToPath(new URL('.', import.meta.url))
 const toAbsolutePath = (arg) => path.resolve(cwd, arg)
 
@@ -24,7 +26,7 @@ nodeExpressions.push(
 )
 
 ;(async function () {
-  const shapeGraphs = await globby('**/example/*.ttl', { cwd })
+  const shapeGraphs = await globby('**/example/**/*.ttl', { cwd })
 
   await Promise.all(shapeGraphs.map(toAbsolutePath).map(async shapeGraphPath => {
     let generated

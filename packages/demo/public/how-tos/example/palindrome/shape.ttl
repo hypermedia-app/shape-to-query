@@ -1,0 +1,17 @@
+PREFIX ex: <http://example.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX cfn: <http://example.org/custom-function/>
+
+[
+  a sh:NodeShape ;
+  sh:target schema:Thing ;
+  sh:property
+    [
+      sh:path ex:nameIsPalindrome ;
+      sh:values
+        [
+          cfn:palindrome ( [ sh:path schema:name ] ) ;
+        ] ;
+    ] ;
+] .

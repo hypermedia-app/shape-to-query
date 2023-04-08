@@ -10,6 +10,7 @@ import { CountExpression } from './model/nodeExpression/CountExpression.js'
 import { LimitExpression } from './model/nodeExpression/LimitExpression.js'
 import { NodeExpressionFactory, NodeExpressionStatic } from './model/nodeExpression/index.js'
 import { NodeExpression } from './model/nodeExpression/NodeExpression.js'
+import { FunctionExpression } from './model/nodeExpression/FunctionExpression.js'
 
 export type { NodeExpression, Parameters } from './model/nodeExpression/NodeExpression.js'
 export type { NodeExpressionFactory } from './model/nodeExpression/index.js'
@@ -34,6 +35,7 @@ export const nodeExpressions: NodeExpressionStatic[] = [
   OffsetExpression,
   OrderByExpression,
   CountExpression,
+  FunctionExpression,
 ]
 
 export const fromNode: NodeExpressionFactory = (pointer: AnyPointer): NodeExpression => {

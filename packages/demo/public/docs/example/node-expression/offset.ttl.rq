@@ -2,13 +2,13 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX schema: <http://schema.org/>
 CONSTRUCT {
   ?resource1 rdf:type schema:Person.
-  ?resource1 <http://example.org/oneParent> ?resource3.
+  ?resource1 <http://example.org/oneParent> ?resource2.
 }
 WHERE {
   ?resource1 rdf:type schema:Person.
   {
-    SELECT ?resource1 ?resource3 WHERE {
-      ?resource1 schema:parent ?resource3;
+    SELECT ?resource1 ?resource2 WHERE {
+      ?resource1 schema:parent ?resource2;
         rdf:type schema:Person.
     }
     OFFSET 1

@@ -76,6 +76,6 @@ function normalize(query: string): string {
       variableMap.set(variable, nextVariable())
     }
 
-    return '?' + variableMap.get(variable).value
+    return '?' + variableMap.get(variable)?.value
   }))()
 }

@@ -7,7 +7,7 @@ import StreamClient from 'sparql-http-client'
 import { fromFile } from 'rdf-utils-fs'
 import { expect } from 'chai'
 import $rdf from 'rdf-ext'
-import { hydra, rdf, schema } from '@tpluscode/rdf-ns-builders'
+import { hydra, rdf, schema, dashSparql } from '@tpluscode/rdf-ns-builders'
 import namespace from '@rdfjs/namespace'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { constructQuery } from '../lib/shapeToQuery.js'
@@ -434,6 +434,69 @@ describe('@hydrofoil/shape-to-query', () => {
       const expected = await raw`
         ${ex.people} ${hydra.member} ${tbbt('amy-farrah-fowler')} .
         ${tbbt('amy-farrah-fowler')} ${schema.givenName} "Amy" .
+      `
+      expect(result).to.equalDataset(expected)
+    })
+
+    it('complex sparql functions', async () => {
+      // given
+      const shape = await parse`
+        <> 
+          ${sh.targetNode} ${ex.people} ;
+          ${sh.property} [
+            ${sh.path} ${ex.initial} ;
+            ${sh.values} [
+              ${dashSparql.iri}
+                (
+                  [
+                    ${dashSparql.concat}
+                      (
+                        [ ${dashSparql.str} (${sh.this}) ]
+                        "?i="
+                        [
+                          ${dashSparql.lcase}
+                          (
+                            [ 
+                              ${dashSparql.substr}
+                              (
+                                [
+                                  ${sh.path} ${schema.givenName} ;
+                                  ${sh.nodes} [
+                                    ${sh.path} [ ${sh.inversePath} ${rdf.type} ] ;
+                                    ${sh.nodes} [
+                                      ${sh.path} ${ex.memberType} ;
+                                    ] ;
+                                  ]
+                                ]
+                                1
+                                1
+                              )
+                            ]
+                          )
+                        ]
+                      )
+                  ]
+                )
+            ] ;
+          ]
+        .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${ex.people} ${ex.initial} 
+          ${ex['people?i=a']} , 
+          ${ex['people?i=b']} , 
+          ${ex['people?i=h']} , 
+          ${ex['people?i=l']} , 
+          ${ex['people?i=m']} , 
+          ${ex['people?i=p']} , 
+          ${ex['people?i=r']} , 
+          ${ex['people?i=s']} ;
+        .
       `
       expect(result).to.equalDataset(expected)
     })

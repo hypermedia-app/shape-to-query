@@ -406,6 +406,42 @@ Additionally, `sh:nodes` property can be used to select different set of values 
   </s2q-snippet>
 </div>
 
+### Function Expressions ### {#shacl-function-expression}
+
+Note: SHACL-AF spec: [[shacl-af#node-expressions-function]]
+
+Contrary to the name, function expressions are used to represent not only function calls but also other kinds of 
+expressions:
+
+- logical and mathematical operations,
+- unary operators,
+- `(NOT) IN`,
+- built-in functions, such as `IRI`, `REGEX` or `CONCAT`,
+- custom functions identified by any arbitrary URI.
+
+NOTE: Read [[s2q-concepts#additive-expressions]] to learn more about how shape-to-query handles mathematical operations.
+
+NOTE: Read [[s2q-how-tos#custom-functions]] to learn how to add register custom functions with shape-to-query.
+
+<div class="example">
+  Calculate the person's `ex:drivingExperienceYears` property as the difference between the current year and the year
+  when that person had their driving license issued
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/functions.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/functions.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
 ### Path Expressions ### {#shacl-path-expression}
 
 Note: SHACL-AF spec: [[shacl-af#node-expressions-path]]

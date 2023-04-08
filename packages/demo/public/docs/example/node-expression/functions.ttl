@@ -1,0 +1,21 @@
+PREFIX schema: <http://schema.org/>
+PREFIX sparql: <http://datashapes.org/sparql#>
+PREFIX ex: <http://example.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+[
+  a sh:NodeShape ;
+  sh:targetClass schema:Person ;
+  sh:property
+    [
+      sh:path ex:drivingExperienceYears ;
+      sh:values
+        [
+          sparql:subtract
+            (
+              [ sparql:year ( [ sparql:now () ] )]
+              [ sparql:year ( [ sh:path (ex:drivingLicense ex:issueDate) ] )]
+            ) ;
+        ] ;
+    ] ;
+] .

@@ -1006,10 +1006,10 @@
     commander "^7.2.0"
     fs-extra "^10.0.0"
 
-"@tpluscode/rdf-ns-builders@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@tpluscode/rdf-ns-builders/-/rdf-ns-builders-3.0.2.tgz#1e536e8369d634d70062967c89c1a2ff7dce7de7"
-  integrity sha512-uPHBaS1jvm5iLi0g81sST7cMthcViAedGNYxjnXMLB9eCw7E8CnwRYz+pf72QME5R3jaih4ly8eCNXkiV+MfNg==
+"@tpluscode/rdf-ns-builders@^3.0.2", "@tpluscode/rdf-ns-builders@^3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@tpluscode/rdf-ns-builders/-/rdf-ns-builders-3.0.3.tgz#5b20eb42714519c99f502b744d55a7e5b755610f"
+  integrity sha512-vmiFysMV7p2wCNW7Ly1MAAMaALiKmY3a7YDaMO6idi4w13w5bRU2i463ZY63+rzqCS2wWd7Vx0+mqUm9zQyUig==
   dependencies:
     "@rdfjs/data-model" "^2"
     "@rdfjs/namespace" "^2"
@@ -1082,6 +1082,13 @@
   dependencies:
     rdf-js "^4.0.2"
 
+"@types/debug@^4.1.7":
+  version "4.1.7"
+  resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.7.tgz#7cc0ea761509124709b8b2d1090d8f6c17aadb82"
+  integrity sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg==
+  dependencies:
+    "@types/ms" "*"
+
 "@types/http-link-header@^1.0.1":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@types/http-link-header/-/http-link-header-1.0.3.tgz#899adf1d8d2036074514f3dbd148fb901ceff920"
@@ -1120,6 +1127,11 @@
   version "10.0.1"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-10.0.1.tgz#2f4f65bb08bc368ac39c96da7b2f09140b26851b"
   integrity sha512-/fvYntiO1GeICvqbQ3doGDIP97vWmvFt83GKguJ6prmQM2iXZfFcq6YE8KteFyRtX2/h5Hf91BYvPodJKFYv5Q==
+
+"@types/ms@*":
+  version "0.7.31"
+  resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.31.tgz#31b7ca6407128a3d2bbc27fe2d21b345397f6197"
+  integrity sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==
 
 "@types/n3@^1.10.4":
   version "1.10.4"
@@ -1413,6 +1425,11 @@
   resolved "https://registry.yarnpkg.com/@vanillawc/wc-codemirror/-/wc-codemirror-1.9.8.tgz#356727aa56ecf0672f3d6c57a768594df7a39232"
   integrity sha512-tdhzg+5MsTEml0at43IAYrwfwLY5l5r56I5l9WlDOheNjMZgAD5yoYYkK3RQY1Pi6JqLpVIxBi9LEqVQggHBPQ==
 
+"@vocabulary/dash-sparql@^1.0.0-rc.0":
+  version "1.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@vocabulary/dash-sparql/-/dash-sparql-1.0.0-rc.0.tgz#012fe23deb2c5f668937dca478e49ae1297a6071"
+  integrity sha512-869yll8v7X36Jpe50QhUl1cR/dRdfbGy8ZRLOxroscyqelL6jzojlpJfkMj2oLdvRScTJn+4fixS3HqNrvKwNg==
+
 "@vocabulary/dash@^1.0.0-rc.0":
   version "1.0.0-rc.0"
   resolved "https://registry.yarnpkg.com/@vocabulary/dash/-/dash-1.0.0-rc.0.tgz#684384064aa154988fe9372c636c4e66d4801a7d"
@@ -1435,10 +1452,10 @@
   dependencies:
     whatwg-url "^5.0.0"
 
-"@zazuko/prefixes@^1.0.0-rc.0":
-  version "1.0.0-rc.0"
-  resolved "https://registry.yarnpkg.com/@zazuko/prefixes/-/prefixes-1.0.0-rc.0.tgz#b49ad02cb9f32d771e8b71b9b2c445eeec873da9"
-  integrity sha512-14u3mDdlodkWs3KxxRBEGXqhZfesxyZiGSNIJWblczm7cAnnh86D2B1pPed8NxPkve0SLHYJ179RPcxzyjL4Cg==
+"@zazuko/prefixes@^1.0.0-rc.0", "@zazuko/prefixes@^1.0.0-rc.2":
+  version "1.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@zazuko/prefixes/-/prefixes-1.0.0-rc.2.tgz#7361491bb77cc15c12e6d047ba7ee45ad91169cc"
+  integrity sha512-AwuLkrqOFPev9FFeDWTl9prH2E9CHc5cEIBqF4m298SGnLkoJHsxxwv9geyQudcEWG+QFYjcGbZealzJepe8nw==
 
 abort-controller@^3.0.0:
   version "3.0.0"
