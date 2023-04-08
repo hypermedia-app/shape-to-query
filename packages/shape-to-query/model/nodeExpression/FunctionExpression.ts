@@ -45,20 +45,21 @@ export abstract class FunctionExpression implements NodeExpression {
 
     const expressionList = [...argumentList].map(createExpr)
     if (isGraphPointer(functionPtr.has(rdf.type, dashSparql.AdditiveExpression))) {
-      return new AdditiveExpression(symbol.value, returnType, expressionList)
+      return new AdditiveExpression(functionPtr.term, symbol.value, returnType, expressionList)
     }
     if (isGraphPointer(functionPtr.has(rdf.type, dashSparql.RelationalExpression))) {
-      return new RelationalExpression(symbol.value, getParameters(functionPtr.term), expressionList)
+      return new RelationalExpression(functionPtr.term, symbol.value, getParameters(functionPtr.term), expressionList)
     }
     if (functionPtr.term.equals(dashSparql.in) || functionPtr.term.equals(dashSparql.notin)) {
       return new InExpression(<any>functionPtr.term, expressionList)
     }
 
-    return new FunctionCallExpression(symbol, getParameters(functionPtr.term), returnType, expressionList, unlimitedParameters)
+    return new FunctionCallExpression(functionPtr.term, symbol, getParameters(functionPtr.term), returnType, expressionList, unlimitedParameters)
   }
 
   public constructor(
-    public symbol: Term,
+    public readonly term: Term,
+    public readonly symbol: Term,
     public readonly parameters: ReadonlyArray<Parameter>,
     public readonly returnType: Term | undefined,
     public args: NodeExpression[],
@@ -105,8 +106,8 @@ export abstract class FunctionExpression implements NodeExpression {
 }
 
 export class AdditiveExpression extends FunctionExpression {
-  constructor(symbol: string, returnType: Term | undefined, args: NodeExpression[]) {
-    super($rdf.literal(symbol), [], returnType, args)
+  constructor(term: Term, symbol: string, returnType: Term | undefined, args: NodeExpression[]) {
+    super(term, $rdf.literal(symbol), [], returnType, args)
   }
 
   protected boundExpression(subject: Term, args: SparqlTemplateResult[]): SparqlTemplateResult {
@@ -118,8 +119,8 @@ export class AdditiveExpression extends FunctionExpression {
 }
 
 export class RelationalExpression extends FunctionExpression {
-  constructor(symbol: string, parameters: ReadonlyArray<Parameter>, args: NodeExpression[]) {
-    super($rdf.literal(symbol), parameters, xsd.boolean, args)
+  constructor(term: Term, symbol: string, parameters: ReadonlyArray<Parameter>, args: NodeExpression[]) {
+    super(term, $rdf.literal(symbol), parameters, xsd.boolean, args)
   }
 
   protected boundExpression(subject: Term, [left, right]: SparqlTemplateResult[]): SparqlTemplateResult {
@@ -131,7 +132,7 @@ export class InExpression extends FunctionExpression {
   public readonly negated: boolean
 
   constructor(term: typeof dashSparql.in | typeof dashSparql.notin, args: NodeExpression[]) {
-    super($rdf.literal('IN'), getParameters(term), xsd.boolean, args, true)
+    super(term, $rdf.literal('IN'), getParameters(term), xsd.boolean, args, true)
     this.negated = term.equals(dashSparql.notin)
   }
 
@@ -162,12 +163,12 @@ function assertFunctionArguments(func: FunctionExpression, args: NodeExpression[
   if (args.length >= minArguments && args.length <= maxArguments) return
 
   if (unlimitedParameters) {
-    throw new Error(`Function ${shrink(func.symbol.value)} requires at least ${minArguments} arguments`)
+    throw new Error(`Function ${shrink(func.term.value)} requires at least ${minArguments} arguments`)
   }
   if (minArguments === maxArguments) {
-    throw new Error(`Function ${shrink(func.symbol.value)} requires ${func.parameters.length} arguments`)
+    throw new Error(`Function ${shrink(func.term.value)} requires ${func.parameters.length} arguments`)
   } else {
-    throw new Error(`Function ${shrink(func.symbol.value)} requires between ${minArguments} and ${maxArguments} arguments`)
+    throw new Error(`Function ${shrink(func.term.value)} requires between ${minArguments} and ${maxArguments} arguments`)
   }
 
   // TODO: check argument types

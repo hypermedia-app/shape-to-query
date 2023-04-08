@@ -266,7 +266,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
     describe('constructor', () => {
       it('throws when number of arguments does not match', () => {
         expect(() =>
-          new FunctionCallExpression($rdf.literal('foobar'), [{ optional: false }, { optional: false }], undefined, []),
+          new FunctionCallExpression(ex.function, $rdf.literal('foobar'), [{ optional: false }, { optional: false }], undefined, []),
         ).to.throw()
       })
     })
@@ -274,7 +274,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
     describe('buildPatterns', () => {
       it('builds patterns with built-in function "call"', () => {
         // given
-        const expr = new FunctionCallExpression($rdf.literal('uuid'), [], xsd.string, [])
+        const expr = new FunctionCallExpression(ex.function, $rdf.literal('uuid'), [], xsd.string, [])
 
         // when
         const result = expr.buildPatterns({
@@ -290,7 +290,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
 
       it('builds patterns with custom function "call"', () => {
         // given
-        const expr = new FunctionCallExpression(ex.search, [], xsd.string, [])
+        const expr = new FunctionCallExpression(ex.search, ex.search, [], xsd.string, [])
 
         // when
         const result = expr.buildPatterns({
@@ -363,7 +363,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
         }, {
           buildPatterns: ({ object }) => sparql`BIND('C' as ${object})`,
         }]
-        const expr = new AdditiveExpression('+', undefined, expressions)
+        const expr = new AdditiveExpression(dashSparql.and, '+', undefined, expressions)
 
         // when
         const result = expr.buildPatterns({
@@ -392,7 +392,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
       }, {
         buildPatterns: ({ object }) => sparql`BIND('B' as ${object})`,
       }]
-      const expr = new RelationalExpression('*', [{ optional: false }, { optional: false }], args)
+      const expr = new RelationalExpression(dashSparql.eq, '*', [{ optional: false }, { optional: false }], args)
 
       // when
       const result = expr.buildPatterns({
