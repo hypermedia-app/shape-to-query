@@ -383,4 +383,31 @@ describe('model/nodeExpression/FunctionExpression', () => {
       })
     })
   })
+
+  describe('RelationalExpression', () => {
+    it('generates an operator pattern for its arguments', () => {
+      // given
+      const args = [{
+        buildPatterns: ({ object }) => sparql`BIND('A' as ${object})`,
+      }, {
+        buildPatterns: ({ object }) => sparql`BIND('B' as ${object})`,
+      }]
+      const expr = new RelationalExpression('*', [{ optional: false }, { optional: false }], args)
+
+      // when
+      const result = expr.buildPatterns({
+        variable,
+        subject: variable(),
+        object: $rdf.variable('foo'),
+        rootPatterns: sparql``,
+      })
+
+      // then
+      expect(result).to.equalPatterns(`
+        BIND('A' as ?a)
+        BIND('B' as ?b)
+        BIND(?a * ?b as ?foo)
+      `)
+    })
+  })
 })
