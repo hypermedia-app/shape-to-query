@@ -1,0 +1,25 @@
+PREFIX sparql: <http://datashapes.org/sparql#>
+PREFIX schema: <http://schema.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+[
+  a sh:NodeShape ;
+  sh:targetClass schema:Person ;
+  sh:rule
+    [
+      sh:subject
+        [
+          sh:path [ sh:alternativePath ( schema:spouse schema:children schema:parent ) ]
+        ] ;
+      sh:predicate schema:relatedTo ;
+      sh:object sh:this ;
+    ] ,
+    [
+      sh:subject sh:this ;
+      sh:predicate schema:relatedTo ;
+      sh:object
+        [
+          sh:path [ sh:alternativePath ( schema:spouse schema:children schema:parent ) ]
+        ] ;
+    ] ;
+] .

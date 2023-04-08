@@ -22,7 +22,7 @@ export class PropertyValueRule {
     if ('build' in result) {
       whereClause = sparql`${result.WHERE`${rootPatterns}`}`
     } else {
-      whereClause = sparql`${result}`
+      whereClause = result
     }
 
     return {
