@@ -85,3 +85,5 @@ With function metadata in place, you can now use the custom function in any node
 
   </s2q-snippet>
 </div>
+
+Issue(130): simplify the example when `sh:expressions` is implemented to use the result of the palindrome function call as a constraint
