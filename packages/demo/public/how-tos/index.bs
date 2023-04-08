@@ -27,3 +27,61 @@ Issue: implementing hydra member assertion query
 ### How to implement a compound node expression ### {#node-expressions-compound}
 
 Issue: implementing a limit/offset/order shorthand
+
+## How to register a custom function ## {#custom-function}
+
+In this how-to we will add support for a `palindrome` function as described in [this tutorial](https://rdf4j.org/documentation/tutorials/custom-sparql-functions/). Assuming that you've already added support of such a function
+to your SPARQL engine, you should be able to perform a query such as that shown in the mentioned tutorial:
+
+```sparql
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX cfn: <http://example.org/custom-function/>
+SELECT ?x ?label
+WHERE {
+   ?x rdfs:label ?label .
+   FILTER(cfn:palindrome(str(?label)))
+}
+```
+
+In order for shape-to-query to recognize you custom function, the necessary metadata needs to be added to the SPARQL vocabulary.
+This can be easily done programmatically, at the minimum by adding an `rdf:type` assertion about the function itself.
+
+<pre class="include-code" slot="shape">
+path: example/palindrome/index.ts
+highlight: js
+</pre>
+
+Alternatively, you may choose to load the additional metadata by parsing a turtle string or loading an RDF file, or
+fetching it the web. Use the following code to add all the parsed triples to the vocabulary dataset:
+
+```ts
+import type { DatasetCore } from '@rdfjs/types'
+import vocabulary from '@hydrofoil/shape-to-query/vocabulary.js'
+import addAll from 'rdf-dataset-ext/addAll.js'
+
+let customFunctions: DatasetCore = await loadAndParseFunctions()
+
+addAll(vocabulary.dataset, customFunctions)
+```
+
+NOTE: Read [[s2q-concepts#function-metadata]] to learn more about the recognised properties of SHACL functions.
+
+With function metadata in place, you can now use the custom function in any node expression:
+
+<div class="example">
+  Populate a property which will indicate that the name property of a resource is a palindrome
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/palindrome/shape.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/palindrome/shape.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>

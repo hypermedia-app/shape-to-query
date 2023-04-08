@@ -61,3 +61,7 @@ and referencing it in the two properties.
 ## Creating a more efficient DSL on top of SHACL-AF ## {#dsl} 
 
 Issue: TODO
+
+## SHACL Function metadata ## {#function-metadata}
+
+Issue: describe function properties based on `https://datashapes.org/sparql`
