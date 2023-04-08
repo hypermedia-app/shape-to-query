@@ -266,7 +266,9 @@ describe('model/nodeExpression/FunctionExpression', () => {
     describe('constructor', () => {
       it('throws when number of arguments does not match', () => {
         expect(() =>
-          new FunctionCallExpression(ex.function, $rdf.literal('foobar'), [{ optional: false }, { optional: false }], undefined, []),
+          new FunctionCallExpression(ex.function, [], {
+            parameters: [{ optional: false }, { optional: false }],
+          }),
         ).to.throw()
       })
     })
@@ -274,7 +276,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
     describe('buildPatterns', () => {
       it('builds patterns with built-in function "call"', () => {
         // given
-        const expr = new FunctionCallExpression(ex.function, $rdf.literal('uuid'), [], xsd.string, [])
+        const expr = new FunctionCallExpression(ex.function, [], { symbol: $rdf.literal('uuid'), returnType: xsd.string })
 
         // when
         const result = expr.buildPatterns({
@@ -290,7 +292,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
 
       it('builds patterns with custom function "call"', () => {
         // given
-        const expr = new FunctionCallExpression(ex.search, ex.search, [], xsd.string, [])
+        const expr = new FunctionCallExpression(ex.search, [], { returnType: xsd.string })
 
         // when
         const result = expr.buildPatterns({
@@ -408,6 +410,28 @@ describe('model/nodeExpression/FunctionExpression', () => {
         BIND('B' as ?b)
         BIND(?a * ?b as ?foo)
       `)
+    })
+  })
+
+  describe('buildInlineExpression', () => {
+    it('wraps bound expression in parens', () => {
+      // given
+      class TestFunction extends FunctionExpression {
+        protected boundExpression() {
+          return sparql`A = B`
+        }
+      }
+
+      // when
+      const inlineExpr = new TestFunction(ex.fun).buildInlineExpression({
+        variable,
+        subject: variable(),
+        object: $rdf.variable('foo'),
+        rootPatterns: sparql``,
+      })
+
+      // then
+      expect(inlineExpr).to.equalPatterns('(A = B)')
     })
   })
 })
