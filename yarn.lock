@@ -1271,9 +1271,9 @@
     "@rdfjs/types" "*"
 
 "@types/rdfjs__term-set@*", "@types/rdfjs__term-set@^2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@types/rdfjs__term-set/-/rdfjs__term-set-2.0.2.tgz#d86f1e0c317a5f85469ab44d7dd249c1ad4e2971"
-  integrity sha512-B+emhIPEl+5+AjmjP92cI23Xo3FEMKnrPsv20exIe9S3hHShPZOZzO/55gsYQjizW1r9VWsLdH5AcaoM4C+AFA==
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@types/rdfjs__term-set/-/rdfjs__term-set-2.0.3.tgz#6f4bf6ef2ceef744a73ad7086659ea2ad67ad1b3"
+  integrity sha512-X/5fRPmLSjzHRRt5+M0Pq0uNGxUwE9h5tfBbc9bTBTgSVfsCV11UwOzS+7s1lAU/0Q0Bem3tKfGdCZ4ieRL3yg==
   dependencies:
     "@rdfjs/types" "*"
 
