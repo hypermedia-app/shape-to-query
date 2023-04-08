@@ -1,15 +1,22 @@
 import { Term } from 'rdf-js'
 import { GraphPointer } from 'clownface'
 import { isGraphPointer, isLiteral } from 'is-graph-pointer'
-import { rdf, sh } from '@tpluscode/rdf-ns-builders'
+import { rdf, sh, xsd } from '@tpluscode/rdf-ns-builders'
 import { dashSparql } from '@tpluscode/rdf-ns-builders/loose'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { shrink } from '@zazuko/prefixes'
 import { fromRdf } from 'rdf-literal'
 import $rdf from 'rdf-ext'
+import { IN } from '@tpluscode/sparql-builder/expressions'
 import vocabulary from '../../vocabulary.js'
+import { TRUE } from '../../lib/rdf.js'
 import { NodeExpression, Parameters } from './NodeExpression.js'
 import { NodeExpressionFactory } from './index.js'
+
+interface Parameter {
+  datatype?: Term
+  optional: boolean
+}
 
 export abstract class FunctionExpression implements NodeExpression {
   static match(pointer: GraphPointer) {
@@ -33,46 +40,47 @@ export abstract class FunctionExpression implements NodeExpression {
     }
 
     const symbol = functionPtr.out(dashSparql.symbol).term || functionPtr.term
-    const parameters = functionPtr.out(sh.parameter).map(parameter => {
-      const order = parameter.out(sh.order)
-      return {
-        order: isLiteral(order) ? fromRdf(order.term) : 0,
-        datatype: parameter.out(sh.datatype).term,
-      }
-    })
-      .sort((l, r) => l.order - r.order)
     const returnType = functionPtr.out(sh.returnType).term
+    const unlimitedParameters = TRUE.equals(functionPtr.out(dashSparql.unlimitedParameters).term)
 
     const expressionList = [...argumentList].map(createExpr)
     if (isGraphPointer(functionPtr.has(rdf.type, dashSparql.AdditiveExpression))) {
       return new AdditiveExpression(symbol.value, returnType, expressionList)
     }
+    if (isGraphPointer(functionPtr.has(rdf.type, dashSparql.RelationalExpression))) {
+      return new RelationalExpression(symbol.value, getParameters(functionPtr.term), expressionList)
+    }
+    if (functionPtr.term.equals(dashSparql.in) || functionPtr.term.equals(dashSparql.notin)) {
+      return new InExpression(<any>functionPtr.term, expressionList)
+    }
 
-    return new FunctionCallExpression(symbol, parameters, returnType, expressionList)
+    return new FunctionCallExpression(symbol, getParameters(functionPtr.term), returnType, expressionList, unlimitedParameters)
   }
 
-  protected constructor(
+  public constructor(
     public symbol: Term,
-    public readonly parameters: ReadonlyArray<{ datatype?: Term }>,
+    public readonly parameters: ReadonlyArray<Parameter>,
     public readonly returnType: Term | undefined,
-    public args: NodeExpression[]) {
+    public args: NodeExpression[],
+    unlimitedParameters = false) {
+    assertFunctionArguments(this, args, unlimitedParameters)
   }
 
   buildPatterns(args: Parameters) {
     const { expressions, patterns } = this.evaluateArguments(args)
 
-    return sparql`${patterns}\nBIND(${this.boundExpression(expressions)} as ${args.object})`
+    return sparql`${patterns}\nBIND(${this.boundExpression(args.subject, expressions)} as ${args.object})`
   }
 
   buildInlineExpression(args: Parameters) {
     const { expressions, patterns } = this.evaluateArguments(args)
     return {
       patterns,
-      inline: sparql`(${this.boundExpression(expressions)})`,
+      inline: sparql`(${this.boundExpression(args.subject, expressions)})`,
     }
   }
 
-  protected abstract boundExpression(args: SparqlTemplateResult[]): SparqlTemplateResult
+  protected abstract boundExpression(subject: Term, args: SparqlTemplateResult[]): SparqlTemplateResult
 
   private evaluateArguments(arg: Parameters) {
     return this.args.reduce((result, expr) => {
@@ -99,10 +107,9 @@ export abstract class FunctionExpression implements NodeExpression {
 export class AdditiveExpression extends FunctionExpression {
   constructor(symbol: string, returnType: Term | undefined, args: NodeExpression[]) {
     super($rdf.literal(symbol), [], returnType, args)
-    assertFunctionArguments(this, args)
   }
 
-  protected boundExpression(args: SparqlTemplateResult[]): SparqlTemplateResult {
+  protected boundExpression(subject: Term, args: SparqlTemplateResult[]): SparqlTemplateResult {
     const [first, ...rest] = args
     return rest.reduce((expr, arg) => {
       return sparql`${expr} ${this.symbol.value} ${arg}`
@@ -110,13 +117,32 @@ export class AdditiveExpression extends FunctionExpression {
   }
 }
 
-export class FunctionCallExpression extends FunctionExpression {
-  constructor(symbol: Term, parameters: ReadonlyArray<{ datatype?: Term }>, returnType: Term | undefined, args: NodeExpression[]) {
-    super(symbol, parameters, returnType, args)
-    assertFunctionArguments(this, args)
+export class RelationalExpression extends FunctionExpression {
+  constructor(symbol: string, parameters: ReadonlyArray<Parameter>, args: NodeExpression[]) {
+    super($rdf.literal(symbol), parameters, xsd.boolean, args)
   }
 
-  protected boundExpression(args: SparqlTemplateResult[]): SparqlTemplateResult {
+  protected boundExpression(subject: Term, [left, right]: SparqlTemplateResult[]): SparqlTemplateResult {
+    return sparql`${left} ${this.symbol.value} ${right}`
+  }
+}
+
+export class InExpression extends FunctionExpression {
+  public readonly negated: boolean
+
+  constructor(term: typeof dashSparql.in | typeof dashSparql.notin, args: NodeExpression[]) {
+    super($rdf.literal('IN'), getParameters(term), xsd.boolean, args, true)
+    this.negated = term.equals(dashSparql.notin)
+  }
+
+  protected boundExpression(subject: Term, args: SparqlTemplateResult[]): SparqlTemplateResult {
+    const not = this.negated ? 'NOT ' : ''
+    return sparql`${subject} ${not}${IN(...args)}`
+  }
+}
+
+export class FunctionCallExpression extends FunctionExpression {
+  protected boundExpression(subject: Term, args: SparqlTemplateResult[]): SparqlTemplateResult {
     const [first, ...rest] = args
     const argList = rest.reduce((list, arg) => sparql`${list}, ${arg}`, sparql`${first}`)
     const symbol = this.symbol.termType === 'Literal'
@@ -127,10 +153,34 @@ export class FunctionCallExpression extends FunctionExpression {
   }
 }
 
-function assertFunctionArguments(func: FunctionExpression, args: NodeExpression[]) {
-  if (func.parameters.length && args.length !== func.parameters.length) {
-    throw new Error(`Function ${shrink(func.symbol.value)} requires ${func.parameters.length} parameters`)
+function assertFunctionArguments(func: FunctionExpression, args: NodeExpression[], unlimitedParameters: boolean) {
+  if (!func.parameters.length) return
+
+  const minArguments = func.parameters.filter(p => !p.optional).length
+  const maxArguments = unlimitedParameters ? Number.MAX_SAFE_INTEGER : func.parameters.length
+
+  if (args.length >= minArguments && args.length <= maxArguments) return
+
+  if (unlimitedParameters) {
+    throw new Error(`Function ${shrink(func.symbol.value)} requires at least ${minArguments} arguments`)
+  }
+  if (minArguments === maxArguments) {
+    throw new Error(`Function ${shrink(func.symbol.value)} requires ${func.parameters.length} arguments`)
+  } else {
+    throw new Error(`Function ${shrink(func.symbol.value)} requires between ${minArguments} and ${maxArguments} arguments`)
   }
 
   // TODO: check argument types
+}
+
+function getParameters(functionId: Term) {
+  return vocabulary.node(functionId).out(sh.parameter).map(parameter => {
+    const order = parameter.out(sh.order)
+    return {
+      order: isLiteral(order) ? fromRdf(order.term) : 0,
+      datatype: parameter.out(sh.datatype).term,
+      optional: TRUE.equals(parameter.out(sh.optional).term),
+    }
+  })
+    .sort((l, r) => l.order - r.order)
 }

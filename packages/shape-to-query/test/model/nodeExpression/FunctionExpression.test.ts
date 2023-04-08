@@ -4,7 +4,14 @@ import { dashSparql, rdf, xsd } from '@tpluscode/rdf-ns-builders'
 import sinon from 'sinon'
 import $rdf from 'rdf-ext'
 import { sparql } from '@tpluscode/sparql-builder'
-import { FunctionExpression, FunctionCallExpression, AdditiveExpression } from '../../../model/nodeExpression/FunctionExpression.js'
+import { GraphPointer } from 'clownface'
+import {
+  FunctionExpression,
+  FunctionCallExpression,
+  AdditiveExpression,
+  RelationalExpression,
+  InExpression,
+} from '../../../model/nodeExpression/FunctionExpression.js'
 import { blankNode } from '../../nodeFactory.js'
 import vocabulary from '../../../vocabulary.js'
 import { ex } from '../../namespace.js'
@@ -21,6 +28,17 @@ describe('model/nodeExpression/FunctionExpression', () => {
   before(() => {
     vocabulary.node(ex.function)
       .addOut(rdf.type, sh.Function)
+
+    vocabulary.node(ex.functionWithOptionalArgs)
+      .addOut(rdf.type, sh.Function)
+      .addOut(sh.parameter, null)
+      .addOut(sh.parameter, null)
+      .addOut(sh.parameter, third => {
+        third.addOut(sh.optional, true)
+      })
+      .addOut(sh.parameter, fourth => {
+        fourth.addOut(sh.optional, true)
+      })
   })
 
   describe('match', () => {
@@ -64,6 +82,20 @@ describe('model/nodeExpression/FunctionExpression', () => {
   })
 
   describe('fromPointer', () => {
+    context('throws when arguments are', () => {
+      const cases: Array<[string, GraphPointer]> = [
+        ['non-list blank node', blankNode().addOut(ex.function, null)],
+        ['a literal', blankNode().addOut(ex.function, 10)],
+        ['non-list named node', blankNode().addOut(ex.function, ex.foo)],
+      ]
+
+      for (const [name, pointer] of cases) {
+        it(name, () => {
+          expect(() => FunctionExpression.fromPointer(pointer, factory)).to.throw()
+        })
+      }
+    })
+
     it('returns new function with URI symbol', () => {
       // given
       const pointer = blankNode()
@@ -101,13 +133,140 @@ describe('model/nodeExpression/FunctionExpression', () => {
       // then
       expect(expr.returnType).to.deep.eq(xsd.string)
     })
+
+    const additiveExpressions = [
+      dashSparql.add,
+      dashSparql.subtract,
+      dashSparql.divide,
+      dashSparql.multiply,
+    ]
+
+    for (const func of additiveExpressions) {
+      it(`returns additive expression for ${func.value}`, () => {
+        // given
+        const pointer = blankNode()
+          .addList(func, [])
+
+        // when
+        const expr = FunctionExpression.fromPointer(pointer, factory)
+
+        // then
+        expect(expr).to.be.instanceof(AdditiveExpression)
+      })
+    }
+
+    const relationalExpressions = [
+      dashSparql.eq,
+      dashSparql.ne,
+      dashSparql.ge,
+      dashSparql.gt,
+      dashSparql.le,
+      dashSparql.lt,
+    ]
+
+    for (const func of relationalExpressions) {
+      it(`returns relational expression for ${func.value}`, () => {
+        // given
+        const pointer = blankNode()
+          .addList(func, ['A', 'B'])
+
+        // when
+        const expr = FunctionExpression.fromPointer(pointer, factory)
+
+        // then
+        expect(expr).to.be.instanceof(RelationalExpression)
+      })
+    }
+
+    it('throws when InExpression has no arguments', () => {
+      // given
+      const pointer = blankNode()
+        .addList(dashSparql.in, [])
+
+      // then
+      expect(() => FunctionExpression.fromPointer(pointer, factory)).to.throw()
+    })
+
+    it('returns a InExpression', () => {
+      // given
+      const pointer = blankNode()
+        .addList(dashSparql.in, ['A'])
+
+      // when
+      const expr = FunctionExpression.fromPointer(pointer, factory)
+
+      // then
+      expect(expr).to.be.instanceof(InExpression)
+    })
+
+    context('optional arguments', () => {
+      it('throws when there are too few arguments', () => {
+        // given
+        const pointer = blankNode()
+          .addList(ex.functionWithOptionalArgs, ['A'])
+
+        // then
+        expect(() => FunctionExpression.fromPointer(pointer, factory)).to.throw()
+      })
+
+      it('throws when there are too many arguments', () => {
+        // given
+        const pointer = blankNode()
+          .addList(ex.functionWithOptionalArgs, ['A', 'B', 'C', 'D', 'E'])
+
+        // then
+        expect(() => FunctionExpression.fromPointer(pointer, factory)).to.throw()
+      })
+
+      it('creates an instance with optional argument', () => {
+        // given
+        const pointer = blankNode()
+          .addList(ex.functionWithOptionalArgs, ['A', 'B', 'C'])
+
+        // when
+        const expr = FunctionExpression.fromPointer(pointer, factory)
+
+        // then
+        expect(expr.args).to.have.length(3)
+      })
+
+      it('creates an instance without optional argument', () => {
+        // given
+        const pointer = blankNode()
+          .addList(ex.functionWithOptionalArgs, ['A', 'B'])
+
+        // when
+        const expr = FunctionExpression.fromPointer(pointer, factory)
+
+        // then
+        expect(expr.args).to.have.length(2)
+      })
+
+      it('of BNODE', () => {
+        const pointer = blankNode()
+          .addList(dashSparql.bnode, [])
+
+        expect(() => {
+          FunctionExpression.fromPointer(pointer, factory)
+        }).not.to.throw()
+      })
+
+      it('of REPLACE', () => {
+        const pointer = blankNode()
+          .addList(dashSparql.replace, ['arg', 'pattern', 'replacement'])
+
+        expect(() => {
+          FunctionExpression.fromPointer(pointer, factory)
+        }).not.to.throw()
+      })
+    })
   })
 
   describe('FunctionCallExpression', () => {
     describe('constructor', () => {
       it('throws when number of arguments does not match', () => {
         expect(() =>
-          new FunctionCallExpression($rdf.literal('foobar'), [{}, {}], undefined, []),
+          new FunctionCallExpression($rdf.literal('foobar'), [{ optional: false }, { optional: false }], undefined, []),
         ).to.throw()
       })
     })
@@ -143,6 +302,52 @@ describe('model/nodeExpression/FunctionExpression', () => {
 
         // then
         expect(result).to.equalPatternsVerbatim(sparql`BIND(${ex.search}() as ?foo)`)
+      })
+    })
+  })
+
+  describe('InExpression', () => {
+    describe('buildPatterns', () => {
+      it('generates IN expression', () => {
+        // given
+        const exprList = [
+          { buildPatterns: () => sparql``, buildInlineExpression: () => ({ inline: sparql`A`, patterns: sparql`` }) },
+          { buildPatterns: () => sparql``, buildInlineExpression: () => ({ inline: sparql`B`, patterns: sparql`` }) },
+          { buildPatterns: () => sparql``, buildInlineExpression: () => ({ inline: sparql`C`, patterns: sparql`` }) },
+        ]
+        const expr = new InExpression(dashSparql.in, exprList)
+
+        // when
+        const result = expr.buildPatterns({
+          variable,
+          subject: $rdf.variable('foo'),
+          object: $rdf.variable('bar'),
+          rootPatterns: sparql``,
+        })
+
+        // then
+        expect(result).to.equalPatternsVerbatim(sparql`BIND(?foo IN ( A, B, C ) as ?bar)`)
+      })
+
+      it('generates NOT IN expression', () => {
+        // given
+        const exprList = [
+          { buildPatterns: () => sparql``, buildInlineExpression: () => ({ inline: sparql`A`, patterns: sparql`` }) },
+          { buildPatterns: () => sparql``, buildInlineExpression: () => ({ inline: sparql`B`, patterns: sparql`` }) },
+          { buildPatterns: () => sparql``, buildInlineExpression: () => ({ inline: sparql`C`, patterns: sparql`` }) },
+        ]
+        const expr = new InExpression(dashSparql.notin, exprList)
+
+        // when
+        const result = expr.buildPatterns({
+          variable,
+          subject: $rdf.variable('foo'),
+          object: $rdf.variable('bar'),
+          rootPatterns: sparql``,
+        })
+
+        // then
+        expect(result).to.equalPatternsVerbatim(sparql`BIND(?foo NOT IN ( A, B, C ) as ?bar)`)
       })
     })
   })
