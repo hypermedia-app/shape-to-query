@@ -1,5 +1,13 @@
 # @hydrofoil/shape-to-query
 
+## 0.5.3
+
+### Patch Changes
+
+- 6af1eb9: Disabling logical constraint shapes with `sh:deactivated true`
+- f1ffab7: Property value rules need to access root patterns in their scope
+- f1ffab7: When there were multiple rules they would not match anything because of SPARQL's inside-out processing logic
+
 ## 0.5.2
 
 ### Patch Changes
