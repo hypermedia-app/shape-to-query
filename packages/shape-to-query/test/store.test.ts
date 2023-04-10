@@ -500,5 +500,86 @@ describe('@hydrofoil/shape-to-query', () => {
       `
       expect(result).to.equalDataset(expected)
     })
+
+    it('union of triple rules', async () => {
+      // given
+      const shape = parse`
+        <> 
+          ${sh.targetNode} ${ex.people} ;
+          ${sh.property} [ ${sh.path} ${rdf.type} ] ;
+          ${sh.rule} [
+            ${sh.subject} ${sh.this} ;
+            ${sh.predicate} ${hydra.view} ;
+            ${sh.object} _:alphabeticalViewId ;
+          ],
+          [
+            ${sh.subject} _:alphabeticalViewId ;
+            ${sh.predicate} ${rdf.type} ;
+            ${sh.object} ${ex.AlphabeticallyPagedView} ;
+          ]
+        .
+        
+        _:alphabeticalViewId
+          ${dashSparql.iri}
+            (
+              [ ${dashSparql.concat} ( [ ${dashSparql.str} ( ${sh.this} ) ] "#index" ) ]
+            )
+        .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${ex.people} a ${hydra.Collection} .
+        ${ex.people} ${hydra.view} ${ex['people#index']} .
+        ${ex['people#index']} a ${ex.AlphabeticallyPagedView} .
+      `
+      expect(result).to.equalDataset(expected)
+    })
+
+    it('union of property value rules', async () => {
+      // given
+      const shape = parse`
+        <> 
+          ${sh.targetNode} ${ex.people} ;
+          ${sh.property} [ 
+            ${sh.path} ${rdf.type} ; 
+          ] ;
+          ${sh.property} [ 
+            ${sh.path} ${hydra.view} ;
+            ${sh.values} [
+              ${dashSparql.iri}
+              (
+                [ ${dashSparql.concat} ( [ ${dashSparql.str} ( ${sh.this} ) ] "#index" ) ]
+              )
+            ];
+            ${sh.node} [
+              ${sh.property} [
+                ${sh.path} ${rdf.type} ;
+                ${sh.values} ${ex.AlphabeticallyPagedView} ; 
+              ] ;
+            ] , [
+              ${sh.property} [ 
+                ${sh.path} ${rdf.type} ;
+                ${sh.values} ${hydra.PartialCollectionView} ;
+              ] ;
+            ] ;
+          ] ;
+        .
+      `
+
+      // when
+      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+
+      // then
+      const expected = await raw`
+        ${ex.people} a ${hydra.Collection} .
+        ${ex.people} ${hydra.view} ${ex['people#index']} .
+        ${ex['people#index']} a ${ex.AlphabeticallyPagedView}, ${hydra.PartialCollectionView} .
+      `
+      expect(result).to.equalDataset(expected)
+    })
   })
 })

@@ -27,7 +27,7 @@ export default class implements PropertyValueRule {
     if ('build' in result) {
       whereClause = sparql`${result.WHERE`${rootPatterns}`}`
     } else {
-      whereClause = result
+      whereClause = sparql`{ ${rootPatterns}\n${result} }`
     }
 
     return {
