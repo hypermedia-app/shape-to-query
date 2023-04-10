@@ -16,7 +16,7 @@
     "release": "changeset publish"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.26.0",
+    "@changesets/cli": "^2.26.1",
     "@tpluscode/eslint-config": "0.4.3",
     "@types/mocha": "^10.0.1",
     "@types/sinon-chai": "^3.2.9",
