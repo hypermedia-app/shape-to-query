@@ -555,12 +555,7 @@
   resolved "https://registry.yarnpkg.com/@lit-labs/react/-/react-1.1.1.tgz#88a4320d357dcdfd7c7e276f809e3453a124cbbc"
   integrity sha512-9TC+/ZWb6BJlWCyUr14FKFlaGnyKpeEDorufXozQgke/VoVrslUQNaL7nBmrAWdNrmzx5jWgi8lFmWwrxMjnlA==
 
-"@lit-labs/ssr-dom-shim@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@lit-labs/ssr-dom-shim/-/ssr-dom-shim-1.0.0.tgz#427e19a2765681fd83411cd72c55ba80a01e0523"
-  integrity sha512-ic93MBXfApIFTrup4a70M/+ddD8xdt2zxxj9sRwHQzhS9ag/syqkD8JPdTXsc1gUy2K8TTirhlCqyTEM/sifNw==
-
-"@lit-labs/ssr-dom-shim@^1.1.0":
+"@lit-labs/ssr-dom-shim@^1.0.0", "@lit-labs/ssr-dom-shim@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@lit-labs/ssr-dom-shim/-/ssr-dom-shim-1.1.0.tgz#3361d6b8c4cb2ac426d5794ac7cd9776cd2f0814"
   integrity sha512-92uQ5ARf7UXYrzaFcAX3T2rTvaS9Z1//ukV+DqjACM4c8s0ZBQd7ayJU5Dh2AFLD/Ayuyz4uMmxQec8q3U4Ong==
@@ -3299,14 +3294,7 @@ is-glob@^4.0.0, is-glob@^4.0.1, is-glob@^4.0.3, is-glob@~4.0.1:
   dependencies:
     is-extglob "^2.1.1"
 
-is-graph-pointer@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/is-graph-pointer/-/is-graph-pointer-1.3.0.tgz#e7b7bc04b5993c83b0cc3abe4e719a9bf6a5138f"
-  integrity sha512-EN+CsvlI55+QVtBd8Taqxi6KQmsQ0RRjkTi6TCoAYkJV1OvSqS5Gi2ypmjQ6a1hRERr19MV1NSS06BM6WGY4rg==
-  dependencies:
-    "@types/clownface" "^1.5.0"
-
-is-graph-pointer@^2:
+is-graph-pointer@^2, is-graph-pointer@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/is-graph-pointer/-/is-graph-pointer-2.0.0.tgz#2a85a2caf83372cdadf6752b2fe646655408021c"
   integrity sha512-iLwR54h6W1Fv0xq8THEYUd4uGb3ea0hY8jAd17CUangc1Z6FXLPNYfwp5NNN7Hzr0+kIqAYsxgv12shPas/qaA==
