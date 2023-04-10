@@ -27,7 +27,7 @@ describe('model/fromNode', () => {
       expect(more).to.be.empty
     })
 
-    it('ignored deactivated rules', () => {
+    it('ignores deactivated rules', () => {
       // given
       const pointer = parse`
         <> ${sh.rule}
@@ -50,6 +50,23 @@ describe('model/fromNode', () => {
 
       // then
       expect(shape.rules).to.be.empty
+    })
+
+    it('ignores deactivated shapes in logical constraints', () => {
+      // given
+      const pointer = parse`
+        <> ${sh.and} ([ ${sh.deactivated} true ] [ ${sh.deactivated} true ]) .
+        <> ${sh.or} ([ ${sh.deactivated} true ] [ ${sh.deactivated} true ]) .
+        <> ${sh.xone} ([ ${sh.deactivated} true ] [ ${sh.deactivated} true ]) .
+        <> ${sh.not} ([ ${sh.deactivated} true ] [ ${sh.deactivated} true ]) .
+      `
+      // when
+      const shape = <NodeShape>fromNode(pointer)
+
+      // then
+      for (const constraint of shape.constraints) {
+        expect(constraint).to.have.property('inner').to.be.empty
+      }
     })
 
     it('creates with rules', () => {

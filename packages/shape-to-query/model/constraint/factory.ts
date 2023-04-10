@@ -39,8 +39,9 @@ export default function * (shape: GraphPointer): Generator<ConstraintComponent> 
         if (!constraintValue.isList()) {
           throw new Error(sparql`Object of ${parameter} must be an RDF list`.toString({ prologue: false }))
         }
-        const list = constraintValue.list()
-        yield constraintComponent.fromList([...list])
+        const list = [...constraintValue.list()]
+          .filter(el => !TRUE.equals(el.out(sh.deactivated).term))
+        yield constraintComponent.fromList(list)
         continue
       }
       yield constraintComponent.fromPointer(constraintValue)
