@@ -1,5 +1,15 @@
 # @hydrofoil/shape-to-query
 
+## 0.5.2
+
+### Patch Changes
+
+- efe6224: Implement triple rules (closes #133)
+- f855654: Add option to render expressions inlined. For now, used in focus node, constant term and function expressions
+- c5b50b4: Update @zazuko/prefixes
+- 59d7872: Update is-graph-pointer to v2
+- e7d6bfe: Implement SHACL Functions (closes #128, closes #80)
+
 ## 0.5.1
 
 ### Patch Changes
