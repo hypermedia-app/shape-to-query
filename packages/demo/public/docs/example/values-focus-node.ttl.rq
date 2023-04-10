@@ -4,5 +4,10 @@ WHERE {
   VALUES ?resource1 {
     <https://tbbt.tv/sheldon-cooper>
   }
-  BIND(?resource1 AS ?resource2)
+  {
+    VALUES ?resource1 {
+      <https://tbbt.tv/sheldon-cooper>
+    }
+    BIND(?resource1 AS ?resource2)
+  }
 }

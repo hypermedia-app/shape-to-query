@@ -16,6 +16,7 @@ export default class implements Rule {
     return {
       constructClause: [$rdf.quad(subject, predicate, object)],
       whereClause: sparql`
+        ${rootPatterns}
         ${this.subject.buildPatterns({ subject: focusNode, object: subject, variable, rootPatterns })}
         ${this.predicate.buildPatterns({ subject: focusNode, object: predicate, variable, rootPatterns })}
         ${this.object.buildPatterns({ subject: focusNode, object, variable, rootPatterns })}

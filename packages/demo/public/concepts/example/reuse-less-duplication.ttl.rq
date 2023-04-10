@@ -9,6 +9,9 @@ WHERE {
     <http://example.com/people>
   }
   {
+    VALUES ?resource1 {
+      <http://example.com/people>
+    }
     ?resource1 ((rdf:type*)/hydra:memberAssertion) ?resource4.
     ?resource4 hydra:property ?resource6.
     FILTER(?resource6 = rdf:type)

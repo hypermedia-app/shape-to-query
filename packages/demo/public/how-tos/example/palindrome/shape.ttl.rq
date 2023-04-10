@@ -1,6 +1,8 @@
 PREFIX schema: <http://schema.org/>
 CONSTRUCT { ?resource1 <http://example.org/nameIsPalindrome> ?resource2. }
 WHERE {
-  ?resource1 schema:name ?resource3.
-  BIND(<http://example.org/custom-function/palindrome>(?resource3) AS ?resource2)
+  {
+    ?resource1 schema:name ?resource3.
+    BIND(<http://example.org/custom-function/palindrome>(?resource3) AS ?resource2)
+  }
 }
