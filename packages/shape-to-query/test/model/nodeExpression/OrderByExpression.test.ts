@@ -6,12 +6,13 @@ import { schema } from '@tpluscode/rdf-ns-builders'
 import { OrderByExpression } from '../../../model/nodeExpression/OrderByExpression.js'
 import { blankNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
+import ModelFactory from '../../../model/ModelFactory.js'
 
 describe('model/nodeExpression/OrderByExpression', () => {
-  let factory: sinon.SinonSpy
+  let factory: sinon.SinonStubbedInstance<ModelFactory>
 
   beforeEach(() => {
-    factory = sinon.spy()
+    factory = sinon.createStubInstance(ModelFactory)
   })
 
   describe('match', () => {
@@ -81,8 +82,8 @@ describe('model/nodeExpression/OrderByExpression', () => {
       OrderByExpression.fromPointer(pointer, factory)
 
       // then
-      expect(factory).to.have.been.calledWith(sinon.match(actual => actual.term.equals(nodes.term)))
-      expect(factory).to.have.been.calledWith(sinon.match(actual => actual.term.equals(orderBy.term)))
+      expect(factory.nodeExpression).to.have.been.calledWith(sinon.match(actual => actual.term.equals(nodes.term)))
+      expect(factory.nodeExpression).to.have.been.calledWith(sinon.match(actual => actual.term.equals(orderBy.term)))
     })
 
     it('sets descending when sh:desc === true', () => {

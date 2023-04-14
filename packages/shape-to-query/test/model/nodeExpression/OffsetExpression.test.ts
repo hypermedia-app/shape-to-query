@@ -7,13 +7,15 @@ import { SELECT } from '@tpluscode/sparql-builder'
 import { OffsetExpression } from '../../../model/nodeExpression/OffsetExpression.js'
 import { blankNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
+import ModelFactory from '../../../model/ModelFactory.js'
 
 describe('model/nodeExpression/OffsetExpression', () => {
-  let factory: sinon.SinonSpy
+  let factory: sinon.SinonStubbedInstance<ModelFactory>
 
   before(() => import('../../sparql.js'))
   beforeEach(() => {
-    factory = sinon.stub().returns({})
+    factory = sinon.createStubInstance(ModelFactory)
+    factory.nodeExpression.returns(<any>{})
   })
 
   describe('match', () => {

@@ -6,13 +6,15 @@ import sinon from 'sinon'
 import { CountExpression } from '../../../model/nodeExpression/CountExpression.js'
 import { blankNode, namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
+import ModelFactory from '../../../model/ModelFactory.js'
 
 describe('model/nodeExpression/CountExpression', () => {
-  let factory: sinon.SinonSpy
+  let factory: sinon.SinonStubbedInstance<ModelFactory>
 
   before(() => import('../../sparql.js'))
   beforeEach(() => {
-    factory = sinon.stub().returns({})
+    factory = sinon.createStubInstance(ModelFactory)
+    factory.nodeExpression.returns(<any>{})
   })
 
   describe('match', () => {

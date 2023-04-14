@@ -9,12 +9,14 @@ import { variable } from '../../variable.js'
 import { NodeShape } from '../../../model/NodeShape.js'
 import { NodeExpression } from '../../../model/nodeExpression/NodeExpression.js'
 import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpression.js'
+import ModelFactory from '../../../model/ModelFactory.js'
 
 describe('model/nodeExpression/FilterShapeExpression', () => {
-  let factory: sinon.SinonSpy
+  let factory: sinon.SinonStubbedInstance<ModelFactory>
 
+  before(() => import('../../sparql.js'))
   beforeEach(() => {
-    factory = sinon.spy()
+    factory = sinon.createStubInstance(ModelFactory)
   })
 
   describe('match', () => {
@@ -62,17 +64,17 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
     it('constructs with sh:nodes', () => {
       // given
       const nodeShape = {}
-      const createShape = sinon.stub().returns(nodeShape)
+      factory.nodeExpression.returns(<any>nodeShape)
       const nodes = blankNode('nodes')
       const pointer = blankNode()
         .addOut(sh.filterShape)
         .addOut(sh.nodes, nodes)
 
       // when
-      const expr = FilterShapeExpression.fromPointer(pointer, factory, createShape)
+      const expr = FilterShapeExpression.fromPointer(pointer, factory)
 
       // then
-      expect(createShape).to.have.been
+      expect(factory.nodeExpression).to.have.been
         .calledWith(sinon.match(actual => actual.term.equals(nodes.term)))
       expect(expr.nodes).to.be.eq(nodeShape)
     })

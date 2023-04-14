@@ -1,13 +1,19 @@
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { expect } from 'chai'
-import { fromNode, propertyShape } from '../../model/fromNode.js'
-import { parse } from '../nodeFactory.js'
+import ModelFactory from '../../model/ModelFactory.js'
+import { blankNode, parse } from '../nodeFactory.js'
 import { ex } from '../namespace.js'
 import { TargetNode } from '../../model/target/index.js'
 import NodeShape from '../../model/NodeShape.js'
 import PropertyShape from '../../model/PropertyShape.js'
 
-describe('model/fromNode', () => {
+describe('model/ModelFactory', () => {
+  let modelFactory: ModelFactory
+
+  before(() => {
+    modelFactory = new ModelFactory()
+  })
+
   describe('nodeShape', () => {
     it('creates one TargetNode for all values', async () => {
       // given
@@ -16,7 +22,7 @@ describe('model/fromNode', () => {
       `
 
       // when
-      const shape = <NodeShape>fromNode(pointer)
+      const shape = <NodeShape>modelFactory.nodeShape(pointer)
 
       // then
       const [target, ...more] = shape.targets
@@ -46,7 +52,7 @@ describe('model/fromNode', () => {
       `
 
       // when
-      const shape = <NodeShape>fromNode(pointer)
+      const shape = <NodeShape>modelFactory.nodeShape(pointer)
 
       // then
       expect(shape.rules).to.be.empty
@@ -61,7 +67,7 @@ describe('model/fromNode', () => {
         <> ${sh.not} ([ ${sh.deactivated} true ] [ ${sh.deactivated} true ]) .
       `
       // when
-      const shape = <NodeShape>fromNode(pointer)
+      const shape = <NodeShape>modelFactory.nodeShape(pointer)
 
       // then
       for (const constraint of shape.constraints) {
@@ -86,7 +92,7 @@ describe('model/fromNode', () => {
       `
 
       // when
-      const shape = <NodeShape>fromNode(pointer)
+      const shape = <NodeShape>modelFactory.nodeShape(pointer)
 
       // then
       expect(shape.rules).to.have.length(2)
@@ -103,7 +109,7 @@ describe('model/fromNode', () => {
       // then
       expect(() => {
         // when
-        propertyShape(pointer)
+        modelFactory.propertyShape(pointer)
       }).to.throw()
     })
 
@@ -116,7 +122,7 @@ describe('model/fromNode', () => {
       // then
       expect(() => {
         // when
-        propertyShape(pointer)
+        modelFactory.propertyShape(pointer)
       }).to.throw()
     })
 
@@ -129,7 +135,7 @@ describe('model/fromNode', () => {
       // then
       expect(() => {
         // when
-        propertyShape(pointer)
+        modelFactory.propertyShape(pointer)
       }).to.throw()
     })
 
@@ -143,10 +149,16 @@ describe('model/fromNode', () => {
       `
 
       // when
-      const shape = <PropertyShape>propertyShape(pointer)
+      const shape = <PropertyShape>modelFactory.propertyShape(pointer)
 
       // then
       expect(shape.rules).to.have.length(1)
+    })
+  })
+
+  describe('nodeExpression', () => {
+    it('throws when expression is unrecognized', () => {
+      expect(() => modelFactory.nodeExpression(blankNode())).to.throw('Unsupported node expression')
     })
   })
 })

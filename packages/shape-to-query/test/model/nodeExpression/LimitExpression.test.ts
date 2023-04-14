@@ -7,13 +7,15 @@ import { SELECT } from '@tpluscode/sparql-builder'
 import { LimitExpression } from '../../../model/nodeExpression/LimitExpression.js'
 import { blankNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
+import ModelFactory from '../../../model/ModelFactory.js'
 
 describe('model/nodeExpression/LimitExpression', () => {
-  let factory: sinon.SinonSpy
+  let factory: sinon.SinonStubbedInstance<ModelFactory>
 
   before(() => import('../../sparql.js'))
   beforeEach(() => {
-    factory = sinon.stub().returns({})
+    factory = sinon.createStubInstance(ModelFactory)
+    factory.nodeExpression.returns(<any>{})
   })
 
   describe('match', () => {

@@ -6,12 +6,13 @@ import { sparql } from '@tpluscode/sparql-builder'
 import { PathExpression } from '../../../model/nodeExpression/PathExpression.js'
 import { blankNode, namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
+import ModelFactory from '../../../model/ModelFactory.js'
 
 describe('model/nodeExpression/PathExpression', () => {
-  let factory: sinon.SinonSpy
+  let factory: sinon.SinonStubbedInstance<ModelFactory>
 
   beforeEach(() => {
-    factory = sinon.spy()
+    factory = sinon.createStubInstance(ModelFactory)
   })
 
   describe('match', () => {
@@ -76,7 +77,7 @@ describe('model/nodeExpression/PathExpression', () => {
       PathExpression.fromPointer(pointer, factory)
 
       // then
-      expect(factory).to.have.been.calledWith(sinon.match(actual => actual.term.equals(nodes.term)))
+      expect(factory.nodeExpression).to.have.been.calledWith(sinon.match(actual => actual.term.equals(nodes.term)))
     })
 
     it('throws when sh:nodes has multiple values', () => {

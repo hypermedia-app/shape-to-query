@@ -10,8 +10,8 @@ import $rdf from 'rdf-ext'
 import { IN } from '@tpluscode/sparql-builder/expressions'
 import vocabulary from '../../vocabulary.js'
 import { TRUE } from '../../lib/rdf.js'
+import { ModelFactory } from '../ModelFactory.js'
 import { NodeExpression, Parameters } from './NodeExpression.js'
-import { NodeExpressionFactory } from './index.js'
 
 interface Parameter {
   datatype?: Term
@@ -31,7 +31,7 @@ export abstract class FunctionExpression implements NodeExpression {
     return isGraphPointer(functionPtr) && pointer.out(functionPtr).isList()
   }
 
-  static fromPointer(pointer: GraphPointer, createExpr: NodeExpressionFactory) {
+  static fromPointer(pointer: GraphPointer, createExpr: ModelFactory) {
     const [first] = [...pointer.dataset.match(pointer.term)]
     const functionPtr = vocabulary.node(first.predicate)
     const argumentList = pointer.out(functionPtr).list()
@@ -43,7 +43,7 @@ export abstract class FunctionExpression implements NodeExpression {
     const returnType = functionPtr.out(sh.returnType).term
     const unlimitedParameters = TRUE.equals(functionPtr.out(dashSparql.unlimitedParameters).term)
 
-    const expressionList = [...argumentList].map(createExpr)
+    const expressionList = [...argumentList].map(arg => createExpr.nodeExpression(arg))
     if (isGraphPointer(functionPtr.has(rdf.type, dashSparql.AdditiveExpression))) {
       return new AdditiveExpression(functionPtr.term, symbol.value, returnType, expressionList)
     }

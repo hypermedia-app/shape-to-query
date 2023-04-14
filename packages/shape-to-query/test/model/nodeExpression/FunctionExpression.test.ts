@@ -17,13 +17,14 @@ import vocabulary from '../../../vocabulary.js'
 import { ex } from '../../namespace.js'
 import { variable } from '../../variable.js'
 import { NodeExpression } from '../../../model/nodeExpression/NodeExpression.js'
+import ModelFactory from '../../../model/ModelFactory.js'
 
 describe('model/nodeExpression/FunctionExpression', () => {
-  let factory: sinon.SinonSpy
+  let factory: sinon.SinonStubbedInstance<ModelFactory>
 
   before(() => import('../../sparql.js'))
   beforeEach(() => {
-    factory = sinon.stub().returns({})
+    factory = sinon.createStubInstance(ModelFactory)
   })
   before(() => {
     vocabulary.node(ex.function)

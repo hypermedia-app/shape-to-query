@@ -1,7 +1,7 @@
 import { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { PropertyShape } from '../PropertyShape.js'
-import { propertyShape } from '../fromNode.js'
+import { ModelFactory } from '../ModelFactory.js'
 import { ConstraintComponent, Parameters } from './ConstraintComponent.js'
 
 export class PropertyConstraintComponent extends ConstraintComponent {
@@ -9,8 +9,8 @@ export class PropertyConstraintComponent extends ConstraintComponent {
     super(sh.PropertyConstraintComponent)
   }
 
-  static fromPointer(pointer: GraphPointer) {
-    return new PropertyConstraintComponent(propertyShape(pointer))
+  static fromPointer(pointer: GraphPointer, factory: ModelFactory) {
+    return new PropertyConstraintComponent(factory.propertyShape(pointer))
   }
 
   buildPatterns(arg: Parameters) {

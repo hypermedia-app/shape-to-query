@@ -263,7 +263,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
       context('shacl advanced features', () => {
         context('constant term expression', () => {
-          it('binds te constant values', async () => {
+          it('binds the constant values', async () => {
             // given
             const shape = await parse`
               <>

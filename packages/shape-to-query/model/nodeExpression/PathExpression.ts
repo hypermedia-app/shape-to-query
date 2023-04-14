@@ -3,21 +3,21 @@ import { isBlankNode, isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { toSparql } from 'clownface-shacl-path'
+import { ModelFactory } from '../ModelFactory.js'
 import { getOne, getOneOrZero } from './util.js'
 import { NodeExpression, Parameters } from './NodeExpression.js'
-import { NodeExpressionFactory } from './index.js'
 
 export class PathExpression implements NodeExpression {
   static match(pointer: GraphPointer) {
     return isBlankNode(pointer) && isGraphPointer(pointer.out(sh.path))
   }
 
-  static fromPointer(pointer: GraphPointer, fromNode: NodeExpressionFactory) {
+  static fromPointer(pointer: GraphPointer, fromNode: ModelFactory) {
     const path = getOne(pointer, sh.path)
     const nodes = getOneOrZero(pointer, sh.nodes)
 
     if (nodes) {
-      return new PathExpression(toSparql(path), fromNode(nodes))
+      return new PathExpression(toSparql(path), fromNode.nodeExpression(nodes))
     }
 
     return new PathExpression(toSparql(path))
