@@ -1,3 +1,5 @@
+import { Term } from 'rdf-js'
+import type { GraphPointer } from 'clownface'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { sparql } from '@tpluscode/sparql-builder'
 import namespace from '@rdfjs/namespace'
@@ -10,8 +12,11 @@ export class HydraCollectionMemberExpression implements NodeExpression {
     return pointer.has(rdf.type, ex.HydraCollectionMembersExpression).terms.length > 0
   }
 
-  static fromPointer() {
-    return new HydraCollectionMemberExpression()
+  static fromPointer({ term }: GraphPointer) {
+    return new HydraCollectionMemberExpression(term)
+  }
+
+  constructor(public readonly term: Term) {
   }
 
   buildPatterns({ subject, variable, object }: Parameters) {

@@ -1,3 +1,4 @@
+import { Term } from 'rdf-js'
 import { SELECT, Select } from '@tpluscode/sparql-builder'
 import { GraphPointer } from 'clownface'
 import { isGraphPointer, isLiteral } from 'is-graph-pointer'
@@ -19,22 +20,26 @@ export class LimitExpression implements NodeExpression {
       throw new Error('sh:limit must be an xsd:integer')
     }
 
-    return new LimitExpression(fromRdf(limit.term), fromNode.nodeExpression(getOne(pointer, sh.nodes)))
+    return new LimitExpression(pointer.term, fromRdf(limit.term), fromNode.nodeExpression(getOne(pointer, sh.nodes)))
   }
 
-  constructor(private readonly limit: number, private readonly nodes: NodeExpression) {
+  constructor(public readonly term: Term, private readonly limit: number, private readonly nodes: NodeExpression) {
   }
 
-  buildPatterns(arg: Parameters): Select {
-    const selectOrPatterns = this.nodes.buildPatterns(arg)
+  buildPatterns(arg: Parameters) {
+    const object = arg.variable()
+    const selectOrPatterns = arg.builder.build(this.nodes, arg)
     let select: Select
 
-    if ('build' in selectOrPatterns) {
-      select = selectOrPatterns
+    if ('build' in selectOrPatterns.patterns) {
+      select = selectOrPatterns.patterns
     } else {
-      select = SELECT`${arg.subject} ${arg.object}`.WHERE`${selectOrPatterns}`
+      select = SELECT`${arg.subject} ${selectOrPatterns.object}`.WHERE`${selectOrPatterns.patterns}`
     }
 
-    return select.LIMIT(this.limit)
+    return {
+      object,
+      patterns: select.LIMIT(this.limit),
+    }
   }
 }

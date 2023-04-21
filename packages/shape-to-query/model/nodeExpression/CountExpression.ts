@@ -1,3 +1,4 @@
+import { Term } from 'rdf-js'
 import { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isBlankNode, isGraphPointer } from 'is-graph-pointer'
@@ -12,16 +13,21 @@ export class CountExpression implements NodeExpression {
   }
 
   static fromPointer(pointer: GraphPointer, createExpr: ModelFactory) {
-    return new CountExpression(createExpr.nodeExpression(getOne(pointer, sh.count)))
+    return new CountExpression(pointer.term, createExpr.nodeExpression(getOne(pointer, sh.count)))
   }
 
-  constructor(public expression: NodeExpression) {
+  constructor(public readonly term: Term, public expression: NodeExpression) {
   }
 
   buildPatterns(arg: Parameters) {
     const object = arg.variable()
 
-    return SELECT`(COUNT(${object}) as ${arg.object})`
-      .WHERE`${this.expression.buildPatterns({ ...arg, object })}`
+    const where = arg.builder.build(this.expression, arg)
+
+    return {
+      object,
+      patterns: SELECT`(COUNT(${where.object}) as ${object})`
+        .WHERE`${where.patterns}`,
+    }
   }
 }

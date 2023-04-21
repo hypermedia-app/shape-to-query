@@ -1,3 +1,4 @@
+import { Term } from 'rdf-js'
 import { GraphPointer } from 'clownface'
 import { isBlankNode, isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'
@@ -17,24 +18,32 @@ export class PathExpression implements NodeExpression {
     const nodes = getOneOrZero(pointer, sh.nodes)
 
     if (nodes) {
-      return new PathExpression(toSparql(path), fromNode.nodeExpression(nodes))
+      return new PathExpression(pointer.term, toSparql(path), fromNode.nodeExpression(nodes))
     }
 
-    return new PathExpression(toSparql(path))
+    return new PathExpression(pointer.term, toSparql(path))
   }
 
-  constructor(public readonly path: SparqlTemplateResult, public readonly nodes?: NodeExpression) {
+  constructor(public readonly term: Term, public readonly path: SparqlTemplateResult, public readonly nodes?: NodeExpression) {
   }
 
-  buildPatterns({ subject, object, variable, rootPatterns }: Parameters): SparqlTemplateResult {
+  buildPatterns({ subject, variable, rootPatterns, builder }: Parameters) {
+    const object = variable()
     if (this.nodes) {
-      const joined = variable()
-      return sparql`
-        ${this.nodes.buildPatterns({ subject, object: joined, variable, rootPatterns })}
-        ${joined} ${this.path} ${object} .
-      `
+      const inner = builder.build(this.nodes, { subject, variable, rootPatterns, builder })
+      const joined = inner.object
+      return {
+        object,
+        patterns: sparql`
+          ${inner.patterns}
+          ${joined} ${this.path} ${object} .
+        `,
+      }
     }
 
-    return sparql`${subject} ${this.path} ${object} .`
+    return {
+      object,
+      patterns: sparql`${subject} ${this.path} ${object} .`,
+    }
   }
 }

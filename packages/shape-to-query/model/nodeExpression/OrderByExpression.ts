@@ -1,3 +1,4 @@
+import { Term } from 'rdf-js'
 import { GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
@@ -5,7 +6,7 @@ import { SELECT, Select } from '@tpluscode/sparql-builder'
 import { TRUE } from '../../lib/rdf.js'
 import { ModelFactory } from '../ModelFactory.js'
 import { getOne } from './util.js'
-import { NodeExpression, Parameters } from './NodeExpression.js'
+import { NodeExpression, NodeExpressionResult, Parameters } from './NodeExpression.js'
 
 export class OrderByExpression implements NodeExpression {
   static match(pointer: GraphPointer) {
@@ -17,31 +18,35 @@ export class OrderByExpression implements NodeExpression {
     const nodes = getOne(pointer, sh.nodes)
     const descending = TRUE.equals(pointer.out(sh.desc).term)
 
-    return new OrderByExpression(fromNode.nodeExpression(orderBy), fromNode.nodeExpression(nodes), descending)
+    return new OrderByExpression(pointer.term, fromNode.nodeExpression(orderBy), fromNode.nodeExpression(nodes), descending)
   }
 
   constructor(
+    public readonly term: Term,
     public readonly orderExpression: NodeExpression,
     public readonly nodes: NodeExpression,
     public readonly descending = false) {
   }
 
-  buildPatterns(arg: Parameters): Select {
+  buildPatterns(arg: Parameters): NodeExpressionResult {
+    const object = arg.variable()
     const orderVariable = arg.variable()
-    const selectOrPatterns = this.nodes.buildPatterns(arg)
-    const orderPatterns = this.orderExpression.buildPatterns({
+    const selectOrPatterns = arg.builder.build(this.nodes, arg)
+    const orderPatterns = arg.builder.build(this.orderExpression, {
       ...arg,
-      subject: arg.object,
-      object: orderVariable,
+      subject: object,
     })
     let select: Select
 
-    if ('build' in selectOrPatterns) {
-      select = selectOrPatterns
+    if ('build' in selectOrPatterns.patterns) {
+      select = selectOrPatterns.patterns
     } else {
-      select = SELECT`${arg.subject} ${arg.object}`.WHERE`${selectOrPatterns}`
+      select = SELECT`${arg.subject} ${selectOrPatterns.object}`.WHERE`${selectOrPatterns.patterns}`
     }
 
-    return select.WHERE`OPTIONAL { ${orderPatterns} }`.ORDER().BY(orderVariable, this.descending)
+    return {
+      object,
+      patterns: select.WHERE`OPTIONAL { ${orderPatterns.patterns} }`.ORDER().BY(orderVariable, this.descending),
+    }
   }
 }

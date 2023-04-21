@@ -1,3 +1,4 @@
+import { Term } from 'rdf-js'
 import { SELECT, Select } from '@tpluscode/sparql-builder'
 import { GraphPointer } from 'clownface'
 import { isGraphPointer, isLiteral } from 'is-graph-pointer'
@@ -19,22 +20,26 @@ export class OffsetExpression implements NodeExpression {
       throw new Error('sh:offset must be an xsd:integer')
     }
 
-    return new OffsetExpression(fromRdf(offset.term, true), fromNode.nodeExpression(getOne(pointer, sh.nodes)))
+    return new OffsetExpression(pointer.term, fromRdf(offset.term, true), fromNode.nodeExpression(getOne(pointer, sh.nodes)))
   }
 
-  constructor(private readonly offset: number, private readonly nodes: NodeExpression) {
+  constructor(public readonly term: Term, private readonly offset: number, private readonly nodes: NodeExpression) {
   }
 
-  buildPatterns(arg: Parameters): Select {
-    const selectOrPatterns = this.nodes.buildPatterns(arg)
+  buildPatterns(arg: Parameters) {
+    const object = arg.variable()
+    const selectOrPatterns = arg.builder.build(this.nodes, arg)
     let select: Select
 
-    if ('build' in selectOrPatterns) {
-      select = selectOrPatterns
+    if ('build' in selectOrPatterns.patterns) {
+      select = selectOrPatterns.patterns
     } else {
-      select = SELECT`${arg.subject} ${arg.object}`.WHERE`${selectOrPatterns}`
+      select = SELECT`${arg.subject} ${selectOrPatterns.object}`.WHERE`${selectOrPatterns.patterns}`
     }
 
-    return select.OFFSET(this.offset)
+    return {
+      object,
+      patterns: select.OFFSET(this.offset),
+    }
   }
 }

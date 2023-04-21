@@ -1,3 +1,4 @@
+import { Term } from 'rdf-js'
 import { xsd } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import namespace from '@rdfjs/namespace'
@@ -28,20 +29,20 @@ export class ShorthandSubselectExpression implements NodeExpression {
     let subselect = factory.nodeExpression(getOne(pointer, sh.nodes))
 
     subselect = [...getOneOrZero(pointer, ex.orderBy).list()]
-      .reduce(toOrderBySequence(factory.nodeExpression), subselect)
+      .reduce(toOrderBySequence(pointer, factory.nodeExpression), subselect)
     const offset = getOneOrZero(pointer, ex.offset, isLiteral)
     if (offset) {
-      subselect = new OffsetExpression(fromRdf(offset.term), subselect)
+      subselect = new OffsetExpression(pointer.blankNode().term, fromRdf(offset.term), subselect)
     }
     const limit = getOneOrZero(pointer, ex.limit, isLiteral)
     if (limit) {
-      subselect = new LimitExpression(fromRdf(limit.term), subselect)
+      subselect = new LimitExpression(pointer.blankNode().term, fromRdf(limit.term), subselect)
     }
 
-    return new ShorthandSubselectExpression(subselect)
+    return new ShorthandSubselectExpression(pointer.blankNode().term, subselect)
   }
 
-  constructor(public expression: NodeExpression) {
+  constructor(public readonly term: Term, public expression: NodeExpression) {
   }
 
   buildPatterns(arg) {
@@ -49,10 +50,10 @@ export class ShorthandSubselectExpression implements NodeExpression {
   }
 }
 
-function toOrderBySequence(createExpr: NodeExpressionFactory) {
+function toOrderBySequence(pointer: GraphPointer, createExpr: NodeExpressionFactory) {
   return (seq: NodeExpression, current: GraphPointer) => {
     const desc = current.out(sh.desc).value === 'true'
     const orderExpr = createExpr(current.out(sh.orderBy))
-    return new OrderByExpression(orderExpr, seq, desc)
+    return new OrderByExpression(pointer.blankNode().term, orderExpr, seq, desc)
   }
 }

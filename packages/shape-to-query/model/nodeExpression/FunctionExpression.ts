@@ -79,9 +79,13 @@ export abstract class FunctionExpression implements NodeExpression {
   }
 
   buildPatterns(args: Parameters) {
+    const object = args.variable()
     const { expressions, patterns } = this.evaluateArguments(args)
 
-    return sparql`${patterns}\nBIND(${this.boundExpression(args.subject, expressions)} as ${args.object})`
+    return {
+      object,
+      patterns: sparql`${patterns}\nBIND(${this.boundExpression(args.subject, expressions)} as ${object})`,
+    }
   }
 
   buildInlineExpression(args: Parameters) {
@@ -104,10 +108,10 @@ export abstract class FunctionExpression implements NodeExpression {
         }
       }
 
-      const next = arg.variable()
+      const next = arg.builder.build(expr, arg)
       return {
-        expressions: [...result.expressions, sparql`${next}`],
-        patterns: sparql`${result.patterns}\n${expr.buildPatterns({ ...arg, object: next })}`,
+        expressions: [...result.expressions, sparql`${next.object}`],
+        patterns: sparql`${result.patterns}\n${next.patterns}`,
       }
     }, {
       expressions: <SparqlTemplateResult[]>[],

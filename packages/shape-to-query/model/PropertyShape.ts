@@ -8,6 +8,7 @@ import { PropertyValueRule } from './rule/PropertyValueRule.js'
 import { ConstraintComponent } from './constraint/ConstraintComponent.js'
 import type { NodeConstraintComponent } from './constraint/node.js'
 import Shape, { BuildParameters } from './Shape.js'
+import { PatternBuilder } from './nodeExpression/NodeExpression.js'
 
 interface Components {
   rules?: PropertyValueRule[]
@@ -40,6 +41,7 @@ export default class extends Shape implements PropertyShape {
         objectNode: pathEnd,
         variable,
         rootPatterns,
+        builder: new PatternBuilder(),
       }))
       patterns = union(...rulePatterns)
     } else {
