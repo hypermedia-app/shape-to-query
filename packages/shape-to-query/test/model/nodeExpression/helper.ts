@@ -17,19 +17,19 @@ interface FakeInlinePatterns {
 }
 
 export function fakeExpression(patterns: Select | SparqlTemplateResult | FakePatternsImpl = sparql``, inlinePatterns?: FakeInlinePatterns): NodeExpression {
-  const buildPatterns = sinon.stub()
+  const build = sinon.stub()
   if (typeof patterns === 'function') {
-    buildPatterns.callsFake(({ variable, object = variable(), ...args }, builder) => ({
+    build.callsFake(({ variable, object = variable(), ...args }, builder) => ({
       object,
       patterns: patterns({ object, variable, ...args }, builder),
     }))
   } else {
-    buildPatterns.returns(patterns)
+    build.returns(patterns)
   }
 
   const fake: any = {
     term: $rdf.blankNode(),
-    buildPatterns,
+    build,
   }
 
   if (inlinePatterns) {
