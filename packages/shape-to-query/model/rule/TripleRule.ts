@@ -11,9 +11,9 @@ export default class implements Rule {
   buildPatterns({ focusNode, variable, rootPatterns }: Parameters): ShapePatterns {
     const builder = new PatternBuilder()
 
-    const subject = this.subject.buildPatterns({ subject: focusNode, variable, rootPatterns, builder })
-    const predicate = this.predicate.buildPatterns({ subject: focusNode, variable, rootPatterns, builder })
-    const object = this.object.buildPatterns({ subject: focusNode, variable, rootPatterns, builder })
+    const subject = builder.build(this.subject, { subject: focusNode, variable, rootPatterns })
+    const predicate = builder.build(this.predicate, { subject: focusNode, variable, rootPatterns })
+    const object = builder.build(this.object, { subject: focusNode, variable, rootPatterns })
 
     return {
       constructClause: [$rdf.quad(subject.object, predicate.object, object.object)],

@@ -7,11 +7,11 @@ import { ModelFactory } from '../ModelFactory.js'
 import { NodeShape } from '../NodeShape.js'
 import { getOne, getOneOrZero } from './util.js'
 import { FocusNodeExpression } from './FocusNodeExpression.js'
-import { NodeExpression, Parameters } from './NodeExpression.js'
+import NodeExpressionBase, { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
 
-export class FilterShapeExpression implements NodeExpression {
+export class FilterShapeExpression extends NodeExpressionBase {
   constructor(public readonly term: Term, public readonly shape: NodeShape, public readonly nodes: NodeExpression = new FocusNodeExpression()) {
-
+    super()
   }
 
   static match(pointer: GraphPointer) {
@@ -29,16 +29,12 @@ export class FilterShapeExpression implements NodeExpression {
     return new FilterShapeExpression(pointer.term, filterShape)
   }
 
-  buildPatterns({ subject, variable, rootPatterns, builder }: Parameters) {
-    const { patterns, object } = builder.build(this.nodes, { subject, variable, rootPatterns, builder })
-    const focusNode = object
+  _buildPatterns({ subject, variable, rootPatterns, object }: Parameters, builder: PatternBuilder) {
+    const { patterns, object: focusNode } = builder.build(this.nodes, { subject, object, variable, rootPatterns })
     const valueNode = variable()
 
-    return {
-      object,
-      patterns: sparql`
-        ${patterns}
-        ${this.shape.buildConstraints({ focusNode, valueNode, variable, rootPatterns })}`,
-    }
+    return sparql`
+      ${patterns}
+      ${this.shape.buildConstraints({ focusNode, valueNode, variable, rootPatterns })}`
   }
 }

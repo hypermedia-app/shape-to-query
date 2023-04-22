@@ -3,10 +3,11 @@ import { sparql } from '@tpluscode/sparql-builder'
 import { GraphPointer } from 'clownface'
 import { isLiteral, isNamedNode } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { NodeExpression, Parameters } from './NodeExpression.js'
+import NodeExpression, { Parameters } from './NodeExpression.js'
 
-export class ConstantTermExpression implements NodeExpression {
+export class ConstantTermExpression extends NodeExpression {
   constructor(public readonly term: NamedNode | Literal) {
+    super()
   }
 
   static fromPointer(pointer: GraphPointer) {
@@ -25,12 +26,8 @@ export class ConstantTermExpression implements NodeExpression {
     return isLiteral(pointer)
   }
 
-  buildPatterns({ variable }: Omit<Parameters, 'rootPatterns'>) {
-    const object = variable()
-    return {
-      object,
-      patterns: sparql`BIND(${this.term} as ${object})`,
-    }
+  _buildPatterns({ object }: Omit<Parameters, 'rootPatterns'>) {
+    return sparql`BIND(${this.term} as ${object})`
   }
 
   buildInlineExpression(arg: Parameters) {

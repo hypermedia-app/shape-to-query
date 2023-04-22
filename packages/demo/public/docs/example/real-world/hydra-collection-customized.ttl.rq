@@ -9,32 +9,32 @@ WHERE {
   }
   {
     SELECT ?resource1 ?resource2 WHERE {
-      ?resource1 ((rdf:type*)/hydra:memberAssertion) ?resource5.
+      ?resource1 ((rdf:type*)/hydra:memberAssertion) ?resource3.
       OPTIONAL {
-        ?resource5 hydra:property ?resource7;
-          hydra:object ?resource6.
-        ?resource2 ?resource7 ?resource6.
+        ?resource3 hydra:property ?resource5;
+          hydra:object ?resource4.
+        ?resource2 ?resource5 ?resource4.
+      }
+      FILTER((!(BOUND(?resource5))) || ((BOUND(?resource5)) && (BOUND(?resource2))))
+      OPTIONAL {
+        ?resource3 hydra:property ?resource7;
+          hydra:subject ?resource6.
+        ?resource6 ?resource7 ?resource2.
       }
       FILTER((!(BOUND(?resource7))) || ((BOUND(?resource7)) && (BOUND(?resource2))))
       OPTIONAL {
-        ?resource5 hydra:property ?resource9;
-          hydra:subject ?resource8.
-        ?resource8 ?resource9 ?resource2.
+        ?resource3 hydra:subject ?resource8;
+          hydra:object ?resource9.
+        ?resource8 ?resource2 ?resource9.
       }
-      FILTER((!(BOUND(?resource9))) || ((BOUND(?resource9)) && (BOUND(?resource2))))
-      OPTIONAL {
-        ?resource5 hydra:subject ?resource10;
-          hydra:object ?resource11.
-        ?resource10 ?resource2 ?resource11.
-      }
-      FILTER((!(BOUND(?resource10))) || ((BOUND(?resource10)) && (BOUND(?resource2))))
-      OPTIONAL { ?resource2 schema:dateModified ?resource4. }
-      OPTIONAL { ?resource2 rdfs:label ?resource3. }
+      FILTER((!(BOUND(?resource8))) || ((BOUND(?resource8)) && (BOUND(?resource2))))
+      OPTIONAL { ?resource2 schema:dateModified ?resource10. }
+      OPTIONAL { ?resource2 rdfs:label ?resource11. }
       VALUES ?resource1 {
         <https://new.wikibus.org/brands>
       }
     }
-    ORDER BY DESC (?resource4) (?resource3)
+    ORDER BY DESC (?resource10) (?resource11)
     OFFSET 78
     LIMIT 39
   }

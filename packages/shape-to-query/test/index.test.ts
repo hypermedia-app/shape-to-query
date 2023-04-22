@@ -321,7 +321,6 @@ describe('@hydrofoil/shape-to-query', () => {
                 UNION
                 {
                   ?resource1 schema:mainEntity ?resource2.
-                  {
                     VALUES (?resource1) {
                       (<https://new.wikibus.org/page/brands>)
                     }
@@ -333,27 +332,14 @@ describe('@hydrofoil/shape-to-query', () => {
                     ?resource8 ^rdf:type ?resource7.
                     ?resource7 skos:prefLabel ?resource6.
                     BIND(IRI((CONCAT((str(?resource2)), "?i=", (ENCODE_FOR_URI((LCASE((SUBSTR(?resource6, 1, 1))))))))) as ?resource3)
-                  }
-                  {
-                    VALUES (?resource1) {
-                      (<https://new.wikibus.org/page/brands>)
-                    }
-                    ?resource1 schema:mainEntity ?resource2.
                     BIND(rdfs:label as ?resource4)
-                  }
-                  {
-                    VALUES (?resource1) {
-                      (<https://new.wikibus.org/page/brands>)
-                    }
-                    ?resource1 schema:mainEntity ?resource2.
                     ?resource2 rdf:type*/hydra:memberAssertion ?resource9.
-                    ?resource90 hydra:property ?resource11.
+                    ?resource9 hydra:property ?resource11.
                     FILTER(?resource11 = rdf:type)
-                    ?resource90 hydra:object ?resource8.
+                    ?resource9 hydra:object ?resource8.
                     ?resource8 ^rdf:type ?resource7.
                     ?resource7 skos:prefLabel ?resource6.
                     BIND(UCASE((SUBSTR(?resource6, 1 , 1 ))) as ?resource5)
-                  }
                 }
                 ?resource1 schema:mainEntity ?resource19.
               }`)

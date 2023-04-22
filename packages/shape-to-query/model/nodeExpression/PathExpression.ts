@@ -6,9 +6,9 @@ import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { toSparql } from 'clownface-shacl-path'
 import { ModelFactory } from '../ModelFactory.js'
 import { getOne, getOneOrZero } from './util.js'
-import { NodeExpression, Parameters } from './NodeExpression.js'
+import NodeExpressionBase, { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
 
-export class PathExpression implements NodeExpression {
+export class PathExpression extends NodeExpressionBase {
   static match(pointer: GraphPointer) {
     return isBlankNode(pointer) && isGraphPointer(pointer.out(sh.path))
   }
@@ -25,25 +25,19 @@ export class PathExpression implements NodeExpression {
   }
 
   constructor(public readonly term: Term, public readonly path: SparqlTemplateResult, public readonly nodes?: NodeExpression) {
+    super()
   }
 
-  buildPatterns({ subject, variable, rootPatterns, builder }: Parameters) {
-    const object = variable()
+  _buildPatterns({ subject, object, variable, rootPatterns }: Parameters, builder: PatternBuilder) {
     if (this.nodes) {
-      const inner = builder.build(this.nodes, { subject, variable, rootPatterns, builder })
+      const inner = builder.build(this.nodes, { subject, variable, rootPatterns })
       const joined = inner.object
-      return {
-        object,
-        patterns: sparql`
-          ${inner.patterns}
-          ${joined} ${this.path} ${object} .
-        `,
-      }
+      return sparql`
+        ${inner.patterns}
+        ${joined} ${this.path} ${object} .
+      `
     }
 
-    return {
-      object,
-      patterns: sparql`${subject} ${this.path} ${object} .`,
-    }
+    return sparql`${subject} ${this.path} ${object} .`
   }
 }

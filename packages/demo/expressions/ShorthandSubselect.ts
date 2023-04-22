@@ -9,7 +9,10 @@ import {
   OffsetExpression,
   OrderByExpression,
   LimitExpression,
-  NodeExpression, NodeExpressionFactory,
+  NodeExpression,
+  NodeExpressionFactory,
+  PatternBuilder,
+  Parameters,
 } from '@hydrofoil/shape-to-query/nodeExpressions.js'
 import { getOne, getOneOrZero } from '@hydrofoil/shape-to-query/model/nodeExpression/util.js'
 import { ModelFactory } from '@hydrofoil/shape-to-query/model/ModelFactory'
@@ -45,8 +48,8 @@ export class ShorthandSubselectExpression implements NodeExpression {
   constructor(public readonly term: Term, public expression: NodeExpression) {
   }
 
-  buildPatterns(arg) {
-    return this.expression.buildPatterns(arg)
+  build(arg: Parameters, builder: PatternBuilder) {
+    return this.expression.build(arg, builder)
   }
 }
 

@@ -5,14 +5,16 @@ import $rdf from 'rdf-ext'
 import PropertyValueRule from '../../model/rule/PropertyValueRule.js'
 import TripleRule from '../../model/rule/TripleRule.js'
 import { variable } from '../variable.js'
+import { PatternBuilder } from '../../model/nodeExpression/NodeExpression.js'
+import { fakeExpression } from './nodeExpression/helper.js'
 
 describe('model/Rule', () => {
+  before(() => import('../sparql.js'))
+
   describe('PropertyValueRule', () => {
     it('appends root patterns to a subquery', () => {
       // given
-      const expr = {
-        buildPatterns: ({ subject, object }) => SELECT`${subject} ${object}`.WHERE`${subject} a ${object} .`,
-      }
+      const expr = fakeExpression(({ subject, object }) => SELECT`${subject} ${object}`.WHERE`${subject} a ${object} .`)
       const rule = new PropertyValueRule(schema.knows, expr)
 
       // when
@@ -21,6 +23,7 @@ describe('model/Rule', () => {
         rootPatterns: sparql`a b c .`,
         focusNode: $rdf.namedNode('foo'),
         objectNode: variable(),
+        builder: new PatternBuilder(),
       })
 
       // then
@@ -34,9 +37,7 @@ describe('model/Rule', () => {
 
     it('bind path to construct', () => {
       // given
-      const expr = {
-        buildPatterns: () => sparql``,
-      }
+      const expr = fakeExpression(() => sparql``)
       const rule = new PropertyValueRule(schema.knows, expr)
 
       // when
@@ -45,6 +46,7 @@ describe('model/Rule', () => {
         rootPatterns: sparql`a b c .`,
         focusNode: $rdf.namedNode('foo'),
         objectNode: variable(),
+        builder: new PatternBuilder(),
       })
 
       // then
@@ -56,15 +58,9 @@ describe('model/Rule', () => {
     describe('buildPatterns', () => {
       it('constructs the result of subject/predicate/object', () => {
         // given
-        const subject = {
-          buildPatterns: ({ object }) => sparql`BIND(S as ${object})`,
-        }
-        const predicate = {
-          buildPatterns: ({ object }) => sparql`BIND(P as ${object})`,
-        }
-        const object = {
-          buildPatterns: ({ object }) => sparql`BIND(O as ${object})`,
-        }
+        const subject = fakeExpression(({ object }) => sparql`BIND(S as ${object})`)
+        const predicate = fakeExpression(({ object }) => sparql`BIND(P as ${object})`)
+        const object = fakeExpression(({ object }) => sparql`BIND(O as ${object})`)
         const rule = new TripleRule(subject, predicate, object)
 
         // when

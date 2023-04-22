@@ -3,10 +3,13 @@ import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { sparql } from '@tpluscode/rdf-string'
 import { expect } from 'chai'
 import sinon from 'sinon'
+import $rdf from 'rdf-ext'
 import { CountExpression } from '../../../model/nodeExpression/CountExpression.js'
 import { blankNode, namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
 import ModelFactory from '../../../model/ModelFactory.js'
+import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
+import { fakeExpression } from './helper.js'
 
 describe('model/nodeExpression/CountExpression', () => {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
@@ -87,22 +90,20 @@ describe('model/nodeExpression/CountExpression', () => {
   describe('buildPatterns', () => {
     it('creates a subselect which wraps inner', () => {
       // given
-      const inner = {
-        buildPatterns: ({ object }) => sparql`${object} a ${schema.Article} .`,
-      }
-      const expr = new CountExpression(inner)
+      const inner = fakeExpression(({ object }) => sparql`${object} a ${schema.Article} .`)
+      const expr = new CountExpression($rdf.blankNode(), inner)
 
       // when
       const subject = variable()
-      const subselect = expr.buildPatterns({
+      const { patterns } = expr.build({
         subject,
         object: variable(),
         variable,
         rootPatterns: sparql`root a ${subject}`,
-      })
+      }, new PatternBuilder())
 
       // then
-      expect(subselect._getTemplateResult()).to.equalPatterns(`SELECT (COUNT(?inner) as ?count) WHERE {
+      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT (COUNT(?inner) as ?count) WHERE {
         ?inner a schema:Article .
       }`)
     })

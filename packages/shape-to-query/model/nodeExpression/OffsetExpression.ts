@@ -7,9 +7,9 @@ import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { fromRdf } from 'rdf-literal'
 import { ModelFactory } from '../ModelFactory.js'
 import { getOne } from './util.js'
-import { NodeExpression, Parameters } from './NodeExpression.js'
+import NodeExpressionBase, { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
 
-export class OffsetExpression implements NodeExpression {
+export class OffsetExpression extends NodeExpressionBase {
   static match(pointer: GraphPointer) {
     return isLiteral(pointer.out(sh.offset), xsd.integer) && isGraphPointer(pointer.out(sh.nodes))
   }
@@ -24,11 +24,11 @@ export class OffsetExpression implements NodeExpression {
   }
 
   constructor(public readonly term: Term, private readonly offset: number, private readonly nodes: NodeExpression) {
+    super()
   }
 
-  buildPatterns(arg: Parameters) {
-    const object = arg.variable()
-    const selectOrPatterns = arg.builder.build(this.nodes, arg)
+  _buildPatterns(arg: Parameters, builder: PatternBuilder) {
+    const selectOrPatterns = builder.build(this.nodes, arg)
     let select: Select
 
     if ('build' in selectOrPatterns.patterns) {
@@ -37,9 +37,6 @@ export class OffsetExpression implements NodeExpression {
       select = SELECT`${arg.subject} ${selectOrPatterns.object}`.WHERE`${selectOrPatterns.patterns}`
     }
 
-    return {
-      object,
-      patterns: select.OFFSET(this.offset),
-    }
+    return select.OFFSET(this.offset)
   }
 }

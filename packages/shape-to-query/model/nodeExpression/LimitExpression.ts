@@ -7,9 +7,9 @@ import { xsd } from '@tpluscode/rdf-ns-builders'
 import { fromRdf } from 'rdf-literal'
 import { ModelFactory } from '../ModelFactory.js'
 import { getOne } from './util.js'
-import { NodeExpression, Parameters } from './NodeExpression.js'
+import NodeExpressionBase, { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
 
-export class LimitExpression implements NodeExpression {
+export class LimitExpression extends NodeExpressionBase {
   static match(pointer: GraphPointer) {
     return isLiteral(pointer.out(sh.limit), xsd.integer) && isGraphPointer(pointer.out(sh.nodes))
   }
@@ -24,11 +24,11 @@ export class LimitExpression implements NodeExpression {
   }
 
   constructor(public readonly term: Term, private readonly limit: number, private readonly nodes: NodeExpression) {
+    super()
   }
 
-  buildPatterns(arg: Parameters) {
-    const object = arg.variable()
-    const selectOrPatterns = arg.builder.build(this.nodes, arg)
+  _buildPatterns(arg: Parameters, builder: PatternBuilder) {
+    const selectOrPatterns = builder.build(this.nodes, arg)
     let select: Select
 
     if ('build' in selectOrPatterns.patterns) {
@@ -37,9 +37,6 @@ export class LimitExpression implements NodeExpression {
       select = SELECT`${arg.subject} ${selectOrPatterns.object}`.WHERE`${selectOrPatterns.patterns}`
     }
 
-    return {
-      object,
-      patterns: select.LIMIT(this.limit),
-    }
+    return select.LIMIT(this.limit)
   }
 }

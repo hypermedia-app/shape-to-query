@@ -16,8 +16,9 @@ import { blankNode } from '../../nodeFactory.js'
 import vocabulary from '../../../vocabulary.js'
 import { ex } from '../../namespace.js'
 import { variable } from '../../variable.js'
-import { NodeExpression } from '../../../model/nodeExpression/NodeExpression.js'
+import { NodeExpression, PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
 import ModelFactory from '../../../model/ModelFactory.js'
+import { combinedNRE, fakeExpression } from './helper.js'
 
 describe('model/nodeExpression/FunctionExpression', () => {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
@@ -274,21 +275,20 @@ describe('model/nodeExpression/FunctionExpression', () => {
       })
     })
 
-    describe('buildPatterns', () => {
+    describe('build', () => {
       it('builds patterns with built-in function "call"', () => {
         // given
         const expr = new FunctionCallExpression(ex.function, [], { symbol: $rdf.literal('uuid'), returnType: xsd.string })
 
         // when
-        const result = expr.buildPatterns({
+        const result = expr.build({
           variable,
           subject: variable(),
-          object: $rdf.variable('foo'),
           rootPatterns: sparql``,
-        })
+        }, new PatternBuilder())
 
         // then
-        expect(result).to.equalPatternsVerbatim('BIND(uuid() as ?foo)')
+        expect(combinedNRE(result)).to.equalPatterns('SELECT ?foo WHERE { BIND(uuid() as ?foo) }')
       })
 
       it('builds patterns with custom function "call"', () => {
@@ -296,93 +296,88 @@ describe('model/nodeExpression/FunctionExpression', () => {
         const expr = new FunctionCallExpression(ex.search, [], { returnType: xsd.string })
 
         // when
-        const result = expr.buildPatterns({
+        const result = expr.build({
           variable,
           subject: variable(),
-          object: $rdf.variable('foo'),
           rootPatterns: sparql``,
-        })
+        }, new PatternBuilder())
 
         // then
-        expect(result).to.equalPatternsVerbatim(sparql`BIND(${ex.search}() as ?foo)`)
+        expect(combinedNRE(result)).to.equalPatterns(sparql`SELECT ?foo WHERE { BIND(${ex.search}() as ?foo) }`)
       })
     })
   })
 
   describe('InExpression', () => {
-    describe('buildPatterns', () => {
+    describe('build', () => {
       it('generates IN expression', () => {
         // given
         const exprList = [
-          { buildPatterns: () => sparql``, buildInlineExpression: () => ({ inline: sparql`A`, patterns: sparql`` }) },
-          { buildPatterns: () => sparql``, buildInlineExpression: () => ({ inline: sparql`B`, patterns: sparql`` }) },
-          { buildPatterns: () => sparql``, buildInlineExpression: () => ({ inline: sparql`C`, patterns: sparql`` }) },
+          fakeExpression(undefined, () => ({ inline: sparql`A`, patterns: sparql`` })),
+          fakeExpression(undefined, () => ({ inline: sparql`B`, patterns: sparql`` })),
+          fakeExpression(undefined, () => ({ inline: sparql`C`, patterns: sparql`` })),
         ]
         const expr = new InExpression(dashSparql.in, exprList)
 
         // when
-        const result = expr.buildPatterns({
+        const result = expr.build({
           variable,
           subject: $rdf.variable('foo'),
-          object: $rdf.variable('bar'),
           rootPatterns: sparql``,
-        })
+        }, new PatternBuilder())
 
         // then
-        expect(result).to.equalPatternsVerbatim(sparql`BIND(?foo IN ( A, B, C ) as ?bar)`)
+        expect(combinedNRE(result)).to.equalPatterns(sparql`SELECT ?bar WHERE { BIND(?foo IN ( A, B, C ) as ?bar) }`)
       })
 
       it('generates NOT IN expression', () => {
         // given
         const exprList = [
-          { buildPatterns: () => sparql``, buildInlineExpression: () => ({ inline: sparql`A`, patterns: sparql`` }) },
-          { buildPatterns: () => sparql``, buildInlineExpression: () => ({ inline: sparql`B`, patterns: sparql`` }) },
-          { buildPatterns: () => sparql``, buildInlineExpression: () => ({ inline: sparql`C`, patterns: sparql`` }) },
+          fakeExpression(undefined, () => ({ inline: sparql`A`, patterns: sparql`` })),
+          fakeExpression(undefined, () => ({ inline: sparql`B`, patterns: sparql`` })),
+          fakeExpression(undefined, () => ({ inline: sparql`C`, patterns: sparql`` })),
         ]
         const expr = new InExpression(dashSparql.notin, exprList)
 
         // when
-        const result = expr.buildPatterns({
+        const result = expr.build({
           variable,
           subject: $rdf.variable('foo'),
-          object: $rdf.variable('bar'),
           rootPatterns: sparql``,
-        })
+        }, new PatternBuilder())
 
         // then
-        expect(result).to.equalPatternsVerbatim(sparql`BIND(?foo NOT IN ( A, B, C ) as ?bar)`)
+        expect(combinedNRE(result)).to.equalPatterns(sparql`SELECT ?bar WHERE { BIND(?foo NOT IN ( A, B, C ) as ?bar) }`)
       })
     })
   })
 
   describe('AdditiveExpression', () => {
-    describe('buildPatterns', () => {
+    describe('build', () => {
       it('combines any number of arguments', () => {
         // given
-        const expressions: NodeExpression[] = [{
-          buildPatterns: ({ object }) => sparql`BIND('A' as ${object})`,
-        }, {
-          buildPatterns: ({ object }) => sparql`BIND('B' as ${object})`,
-        }, {
-          buildPatterns: ({ object }) => sparql`BIND('C' as ${object})`,
-        }]
+        const expressions: NodeExpression[] = [
+          fakeExpression(({ object }) => sparql`BIND('A' as ${object})`),
+          fakeExpression(({ object }) => sparql`BIND('B' as ${object})`),
+          fakeExpression(({ object }) => sparql`BIND('C' as ${object})`),
+        ]
         const expr = new AdditiveExpression(dashSparql.and, '+', undefined, expressions)
 
         // when
-        const result = expr.buildPatterns({
+        const result = expr.build({
           variable,
           subject: variable(),
           object: $rdf.variable('foo'),
           rootPatterns: sparql``,
-        })
+        }, new PatternBuilder())
 
         // then
-        expect(result).to.equalPatterns(`
+        expect(combinedNRE(result)).to.equalPatterns(`SELECT ?d WHERE {
           BIND('A' as ?a)
           BIND('B' as ?b)
           BIND('C' as ?c)
           BIND(?a + ?b + ?c as ?d)
-        `)
+        }`)
       })
     })
   })
@@ -390,27 +385,26 @@ describe('model/nodeExpression/FunctionExpression', () => {
   describe('RelationalExpression', () => {
     it('generates an operator pattern for its arguments', () => {
       // given
-      const args = [{
-        buildPatterns: ({ object }) => sparql`BIND('A' as ${object})`,
-      }, {
-        buildPatterns: ({ object }) => sparql`BIND('B' as ${object})`,
-      }]
+      const args = [
+        fakeExpression(({ object }) => sparql`BIND('A' as ${object})`),
+        fakeExpression(({ object }) => sparql`BIND('B' as ${object})`),
+      ]
       const expr = new RelationalExpression(dashSparql.eq, '*', [{ optional: false }, { optional: false }], args)
 
       // when
-      const result = expr.buildPatterns({
+      const result = expr.build({
         variable,
         subject: variable(),
         object: $rdf.variable('foo'),
         rootPatterns: sparql``,
-      })
+      }, new PatternBuilder())
 
       // then
-      expect(result).to.equalPatterns(`
+      expect(combinedNRE(result)).to.equalPatterns(`SELECT ?foo WHERE {
         BIND('A' as ?a)
         BIND('B' as ?b)
         BIND(?a * ?b as ?foo)
-      `)
+      }`)
     })
   })
 
@@ -429,7 +423,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
         subject: variable(),
         object: $rdf.variable('foo'),
         rootPatterns: sparql``,
-      })
+      }, new PatternBuilder())
 
       // then
       expect(result.inline).to.equalPatterns('(A = B)')

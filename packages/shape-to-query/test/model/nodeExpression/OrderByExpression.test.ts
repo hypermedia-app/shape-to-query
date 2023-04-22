@@ -3,14 +3,18 @@ import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import sinon from 'sinon'
 import { SELECT, sparql } from '@tpluscode/sparql-builder'
 import { schema } from '@tpluscode/rdf-ns-builders'
+import $rdf from 'rdf-ext'
 import { OrderByExpression } from '../../../model/nodeExpression/OrderByExpression.js'
 import { blankNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
 import ModelFactory from '../../../model/ModelFactory.js'
+import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
+import { fakeExpression } from './helper.js'
 
 describe('model/nodeExpression/OrderByExpression', () => {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
 
+  before(() => import('../../sparql.js'))
   beforeEach(() => {
     factory = sinon.createStubInstance(ModelFactory)
   })
@@ -114,27 +118,23 @@ describe('model/nodeExpression/OrderByExpression', () => {
     })
   })
 
-  describe('buildPatterns', () => {
+  describe('build', () => {
     it('creates an ordered subquery', () => {
       // given
-      const orderBy = {
-        buildPatterns: ({ subject, object }) => sparql`${subject} order-by ${object} .`,
-      }
-      const nodes = {
-        buildPatterns: ({ object }) => sparql`${object} a ${schema.Article} .`,
-      }
-      const expr = new OrderByExpression(orderBy, nodes)
+      const orderBy = fakeExpression(({ subject, object }) => sparql`${subject} order-by ${object} .`)
+      const nodes = fakeExpression(({ object }) => sparql`${object} a ${schema.Article} .`)
+      const expr = new OrderByExpression($rdf.blankNode(), orderBy, nodes)
 
       // when
-      const subselect = expr.buildPatterns({
+      const { patterns } = expr.build({
         subject: variable(),
         object: variable(),
         variable,
         rootPatterns: sparql``,
-      })
+      }, new PatternBuilder())
 
       // then
-      expect(subselect._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
+      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
         ?foo a schema:Article .
         OPTIONAL { ?foo order-by ?bar . }
       }
@@ -143,24 +143,20 @@ describe('model/nodeExpression/OrderByExpression', () => {
 
     it('creates descending order', () => {
       // given
-      const orderBy = {
-        buildPatterns: ({ subject, object }) => sparql`${subject} order-by ${object} .`,
-      }
-      const nodes = {
-        buildPatterns: ({ object }) => sparql`${object} a ${schema.Article} .`,
-      }
-      const expr = new OrderByExpression(orderBy, nodes, true)
+      const orderBy = fakeExpression(({ subject, object }) => sparql`${subject} order-by ${object} .`)
+      const nodes = fakeExpression(({ object }) => sparql`${object} a ${schema.Article} .`)
+      const expr = new OrderByExpression($rdf.blankNode(), orderBy, nodes, true)
 
       // when
-      const subselect = expr.buildPatterns({
+      const { patterns } = expr.build({
         subject: variable(),
         object: variable(),
         variable,
         rootPatterns: sparql``,
-      })
+      }, new PatternBuilder())
 
       // then
-      expect(subselect._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
+      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
         ?foo a schema:Article .
         OPTIONAL { ?foo order-by ?bar . }
       }
@@ -169,24 +165,20 @@ describe('model/nodeExpression/OrderByExpression', () => {
 
     it('appends order to a root subquery expression', () => {
       // given
-      const orderBy = {
-        buildPatterns: ({ subject, object }) => sparql`${subject} order-by ${object} .`,
-      }
-      const nodes = {
-        buildPatterns: ({ subject, object }) => SELECT`${subject} ${object}`.WHERE`${object} a ${schema.Article} .`,
-      }
-      const expr = new OrderByExpression(orderBy, nodes, true)
+      const orderBy = fakeExpression(({ subject, object }) => sparql`${subject} order-by ${object} .`)
+      const nodes = fakeExpression(({ subject, object }) => SELECT`${subject} ${object}`.WHERE`${object} a ${schema.Article} .`)
+      const expr = new OrderByExpression($rdf.blankNode(), orderBy, nodes, true)
 
       // when
-      const subselect = expr.buildPatterns({
+      const { patterns } = expr.build({
         subject: variable(),
         object: variable(),
         variable,
         rootPatterns: sparql``,
-      })
+      }, new PatternBuilder())
 
       // then
-      expect(subselect._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
+      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
         ?foo a schema:Article .
         OPTIONAL { ?foo order-by ?bar . }
       }

@@ -7,9 +7,10 @@ import { blankNode } from '../../nodeFactory.js'
 import { FilterShapeExpression } from '../../../model/nodeExpression/FilterShapeExpression.js'
 import { variable } from '../../variable.js'
 import { NodeShape } from '../../../model/NodeShape.js'
-import { NodeExpression } from '../../../model/nodeExpression/NodeExpression.js'
+import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
 import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpression.js'
 import ModelFactory from '../../../model/ModelFactory.js'
+import { combinedNRE, fakeExpression } from './helper.js'
 
 describe('model/nodeExpression/FilterShapeExpression', () => {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
@@ -126,23 +127,21 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
         buildPatterns: () => <any>{},
         buildConstraints: ({ focusNode, valueNode }) => sparql`${focusNode} path ${valueNode} .`,
       }
-      const expr = new FilterShapeExpression(shape)
+      const expr = new FilterShapeExpression($rdf.blankNode(), shape)
 
       // when
       const subject = $rdf.namedNode('this')
-      const object = $rdf.variable('value')
-      const patterns = expr.buildPatterns({
+      const result = expr.build({
         subject,
-        object,
         variable,
         rootPatterns: undefined,
-      })
+      }, new PatternBuilder())
 
       // then
-      expect(patterns).to.equalPatterns(`
+      expect(combinedNRE(result)).to.equalPatterns(`SELECT ?foo WHERE {
         BIND ( <this> as ?foo )
         ?foo path ?bar .
-      `)
+      }`)
     })
 
     it('creates constraints for values selected by sh:nodes subject', () => {
@@ -151,26 +150,24 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
         buildPatterns: () => <any>{},
         buildConstraints: ({ focusNode, valueNode }) => sparql`${focusNode} path ${valueNode} .`,
       }
-      const nodes: NodeExpression = {
-        buildPatterns: ({ subject, object }) => sparql`${subject} nodes ${object} .`,
-      }
-      const expr = new FilterShapeExpression(shape, nodes)
+      const nodes = fakeExpression(({ subject, object }) => sparql`${subject} nodes ${object} .`)
+      const expr = new FilterShapeExpression($rdf.blankNode(), shape, nodes)
 
       // when
       const subject = $rdf.namedNode('this')
       const object = $rdf.variable('value')
-      const patterns = expr.buildPatterns({
+      const result = expr.build({
         subject,
         object,
         variable,
         rootPatterns: undefined,
-      })
+      }, new PatternBuilder())
 
       // then
-      expect(patterns).to.equalPatterns(`
+      expect(combinedNRE(result)).to.equalPatterns(`SELECT ?x WHERE {
         <this> nodes ?x .
         ?x path ?obj .
-      `)
+      }`)
     })
   })
 })
