@@ -32,12 +32,14 @@ function unique(...construct: BaseQuad[][]): BaseQuad[] {
 }
 
 export function union(...patterns: ShapePatterns[]): ShapePatterns {
-  if (patterns.length === 0) {
+  const nonEmpty = patterns.filter(p => p !== emptyPatterns)
+
+  if (nonEmpty.length === 0) {
     return emptyPatterns
   }
 
   return {
-    constructClause: unique(patterns.flatMap(p => p.constructClause)),
-    whereClause: sparql`${UNION(...patterns.map(({ whereClause }) => whereClause).filter(Boolean))}`,
+    constructClause: unique(nonEmpty.flatMap(p => p.constructClause)),
+    whereClause: sparql`${UNION(...nonEmpty.map(({ whereClause }) => whereClause).filter(Boolean))}`,
   }
 }

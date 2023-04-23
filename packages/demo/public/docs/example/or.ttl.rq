@@ -6,10 +6,15 @@ CONSTRUCT {
   ?resource1 schema:children ?resource5.
 }
 WHERE {
-  { ?resource1 schema:givenName ?resource2. }
+  {
+    { ?resource1 schema:givenName ?resource2. }
+    UNION
+    { ?resource1 schema:familyName ?resource3. }
+  }
   UNION
-  { ?resource1 schema:familyName ?resource3. }
-  { ?resource1 schema:parent ?resource4. }
-  UNION
-  { ?resource1 schema:children ?resource5. }
+  {
+    { ?resource1 schema:parent ?resource4. }
+    UNION
+    { ?resource1 schema:children ?resource5. }
+  }
 }
