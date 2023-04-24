@@ -1164,10 +1164,10 @@
     "@types/readable-stream" "*"
     rdf-js "^4.0.2"
 
-"@types/rdf-ext@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@types/rdf-ext/-/rdf-ext-2.0.2.tgz#4725c7d266383ba01c293dfb867d451ca729a2b4"
-  integrity sha512-JBoX8+zSe3Wx+qu5pD7rM8pDenL77N6dwI33WOqBHVAJP4wsGPlBwTUtlVwV+hQy4bXFQMz+KDKpssl8x5XnjQ==
+"@types/rdf-ext@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@types/rdf-ext/-/rdf-ext-2.2.0.tgz#921224690fe2c4c4152a195e9e15c1985fdb5729"
+  integrity sha512-qsBlTThL2lUiqlNkX3dgG5WJtlnm/1S4BaU4oLnNa2t3hHWTDvB6UTYOfUPxb0wMaH4SF2wSR2LuL7BSayTb7g==
   dependencies:
     "@rdfjs/types" "*"
     "@types/clownface" "*"
