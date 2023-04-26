@@ -23,7 +23,7 @@
     "@vocabulary/dash": "^1.0.0-rc.0",
     "@vocabulary/dash-sparql": "^1.0.0-rc.0",
     "@vocabulary/sh": "^1.0.0-rc.0",
-    "@zazuko/prefixes": "^1.0.0-rc.2",
+    "@zazuko/prefixes": "^1.0.0",
     "clownface": "^1.5.1",
     "clownface-shacl-path": "^2.0.0",
     "is-graph-pointer": "^2.0.0",

@@ -1452,10 +1452,10 @@
   dependencies:
     whatwg-url "^5.0.0"
 
-"@zazuko/prefixes@^1.0.0-rc.0", "@zazuko/prefixes@^1.0.0-rc.2":
-  version "1.0.0-rc.2"
-  resolved "https://registry.yarnpkg.com/@zazuko/prefixes/-/prefixes-1.0.0-rc.2.tgz#7361491bb77cc15c12e6d047ba7ee45ad91169cc"
-  integrity sha512-AwuLkrqOFPev9FFeDWTl9prH2E9CHc5cEIBqF4m298SGnLkoJHsxxwv9geyQudcEWG+QFYjcGbZealzJepe8nw==
+"@zazuko/prefixes@^1.0.0", "@zazuko/prefixes@^1.0.0-rc.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@zazuko/prefixes/-/prefixes-1.0.0.tgz#38652be9eaa59e510645a3bcb9868a74f0bbda0f"
+  integrity sha512-Z3j3N6x1sXx4Jz+t6xl05q9X3nBX93PPSuagK7DpiecQ2dIjdG1MGnIqAd48AUw78onuqKRup+TXz+0yoJk0ZQ==
 
 abort-controller@^3.0.0:
   version "3.0.0"
