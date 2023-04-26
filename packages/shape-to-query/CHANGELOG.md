@@ -1,5 +1,16 @@
 # @hydrofoil/shape-to-query
 
+## 0.6.0
+
+### Minor Changes
+
+- 5e84e89: Changed signature of `NodeExpression#buildPatterns` and renamed to simple `build`
+
+### Patch Changes
+
+- 5e84e89: By reversing the order in which node expression variables are generated, it is possible to connect the expressions of a rule which avoids potential nasty cartesian products
+- 158e4a3: build(deps): bump @zazuko/prefixes from 1.0.0-rc.2 to 1.0.0
+
 ## 0.5.3
 
 ### Patch Changes
