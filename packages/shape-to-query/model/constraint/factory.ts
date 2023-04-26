@@ -5,10 +5,12 @@ import $rdf from 'rdf-ext'
 import { sparql } from '@tpluscode/sparql-builder'
 import vocabulary from '../../vocabulary.js'
 import { TRUE } from '../../lib/rdf.js'
+import ModelFactory from '../ModelFactory.js'
 import { ConstraintComponent } from './ConstraintComponent.js'
 import { constraintComponents } from './index.js'
 
 export default function * (shape: GraphPointer): Generator<ConstraintComponent> {
+  const factory = new ModelFactory()
   const shapeProperties = $rdf.termSet([...shape.dataset.match(shape.term)]
     .map(({ predicate }) => predicate))
 
@@ -27,7 +29,7 @@ export default function * (shape: GraphPointer): Generator<ConstraintComponent> 
 
     const constraintValues = shape.out(parameter)
     if ('fromPointers' in constraintComponent) {
-      yield constraintComponent.fromPointers(constraintValues)
+      yield constraintComponent.fromPointers(constraintValues, factory)
       continue
     }
     for (const constraintValue of constraintValues.toArray()) {
@@ -41,10 +43,10 @@ export default function * (shape: GraphPointer): Generator<ConstraintComponent> 
         }
         const list = [...constraintValue.list()]
           .filter(el => !TRUE.equals(el.out(sh.deactivated).term))
-        yield constraintComponent.fromList(list)
+        yield constraintComponent.fromList(list, factory)
         continue
       }
-      yield constraintComponent.fromPointer(constraintValue)
+      yield constraintComponent.fromPointer(constraintValue, factory)
     }
   }
 }

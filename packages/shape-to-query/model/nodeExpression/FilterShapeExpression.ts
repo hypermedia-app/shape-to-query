@@ -1,40 +1,40 @@
+import { Term } from 'rdf-js'
 import { GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import { fromNode as shape } from '../fromNode.js'
+import { sparql } from '@tpluscode/sparql-builder'
+import { ModelFactory } from '../ModelFactory.js'
 import { NodeShape } from '../NodeShape.js'
 import { getOne, getOneOrZero } from './util.js'
 import { FocusNodeExpression } from './FocusNodeExpression.js'
-import { NodeExpression, Parameters } from './NodeExpression.js'
-import { NodeExpressionFactory } from './index.js'
+import NodeExpressionBase, { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
 
-export class FilterShapeExpression implements NodeExpression {
-  constructor(public readonly shape: NodeShape, public readonly nodes: NodeExpression = new FocusNodeExpression()) {
-
+export class FilterShapeExpression extends NodeExpressionBase {
+  constructor(public readonly term: Term, public readonly shape: NodeShape, public readonly nodes: NodeExpression = new FocusNodeExpression()) {
+    super()
   }
 
   static match(pointer: GraphPointer) {
     return isGraphPointer(pointer.out(sh.filterShape))
   }
 
-  static fromPointer(pointer: GraphPointer, fromNode: NodeExpressionFactory, createShape = fromNode) {
-    const filterShape = shape(getOne(pointer, sh.filterShape))
+  static fromPointer(pointer: GraphPointer, factory: ModelFactory) {
+    const filterShape = factory.nodeShape(getOne(pointer, sh.filterShape))
     const nodes = getOneOrZero(pointer, sh.nodes)
 
     if (nodes) {
-      return new FilterShapeExpression(filterShape, createShape(nodes))
+      return new FilterShapeExpression(pointer.term, filterShape, factory.nodeExpression(nodes))
     }
 
-    return new FilterShapeExpression(filterShape)
+    return new FilterShapeExpression(pointer.term, filterShape)
   }
 
-  buildPatterns({ subject, object, variable, rootPatterns }: Parameters): SparqlTemplateResult {
-    const focusNode = object
+  _buildPatterns({ subject, variable, rootPatterns, object }: Parameters, builder: PatternBuilder) {
+    const { patterns, object: focusNode } = builder.build(this.nodes, { subject, object, variable, rootPatterns })
     const valueNode = variable()
 
     return sparql`
-      ${this.nodes.buildPatterns({ subject, object, variable, rootPatterns })}
+      ${patterns}
       ${this.shape.buildConstraints({ focusNode, valueNode, variable, rootPatterns })}`
   }
 }

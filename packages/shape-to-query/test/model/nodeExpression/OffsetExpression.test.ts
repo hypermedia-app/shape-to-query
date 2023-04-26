@@ -4,16 +4,21 @@ import sinon from 'sinon'
 import { sparql } from '@tpluscode/rdf-string'
 import { schema } from '@tpluscode/rdf-ns-builders'
 import { SELECT } from '@tpluscode/sparql-builder'
+import $rdf from 'rdf-ext'
 import { OffsetExpression } from '../../../model/nodeExpression/OffsetExpression.js'
 import { blankNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
+import ModelFactory from '../../../model/ModelFactory.js'
+import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
+import { fakeExpression } from './helper.js'
 
 describe('model/nodeExpression/OffsetExpression', () => {
-  let factory: sinon.SinonSpy
+  let factory: sinon.SinonStubbedInstance<ModelFactory>
 
   before(() => import('../../sparql.js'))
   beforeEach(() => {
-    factory = sinon.stub().returns({})
+    factory = sinon.createStubInstance(ModelFactory)
+    factory.nodeExpression.returns(<any>{})
   })
 
   describe('match', () => {
@@ -99,25 +104,23 @@ describe('model/nodeExpression/OffsetExpression', () => {
     })
   })
 
-  describe('buildPatterns', () => {
+  describe('build', () => {
     it('creates a subselect with offset', () => {
       // given
       const offset = 10
-      const nodes = {
-        buildPatterns: ({ object }) => sparql`${object} a ${schema.Article} .`,
-      }
-      const expr = new OffsetExpression(offset, nodes)
+      const nodes = fakeExpression(({ object }) => sparql`${object} a ${schema.Article} .`)
+      const expr = new OffsetExpression($rdf.blankNode(), offset, nodes)
 
       // when
-      const subselect = expr.buildPatterns({
+      const { patterns } = expr.build({
         subject: variable(),
         object: variable(),
         variable,
         rootPatterns: sparql``,
-      })
+      }, new PatternBuilder())
 
       // then
-      expect(subselect._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
+      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
         ?foo a schema:Article .
       }
       OFFSET 10`)
@@ -126,21 +129,19 @@ describe('model/nodeExpression/OffsetExpression', () => {
     it('sets offset on inner subselect', () => {
       // given
       const offset = 10
-      const nodes = {
-        buildPatterns: ({ subject, object }) => SELECT`${subject} ${object}`.WHERE`${object} a ${schema.Article} .`,
-      }
-      const expr = new OffsetExpression(offset, nodes)
+      const nodes = fakeExpression(({ subject, object }) => SELECT`${subject} ${object}`.WHERE`${object} a ${schema.Article} .`)
+      const expr = new OffsetExpression($rdf.blankNode(), offset, nodes)
 
       // when
-      const subselect = expr.buildPatterns({
+      const { patterns } = expr.build({
         subject: variable(),
         object: variable(),
         variable,
         rootPatterns: sparql``,
-      })
+      }, new PatternBuilder())
 
       // then
-      expect(subselect._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
+      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
         ?foo a schema:Article .
       }
       OFFSET 10`)

@@ -10,15 +10,15 @@ import $rdf from 'rdf-ext'
 import { IN } from '@tpluscode/sparql-builder/expressions'
 import vocabulary from '../../vocabulary.js'
 import { TRUE } from '../../lib/rdf.js'
-import { NodeExpression, Parameters } from './NodeExpression.js'
-import { NodeExpressionFactory } from './index.js'
+import { ModelFactory } from '../ModelFactory.js'
+import NodeExpressionBase, { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
 
 interface Parameter {
   datatype?: Term
   optional: boolean
 }
 
-export abstract class FunctionExpression implements NodeExpression {
+export abstract class FunctionExpression extends NodeExpressionBase {
   static match(pointer: GraphPointer) {
     const [first, ...rest] = [...pointer.dataset.match(pointer.term)]
     const isSingleSubject = first && rest.length === 0
@@ -31,7 +31,7 @@ export abstract class FunctionExpression implements NodeExpression {
     return isGraphPointer(functionPtr) && pointer.out(functionPtr).isList()
   }
 
-  static fromPointer(pointer: GraphPointer, createExpr: NodeExpressionFactory) {
+  static fromPointer(pointer: GraphPointer, createExpr: ModelFactory) {
     const [first] = [...pointer.dataset.match(pointer.term)]
     const functionPtr = vocabulary.node(first.predicate)
     const argumentList = pointer.out(functionPtr).list()
@@ -43,7 +43,7 @@ export abstract class FunctionExpression implements NodeExpression {
     const returnType = functionPtr.out(sh.returnType).term
     const unlimitedParameters = TRUE.equals(functionPtr.out(dashSparql.unlimitedParameters).term)
 
-    const expressionList = [...argumentList].map(createExpr)
+    const expressionList = [...argumentList].map(arg => createExpr.nodeExpression(arg))
     if (isGraphPointer(functionPtr.has(rdf.type, dashSparql.AdditiveExpression))) {
       return new AdditiveExpression(functionPtr.term, symbol.value, returnType, expressionList)
     }
@@ -68,24 +68,28 @@ export abstract class FunctionExpression implements NodeExpression {
 
   public readonly symbol: Term
 
+  public readonly term = $rdf.blankNode()
+
   public constructor(
-    public readonly term: Term,
+    public readonly functionTerm: Term,
     public readonly args: ReadonlyArray<NodeExpression> = [],
-    { symbol = term, returnType, parameters = [], unlimitedParameters = false }: { symbol?: Term; parameters?: ReadonlyArray<Parameter>; returnType?: Term; unlimitedParameters?: boolean } = {}) {
+    { symbol = functionTerm, returnType, parameters = [], unlimitedParameters = false }: { symbol?: Term; parameters?: ReadonlyArray<Parameter>; returnType?: Term; unlimitedParameters?: boolean } = {}) {
+    super()
+
     this.symbol = symbol
     this.returnType = returnType
     this.parameters = parameters
     assertFunctionArguments(this, args, unlimitedParameters)
   }
 
-  buildPatterns(args: Parameters) {
-    const { expressions, patterns } = this.evaluateArguments(args)
+  _buildPatterns(args: Parameters, builder: PatternBuilder) {
+    const { expressions, patterns } = this.evaluateArguments(args, builder)
 
     return sparql`${patterns}\nBIND(${this.boundExpression(args.subject, expressions)} as ${args.object})`
   }
 
-  buildInlineExpression(args: Parameters) {
-    const { expressions, patterns } = this.evaluateArguments(args)
+  buildInlineExpression(args: Parameters, builder: PatternBuilder) {
+    const { expressions, patterns } = this.evaluateArguments(args, builder)
     return {
       patterns,
       inline: sparql`(${this.boundExpression(args.subject, expressions)})`,
@@ -94,20 +98,20 @@ export abstract class FunctionExpression implements NodeExpression {
 
   protected abstract boundExpression(subject: Term, args: SparqlTemplateResult[]): SparqlTemplateResult
 
-  private evaluateArguments(arg: Parameters) {
+  private evaluateArguments({ subject, variable, rootPatterns }: Parameters, builder: PatternBuilder) {
     return this.args.reduce((result, expr) => {
       if ('buildInlineExpression' in expr) {
-        const { inline, patterns } = expr.buildInlineExpression(arg)
+        const { inline, patterns } = expr.buildInlineExpression({ subject, variable, rootPatterns }, builder)
         return {
           expressions: [...result.expressions, inline],
           patterns: patterns ? sparql`${result.patterns}\n${patterns}` : result.patterns,
         }
       }
 
-      const next = arg.variable()
+      const next = builder.build(expr, { subject, variable, rootPatterns })
       return {
-        expressions: [...result.expressions, sparql`${next}`],
-        patterns: sparql`${result.patterns}\n${expr.buildPatterns({ ...arg, object: next })}`,
+        expressions: [...result.expressions, sparql`${next.object}`],
+        patterns: sparql`${result.patterns}\n${next.patterns}`,
       }
     }, {
       expressions: <SparqlTemplateResult[]>[],
@@ -179,12 +183,12 @@ function assertFunctionArguments(func: FunctionExpression, args: ReadonlyArray<N
   if (args.length >= minArguments && args.length <= maxArguments) return
 
   if (unlimitedParameters) {
-    throw new Error(`Function ${shrink(func.term.value)} requires at least ${minArguments} arguments`)
+    throw new Error(`Function ${shrink(func.functionTerm.value)} requires at least ${minArguments} arguments`)
   }
   if (minArguments === maxArguments) {
-    throw new Error(`Function ${shrink(func.term.value)} requires ${func.parameters.length} arguments`)
+    throw new Error(`Function ${shrink(func.functionTerm.value)} requires ${func.parameters.length} arguments`)
   } else {
-    throw new Error(`Function ${shrink(func.term.value)} requires between ${minArguments} and ${maxArguments} arguments`)
+    throw new Error(`Function ${shrink(func.functionTerm.value)} requires between ${minArguments} and ${maxArguments} arguments`)
   }
 
   // TODO: check argument types

@@ -1,20 +1,26 @@
+import { Term } from 'rdf-js'
+import type { GraphPointer } from 'clownface'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { sparql } from '@tpluscode/sparql-builder'
 import namespace from '@rdfjs/namespace'
-import { NodeExpression, Parameters } from '@hydrofoil/shape-to-query/nodeExpressions.js'
+import { NodeExpressionBase, Parameters } from '@hydrofoil/shape-to-query/nodeExpressions.js'
 
 const ex = namespace('http://example.org/')
 
-export class HydraCollectionMemberExpression implements NodeExpression {
+export class HydraCollectionMemberExpression extends NodeExpressionBase {
   static match(pointer) {
     return pointer.has(rdf.type, ex.HydraCollectionMembersExpression).terms.length > 0
   }
 
-  static fromPointer() {
-    return new HydraCollectionMemberExpression()
+  static fromPointer({ term }: GraphPointer) {
+    return new HydraCollectionMemberExpression(term)
   }
 
-  buildPatterns({ subject, variable, object }: Parameters) {
+  constructor(public readonly term: Term) {
+    super()
+  }
+
+  _buildPatterns({ subject, variable, object }: Parameters) {
     const memberAssertion = variable()
     const ma1o = variable()
     const ma1p = variable()

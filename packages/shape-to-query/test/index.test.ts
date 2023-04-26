@@ -263,7 +263,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
       context('shacl advanced features', () => {
         context('constant term expression', () => {
-          it('binds te constant values', async () => {
+          it('binds the constant values', async () => {
             // given
             const shape = await parse`
               <>
@@ -289,6 +289,60 @@ describe('@hydrofoil/shape-to-query', () => {
               UNION
               { BIND ("Jabłko"@pl as ?node_0) }
             }`)
+          })
+        })
+
+        context('rules', () => {
+          it('reuses exact same root patterns for multiple rules', async () => {
+            // given
+            const shape = await parse.file('rules-root-patterns.ttl')
+
+            // when
+            const query = constructQuery(shape).build()
+
+            // then
+            expect(query).to.equalPatterns(`
+              PREFIX schema: <http://schema.org/>
+              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+              PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+              PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+              CONSTRUCT {
+                ?resource1 schema:mainEntity ?resource2.
+                ?resource3 ?resource4 ?resource5.
+              }
+              WHERE {
+                VALUES (?resource1) {
+                  (<https://new.wikibus.org/page/brands>)
+                }
+                { 
+                  ?resource1 schema:mainEntity ?resource2. 
+                }
+                UNION
+                {
+                  ?resource1 schema:mainEntity ?resource2.
+                    VALUES (?resource1) {
+                      (<https://new.wikibus.org/page/brands>)
+                    }
+                    ?resource1 schema:mainEntity ?resource2.
+                    ?resource2 rdf:type*/hydra:memberAssertion ?resource9.
+                    ?resource9 hydra:property ?resource11.
+                    FILTER(?resource11 = rdf:type)
+                    ?resource9 hydra:object ?resource8.
+                    ?resource8 ^rdf:type ?resource7.
+                    ?resource7 skos:prefLabel ?resource6.
+                    BIND(IRI((CONCAT((str(?resource2)), "?i=", (ENCODE_FOR_URI((LCASE((SUBSTR(?resource6, 1, 1))))))))) as ?resource3)
+                    BIND(rdfs:label as ?resource4)
+                    ?resource2 rdf:type*/hydra:memberAssertion ?resource9.
+                    ?resource9 hydra:property ?resource11.
+                    FILTER(?resource11 = rdf:type)
+                    ?resource9 hydra:object ?resource8.
+                    ?resource8 ^rdf:type ?resource7.
+                    ?resource7 skos:prefLabel ?resource6.
+                    BIND(UCASE((SUBSTR(?resource6, 1 , 1 ))) as ?resource5)
+                }
+                ?resource1 schema:mainEntity ?resource19.
+              }`)
           })
         })
       })

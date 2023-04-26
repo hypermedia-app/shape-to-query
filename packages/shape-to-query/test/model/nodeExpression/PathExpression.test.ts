@@ -6,12 +6,16 @@ import { sparql } from '@tpluscode/sparql-builder'
 import { PathExpression } from '../../../model/nodeExpression/PathExpression.js'
 import { blankNode, namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
+import ModelFactory from '../../../model/ModelFactory.js'
+import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
+import { combinedNRE, fakeExpression } from './helper.js'
 
 describe('model/nodeExpression/PathExpression', () => {
-  let factory: sinon.SinonSpy
+  let factory: sinon.SinonStubbedInstance<ModelFactory>
 
+  before(() => import('../../sparql.js'))
   beforeEach(() => {
-    factory = sinon.spy()
+    factory = sinon.createStubInstance(ModelFactory)
   })
 
   describe('match', () => {
@@ -76,7 +80,7 @@ describe('model/nodeExpression/PathExpression', () => {
       PathExpression.fromPointer(pointer, factory)
 
       // then
-      expect(factory).to.have.been.calledWith(sinon.match(actual => actual.term.equals(nodes.term)))
+      expect(factory.nodeExpression).to.have.been.calledWith(sinon.match(actual => actual.term.equals(nodes.term)))
     })
 
     it('throws when sh:nodes has multiple values', () => {
@@ -120,37 +124,35 @@ describe('model/nodeExpression/PathExpression', () => {
     })
   })
 
-  describe('buildPatterns', () => {
+  describe('build', () => {
     it('creates a single pattern from given path', () => {
       // given
-      const expr = new PathExpression(sparql`schema:knows/schema:familyName`)
+      const expr = new PathExpression($rdf.blankNode(), sparql`schema:knows/schema:familyName`)
 
       // when
       const subject = sh.this
       const object = $rdf.variable('obj')
-      const patterns = expr.buildPatterns({ subject, object, variable, rootPatterns: undefined })
+      const patterns = expr.build({ subject, object, variable, rootPatterns: undefined }, new PatternBuilder())
 
       // then
-      expect(patterns).to.equalPatternsVerbatim('sh:this schema:knows/schema:familyName ?obj .')
+      expect(combinedNRE(patterns)).to.equalPatternsVerbatim('SELECT ?obj WHERE { sh:this schema:knows/schema:familyName ?obj . }')
     })
 
     it('joins path with nodes', () => {
       // given
-      const nodes = {
-        buildPatterns: ({ subject, object }) => sparql`${subject} schema:children ${object} .`,
-      }
-      const expr = new PathExpression(sparql`schema:name`, nodes)
+      const nodes = fakeExpression(({ subject, object }) => sparql`${subject} schema:children ${object} .`)
+      const expr = new PathExpression($rdf.blankNode(), sparql`schema:name`, nodes)
 
       // when
       const subject = $rdf.namedNode('sub')
       const object = $rdf.variable('obj')
-      const patterns = expr.buildPatterns({ subject, object, variable, rootPatterns: undefined })
+      const patterns = expr.build({ subject, object, variable, rootPatterns: undefined }, new PatternBuilder())
 
       // then
-      expect(patterns).to.equalPatterns(`
+      expect(combinedNRE(patterns)).to.equalPatterns(`SELECT ?obj WHERE {
         <sub> schema:children ?x .
         ?x schema:name ?obj .
-      `)
+      }`)
     })
   })
 })

@@ -5,6 +5,7 @@ import { sparql } from '@tpluscode/sparql-builder'
 import { ConstantTermExpression } from '../../../model/nodeExpression/ConstantTermExpression.js'
 import { blankNode, literal, namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
+import { combinedNRE } from './helper.js'
 
 describe('model/nodeExpression/ConstantTermExpression', () => {
   before(() => import('../../sparql.js'))
@@ -34,19 +35,37 @@ describe('model/nodeExpression/ConstantTermExpression', () => {
   })
 
   describe('buildPatterns', () => {
+    const builder = <any>{}
+
     it('binds const as subject', () => {
       // given
       const expr = new ConstantTermExpression(schema.Person)
 
       // when
-      const patterns = expr.buildPatterns({
+      const result = expr.build({
         subject: $rdf.variable('foo'),
-        object: $rdf.variable('bar'),
         variable,
-      })
+        rootPatterns: undefined,
+      }, builder)
 
       // then
-      expect(patterns).to.equalPatternsVerbatim('BIND(schema:Person as ?bar)')
+      expect(combinedNRE(result)).to.equalPatterns('SELECT ?bar WHERE { BIND(schema:Person as ?bar) }')
+    })
+
+    it('reuses object', () => {
+      // given
+      const expr = new ConstantTermExpression(schema.Person)
+
+      // when
+      const result = expr.build({
+        subject: $rdf.variable('foo'),
+        object: $rdf.variable('bar'),
+        rootPatterns: undefined,
+        variable,
+      }, builder)
+
+      // then
+      expect(combinedNRE(result)).to.equalPatternsVerbatim('SELECT ?bar WHERE { BIND(schema:Person as ?bar) }')
     })
   })
 
@@ -58,7 +77,6 @@ describe('model/nodeExpression/ConstantTermExpression', () => {
       // when
       const { inline } = expr.buildInlineExpression({
         subject: $rdf.variable('foo'),
-        object: $rdf.variable('bar'),
         variable,
         rootPatterns: sparql``,
       })

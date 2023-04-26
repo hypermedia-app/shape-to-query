@@ -1,0 +1,90 @@
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX dash-sparql: <http://datashapes.org/sparql#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX schema: <http://schema.org/>
+
+<>
+  a sh:NodeShape ;
+  sh:targetNode <https://new.wikibus.org/page/brands> ;
+  sh:property
+    [
+      sh:path schema:mainEntity ;
+      sh:node
+        [
+          sh:and ( _:alphabeticalView ) ;
+        ] ;
+    ] ;
+.
+
+_:alphabeticalView
+  sh:rule
+    [
+      sh:subject _:alphabeticalIndexLink ;
+      sh:predicate rdfs:label ;
+      sh:object
+        [
+          dash-sparql:ucase ( _:initials )
+        ] ;
+    ] ;
+.
+
+_:alphabeticalIndexLink
+  dash-sparql:iri
+    (
+      [
+        dash-sparql:concat
+          (
+            [ dash-sparql:str ( sh:this ) ]
+            "?i="
+            [
+              dash-sparql:encode_for_uri ( [ dash-sparql:lcase ( _:initials ) ] )
+            ]
+          )
+      ]
+    )
+.
+
+_:initials
+  dash-sparql:substr
+    (
+      [
+        sh:path skos:prefLabel ;
+        sh:nodes _:collectionMembers ;
+      ]
+      1
+      1
+    )
+.
+
+_:alphabeticalViewId
+  dash-sparql:iri
+    (
+      [ dash-sparql:concat ( [ dash-sparql:str ( sh:this ) ] "#index" ) ]
+    )
+.
+
+_:collectionMembers
+  sh:path [ sh:inversePath rdf:type ] ;
+  sh:nodes
+    [
+      sh:path hydra:object ;
+      sh:nodes
+        [
+          sh:filterShape
+            [
+              sh:property
+                [
+                  sh:path hydra:property ;
+                  sh:hasValue rdf:type ;
+                ] ;
+            ] ;
+          sh:nodes
+            [
+              sh:path ( [ sh:zeroOrMorePath rdf:type ] hydra:memberAssertion )
+            ] ;
+        ] ;
+    ] .

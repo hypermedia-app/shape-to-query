@@ -1,9 +1,11 @@
-import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
+import { sparql } from '@tpluscode/sparql-builder'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { GraphPointer } from 'clownface'
-import { NodeExpression, Parameters } from './NodeExpression.js'
+import NodeExpression, { Parameters } from './NodeExpression.js'
 
-export class FocusNodeExpression implements NodeExpression {
+export class FocusNodeExpression extends NodeExpression {
+  public readonly term = sh.this
+
   static match({ term }: GraphPointer) {
     return term.equals(sh.this)
   }
@@ -12,7 +14,7 @@ export class FocusNodeExpression implements NodeExpression {
     return new FocusNodeExpression()
   }
 
-  buildPatterns({ subject, object }: Omit<Parameters, 'rootPatterns'>): SparqlTemplateResult {
+  _buildPatterns({ subject, object }: Omit<Parameters, 'rootPatterns'>) {
     return sparql`BIND (${subject} as ${object})`
   }
 

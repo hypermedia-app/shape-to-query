@@ -1,7 +1,7 @@
 import { NamedNode } from 'rdf-js'
 import type { GraphPointer } from 'clownface'
 import { sparql } from '@tpluscode/sparql-builder'
-import { fromNode } from '../model/fromNode.js'
+import ModelFactory from '../model/ModelFactory.js'
 import { flatten, ShapePatterns } from './shapePatterns.js'
 import { createVariableSequence } from './variableSequence.js'
 
@@ -12,7 +12,8 @@ export interface Options {
 }
 
 export function shapeToPatterns(shape: GraphPointer, options: Options = {}): ShapePatterns {
-  const nodeShape = fromNode(shape)
+  const factory = new ModelFactory()
+  const nodeShape = factory.nodeShape(shape)
   const variable = createVariableSequence(options.objectVariablePrefix || 'resource')
   const focusNode = options.focusNode || variable()
 

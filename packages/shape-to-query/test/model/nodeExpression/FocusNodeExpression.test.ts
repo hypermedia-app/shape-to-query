@@ -4,6 +4,8 @@ import $rdf from 'rdf-ext'
 import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpression.js'
 import { namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
+import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
+import { combinedNRE } from './helper.js'
 
 describe('model/nodeExpression/FocusNodeExpression', () => {
   before(() => import('../../sparql.js'))
@@ -20,14 +22,15 @@ describe('model/nodeExpression/FocusNodeExpression', () => {
       const expr = new FocusNodeExpression()
 
       // when
-      const patterns = expr.buildPatterns({
+      const result = expr.build({
         subject: $rdf.variable('foo'),
         object: $rdf.variable('bar'),
         variable,
-      })
+        rootPatterns: undefined,
+      }, new PatternBuilder())
 
       // then
-      expect(patterns).to.equalPatternsVerbatim('BIND(?foo as ?bar)')
+      expect(combinedNRE(result)).to.equalPatterns('SELECT ?bar WHERE { BIND(?foo as ?bar) }')
     })
   })
 })
