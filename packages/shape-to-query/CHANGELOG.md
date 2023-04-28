@@ -1,5 +1,11 @@
 # @hydrofoil/shape-to-query
 
+## 0.6.1
+
+### Patch Changes
+
+- e19ba69: Better query performance when constraints and rules are unioned
+
 ## 0.6.0
 
 ### Minor Changes
