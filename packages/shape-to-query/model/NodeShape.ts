@@ -43,7 +43,7 @@ export default class extends Shape implements NodeShape {
 
     const logical = this.buildLogicalConstraints({ ...arg, rootPatterns })
 
-    return flatten(targets, union(properties, rules, logical))
+    return flatten(targets, union(properties, rules), logical)
   }
 
   buildConstraints(arg: BuildParameters & { valueNode: Variable }): string | SparqlTemplateResult {
