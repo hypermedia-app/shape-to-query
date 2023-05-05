@@ -158,6 +158,27 @@ Targets resources which are the object of a given predicate
 
 ## Core Constraint Components ## {#shacl-core-components}
 
+### String-based Constraint Components ### {#shacl-string-constraints}
+
+#### sh:pattern #### {#shacl-pattern}
+
+Note: SHACL spec: [[shacl#PatternConstraintComponent]]
+
+<div class="example">
+  Filter only those resources whose family name starts with "B" or "C", case-insensitive 
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/constraint/pattern.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/constraint/pattern.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
 ### Logical Constraint Components ### {#shacl-logical-constraints}
 
 The elements of a `sh:or` list are shapes and thus, they can be used both to define alternative paths to construct in the constructed graph, 
