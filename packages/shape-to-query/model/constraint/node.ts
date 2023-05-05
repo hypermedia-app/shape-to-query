@@ -9,8 +9,9 @@ export class NodeConstraintComponent extends ConstraintComponent {
     super(sh.NodeConstraintComponent)
   }
 
-  static fromPointer(pointer: GraphPointer, factory: ModelFactory) {
-    return new NodeConstraintComponent(factory.nodeShape(pointer))
+  static fromShape(shape: GraphPointer, factory: ModelFactory) {
+    return shape.out(sh.node)
+      .map(node => new NodeConstraintComponent(factory.nodeShape(node)))
   }
 
   buildPatterns({ valueNode, variable, ...arg }: Parameters) {

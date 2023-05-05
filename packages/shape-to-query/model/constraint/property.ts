@@ -9,8 +9,9 @@ export class PropertyConstraintComponent extends ConstraintComponent {
     super(sh.PropertyConstraintComponent)
   }
 
-  static fromPointer(pointer: GraphPointer, factory: ModelFactory) {
-    return new PropertyConstraintComponent(factory.propertyShape(pointer))
+  static fromShape(shape: GraphPointer, factory: ModelFactory) {
+    return shape.out(sh.property)
+      .map(property => new PropertyConstraintComponent(factory.propertyShape(property)))
   }
 
   buildPatterns(arg: Parameters) {

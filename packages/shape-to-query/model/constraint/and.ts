@@ -10,8 +10,14 @@ export class AndConstraintComponent extends ConstraintComponent {
     super(sh.AndConstraintComponent)
   }
 
-  static fromList(shapes: GraphPointer[], factory: ModelFactory) {
-    return new AndConstraintComponent(shapes.map(p => factory.nodeShape(p)))
+  static * fromShape(shape: GraphPointer, factory: ModelFactory) {
+    const ands = shape.out(sh.and).toArray()
+
+    for (const and of ands) {
+      if (and.isList()) {
+        yield new AndConstraintComponent([...and.list()].map(p => factory.nodeShape(p)))
+      }
+    }
   }
 
   buildPatterns(arg: Parameters): SparqlTemplateResult {

@@ -1,6 +1,6 @@
 import { Term } from 'rdf-js'
 import { SparqlTemplateResult, sparql } from '@tpluscode/sparql-builder'
-import { MultiPointer } from 'clownface'
+import { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { ConstraintComponent, Parameters } from './ConstraintComponent.js'
 
@@ -9,8 +9,11 @@ export class HasValueConstraintComponent extends ConstraintComponent {
     super(sh.HasValueConstraintComponent)
   }
 
-  static fromPointers(pointer: MultiPointer) {
-    return new HasValueConstraintComponent(pointer.terms)
+  static * fromShape(shape: GraphPointer) {
+    const terms = shape.out(sh.hasValue).terms
+    if (terms.length) {
+      yield new HasValueConstraintComponent(terms)
+    }
   }
 
   buildPatterns({ focusNode, propertyPath, valueNode }: Omit<Parameters, 'rootPatterns'>): string | SparqlTemplateResult {

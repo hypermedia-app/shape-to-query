@@ -11,8 +11,14 @@ export class OrConstraintComponent extends ConstraintComponent {
     super(sh.OrConstraintComponent)
   }
 
-  static fromList(shapes: GraphPointer[], factory: ModelFactory) {
-    return new OrConstraintComponent(shapes.map(p => factory.nodeShape(p)))
+  static * fromShape(shape: GraphPointer, factory: ModelFactory) {
+    const ors = shape.out(sh.or).toArray()
+
+    for (const or of ors) {
+      if (or.isList()) {
+        yield new OrConstraintComponent([...or.list()].map(p => factory.nodeShape(p)))
+      }
+    }
   }
 
   buildPatterns(arg: Parameters): SparqlTemplateResult {
