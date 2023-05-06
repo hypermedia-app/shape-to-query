@@ -5,13 +5,17 @@ import { assertTerm, ConstraintComponent, Parameters, PropertyShape } from './Co
 export class PatternConstraintComponent extends ConstraintComponent {
   static * fromShape(shape: PropertyShape) {
     const patterns = shape.get(sh.pattern) || []
-    const flags = shape.get(sh.flags) || []
+    const flags = shape.get(sh.flags)
 
     for (const pattern of patterns) {
       assertTerm(pattern)
-      for (const flag of flags) {
-        assertTerm(flag)
-        yield new PatternConstraintComponent(pattern.pointer.value, flag.pointer.value)
+      if (flags) {
+        for (const flag of flags) {
+          assertTerm(flag)
+          yield new PatternConstraintComponent(pattern.pointer.value, flag.pointer.value)
+        }
+      } else {
+        yield new PatternConstraintComponent(pattern.pointer.value)
       }
     }
   }
