@@ -1,17 +1,18 @@
 import { Term } from 'rdf-js'
 import { SparqlTemplateResult, sparql } from '@tpluscode/sparql-builder'
-import { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { ConstraintComponent, Parameters } from './ConstraintComponent.js'
+import { ConstraintComponent, Parameters, PropertyShape } from './ConstraintComponent.js'
 
 export class HasValueConstraintComponent extends ConstraintComponent {
   constructor(public readonly terms: ReadonlyArray<Term>) {
     super(sh.HasValueConstraintComponent)
   }
 
-  static * fromShape(shape: GraphPointer) {
-    const terms = shape.out(sh.hasValue).terms
-    if (terms.length) {
+  static * fromShape(shape: PropertyShape) {
+    const values = shape.get(sh.hasValue)
+
+    if (values) {
+      const terms = values.flatMap(hv => 'list' in hv ? [] : hv.pointer.term)
       yield new HasValueConstraintComponent(terms)
     }
   }

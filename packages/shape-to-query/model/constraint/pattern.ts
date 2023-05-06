@@ -1,15 +1,18 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { sparql } from '@tpluscode/sparql-builder'
-import { GraphPointer } from 'clownface'
-import { isGraphPointer } from 'is-graph-pointer'
-import { ConstraintComponent, Parameters } from './ConstraintComponent.js'
+import { assertTerm, ConstraintComponent, Parameters, PropertyShape } from './ConstraintComponent.js'
 
 export class PatternConstraintComponent extends ConstraintComponent {
-  static * fromShape(shape: GraphPointer) {
-    const pattern = shape.out(sh.pattern)
-    const flags = shape.out(sh.flags).value
-    if (isGraphPointer(pattern)) {
-      yield new PatternConstraintComponent(pattern.value, flags)
+  static * fromShape(shape: PropertyShape) {
+    const patterns = shape.get(sh.pattern) || []
+    const flags = shape.get(sh.flags) || []
+
+    for (const pattern of patterns) {
+      assertTerm(pattern)
+      for (const flag of flags) {
+        assertTerm(flag)
+        yield new PatternConstraintComponent(pattern.pointer.value, flag.pointer.value)
+      }
     }
   }
 
