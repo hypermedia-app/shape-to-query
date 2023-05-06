@@ -1425,20 +1425,20 @@
   resolved "https://registry.yarnpkg.com/@vanillawc/wc-codemirror/-/wc-codemirror-1.9.8.tgz#356727aa56ecf0672f3d6c57a768594df7a39232"
   integrity sha512-tdhzg+5MsTEml0at43IAYrwfwLY5l5r56I5l9WlDOheNjMZgAD5yoYYkK3RQY1Pi6JqLpVIxBi9LEqVQggHBPQ==
 
-"@vocabulary/dash-sparql@^1.0.0-rc.0":
-  version "1.0.0-rc.0"
-  resolved "https://registry.yarnpkg.com/@vocabulary/dash-sparql/-/dash-sparql-1.0.0-rc.0.tgz#012fe23deb2c5f668937dca478e49ae1297a6071"
-  integrity sha512-869yll8v7X36Jpe50QhUl1cR/dRdfbGy8ZRLOxroscyqelL6jzojlpJfkMj2oLdvRScTJn+4fixS3HqNrvKwNg==
+"@vocabulary/dash-sparql@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@vocabulary/dash-sparql/-/dash-sparql-1.0.0.tgz#52c466182506c0fc785613813b373cdb7304b2d4"
+  integrity sha512-QYfYb1sAD7RhTTti6foCGp4j9huNPAalYF/4x4xp+pAzKqYx+RGzwTBZwQe7/WTIX2XluJoXD8PDULiwKlu8Xw==
 
 "@vocabulary/dash@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@vocabulary/dash/-/dash-1.0.0.tgz#e10f2d432c5ff56791603afc307caca1e5adf741"
   integrity sha512-dbdAxSY6u7RnDaQeedi5r4ep4+5L99fQ0FDOGvAZe17yGFx0nUtvH7/3h4HL4fPs3bNjSM3iyVF5D821nUG8Kw==
 
-"@vocabulary/sh@^1.0.0-rc.0":
-  version "1.0.0-rc.0"
-  resolved "https://registry.yarnpkg.com/@vocabulary/sh/-/sh-1.0.0-rc.0.tgz#bc96cbbd358313a459c92981cf9f6fea886236e1"
-  integrity sha512-/mR7kaXyRZ9MIJl5gveqHIufM6TgbTicSo22sTQWoYZZxeE9hrO2sQD7Pqx9T+2Cisi876ZGAnNBzEdE9ceAAw==
+"@vocabulary/sh@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@vocabulary/sh/-/sh-1.0.0.tgz#f7caee3b7a9630f71aefcabec1a5b7cbfb4fb00d"
+  integrity sha512-G6RS8MaFD7/n8j8UBoRZ/CiKFKMD5gT4FeDYcQya6BRe4/41IxAZMBBTiEejBTLCPCjgf8BhXcbACZ6vJ16wdA==
 
 "@yarnpkg/lockfile@^1.1.0":
   version "1.1.0"
