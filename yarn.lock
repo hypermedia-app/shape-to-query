@@ -1430,10 +1430,10 @@
   resolved "https://registry.yarnpkg.com/@vocabulary/dash-sparql/-/dash-sparql-1.0.0-rc.0.tgz#012fe23deb2c5f668937dca478e49ae1297a6071"
   integrity sha512-869yll8v7X36Jpe50QhUl1cR/dRdfbGy8ZRLOxroscyqelL6jzojlpJfkMj2oLdvRScTJn+4fixS3HqNrvKwNg==
 
-"@vocabulary/dash@^1.0.0-rc.0":
-  version "1.0.0-rc.0"
-  resolved "https://registry.yarnpkg.com/@vocabulary/dash/-/dash-1.0.0-rc.0.tgz#684384064aa154988fe9372c636c4e66d4801a7d"
-  integrity sha512-1ieNKQV6hWCznvOpz0uY6E+L+Vl/XdlcUt5LlR17+s5onzkWZSoVVo2le4u1WydXyELrnMyvDWjTRWrPJvfGrA==
+"@vocabulary/dash@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@vocabulary/dash/-/dash-1.0.0.tgz#e10f2d432c5ff56791603afc307caca1e5adf741"
+  integrity sha512-dbdAxSY6u7RnDaQeedi5r4ep4+5L99fQ0FDOGvAZe17yGFx0nUtvH7/3h4HL4fPs3bNjSM3iyVF5D821nUG8Kw==
 
 "@vocabulary/sh@^1.0.0-rc.0":
   version "1.0.0-rc.0"
