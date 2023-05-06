@@ -1,52 +1,40 @@
-import { sh } from '@tpluscode/rdf-ns-builders'
-import { shrink } from '@zazuko/prefixes'
 import { GraphPointer } from 'clownface'
 import $rdf from 'rdf-ext'
-import { sparql } from '@tpluscode/sparql-builder'
-import vocabulary from '../../vocabulary.js'
-import { TRUE } from '../../lib/rdf.js'
+import { sh } from '@tpluscode/rdf-ns-builders'
 import ModelFactory from '../ModelFactory.js'
-import { ConstraintComponent } from './ConstraintComponent.js'
+import { TRUE } from '../../lib/rdf.js'
+import { ConstraintComponent, PropertyShape } from './ConstraintComponent.js'
 import { constraintComponents } from './index.js'
 
-export default function * (shape: GraphPointer): Generator<ConstraintComponent> {
+export default function (shape: GraphPointer): Array<ConstraintComponent> {
   const factory = new ModelFactory()
-  const shapeProperties = $rdf.termSet([...shape.dataset.match(shape.term)]
-    .map(({ predicate }) => predicate))
 
-  for (const parameter of shapeProperties) {
-    const componentType = vocabulary.has(sh.path, parameter).in(sh.parameter).toArray().shift()
-    if (!componentType) {
-      continue
-    }
+  const shapeModel = buildParameterModel(shape)
 
-    const constraintComponent = constraintComponents.get(componentType.term)
-    if (!constraintComponent) {
-      // eslint-disable-next-line no-console
-      console.log(`No implementation found for component ${shrink(componentType.term.value) || componentType.term.value}`)
-      continue
-    }
+  return [...constraintComponents].flatMap(([, component]) => {
+    return [...component.fromShape(shapeModel, factory)]
+  })
+}
 
-    const constraintValues = shape.out(parameter)
-    if ('fromPointers' in constraintComponent) {
-      yield constraintComponent.fromPointers(constraintValues, factory)
-      continue
-    }
-    for (const constraintValue of constraintValues.toArray()) {
-      if (TRUE.equals(constraintValue.out(sh.deactivated).term)) {
-        continue
-      }
-
-      if ('fromList' in constraintComponent) {
-        if (!constraintValue.isList()) {
-          throw new Error(sparql`Object of ${parameter} must be an RDF list`.toString({ prologue: false }))
+function buildParameterModel(shape: GraphPointer) {
+  return [...shape.dataset.match(shape.term)]
+    .reduce<PropertyShape>((previousValue, { predicate }) => {
+    const values = shape.out(predicate).toArray()
+      .reduce((previous, pointer) => {
+        if (pointer.isList()) {
+          return [...previous, { list: [...pointer.list()].filter(isActive) }]
         }
-        const list = [...constraintValue.list()]
-          .filter(el => !TRUE.equals(el.out(sh.deactivated).term))
-        yield constraintComponent.fromList(list, factory)
-        continue
-      }
-      yield constraintComponent.fromPointer(constraintValue, factory)
-    }
-  }
+        if (isActive(pointer)) {
+          return [...previous, { pointer }]
+        }
+
+        return previous
+      }, [])
+
+    return previousValue.set(predicate, values)
+  }, $rdf.termMap())
+}
+
+function isActive(ptr: GraphPointer) {
+  return !TRUE.equals(ptr.out(sh.deactivated).term)
 }

@@ -1,0 +1,14 @@
+PREFIX schema: <http://schema.org/>
+PREFIX tbbt: <https://tbbt.tv/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+[
+  a sh:NodeShape ;
+  sh:property
+    [ sh:path schema:givenName ],
+    [
+      sh:path schema:familyName ;
+      sh:pattern "^[bc]" ;
+      sh:flags "i" ;
+    ] ;
+] .

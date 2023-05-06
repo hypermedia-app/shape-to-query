@@ -1,16 +1,19 @@
-import { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { PropertyShape } from '../PropertyShape.js'
 import { ModelFactory } from '../ModelFactory.js'
-import { ConstraintComponent, Parameters } from './ConstraintComponent.js'
+import { assertTerm, ConstraintComponent, Parameters, PropertyShape as PS } from './ConstraintComponent.js'
 
 export class PropertyConstraintComponent extends ConstraintComponent {
   constructor(public readonly shape: PropertyShape) {
     super(sh.PropertyConstraintComponent)
   }
 
-  static fromPointer(pointer: GraphPointer, factory: ModelFactory) {
-    return new PropertyConstraintComponent(factory.propertyShape(pointer))
+  static * fromShape(shape: PS, factory: ModelFactory) {
+    const properties = shape.get(sh.property) || []
+    for (const property of properties) {
+      assertTerm(property)
+      yield new PropertyConstraintComponent(factory.propertyShape(property.pointer))
+    }
   }
 
   buildPatterns(arg: Parameters) {
