@@ -1019,16 +1019,16 @@
     commander "^7.2.0"
     fs-extra "^10.0.0"
 
-"@tpluscode/rdf-string@^1.0.1", "@tpluscode/rdf-string@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@tpluscode/rdf-string/-/rdf-string-1.0.2.tgz#9ba5e7b8b255c425ba968ed1e2910a12382f624e"
-  integrity sha512-5tJg0inbOYIeV4EIyX8thc9ssVRi60IMhO3kW678I1qPE2WRrH1fcsaVzobACeK9aFTJSRayuQClogGjHvY7QA==
+"@tpluscode/rdf-string@^1.0.1", "@tpluscode/rdf-string@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@tpluscode/rdf-string/-/rdf-string-1.0.3.tgz#343215494e866ab4ee9dd34f1f8c23c1331b1e1f"
+  integrity sha512-h0PWqCGXvmT44T4Yqeje8hlCPzdMtcb3UD1SCPYgRtXOeo3IgKu/XczJ7oDAlkcO2DCxTFfzU7DnxYAVCKEYEg==
   dependencies:
     "@rdfjs/data-model" "^2"
     "@rdfjs/namespace" "^2.0.0"
     "@rdfjs/term-map" "^2"
     "@rdfjs/types" "*"
-    "@zazuko/prefixes" "^1.0.0-rc.0"
+    "@zazuko/prefixes" ">=1"
 
 "@tpluscode/sparql-builder@^1.0.0":
   version "1.0.0"
@@ -1451,6 +1451,11 @@
   integrity sha512-mrEqq7BJyNBlK5oT7U1S0EfLbFPpVHLXQJswhrN8Mv/3BKmWIBtMBaphK8AXF7XEhgK9vzRs/f3AIG8oHlPdpg==
   dependencies:
     whatwg-url "^5.0.0"
+
+"@zazuko/prefixes@>=1":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@zazuko/prefixes/-/prefixes-2.0.0.tgz#0c38e3e09b8abecdbf1a4f0cb686061fb18d4c6a"
+  integrity sha512-WicT6lMnWFaaxudoBhccRzUOxrej0Tk5jwn9oGj308MP2Dlsqh8f6EEJdGu+nXYp3M1NLLokXbtZpTvtDM11PQ==
 
 "@zazuko/prefixes@^1.0.0", "@zazuko/prefixes@^1.0.0-rc.0":
   version "1.0.0"
