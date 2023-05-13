@@ -4,7 +4,7 @@ import loadDash from '@vocabulary/dash'
 import loadDashSparql from '@vocabulary/dash-sparql'
 import $rdf from 'rdf-ext'
 import clownface from 'clownface'
-import { rdf, sh } from '@tpluscode/rdf-ns-builders'
+import { rdf } from '@tpluscode/rdf-ns-builders'
 import { dashSparql } from '@tpluscode/rdf-ns-builders/loose'
 
 export { rdf, sh, dashSparql as sparql } from '@tpluscode/rdf-ns-builders/loose'
@@ -33,14 +33,5 @@ vocabulary.node([
   dashSparql.le,
   dashSparql.lt,
 ]).addOut(rdf.type, dashSparql.RelationalExpression)
-
-vocabulary.node(dashSparql.bnode)
-  .out(sh.parameter)
-  .addOut(sh.optional, true)
-
-vocabulary.node(dashSparql.replace)
-  .out(sh.parameter)
-  .has(sh.path, dashSparql.arg4)
-  .addOut(sh.optional, true)
 
 export default vocabulary
