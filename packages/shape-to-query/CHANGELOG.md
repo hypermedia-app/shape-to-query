@@ -1,5 +1,18 @@
 # @hydrofoil/shape-to-query
 
+## 0.7.0
+
+### Minor Changes
+
+- 2ed19d7: Change the factory method of constraint components to take the property shape a parameter
+
+### Patch Changes
+
+- 2ed19d7: Implemented `sh:PatternConstraintComponent` (closes #51)
+- ff5e230: Updated `@vocabulary/dash-sparql` and `@vocabulary/sh` to v1
+- 10b8086: build(deps): bump @vocabulary/dash from 1.0.0-rc.0 to 1.0.0
+- b92e41f: Re-export `sparql` template function
+
 ## 0.6.1
 
 ### Patch Changes
