@@ -15,10 +15,10 @@
   "dependencies": {
     "@hydrofoil/shape-to-query": "^0.6.0",
     "@rdfjs/namespace": "^2",
-    "@rdfjs-elements/rdf-editor": "^0.5.4",
-    "@rdfjs-elements/sparql-editor": "^0.2.0",
+    "@rdfjs-elements/rdf-editor": "^0.5.5",
+    "@rdfjs-elements/sparql-editor": "^0.2.1",
     "@shoelace-style/shoelace": "^2.4.0",
-    "@tpluscode/rdf-ns-builders": "^3.0.2",
+    "@tpluscode/rdf-ns-builders": "^4",
     "@tpluscode/rdf-string": "^1.0.2",
     "@tpluscode/sparql-builder": "^1.0.0",
     "is-graph-pointer": "^2",
