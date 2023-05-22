@@ -1,5 +1,5 @@
 import { Term } from 'rdf-js'
-import { SELECT, Select } from '@tpluscode/sparql-builder'
+import { Select } from '@tpluscode/sparql-builder'
 import { GraphPointer } from 'clownface'
 import { isGraphPointer, isLiteral } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
@@ -7,9 +7,10 @@ import { xsd } from '@tpluscode/rdf-ns-builders'
 import { fromRdf } from 'rdf-literal'
 import { ModelFactory } from '../ModelFactory.js'
 import { getOne } from './util.js'
-import NodeExpressionBase, { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
+import { NodeExpression } from './NodeExpression.js'
+import { SubselectExpression } from './SubselectExpression.js'
 
-export class LimitExpression extends NodeExpressionBase {
+export class LimitExpression extends SubselectExpression {
   static match(pointer: GraphPointer) {
     return isLiteral(pointer.out(sh.limit), xsd.integer) && isGraphPointer(pointer.out(sh.nodes))
   }
@@ -23,20 +24,11 @@ export class LimitExpression extends NodeExpressionBase {
     return new LimitExpression(pointer.term, fromRdf(limit.term), fromNode.nodeExpression(getOne(pointer, sh.nodes)))
   }
 
-  constructor(public readonly term: Term, private readonly limit: number, private readonly nodes: NodeExpression) {
-    super()
+  constructor(term: Term, private readonly limit: number, nodes: NodeExpression) {
+    super(term, nodes)
   }
 
-  _buildPatterns(arg: Parameters, builder: PatternBuilder) {
-    const selectOrPatterns = builder.build(this.nodes, arg)
-    let select: Select
-
-    if ('build' in selectOrPatterns.patterns) {
-      select = selectOrPatterns.patterns
-    } else {
-      select = SELECT`${arg.subject} ${selectOrPatterns.object}`.WHERE`${selectOrPatterns.patterns}`
-    }
-
+  protected _applySubselectClause(select: Select): Select {
     return select.LIMIT(this.limit)
   }
 }

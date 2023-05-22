@@ -507,6 +507,28 @@ Optionally, a path expression can have one value of `sh:nodes` property which de
   </s2q-snippet>
 </div>
 
+### Distinct Expressions ### {#shacl-distinct-expression}
+
+Note: SHACL-AF spec: [[shacl-af#distinct]]
+
+<div class="example">
+  Select only unique values of
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/distinct.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/distinct.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
 ### Count Expressions ### {#shacl-count-expression}
 
 Note: SHACL-AF spec: [[shacl-af#count]]

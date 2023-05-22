@@ -1,0 +1,19 @@
+PREFIX ex: <http://example.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+[
+  a sh:NodeShape ;
+  sh:targetClass schema:Organization ;
+  sh:property
+    [
+      sh:path ex:contact ;
+      sh:values
+        [
+          sh:distinct
+            [
+              sh:path [ sh:alternativePath ( ex:customer ex:client ) ]
+            ] ;
+        ] ;
+    ] ;
+] .
