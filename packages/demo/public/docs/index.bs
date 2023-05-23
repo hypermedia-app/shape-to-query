@@ -607,6 +607,29 @@ Skips a number of nodes from the inner node expression
 
 Note: `sh:offset` makes most sense when combined with `sh:limit` and `sh:orderBy` or `sh:select`
 
+## Expression Constraints ## {#shacl-expression-constraints}
+
+Note: SHACL-AF spec: [[shacl-af#ExpressionConstraintComponent]]
+
+Constrains focus nodes by evaluating [[#shacl-advanced-node-expressions]].
+
+<div class="example">
+  Select only one people who have a job title containing the word "physicist"
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/constraint/expression.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/constraint/expression.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
 
 ## SHACL Rules ## {#shacl-rules}
 

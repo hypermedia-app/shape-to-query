@@ -10,6 +10,7 @@ import { InConstraintComponent } from './in.js'
 import { HasValueConstraintComponent } from './hasValue.js'
 import { PropertyConstraintComponent } from './property.js'
 import { PatternConstraintComponent } from './pattern.js'
+import { ExpressionConstraintComponent } from './expression.js'
 
 interface ConstraintComponentStatic {
   fromShape(shape: PropertyShape, factory: ModelFactory): ConstraintComponent[] | Generator<ConstraintComponent>
@@ -23,4 +24,5 @@ export const constraintComponents = $rdf.termMap<Term, ConstraintComponentStatic
   [sh.NodeConstraintComponent, NodeConstraintComponent],
   [sh.PropertyConstraintComponent, PropertyConstraintComponent],
   [sh.PatternConstraintComponent, PatternConstraintComponent],
+  [sh.ExpressionConstraintComponent, ExpressionConstraintComponent],
 ])
