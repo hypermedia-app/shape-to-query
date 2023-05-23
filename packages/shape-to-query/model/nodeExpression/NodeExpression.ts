@@ -16,6 +16,11 @@ export interface NodeExpressionResult {
   object: Variable
 }
 
+interface InlineExpressionResult {
+  inline: SparqlTemplateResult
+  patterns?: SparqlTemplateResult
+}
+
 export class PatternBuilder {
   private readonly results = $rdf.termMap<Term, NodeExpressionResult>()
 
@@ -36,10 +41,7 @@ export interface NodeExpression {
   /**
    * Implemented to have the expression result inlined in the parent expression.
    */
-  buildInlineExpression?(arg: Parameters, builder: PatternBuilder): {
-    inline: SparqlTemplateResult
-    patterns?: SparqlTemplateResult
-  }
+  buildInlineExpression?(arg: Parameters, builder: PatternBuilder): InlineExpressionResult
 }
 
 export default abstract class {
