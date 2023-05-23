@@ -53,7 +53,7 @@
     "n3": "^1.16.3",
     "rdf-dataset-ext": "^1.0.1",
     "rdf-utils-fs": "^2.3.0",
-    "sinon": "^15.0.1",
+    "sinon": "^15.1.0",
     "sparql-http-client": "^2.4.2",
     "sparqljs": "^3.6.1",
     "string-to-stream": "^3.0.1",
