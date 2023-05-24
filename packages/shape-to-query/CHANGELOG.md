@@ -1,5 +1,13 @@
 # @hydrofoil/shape-to-query
 
+## 0.7.1
+
+### Patch Changes
+
+- 2129d19: Optional expression (`s2q:optional`)
+- 985d70c: Implemented Distinct Expression (`sh:distinct`) (closes #31)
+- 7a093e4: Expression Constraint (`sh:expression`) (closes #130)
+
 ## 0.7.0
 
 ### Minor Changes
