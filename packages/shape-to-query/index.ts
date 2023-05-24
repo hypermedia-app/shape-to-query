@@ -4,3 +4,4 @@ export {
   constructQuery,
   deleteQuery,
 } from './lib/shapeToQuery.js'
+export { default as s2q } from './ns.js'

@@ -158,7 +158,7 @@ describe('model/ModelFactory', () => {
 
   describe('nodeExpression', () => {
     it('throws when expression is unrecognized', () => {
-      expect(() => modelFactory.nodeExpression(blankNode())).to.throw('Unsupported node expression')
+      expect(() => modelFactory.nodeExpression(blankNode())).to.throw(/Unsupported node expression/)
     })
   })
 })
