@@ -717,3 +717,33 @@ Used throughout the [[#shacl-advanced-node-expressions]] examples, the `sh:value
 which binds computed values to triples with the current focus node subject and property being the value of `sh:path`.
 
 Note: An error will be thrown when the `sh:path` is not an IRI
+
+# Extensions # {#extensions}
+
+The shape-to-query library introduces some additional constructs which handle specific scenarios unique to generated SPARQL queries which cannot be otherwise handled with terms defined in SHACL and SHACL-AF.
+
+ALl extensions use the namespace `https://hypermedia.app/shape-to-query#`. The preferred prefix is `s2q:`.
+
+## Node Expressions ## {#extension-expressions}
+
+### Optional Expression ### {#extension-optional}
+
+An optional expression is a [[rdf11-concepts#dfn-blank-node|blank node]] which has a single object of the `s2q:optional` property which is a well-formed [[!shacl-af|dfn-node-expression]].
+
+<div class="example">
+  Find people who do not have an address region or whose address region is Texas
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/extensions/optional.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/extensions/optional.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>

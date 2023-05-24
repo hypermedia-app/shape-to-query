@@ -9,6 +9,7 @@ import { LimitExpression } from './model/nodeExpression/LimitExpression.js'
 import { NodeExpressionStatic } from './model/nodeExpression/index.js'
 import { FunctionExpression } from './model/nodeExpression/FunctionExpression.js'
 import { DistinctExpression } from './model/nodeExpression/DistinctExpression.js'
+import { OptionalExpression } from './model/nodeExpression/OptionalExpression.js'
 
 export { default as NodeExpressionBase, PatternBuilder } from './model/nodeExpression/NodeExpression.js'
 export type { NodeExpression, Parameters } from './model/nodeExpression/NodeExpression.js'
@@ -36,4 +37,5 @@ export const nodeExpressions: NodeExpressionStatic[] = [
   CountExpression,
   FunctionExpression,
   DistinctExpression,
+  OptionalExpression,
 ]
