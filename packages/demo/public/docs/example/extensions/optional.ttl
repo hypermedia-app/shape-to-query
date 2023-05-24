@@ -1,0 +1,26 @@
+PREFIX schema: <http://schema.org/>
+PREFIX tbbt: <https://tbbt.tv/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX s2q: <https://hypermedia.app/shape-to-query#>
+PREFIX sparql: <http://datashapes.org/sparql#>
+
+[
+  a sh:NodeShape ;
+  sh:property
+    [ sh:path schema:givenName ],
+    [ sh:path schema:familyName ] ;
+  sh:expression
+    [
+      sparql:or
+        (
+          [ sparql:not ( [ sparql:bound ( _:addressLocation ) ] ) ]
+          [ sparql:eq ( _:addressLocation "TX" ) ]
+        ) ;
+    ] ;
+] .
+
+_:addressLocation
+  s2q:optional
+    [
+      sh:path ( schema:address schema:addressRegion )
+    ] .

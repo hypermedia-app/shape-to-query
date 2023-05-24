@@ -1,0 +1,13 @@
+PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource1 schema:givenName ?resource2.
+  ?resource1 schema:familyName ?resource3.
+}
+WHERE {
+  { ?resource1 schema:givenName ?resource2. }
+  UNION
+  { ?resource1 schema:familyName ?resource3. }
+  OPTIONAL { ?resource1 (schema:address/schema:addressRegion) ?resource5. }
+  OPTIONAL { ?resource1 (schema:address/schema:addressRegion) ?resource5. }
+  FILTER((!(BOUND(?resource5))) || (?resource5 = "TX"))
+}
