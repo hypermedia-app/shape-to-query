@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@tpluscode/rdf-ns-builders": ">=3.0.2",
+    "@tpluscode/rdf-string": "^1.0.3",
     "@tpluscode/sparql-builder": "^1.1.0",
     "@vocabulary/dash": "^1.0.0",
     "@vocabulary/dash-sparql": "^1.0.0",

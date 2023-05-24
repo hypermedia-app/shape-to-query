@@ -3,6 +3,7 @@ import { AnyPointer, GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isGraphPointer, isNamedNode } from 'is-graph-pointer'
 import $rdf from 'rdf-ext'
+import { turtle } from '@tpluscode/rdf-string'
 import { TRUE } from '../lib/rdf.js'
 import { NodeExpression, nodeExpressions } from '../nodeExpressions.js'
 import NodeShapeImpl, { NodeShape } from './NodeShape.js'
@@ -113,6 +114,8 @@ export default class {
       return match.fromPointer(pointer, this)
     }
 
-    throw new Error('Unsupported node expression')
+    const subgraph = pointer.dataset.match(pointer.term)
+
+    throw new Error(turtle`Unsupported node expression:\n\n${subgraph}`.toString({ directives: false }))
   }
 }
