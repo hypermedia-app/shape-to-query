@@ -35,7 +35,7 @@
   "devDependencies": {
     "@tpluscode/rdf-string": "^1.0.3",
     "@rdfjs/namespace": "^2",
-    "@types/chai": "^4.3.4",
+    "@types/chai": "^4.3.5",
     "@types/chai-string": "^1.4.2",
     "@types/clownface": "^1.5.2",
     "@types/debug": "^4.1.7",
