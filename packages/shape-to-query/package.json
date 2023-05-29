@@ -5,6 +5,7 @@
   "scripts": {
     "prepack": "tsc"
   },
+  "main": "index.js",
   "files": [
     "*.js",
     "*.d.ts",
