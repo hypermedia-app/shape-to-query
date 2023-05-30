@@ -261,6 +261,55 @@ describe('@hydrofoil/shape-to-query', () => {
         }`)
       })
 
+      it('avoids duplicating variable for same path between constraints', async () => {
+        // given
+        const shape = await parse`
+          <>
+            a ${sh.NodeShape} ;
+            ${sh.targetClass} ${schema.Person} ;
+            ${sh.property}
+            [
+              ${sh.path} ${schema.knows} ;
+              ${sh.class} ${schema.Organization} ;
+              ${sh.nodeKind} ${sh.IRI} ;
+              ${sh.node} [
+                ${sh.property} [
+                  ${sh.path} ${schema.name} ;
+                  ${sh.pattern} "gmbh" ;
+                  ${sh.flags} "i" ;
+                ] ;
+              ] ;
+            ] ; 
+          .
+        `
+
+        // when
+        const query = constructQuery(shape).build()
+
+        // then
+        expect(query).to.be.a.query(sparql`CONSTRUCT {
+          ?resource ${rdf.type} ${schema.Person} .
+          ?resource ${schema.knows} ?org .
+          ?org ${schema.name} ?orgName .
+        } WHERE {
+          ?resource ${rdf.type} ${schema.Person} .
+          {
+            ?resource ${schema.knows} ?org .
+          }
+          UNION
+          {
+            ?resource ${schema.knows} ?org .
+            ?org ${schema.name} ?orgName .
+          }
+          
+          ?resource ${schema.knows} ?org .
+          ?org ${schema.name} ?orgName .
+          FILTER(REGEX(?orgName, "gmbh", "i")) 
+          ?org ${rdf.type} ${schema.Organization} .
+          FILTER(isiri(?org)) 
+        }`)
+      })
+
       context('shacl advanced features', () => {
         context('constant term expression', () => {
           it('binds the constant values', async () => {
@@ -301,7 +350,7 @@ describe('@hydrofoil/shape-to-query', () => {
             const query = constructQuery(shape).build()
 
             // then
-            expect(query).to.equalPatterns(`
+            expect(query).to.be.query(`
               PREFIX schema: <http://schema.org/>
               PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
               PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
@@ -341,7 +390,7 @@ describe('@hydrofoil/shape-to-query', () => {
                     ?resource7 skos:prefLabel ?resource6.
                     BIND(UCASE((SUBSTR(?resource6, 1 , 1 ))) as ?resource5)
                 }
-                ?resource1 schema:mainEntity ?resource19.
+                ?resource1 schema:mainEntity ?resource2.
               }`)
           })
         })

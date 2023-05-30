@@ -10,6 +10,6 @@ WHERE {
   { ?resource1 schema:familyName ?resource3. }
   UNION
   { ?resource1 schema:knows ?resource4. }
-  ?resource1 schema:knows ?resource6.
+  ?resource1 schema:knows ?resource4.
   FILTER(EXISTS { ?resource1 schema:knows <https://tbbt.tv/sheldon-cooper>, <https://tbbt.tv/stuart-bloom>. })
 }

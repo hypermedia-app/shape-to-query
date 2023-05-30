@@ -1,3 +1,4 @@
+import { Variable } from 'rdf-js'
 import { GraphPointer } from 'clownface'
 import { fromNode, ShaclPropertyPath, toSparql } from 'clownface-shacl-path'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
@@ -32,10 +33,11 @@ export default class extends Shape implements PropertyShape {
   }
 
   buildPatterns({ focusNode, variable, rootPatterns }: BuildParameters): ShapePatterns {
-    const pathEnd = variable()
+    let pathEnd: Variable
     const visitor = new PathVisitor(variable)
     let patterns: ShapePatterns
     if (this.rules.length) {
+      pathEnd = variable()
       const rulePatterns = this.rules.map(r => r.buildPatterns({
         focusNode,
         objectNode: pathEnd,
@@ -45,6 +47,7 @@ export default class extends Shape implements PropertyShape {
       }))
       patterns = union(...rulePatterns)
     } else {
+      pathEnd = variable.for(focusNode, this._path)
       patterns = visitor.visit(this.path, {
         pathStart: focusNode,
         pathEnd,
@@ -84,7 +87,7 @@ export default class extends Shape implements PropertyShape {
       return ''
     }
 
-    const valueNode = variable()
+    const valueNode = variable.for(focusNode, this._path)
 
     const propertyPath = toSparql(this._path)
     const constraints = this.constraints.map(c => c.buildPatterns({
