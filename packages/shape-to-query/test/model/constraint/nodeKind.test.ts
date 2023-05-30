@@ -10,6 +10,11 @@ describe('model/constraint/nodeKind', () => {
 
   const nodeKinds: Array<[NodeKind, string]> = [
     [sh.IRI, 'IsIRI(?foo)'],
+    [sh.IRIOrLiteral, 'IsIRI(?foo) || IsLiteral(?foo)'],
+    [sh.BlankNodeOrIRI, 'IsBlank(?foo) || IsIRI(?foo)'],
+    [sh.Literal, 'IsLiteral(?foo)'],
+    [sh.BlankNodeOrLiteral, 'IsBlank(?foo) || IsLiteral(?foo)'],
+    [sh.BlankNode, 'IsBlank(?foo)'],
   ]
 
   for (const [nodeKind, filter] of nodeKinds) {
@@ -29,4 +34,15 @@ describe('model/constraint/nodeKind', () => {
       expect(patterns).to.equalPatterns(`FILTER(${filter})`)
     })
   }
+
+  it('does not create a constraint when there is no sh:nodeKind', () => {
+    // given
+    const shape = $rdf.termMap()
+
+    // when
+    const constrains = [...NodeKindConstraintComponent.fromShape(shape)]
+
+    // then
+    expect(constrains).to.be.empty
+  })
 })
