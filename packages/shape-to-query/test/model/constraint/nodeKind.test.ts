@@ -45,4 +45,17 @@ describe('model/constraint/nodeKind', () => {
     // then
     expect(constrains).to.be.empty
   })
+
+  it('does not create a constraint when sh:nodeKind is a list', () => {
+    // given
+    const shape = $rdf.termMap([
+      [sh.nodeKind, [{ list: [] }]],
+    ])
+
+    // when
+    const constrains = [...NodeKindConstraintComponent.fromShape(shape)]
+
+    // then
+    expect(constrains).to.be.empty
+  })
 })
