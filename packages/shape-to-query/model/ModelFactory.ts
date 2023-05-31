@@ -6,13 +6,13 @@ import $rdf from 'rdf-ext'
 import { turtle } from '@tpluscode/rdf-string'
 import { TRUE } from '../lib/rdf.js'
 import { NodeExpression, nodeExpressions } from '../nodeExpressions.js'
+import { rules } from '../rules.js'
 import NodeShapeImpl, { NodeShape } from './NodeShape.js'
 import * as target from './target/index.js'
 import PS, { PropertyShape } from './PropertyShape.js'
 import PVR, { PropertyValueRule } from './rule/PropertyValueRule.js'
 import createConstraints from './constraint/factory.js'
 import { Rule } from './rule/Rule.js'
-import TripleRule from './rule/TripleRule.js'
 
 interface TargetConstructor {
   new(...args: any[]): target.Target
@@ -23,7 +23,7 @@ export interface ModelFactory {
   targets(pointer: GraphPointer): target.Target[]
   propertyShape(pointer: GraphPointer): PropertyShape
   propertyRule(expression: GraphPointer, path: GraphPointer): PropertyValueRule
-  tripleRule(rule: GraphPointer): Rule[]
+  rule(rule: GraphPointer): Rule[]
   nodeExpression(pointer: AnyPointer): NodeExpression
 }
 
@@ -34,7 +34,7 @@ export default class {
       .filter(p => !TRUE.equals(p.out(sh.deactivated).term))
       .map(x => this.propertyShape(x))
 
-    const rules = pointer.out(sh.rule).toArray().flatMap(x => this.tripleRule(x))
+    const rules = pointer.out(sh.rule).toArray().flatMap(x => this.rule(x))
 
     return new NodeShapeImpl(
       [...this.targets(pointer)],
@@ -88,20 +88,14 @@ export default class {
     return new PVR(path.term, this.nodeExpression(expression))
   }
 
-  tripleRule(rule: GraphPointer): Rule[] {
-    if (TRUE.equals(rule.out(sh.deactivated).term)) {
+  rule(pointer: GraphPointer): Rule[] {
+    if (TRUE.equals(pointer.out(sh.deactivated).term)) {
       return []
     }
 
-    const subject = rule.out(sh.subject)
-    const predicate = rule.out(sh.predicate)
-    const object = rule.out(sh.object)
-
-    return [new TripleRule(
-      this.nodeExpression(subject),
-      this.nodeExpression(predicate),
-      this.nodeExpression(object),
-    )]
+    return rules
+      .filter(rule => rule.matches(pointer))
+      .map(rule => rule.fromPointer(pointer, this))
   }
 
   nodeExpression(pointer: AnyPointer): NodeExpression {

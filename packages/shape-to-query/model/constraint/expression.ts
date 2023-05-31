@@ -25,10 +25,14 @@ export class ExpressionConstraintComponent extends ConstraintComponent {
 
     if ('buildInlineExpression' in this.expression) {
       ({ patterns, inline: filter } = this.expression.buildInlineExpression({ subject, object, rootPatterns, variable }, new PatternBuilder()))
-    } else {
-      ({ patterns, object: filter } = this.expression.build({ subject, object, rootPatterns, variable }, new PatternBuilder()))
+      return sparql`${patterns}\nFILTER(${filter})`
     }
 
+    ({ patterns, object: filter } = this.expression.build({ subject, object, rootPatterns, variable }, new PatternBuilder()))
+
+    if (subject.equals(object)) {
+      return sparql`${patterns}`
+    }
     return sparql`${patterns}\nFILTER(${filter})`
   }
 }

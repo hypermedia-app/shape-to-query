@@ -1,0 +1,7 @@
+CONSTRUCT { ?resource1 ?resource2 ?resource3. }
+WHERE {
+  VALUES ?resource1 {
+    <https://tbbt.tv/sheldon-cooper>
+  }
+  ?resource1 ?resource2 ?resource3.
+}
