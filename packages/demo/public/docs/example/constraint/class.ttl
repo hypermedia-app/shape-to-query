@@ -1,0 +1,13 @@
+PREFIX ch: <https://schema.ld.admin.ch/>
+PREFIX schema: <http://schema.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+[
+  a sh:NodeShape ;
+  sh:targetClass ch:Canton ;
+  sh:property
+    [
+      sh:path schema:containsPlace ;
+      sh:class ch:Municipality ;
+    ] ;
+] .
