@@ -9,7 +9,7 @@ describe('model/rule/SPORule', () => {
   before(() => import('../../sparql.js'))
 
   describe('buildPatterns', () => {
-    it('applies multiple filters', () => {
+    it('works without filters', () => {
       // given
       const filter1 = fakeExpression(args => sparql`${args.subject} filter1 .`)
       const filter2 = fakeExpression(args => sparql`${args.subject} filter2 .`)
@@ -34,6 +34,24 @@ describe('model/rule/SPORule', () => {
         ?p filter2 .
         ?o filter1 .
         ?o filter2 .
+      `)
+    })
+
+    it('applies multiple filters', () => {
+      // given
+      const rule = new SPORule({})
+
+      // when
+      const result = rule.buildPatterns({
+        variable,
+        rootPatterns: undefined,
+        focusNode: $rdf.namedNode('this'),
+      })
+
+      // then
+      expect(sparql`${result.constructClause}\n${result.whereClause}`).to.equalPatterns(`
+        <this> ?p ?o .
+        <this> ?p ?o .
       `)
     })
   })
