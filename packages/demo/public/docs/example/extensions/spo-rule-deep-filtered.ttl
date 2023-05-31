@@ -1,0 +1,24 @@
+PREFIX schema: <http://schema.org/>
+PREFIX tbbt: <https://tbbt.tv/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX s2q: <https://hypermedia.app/shape-to-query#>
+PREFIX sparql: <http://datashapes.org/sparql#>
+
+[
+  a sh:NodeShape ;
+  sh:targetClass schema:Person ;
+  sh:rule [
+    a s2q:SPORule ;
+    s2q:predicateFilter [
+      sparql:eq ( sh:this schema:knows ) ;
+    ] ;
+    s2q:objectFilter [
+      sh:filterShape [
+        sh:property [
+          sh:path schema:jobTitle ;
+          sh:pattern "physicist" ;
+        ] ;
+      ] ;
+    ] ;
+  ]
+] .

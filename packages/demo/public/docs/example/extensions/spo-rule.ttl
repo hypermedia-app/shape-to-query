@@ -1,0 +1,13 @@
+PREFIX schema: <http://schema.org/>
+PREFIX tbbt: <https://tbbt.tv/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX s2q: <https://hypermedia.app/shape-to-query#>
+PREFIX sparql: <http://datashapes.org/sparql#>
+
+[
+  a sh:NodeShape ;
+  sh:targetNode tbbt:sheldon-cooper ;
+  sh:rule [
+    a s2q:SPORule ;
+  ]
+] .

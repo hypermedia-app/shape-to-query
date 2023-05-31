@@ -40,7 +40,11 @@ nodeExpressions.push(
 
       await writeFile(`${shapeGraphPath}.rq`, generator.stringify(query))
     } catch (e) {
-      await writeFile(`${shapeGraphPath}.rq`, generated + '\n\n' + e.message)
+      await writeFile(`${shapeGraphPath}.rq`, `${generated}
+
+${e.message}
+at
+${e.stack}`)
     }
   }))
 })()
