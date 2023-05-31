@@ -39,7 +39,7 @@ export class SPORule implements Rule {
       .map(filter => filter.buildPatterns({
         focusNode: predicate,
         rootPatterns: undefined,
-        valueNode: variable(),
+        valueNode: predicate,
         variable,
       }))
     const objectFilters = this.objectFilters

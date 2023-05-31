@@ -125,6 +125,32 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       // given
       const shape: NodeShape = {
         buildPatterns: () => <any>{},
+        buildConstraints: ({ focusNode }) => sparql`${focusNode} a ${schema.Organization} .`,
+      }
+      const expr = new FilterShapeExpression($rdf.blankNode(), shape)
+
+      // when
+      const subject = $rdf.variable('this')
+      const result = expr.build({
+        subject,
+        object: subject,
+        variable,
+        rootPatterns: undefined,
+      }, new PatternBuilder())
+
+      // then
+      expect(combinedNRE(result)).to.equalPatterns(sparql`SELECT ?this WHERE {
+        ?this a ${schema.Organization} .
+      }`)
+    })
+
+    it('creates constraints for properties of focus node', () => {
+      // given
+      const shape: NodeShape = {
+        buildPatterns: () => ({
+          constructClause: [],
+          whereClause: sparql``,
+        }),
         buildConstraints: ({ focusNode, valueNode }) => sparql`${focusNode} path ${valueNode} .`,
       }
       const expr = new FilterShapeExpression($rdf.blankNode(), shape)
@@ -138,9 +164,8 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       }, new PatternBuilder())
 
       // then
-      expect(combinedNRE(result)).to.equalPatterns(`SELECT ?foo WHERE {
-        BIND ( <this> as ?foo )
-        ?foo path ?bar .
+      expect(combinedNRE(result)).to.equalPatterns(`SELECT ?bar WHERE {
+        <this> path ?bar .
       }`)
     })
 

@@ -8,6 +8,6 @@ WHERE {
   ?resource1 rdf:type schema:Person;
     ?resource2 ?resource3.
   FILTER(?resource2 = schema:knows)
-  ?resource3 schema:jobTitle ?resource5.
-  FILTER(REGEX(?resource5, "physicist"))
+  ?resource3 schema:jobTitle ?resource4.
+  FILTER(REGEX(?resource4, "physicist"))
 }

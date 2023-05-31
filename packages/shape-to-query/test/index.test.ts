@@ -1,15 +1,19 @@
 import { foaf, rdf, rdfs, schema } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { SELECT } from '@tpluscode/sparql-builder'
-import { expect } from 'chai'
+import chai, { expect } from 'chai'
 import { sparql } from '@tpluscode/rdf-string'
 import type { GraphPointer } from 'clownface'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { jestSnapshotPlugin } from 'mocha-chai-jest-snapshot'
 import { constructQuery, deleteQuery, shapeToPatterns } from '../index.js'
 import { ex } from './namespace.js'
 import { parse } from './nodeFactory.js'
 import './sparql.js'
 
 describe('@hydrofoil/shape-to-query', () => {
+  chai.use(jestSnapshotPlugin())
+
   describe('shapeToPatterns', () => {
     context('targets', () => {
       context('class target', () => {
@@ -392,6 +396,17 @@ describe('@hydrofoil/shape-to-query', () => {
                 }
                 ?resource1 schema:mainEntity ?resource2.
               }`)
+          })
+
+          it('filter shape is applied correctly in SPO Rule', async () => {
+            // given
+            const shape = await parse.file('spo-rule-filter-shapes.ttl')
+
+            // when
+            const result = constructQuery(shape).build()
+
+            // then
+            expect(result).to.be.query()
           })
         })
       })
