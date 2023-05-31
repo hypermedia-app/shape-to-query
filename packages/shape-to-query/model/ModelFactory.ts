@@ -39,7 +39,7 @@ export default class {
     return new NodeShapeImpl(
       [...this.targets(pointer)],
       properties,
-      [...createConstraints(pointer)],
+      [...createConstraints(pointer, this)],
       rules,
     )
   }
@@ -76,7 +76,7 @@ export default class {
 
     return new PS(path, {
       rules,
-      constraints: [...createConstraints(pointer)],
+      constraints: [...createConstraints(pointer, this)],
     })
   }
 

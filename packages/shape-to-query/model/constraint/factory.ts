@@ -1,14 +1,12 @@
 import { GraphPointer } from 'clownface'
 import $rdf from 'rdf-ext'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import ModelFactory from '../ModelFactory.js'
 import { TRUE } from '../../lib/rdf.js'
+import type { ModelFactory } from '../ModelFactory.js'
 import { ConstraintComponent, PropertyShape } from './ConstraintComponent.js'
 import { constraintComponents } from './index.js'
 
-export default function (shape: GraphPointer): Array<ConstraintComponent> {
-  const factory = new ModelFactory()
-
+export default function (shape: GraphPointer, factory: ModelFactory): Array<ConstraintComponent> {
   const shapeModel = buildParameterModel(shape)
 
   return [...constraintComponents].flatMap(([, component]) => {
