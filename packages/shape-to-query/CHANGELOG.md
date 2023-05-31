@@ -1,5 +1,20 @@
 # @hydrofoil/shape-to-query
 
+## 0.8.0
+
+### Minor Changes
+
+- fa27d67: Added the ability to create custom rules. The method `ModelFactory#tripleRule` has been renamed to `ModelFactory#rule`
+- 4d991f0: Reuse variable between constraints. This should not be a breaking change, aiming at improving the performance of the queries, but since it does alter the output of existing constraints, I would advise caution
+
+### Patch Changes
+
+- 4d991f0: Implemented NodeKind Constraint Component (closes #47)
+- d333a0b: Missing `main` field
+- fa27d67: Remove unnecessary bind when using `sh:filterShape` without `sh:nodes`
+- 4d991f0: Implemented Class Constraint Component (closes #45)
+- fa27d67: Added a custom rule type `s2q:SPORule` which allows selecting all properties from a focus node
+
 ## 0.7.1
 
 ### Patch Changes
