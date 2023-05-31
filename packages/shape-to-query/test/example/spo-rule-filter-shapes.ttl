@@ -1,0 +1,38 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema: <http://schema.org/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ex: <http://example.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix s2q: <https://hypermedia.app/shape-to-query#> .
+
+<>
+  a sh:NodeShape ;
+  sh:targetClass ex:Object ;
+  sh:rule
+    [
+      a s2q:SPORule ;
+      s2q:predicateFilter
+        [
+          sh:filterShape
+            [
+              sh:property
+                [
+                  sh:path rdfs:subPropertyOf ;
+                  sh:hasValue skos:related ;
+                ]
+            ] ;
+        ] ;
+      s2q:objectFilter
+        [
+          sh:filterShape
+            [
+              sh:property
+                [
+                  sh:path rdf:type ;
+                  sh:hasValue schema:Organization ;
+                ] ;
+            ] ;
+        ] ;
+    ] ;
+.

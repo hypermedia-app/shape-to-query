@@ -1,4 +1,4 @@
-import { Term } from 'rdf-js'
+import { Term, Variable } from 'rdf-js'
 import { GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'
@@ -30,8 +30,16 @@ export class FilterShapeExpression extends NodeExpressionBase {
   }
 
   _buildPatterns({ subject, variable, rootPatterns, object }: Parameters, builder: PatternBuilder) {
-    const { patterns, object: focusNode } = builder.build(this.nodes, { subject, object, variable, rootPatterns })
-    const valueNode = variable()
+    let focusNode = subject
+    let patterns: any = sparql``
+    let valueNode: Variable
+
+    if (this.nodes instanceof FocusNodeExpression) {
+      valueNode = object
+    } else {
+      ({ patterns, object: focusNode } = builder.build(this.nodes, { subject, object, variable, rootPatterns }))
+      valueNode = variable()
+    }
 
     return sparql`
       ${patterns}

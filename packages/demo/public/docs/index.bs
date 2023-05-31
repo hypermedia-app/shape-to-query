@@ -747,3 +747,91 @@ An optional expression is a [[rdf11-concepts#dfn-blank-node|blank node]] which h
 
   </s2q-snippet>
 </div>
+
+## Custom rules ## {#extension-rules}
+
+### SPO rule ### {#extension-spo-rule}
+
+An SPO rule is a blank node with the RDF type `s2q:SPORule`. It can optionally have the properties `s2q:predicateFilter` and `s2q:objectFilter`, value of which must be a well-formed [[!shacl-af|dfn-node-expression]].
+
+This rule can be used to mimic a behavior of `DESCRIBE` queries which would return all direct properties of the given focus node, which is otherwise not possible with other SHACL constructs.
+
+<div class="example">
+  Return all information about Sheldon Cooper
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/extensions/spo-rule.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/extensions/spo-rule.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+Additionally, node expressions can be used to limit the predicates and objects. `sh:this` in those expressions refers to the predicate and object itself and not the subject
+
+<div class="example">
+  Return all information about Sheldon Cooper except for `schema:knows` property and values which are blank nodes
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/extensions/spo-rule-filtered.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/extensions/spo-rule-filtered.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+Note: In many cases, nested node shapes with expressions and constraints are a more fitting way to represent such filters.
+
+Expanding on the example above, `sh:filterShape` can be used to further restrict the objects in an SPO pattern by their respective properties
+
+<div class="example">
+  Find values of people's `schema:knows` property but only where that other person is a physicist.
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/extensions/spo-rule-deep-filtered.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/extensions/spo-rule-deep-filtered.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+Finally, `SPORule` can also be used inside `sh:node` expression to select the values of any nested focus node
+
+<div class="example">
+  Find people with address and all properties of said address
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/extensions/spo-rule-nested.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/extensions/spo-rule-nested.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
