@@ -18,6 +18,7 @@
     "type": "git",
     "url": "https://github.com/hypermedia-app/shape-to-query"
   },
+  "homepage": "https://shape-to-query.hypermedia.app/docs",
   "dependencies": {
     "@tpluscode/rdf-ns-builders": ">=3.0.2",
     "@tpluscode/rdf-string": "^1.0.3",
