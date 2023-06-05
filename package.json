@@ -42,7 +42,7 @@
     "standard": ">=11",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
-    "yarn-deduplicate": "^6.0.1"
+    "yarn-deduplicate": "^6.0.2"
   },
   "workspaces": [
     "packages/*"
