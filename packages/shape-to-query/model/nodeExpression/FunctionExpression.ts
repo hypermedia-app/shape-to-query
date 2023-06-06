@@ -26,9 +26,7 @@ export abstract class FunctionExpression extends NodeExpressionBase {
       return false
     }
 
-    const functionPtr = vocabulary.node(first.predicate).has(rdf.type, sh.Function)
-
-    return isGraphPointer(functionPtr) && pointer.out(functionPtr).isList()
+    return pointer.out(first.predicate).isList()
   }
 
   static fromPointer(pointer: GraphPointer, createExpr: ModelFactory) {

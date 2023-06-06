@@ -54,16 +54,6 @@ describe('model/nodeExpression/FunctionExpression', () => {
       expect(FunctionExpression.match(pointer)).to.be.false
     })
 
-    it('returns false when expression has multiple predicates', () => {
-      // given
-      const pointer = blankNode()
-        .addOut(dashSparql.and, blankNode())
-        .addOut(dashSparql.or, blankNode())
-
-      // when
-      expect(FunctionExpression.match(pointer)).to.be.false
-    })
-
     it('returns true when expression has a single predicate of known sh:Function', () => {
       // given
       const pointer = blankNode()
@@ -73,7 +63,16 @@ describe('model/nodeExpression/FunctionExpression', () => {
       expect(FunctionExpression.match(pointer)).to.be.true
     })
 
-    it('returns true when expression has a single predicate of known sh:Function but not a list', () => {
+    it('returns true when expression has a single predicate of an arbitrary predicate', () => {
+      // given
+      const pointer = blankNode()
+        .addList(xsd.int, blankNode())
+
+      // when
+      expect(FunctionExpression.match(pointer)).to.be.true
+    })
+
+    it('returns false when expression has a single predicate of known sh:Function but not a list', () => {
       // given
       const pointer = blankNode()
         .addOut(dashSparql.and, blankNode())
@@ -134,6 +133,19 @@ describe('model/nodeExpression/FunctionExpression', () => {
 
       // then
       expect(expr.returnType).to.deep.eq(xsd.string)
+    })
+
+    it('returns new function from arbitrary IRI', () => {
+      // given
+      const pointer = blankNode()
+        .addList(xsd.int, [])
+
+      // when
+      const expr = FunctionExpression.fromPointer(pointer, factory)
+
+      // then
+      expect(expr).to.be.instanceof(FunctionCallExpression)
+      expect(expr.symbol).to.deep.eq(xsd.int)
     })
 
     const additiveExpressions = [
