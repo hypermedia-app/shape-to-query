@@ -1,5 +1,13 @@
 # @hydrofoil/shape-to-query
 
+## 0.8.1
+
+### Patch Changes
+
+- 42023e0: chore: add homepage
+- 9a8b95c: Include changelog in package
+- 6560203: Function expression did not work for arbitrary IRI which was not explicitly annotated as `sh:Function`
+
 ## 0.8.0
 
 ### Minor Changes
