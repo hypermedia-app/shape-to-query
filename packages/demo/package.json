@@ -30,7 +30,7 @@
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@tpluscode/eslint-config": "^0.4.2",
-    "@typescript-eslint/eslint-plugin": "^5.49.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.49.0",
     "browserify-zlib": "^0.2.0",
     "eslint-config-standard": "^17.0.0",
