@@ -10,4 +10,6 @@ WHERE {
   { ?resource1 schema:familyName ?resource3. }
   UNION
   { ?resource1 schema:knows ?resource4. }
+  ?resource1 schema:knows ?resource4.
+  FILTER(?resource4 IN(<https://tbbt.tv/sheldon-cooper>, <https://tbbt.tv/stuart-bloom>))
 }
