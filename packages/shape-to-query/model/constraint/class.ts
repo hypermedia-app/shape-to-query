@@ -20,7 +20,11 @@ export class ClassConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPatterns({ valueNode }: Parameters) {
+  buildPropertyShapePatterns({ valueNode }: Parameters) {
     return sparql`${valueNode} a ${this.clas} .`
+  }
+
+  buildNodeShapePatterns({ focusNode }: Parameters) {
+    return sparql`${focusNode} a ${this.clas} .`
   }
 }

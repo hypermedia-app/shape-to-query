@@ -17,11 +17,11 @@ export class HasValueConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPatterns({ focusNode, propertyPath, valueNode }: Omit<Parameters, 'rootPatterns'>): string | SparqlTemplateResult {
-    if (!propertyPath) {
-      return ''
-    }
+  buildNodeShapePatterns(): string | SparqlTemplateResult | SparqlTemplateResult[] {
+    return ''
+  }
 
+  buildPropertyShapePatterns({ focusNode, propertyPath, valueNode }: Omit<Parameters, 'rootPatterns'>): string | SparqlTemplateResult {
     if (this.terms.length === 1) {
       return sparql`FILTER( ${valueNode} = ${this.terms[0]} )`
     }

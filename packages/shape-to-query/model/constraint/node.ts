@@ -16,7 +16,7 @@ export class NodeConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPatterns({ valueNode, variable, ...arg }: Parameters) {
+  buildPropertyShapePatterns({ valueNode, variable, ...arg }: Parameters) {
     return this.shape.buildConstraints({
       ...arg,
       variable,

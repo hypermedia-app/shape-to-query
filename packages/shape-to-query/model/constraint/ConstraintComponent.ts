@@ -21,7 +21,19 @@ export abstract class ConstraintComponent {
   protected constructor(public readonly type: NamedNode) {
   }
 
-  abstract buildPatterns(arg: Parameters): string | SparqlTemplateResult | SparqlTemplateResult[]
+  buildPatterns(arg: Parameters): string | SparqlTemplateResult | SparqlTemplateResult[] {
+    if (arg.propertyPath) {
+      return this.buildPropertyShapePatterns(arg)
+    }
+
+    return this.buildNodeShapePatterns(arg)
+  }
+
+  buildNodeShapePatterns(arg: Parameters): string | SparqlTemplateResult | SparqlTemplateResult[] {
+    return this.buildPropertyShapePatterns(arg)
+  }
+
+  abstract buildPropertyShapePatterns(arg: Parameters): string | SparqlTemplateResult | SparqlTemplateResult[]
 }
 
 export function assertList(arg: ListOrPointer): asserts arg is List {

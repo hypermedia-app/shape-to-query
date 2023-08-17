@@ -16,7 +16,7 @@ export class PropertyConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPatterns(arg: Parameters) {
+  buildPropertyShapePatterns(arg: Parameters) {
     return this.shape.buildConstraints(arg)
   }
 }

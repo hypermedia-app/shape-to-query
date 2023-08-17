@@ -58,7 +58,7 @@ export class NodeKindConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPatterns({ valueNode }: Pick<Parameters, 'valueNode'>) {
+  buildPropertyShapePatterns({ valueNode }: Pick<Parameters, 'valueNode'>) {
     return sparql`FILTER( ${this.__createFilterExpression(valueNode)} )`
   }
 }

@@ -19,7 +19,7 @@ export class ExpressionConstraintComponent extends ConstraintComponent {
     super(sh.ExpressionConstraintComponent)
   }
 
-  buildPatterns({ focusNode: subject, valueNode: object, rootPatterns, variable }: Parameters) {
+  buildPropertyShapePatterns({ focusNode: subject, valueNode: object, rootPatterns, variable }: Parameters) {
     let patterns: Select | SparqlTemplateResult
     let filter: SparqlValue
 

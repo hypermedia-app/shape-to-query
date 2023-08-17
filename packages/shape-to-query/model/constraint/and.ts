@@ -18,7 +18,7 @@ export class AndConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPatterns(arg: Parameters): SparqlTemplateResult {
+  buildPropertyShapePatterns(arg: Parameters): SparqlTemplateResult {
     return sparql`${this.inner.map(inner => inner.buildConstraints(arg))}`
   }
 }

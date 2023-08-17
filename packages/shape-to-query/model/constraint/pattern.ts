@@ -24,7 +24,7 @@ export class PatternConstraintComponent extends ConstraintComponent {
     super(sh.PatternConstraintComponent)
   }
 
-  buildPatterns({ valueNode }: Parameters) {
+  buildPropertyShapePatterns({ valueNode }: Parameters) {
     const flags = this.flags ? `, "${this.flags}"` : ''
 
     return sparql`FILTER(REGEX(${valueNode}, "${this.pattern}"${flags}))`

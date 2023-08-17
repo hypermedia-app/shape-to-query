@@ -17,7 +17,11 @@ export class InConstraintComponent extends ConstraintComponent {
     super(sh.InConstraintComponent)
   }
 
-  buildPatterns({ valueNode, propertyPath }: Omit<Parameters, 'rootPatterns'>): string | SparqlTemplateResult {
+  buildPropertyShapePatterns(): string | SparqlTemplateResult | SparqlTemplateResult[] {
+    return ''
+  }
+
+  buildNodeShapePatterns({ valueNode, propertyPath }: Omit<Parameters, 'rootPatterns'>): string | SparqlTemplateResult {
     if (!propertyPath) {
       return ''
     }

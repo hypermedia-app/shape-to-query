@@ -19,7 +19,7 @@ export class OrConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPatterns(arg: Parameters): SparqlTemplateResult {
+  buildPropertyShapePatterns(arg: Parameters): SparqlTemplateResult {
     const propExpr = arg.propertyPath ? sparql`${arg.focusNode} ${arg.propertyPath} ${arg.valueNode} .` : ''
 
     const inner = this.inner
