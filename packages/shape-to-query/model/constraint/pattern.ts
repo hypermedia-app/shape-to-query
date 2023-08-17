@@ -1,6 +1,6 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { sparql } from '@tpluscode/sparql-builder'
-import { assertTerm, ConstraintComponent, Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { assertTerm, Parameters, PropertyShape } from './ConstraintComponent.js'
 
 export class PatternConstraintComponent extends ConstraintComponent {
   static * fromShape(shape: PropertyShape) {
@@ -24,7 +24,7 @@ export class PatternConstraintComponent extends ConstraintComponent {
     super(sh.PatternConstraintComponent)
   }
 
-  buildPatterns({ valueNode }: Parameters) {
+  buildPropertyShapePatterns({ valueNode }: Parameters) {
     const flags = this.flags ? `, "${this.flags}"` : ''
 
     return sparql`FILTER(REGEX(${valueNode}, "${this.pattern}"${flags}))`

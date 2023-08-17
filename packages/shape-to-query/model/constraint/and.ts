@@ -2,7 +2,7 @@ import { SparqlTemplateResult, sparql } from '@tpluscode/sparql-builder'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { NodeShape } from '../NodeShape.js'
 import { ModelFactory } from '../ModelFactory.js'
-import { assertList, ConstraintComponent, Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { assertList, Parameters, PropertyShape } from './ConstraintComponent.js'
 
 export class AndConstraintComponent extends ConstraintComponent {
   constructor(public readonly inner: ReadonlyArray<NodeShape>) {
@@ -18,7 +18,7 @@ export class AndConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPatterns(arg: Parameters): SparqlTemplateResult {
+  buildPropertyShapePatterns(arg: Parameters): SparqlTemplateResult {
     return sparql`${this.inner.map(inner => inner.buildConstraints(arg))}`
   }
 }

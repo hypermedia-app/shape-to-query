@@ -1,7 +1,7 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { PropertyShape } from '../PropertyShape.js'
 import { ModelFactory } from '../ModelFactory.js'
-import { assertTerm, ConstraintComponent, Parameters, PropertyShape as PS } from './ConstraintComponent.js'
+import ConstraintComponent, { assertTerm, Parameters, PropertyShape as PS } from './ConstraintComponent.js'
 
 export class PropertyConstraintComponent extends ConstraintComponent {
   constructor(public readonly shape: PropertyShape) {
@@ -16,7 +16,7 @@ export class PropertyConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPatterns(arg: Parameters) {
+  buildPropertyShapePatterns(arg: Parameters) {
     return this.shape.buildConstraints(arg)
   }
 }

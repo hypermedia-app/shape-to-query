@@ -1,7 +1,7 @@
 import { Term } from 'rdf-js'
 import { SparqlTemplateResult, sparql } from '@tpluscode/sparql-builder'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { ConstraintComponent, Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { Parameters, PropertyShape } from './ConstraintComponent.js'
 
 export class HasValueConstraintComponent extends ConstraintComponent {
   constructor(public readonly terms: ReadonlyArray<Term>) {
@@ -17,11 +17,11 @@ export class HasValueConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPatterns({ focusNode, propertyPath, valueNode }: Omit<Parameters, 'rootPatterns'>): string | SparqlTemplateResult {
-    if (!propertyPath) {
-      return ''
-    }
+  buildNodeShapePatterns(): string | SparqlTemplateResult | SparqlTemplateResult[] {
+    return ''
+  }
 
+  buildPropertyShapePatterns({ focusNode, propertyPath, valueNode }: Omit<Parameters, 'rootPatterns'>): string | SparqlTemplateResult {
     if (this.terms.length === 1) {
       return sparql`FILTER( ${valueNode} = ${this.terms[0]} )`
     }

@@ -1,7 +1,7 @@
-import { Variable } from 'rdf-js'
+import { NamedNode, Variable } from 'rdf-js'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { ConstraintComponent, Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { Parameters, PropertyShape } from './ConstraintComponent.js'
 
 export type NodeKind = typeof sh.IRI
   | typeof sh.IRIOrLiteral
@@ -11,7 +11,7 @@ export type NodeKind = typeof sh.IRI
   | typeof sh.BlankNode
 
 interface CreateFilterExpression {
-  (valueNode: Variable): SparqlTemplateResult
+  (valueNode: Variable | NamedNode): SparqlTemplateResult
 }
 
 export class NodeKindConstraintComponent extends ConstraintComponent {
@@ -58,7 +58,15 @@ export class NodeKindConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPatterns({ valueNode }: Pick<Parameters, 'valueNode'>) {
-    return sparql`FILTER( ${this.__createFilterExpression(valueNode)} )`
+  buildNodeShapePatterns({ focusNode }: Parameters) {
+    return this.__buildFilter(focusNode)
+  }
+
+  buildPropertyShapePatterns({ valueNode }: Parameters) {
+    return this.__buildFilter(valueNode)
+  }
+
+  private __buildFilter(subject: NamedNode | Variable) {
+    return sparql`FILTER( ${this.__createFilterExpression(subject)} )`
   }
 }

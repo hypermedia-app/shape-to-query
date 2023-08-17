@@ -158,6 +158,61 @@ Targets resources which are the object of a given predicate
 
 ## Core Constraint Components ## {#shacl-core-components}
 
+### Value Type Constraint Components ### {#shacl-value-type-constraints}
+
+#### sh:class #### {#shacl-class}
+
+Note: SHACL spec: [[shacl#ClassConstraintComponent]]
+
+<div class="example">
+  Restrict objects of a property to a specific class
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/constraint/class.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/constraint/class.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+<div class="example">
+  Restrict focus node to instances of a specific class
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/constraint/class-node-shape.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/constraint/class-node-shape.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+Note: Similar can be achieved using `sh:targetClass` but it is more natural to use `sh:class` when nesting shapes with `sh:node`
+
+#### sh:nodeKind #### {#shacl-node-kind-constraint}
+
+<div class="example">
+  Use `sh:nodeKind` to restrict focus node and property nodes
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/constraint/node-kind.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/constraint/node-kind.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
 ### String-based Constraint Components ### {#shacl-string-constraints}
 
 #### sh:pattern #### {#shacl-pattern}

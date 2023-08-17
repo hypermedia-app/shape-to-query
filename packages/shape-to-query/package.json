@@ -64,5 +64,8 @@
     "string-to-stream": "^3.0.1",
     "tbbt-ld": "^1.1.0",
     "wait-on": "^7.0.1"
+  },
+  "mocha": {
+    "config": "../../.mocharc.cjs"
   }
 }
