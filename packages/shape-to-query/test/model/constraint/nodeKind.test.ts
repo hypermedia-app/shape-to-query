@@ -28,6 +28,9 @@ describe('model/constraint/nodeKind', () => {
       // when
       const patterns = constraint.buildPatterns({
         valueNode: variable(),
+        rootPatterns: undefined,
+        focusNode: variable(),
+        variable,
       })
 
       // then

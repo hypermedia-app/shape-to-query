@@ -17,7 +17,12 @@ export interface Parameters {
   rootPatterns: SparqlTemplateResult
 }
 
-export abstract class ConstraintComponent {
+export interface ConstraintComponent {
+  readonly type: NamedNode
+  buildPatterns(arg: Parameters): string | SparqlTemplateResult | SparqlTemplateResult[]
+}
+
+export default abstract class {
   protected constructor(public readonly type: NamedNode) {
   }
 

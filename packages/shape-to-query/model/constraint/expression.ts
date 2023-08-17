@@ -3,7 +3,7 @@ import { Select, sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import type { SparqlValue } from '@tpluscode/rdf-string/lib/sparql'
 import { NodeExpression, PatternBuilder } from '../nodeExpression/NodeExpression.js'
 import { ModelFactory } from '../ModelFactory.js'
-import { assertTerm, ConstraintComponent, Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { assertTerm, Parameters, PropertyShape } from './ConstraintComponent.js'
 
 export class ExpressionConstraintComponent extends ConstraintComponent {
   static * fromShape(shape: PropertyShape, factory: ModelFactory) {

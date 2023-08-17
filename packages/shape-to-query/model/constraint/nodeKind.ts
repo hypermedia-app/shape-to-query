@@ -1,7 +1,7 @@
 import { Variable } from 'rdf-js'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { ConstraintComponent, Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { Parameters, PropertyShape } from './ConstraintComponent.js'
 
 export type NodeKind = typeof sh.IRI
   | typeof sh.IRIOrLiteral

@@ -3,7 +3,7 @@ import { UNION } from '@tpluscode/sparql-builder/expressions'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { NodeShape } from '../NodeShape.js'
 import { ModelFactory } from '../ModelFactory.js'
-import { assertList, ConstraintComponent, Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { assertList, Parameters, PropertyShape } from './ConstraintComponent.js'
 
 export class OrConstraintComponent extends ConstraintComponent {
   constructor(public readonly inner: ReadonlyArray<NodeShape>) {

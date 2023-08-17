@@ -14,6 +14,7 @@ describe('model/constraint/in', () => {
       focusNode: $rdf.namedNode('foo'),
       valueNode: variable(),
       variable,
+      rootPatterns: undefined,
     })
 
     // then

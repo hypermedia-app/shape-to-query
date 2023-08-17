@@ -1,7 +1,7 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { ModelFactory } from '../ModelFactory.js'
 import { NodeShape } from '../NodeShape.js'
-import { assertTerm, ConstraintComponent, Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { assertTerm, Parameters, PropertyShape } from './ConstraintComponent.js'
 
 export class NodeConstraintComponent extends ConstraintComponent {
   constructor(public readonly shape: NodeShape) {
