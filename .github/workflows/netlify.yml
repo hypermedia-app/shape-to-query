@@ -14,8 +14,6 @@ jobs:
           node-version: 16
 
       - uses: nelonoel/branch-name@v1.0.1
-      - run: yarn --frozen-lock-file
-      - run: yarn build
 
       - name: Publish preview
         uses: jsmrcaga/action-netlify-deploy@v2.0.0
@@ -27,8 +25,6 @@ jobs:
           build_directory: packages/demo/dist
           deploy_alias: ${{ env.BRANCH_NAME }}
           NETLIFY_DEPLOY_TO_PROD: ${{ env.BRANCH_NAME == 'master' }}
-          install_command: ""
-          build_command: ""
 
       - name: Status check
         uses: Sibz/github-status-action@v1.1.1
