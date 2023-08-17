@@ -1,0 +1,20 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>.
+  ?resource1 schema:containsPlace ?resource2.
+  ?resource2 schema:name ?resource3.
+}
+WHERE {
+  ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>.
+  { ?resource1 schema:containsPlace ?resource2. }
+  UNION
+  {
+    ?resource1 schema:containsPlace ?resource2.
+    ?resource2 schema:name ?resource3.
+  }
+  ?resource1 schema:containsPlace ?resource2.
+  ?resource2 schema:name ?resource3.
+  FILTER(?resource3 = "Schwytz")
+  ?resource5 rdf:type <https://schema.ld.admin.ch/Municipality>.
+}
