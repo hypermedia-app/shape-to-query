@@ -234,6 +234,25 @@ Note: SHACL spec: [[shacl#PatternConstraintComponent]]
   </s2q-snippet>
 </div>
 
+#### sh:languageIn #### {#shacl-language-in}
+
+Note: SHACL spec: [[shacl#LanguageInConstraintComponent]]
+
+<div class="example">
+  Filter job titles to ENglish and Geman 
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/constraint/languageIn.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/constraint/languageIn.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
 ### Logical Constraint Components ### {#shacl-logical-constraints}
 
 The elements of a `sh:or` list are shapes and thus, they can be used both to define alternative paths to construct in the constructed graph, 
