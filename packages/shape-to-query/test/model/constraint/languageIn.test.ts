@@ -28,6 +28,17 @@ describe('model/constraint/languageIn', () => {
       expect(constraint.languages).to.contain.all.members(['de', 'en'])
     })
 
+    it('skips shape without sh:languageIn', () => {
+      // given
+      const shape: PropertyShape = new TermMap()
+
+      // when
+      const [constraint] = LanguageInConstraintComponent.fromShape(shape)
+
+      // then
+      expect(constraint).to.be.undefined
+    })
+
     it('throws when values are not literal', () => {
       // given
       const shape: PropertyShape = $rdf.termMap([
@@ -81,6 +92,23 @@ describe('model/constraint/languageIn', () => {
 
       // then
       expect(whereClause).to.equalPatternsVerbatim('FILTER (lang(?x) IN ("de", "en"))')
+    })
+
+    it('returns nothing when shape is node shape', () => {
+      // given
+      const constraint = new LanguageInConstraintComponent(['de', 'en'])
+      const valueNode = $rdf.variable('x')
+
+      // when
+      const whereClause = constraint.buildPatterns({
+        focusNode: $rdf.namedNode('foo'),
+        valueNode,
+        variable,
+        rootPatterns: undefined,
+      })
+
+      // then
+      expect(whereClause.toString()).to.be.empty
     })
   })
 })
