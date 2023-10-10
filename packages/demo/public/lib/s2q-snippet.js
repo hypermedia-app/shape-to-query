@@ -3,7 +3,7 @@ import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.1.0/dist/compone
 import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.1.0/dist/components/tab-group/tab-group.js'
 import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.1.0/dist/components/tab-panel/tab-panel.js'
 import { setBasePath } from 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.1.0/dist/utilities/base-path.js'
-import { html, LitElement } from 'https://unpkg.com/lit?module'
+import { html, LitElement } from 'https://esm.run/lit'
 
 setBasePath('https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.1.0/dist/')
 
