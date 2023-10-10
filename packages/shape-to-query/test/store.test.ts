@@ -226,21 +226,30 @@ describe('@hydrofoil/shape-to-query', () => {
         <>
           a ${sh.NodeShape} ;
           ${sh.targetNode} ${tbbt('stuart-bloom')} ; # match Stuart
-          ${sh.targetObjectsOf} ${schema.parent} ;           # match Mee-Maw
-          ${sh.targetSubjectsOf} ${schema.address} ;         # match Leonard, Sheldon and Penny
+          ${sh.targetObjectsOf} ${schema.parent} ;   # match Mee-Maw
+          ${sh.targetSubjectsOf} ${schema.address} ; # match Mee-Maw, Leonard, Sheldon and Penny
+          ${sh.property} [
+            ${sh.path} ${rdf.type}
+          ] ;
         .
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+      const query = constructQuery(shape)
+      const result = await $rdf.dataset().import(await query.execute(client.query))
 
       // then
       const expected = await raw`
         ${tbbt('mary-cooper')} a ${schema.Person} .
+        ${tbbt('mary-cooper')} ${schema.address} [] .
         ${tbbt('stuart-bloom')} a ${schema.Person} .
         ${tbbt('penny')} a ${schema.Person} .
+        ${tbbt('penny')} ${schema.address} [] .
         ${tbbt('leonard-hofstadter')} a ${schema.Person} .
+        ${tbbt('leonard-hofstadter')} ${schema.address} [] .
         ${tbbt('sheldon-cooper')} a ${schema.Person} .
+        ${tbbt('sheldon-cooper')} ${schema.address} [] .
+        ${tbbt('sheldon-cooper')} ${schema.parent}  ${tbbt('mary-cooper')} .
       `
       expect(result.toCanonical()).to.eq(expected.toCanonical())
     })
