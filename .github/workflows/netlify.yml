@@ -17,7 +17,7 @@ jobs:
       - uses: nelonoel/branch-name@v1.0.1
 
       - name: Publish preview
-        uses: tpluscode/action-netlify-deploy@monorepo-filter
+        uses: tpluscode/action-netlify-deploy@debug
         if: env.NETLIFY_AUTH_TOKEN
         with:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
