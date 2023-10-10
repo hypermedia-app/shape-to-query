@@ -1,0 +1,14 @@
+PREFIX ex: <http://example.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX sparql: <http://datashapes.org/sparql#>
+
+[
+  a sh:NodeShape ;
+  sh:targetClass schema:Person ;
+  sh:property
+    [
+      sh:path schema:jobTitle ;
+      sh:languageIn ( "de" "en" ) ;
+    ] ;
+] .
