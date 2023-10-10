@@ -22,6 +22,7 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ env.NETLIFY_AUTH_TOKEN }}
           NETLIFY_DEPLOY_MESSAGE: Preview ${{ env.BRANCH_NAME }}
+          build_directory: packages/demo/dist
           monorepo_package: shape-to-query
           deploy_alias: ${{ env.BRANCH_NAME }}
           NETLIFY_DEPLOY_TO_PROD: ${{ env.BRANCH_NAME == 'master' }}
