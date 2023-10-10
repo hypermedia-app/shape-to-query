@@ -1,5 +1,5 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
+import { sparql } from '@tpluscode/sparql-builder'
 import { IN } from '@tpluscode/sparql-builder/expressions'
 import { isLiteral } from 'is-graph-pointer'
 import ConstraintComponent, { assertList, Parameters, PropertyShape } from './ConstraintComponent.js'
@@ -23,11 +23,11 @@ export class LanguageInConstraintComponent extends ConstraintComponent {
     super(sh.LanguageInConstraintComponent)
   }
 
-  buildNodeShapePatterns(): string | SparqlTemplateResult | SparqlTemplateResult[] {
+  buildNodeShapePatterns() {
     return ''
   }
 
-  buildPropertyShapePatterns({ valueNode }: Parameters): string | SparqlTemplateResult {
+  buildPropertyShapePatterns({ valueNode }: Parameters) {
     const [first, ...rest] = this.languages.map(lang => sparql`"${lang}"`)
     if (rest.length) {
       return sparql`FILTER (lang(${valueNode}) ${IN(first, ...rest)} )`
