@@ -30,7 +30,7 @@ describe('model/constraint/languageIn', () => {
 
     it('skips shape without sh:languageIn', () => {
       // given
-      const shape: PropertyShape = new TermMap()
+      const shape: PropertyShape = $rdf.termMap()
 
       // when
       const [constraint] = LanguageInConstraintComponent.fromShape(shape)
