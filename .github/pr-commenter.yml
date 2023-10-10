@@ -1,0 +1,7 @@
+comment:
+  on-update: nothing
+  snippets:
+    - id: preview-url
+      files:
+        - 'docs/**/*'
+      body: "Netlify preview deployed to [{{ url }}]({{ url }})"
