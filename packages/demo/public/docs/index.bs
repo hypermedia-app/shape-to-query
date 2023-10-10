@@ -239,7 +239,7 @@ Note: SHACL spec: [[shacl#PatternConstraintComponent]]
 Note: SHACL spec: [[shacl#LanguageInConstraintComponent]]
 
 <div class="example">
-  Filter job titles to ENglish and Geman 
+  Filter job titles to English and Geman 
 
   <s2q-snippet>
     <pre class="include-code" slot="shape">
