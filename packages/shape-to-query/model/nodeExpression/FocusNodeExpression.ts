@@ -1,6 +1,6 @@
 import { sparql } from '@tpluscode/sparql-builder'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { GraphPointer } from 'clownface'
+import type { GraphPointer } from 'clownface'
 import NodeExpression, { Parameters } from './NodeExpression.js'
 
 export class FocusNodeExpression extends NodeExpression {

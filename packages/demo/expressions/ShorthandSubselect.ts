@@ -1,7 +1,7 @@
 import { Term } from 'rdf-js'
 import { xsd } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
-import namespace from '@rdfjs/namespace'
+import rdf from '@zazuko/env'
 import { isGraphPointer, isLiteral } from 'is-graph-pointer'
 import { fromRdf } from 'rdf-literal'
 import type { GraphPointer } from 'clownface'
@@ -17,7 +17,7 @@ import {
 import { getOne, getOneOrZero } from '@hydrofoil/shape-to-query/model/nodeExpression/util.js'
 import { ModelFactory } from '@hydrofoil/shape-to-query/model/ModelFactory'
 
-const ex = namespace('http://example.org/')
+const ex = rdf.namespace('http://example.org/')
 
 export class ShorthandSubselectExpression implements NodeExpression {
   static match(pointer) {

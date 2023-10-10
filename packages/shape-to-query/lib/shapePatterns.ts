@@ -1,5 +1,5 @@
 import { BaseQuad } from 'rdf-js'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { UNION } from '@tpluscode/sparql-builder/expressions'
 

@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { sparql } from '@tpluscode/sparql-builder'
 import { SPORule } from '../../../model/rule/SPORule.js'
 import { variable } from '../../variable.js'

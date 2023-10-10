@@ -1,6 +1,6 @@
 import type { Term } from 'rdf-js'
 import * as Path from 'clownface-shacl-path'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { sparql } from '@tpluscode/sparql-builder'
 import { VariableSequence } from './variableSequence.js'
 import { ShapePatterns, emptyPatterns, flatten } from './shapePatterns.js'

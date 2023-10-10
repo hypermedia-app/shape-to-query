@@ -1,8 +1,7 @@
 import { schema } from '@tpluscode/rdf-ns-builders'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { expect } from 'chai'
 import { sparql } from '@tpluscode/sparql-builder'
-import clownface from 'clownface'
 import { createVariableSequence } from '../../../lib/variableSequence.js'
 import { TargetSubjectsOf } from '../../../model/target/index.js'
 
@@ -13,7 +12,7 @@ describe('model/TargetSubjectsOf', () => {
 
   it('matches single target using pattern', () => {
     // given
-    const props = clownface({ dataset: $rdf.dataset() }).node(
+    const props = $rdf.clownface({ dataset: $rdf.dataset() }).node(
       [schema.children],
     )
     const target = new TargetSubjectsOf(props)
@@ -30,7 +29,7 @@ describe('model/TargetSubjectsOf', () => {
 
   it('matches multiple targets using VALUES', () => {
     // given
-    const props = clownface({ dataset: $rdf.dataset() }).node(
+    const props = $rdf.clownface({ dataset: $rdf.dataset() }).node(
       [schema.children, schema.parent],
     )
     const target = new TargetSubjectsOf(props)

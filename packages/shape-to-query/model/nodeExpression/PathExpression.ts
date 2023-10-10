@@ -1,5 +1,5 @@
 import { Term } from 'rdf-js'
-import { GraphPointer } from 'clownface'
+import type { GraphPointer } from 'clownface'
 import { isBlankNode, isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'

@@ -2,9 +2,9 @@ import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { expect } from 'chai'
 import { dashSparql, rdf, xsd } from '@tpluscode/rdf-ns-builders'
 import sinon from 'sinon'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { sparql } from '@tpluscode/sparql-builder'
-import { GraphPointer } from 'clownface'
+import type { GraphPointer } from 'clownface'
 import {
   FunctionExpression,
   FunctionCallExpression,

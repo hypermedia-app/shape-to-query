@@ -1,8 +1,11 @@
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
+import type { NamespaceBuilder } from '@rdfjs/namespace'
 
 type Terms = 'optional'
 | 'SPORule'
 | 'predicateFilter'
 | 'objectFilter'
 
-export default $rdf.namespace<Terms>('https://hypermedia.app/shape-to-query#')
+const ns: NamespaceBuilder<Terms> = $rdf.namespace('https://hypermedia.app/shape-to-query#')
+
+export default ns

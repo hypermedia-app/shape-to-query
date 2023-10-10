@@ -1,3 +1,3 @@
-import namespace from '@rdfjs/namespace'
+import rdf from '@zazuko/env'
 
-export const ex = namespace('http://example.org/')
+export const ex = rdf.namespace('http://example.org/')

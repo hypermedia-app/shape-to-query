@@ -1,6 +1,6 @@
 import { NamedNode, Term, Variable } from 'rdf-js'
 import { SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import { GraphPointer } from 'clownface'
+import type { GraphPointer } from 'clownface'
 import { VariableSequence } from '../../lib/variableSequence.js'
 import { FocusNode } from '../../lib/FocusNode.js'
 

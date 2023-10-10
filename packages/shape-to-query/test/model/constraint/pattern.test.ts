@@ -1,7 +1,7 @@
+import { NamedNode } from 'rdf-js'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
-import TermMap from '@rdfjs/term-map'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { PatternConstraintComponent } from '../../../model/constraint/pattern.js'
 import { literal } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
@@ -12,7 +12,7 @@ describe('model/constraint/pattern', () => {
   describe('fromShape', () => {
     it('returns nothing if property has no sh:pattern', () => {
       // given
-      const shape = new TermMap([
+      const shape = $rdf.termMap([
         [sh.flags, [{ pointer: literal('i') }]],
       ])
 
@@ -25,7 +25,7 @@ describe('model/constraint/pattern', () => {
 
     it('returns pattern without flags', () => {
       // given
-      const shape = new TermMap([
+      const shape = $rdf.termMap([
         [sh.pattern, [{ pointer: literal('^foo') }]],
       ])
 
@@ -39,7 +39,7 @@ describe('model/constraint/pattern', () => {
 
     it('returns pattern with flags', () => {
       // given
-      const shape = new TermMap([
+      const shape = $rdf.termMap<NamedNode>([
         [sh.pattern, [{ pointer: literal('^foo') }]],
         [sh.flags, [{ pointer: literal('i') }]],
       ])
@@ -54,7 +54,7 @@ describe('model/constraint/pattern', () => {
 
     it('returns patterns as cartesian', () => {
       // given
-      const shape = new TermMap([
+      const shape = $rdf.termMap<NamedNode>([
         [sh.pattern, [{ pointer: literal('^foo') }, { pointer: literal('bar$') }]],
         [sh.flags, [{ pointer: literal('i') }]],
       ])

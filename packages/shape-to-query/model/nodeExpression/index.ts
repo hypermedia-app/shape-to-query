@@ -1,4 +1,4 @@
-import { AnyPointer, GraphPointer } from 'clownface'
+import type { AnyPointer, GraphPointer } from 'clownface'
 import { ModelFactory } from '../ModelFactory.js'
 import { NodeExpression } from './NodeExpression.js'
 

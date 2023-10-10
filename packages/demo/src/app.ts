@@ -6,21 +6,21 @@ import '@rdfjs-elements/sparql-editor'
 import '@shoelace-style/shoelace/dist/components/button/button.js'
 import '@shoelace-style/shoelace/dist/components/input/input.js'
 import { constructQuery } from '@hydrofoil/shape-to-query'
-import $rdf from 'rdf-ext'
-import { rdf, sh } from '@tpluscode/rdf-ns-builders'
+import $rdf from '@zazuko/env'
 import { RdfEditor } from '@rdfjs-elements/rdf-editor/src/RdfEditor.js'
 import { SlInput } from '@shoelace-style/shoelace'
 import { isGraphPointer } from 'is-graph-pointer'
 import { turtle } from '@tpluscode/rdf-string'
 import sparql from 'sparqljs'
+import type { MultiPointer } from 'clownface'
 
 const parser = new sparql.Parser()
 const generator = new sparql.Generator()
 
 const initialShape = turtle`[
-  a ${sh.NodeShape} ;
-  ${sh.property} [
-    ${sh.path} ${rdf.type} ; 
+  a ${$rdf.ns.sh.NodeShape} ;
+  ${$rdf.ns.sh.property} [
+    ${$rdf.ns.sh.path} ${$rdf.ns.rdf.type} ; 
   ] ;
 ] .`.toString()
 
@@ -49,9 +49,9 @@ export class App extends LitElement {
   @property({ type: String })
   public query?: string
 
-  get shape() {
+  get shape(): MultiPointer {
     const dataset = $rdf.dataset([...this.editor.quads])
-    return $rdf.clownface({ dataset }).has(rdf.type, sh.NodeShape)
+    return $rdf.clownface({ dataset }).has($rdf.ns.rdf.type, $rdf.ns.sh.NodeShape)
   }
 
   render() {

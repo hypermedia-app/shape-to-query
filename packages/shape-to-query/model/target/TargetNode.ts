@@ -1,4 +1,4 @@
-import { MultiPointer } from 'clownface'
+import type { MultiPointer } from 'clownface'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'
 import { sparql } from '@tpluscode/sparql-builder'
 import { ShapePatterns } from '../../lib/shapePatterns.js'

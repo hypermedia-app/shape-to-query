@@ -6,9 +6,8 @@ import waitOn from 'wait-on'
 import StreamClient from 'sparql-http-client'
 import { fromFile } from 'rdf-utils-fs'
 import { expect } from 'chai'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { hydra, rdf, schema, dashSparql } from '@tpluscode/rdf-ns-builders'
-import namespace from '@rdfjs/namespace'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { constructQuery } from '../lib/shapeToQuery.js'
 import { parse, raw } from './nodeFactory.js'
@@ -18,7 +17,7 @@ import './chai-dataset.js'
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 const require = module.createRequire(import.meta.url)
 
-const tbbt = namespace('http://localhost:8080/data/person/')
+const tbbt = $rdf.namespace('http://localhost:8080/data/person/')
 
 const client = new StreamClient({
   endpointUrl: 'http://localhost:3030/s2q/query',
@@ -243,7 +242,7 @@ describe('@hydrofoil/shape-to-query', () => {
         ${tbbt('leonard-hofstadter')} a ${schema.Person} .
         ${tbbt('sheldon-cooper')} a ${schema.Person} .
       `
-      expect(result.toCanonical).to.eq(expected.toCanonical)
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
     })
 
     it('sh:or merges multiple reused shapes in logical sum', async () => {
