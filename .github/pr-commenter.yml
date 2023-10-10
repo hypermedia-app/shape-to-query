@@ -3,5 +3,5 @@ comment:
   snippets:
     - id: preview-url
       files:
-        - 'docs/**/*'
+        - 'packages/demo/**/*'
       body: "Netlify preview deployed to [{{ url }}]({{ url }})"
