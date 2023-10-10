@@ -1,7 +1,6 @@
 import { foaf, schema } from '@tpluscode/rdf-ns-builders'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { expect } from 'chai'
-import clownface from 'clownface'
 import { TargetNode } from '../../../model/target/index.js'
 import { createVariableSequence } from '../../../lib/variableSequence.js'
 
@@ -12,7 +11,7 @@ describe('model/TargetNode', () => {
 
   it('matches focus node variable with VALUES', () => {
     // given
-    const nodes = clownface({ dataset: $rdf.dataset() }).node(
+    const nodes = $rdf.clownface({ dataset: $rdf.dataset() }).node(
       [schema.Person, foaf.Person],
     )
     const target = new TargetNode(nodes)

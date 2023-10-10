@@ -1,5 +1,5 @@
 import { NamedNode } from 'rdf-js'
-import { AnyPointer, GraphPointer } from 'clownface'
+import type { AnyPointer, GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 
 interface Check<P extends GraphPointer> {

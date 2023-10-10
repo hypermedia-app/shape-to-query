@@ -1,6 +1,6 @@
 import { sparql } from '@tpluscode/sparql-builder'
-import $rdf from 'rdf-ext'
-import { GraphPointer } from 'clownface'
+import $rdf from '@zazuko/env'
+import type { GraphPointer } from 'clownface'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import { ShapePatterns } from '../../lib/shapePatterns.js'
 import s2q from '../../ns.js'

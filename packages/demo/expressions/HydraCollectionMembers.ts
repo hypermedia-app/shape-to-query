@@ -1,15 +1,14 @@
-import { Term } from 'rdf-js'
+import type { Term } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
-import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { sparql } from '@tpluscode/sparql-builder'
-import namespace from '@rdfjs/namespace'
+import rdf from '@zazuko/env'
 import { NodeExpressionBase, Parameters } from '@hydrofoil/shape-to-query/nodeExpressions.js'
 
-const ex = namespace('http://example.org/')
+const ex = rdf.namespace('http://example.org/')
 
 export class HydraCollectionMemberExpression extends NodeExpressionBase {
   static match(pointer) {
-    return pointer.has(rdf.type, ex.HydraCollectionMembersExpression).terms.length > 0
+    return pointer.has(rdf.ns.rdf.type, ex.HydraCollectionMembersExpression).terms.length > 0
   }
 
   static fromPointer({ term }: GraphPointer) {
@@ -30,15 +29,15 @@ export class HydraCollectionMemberExpression extends NodeExpressionBase {
     const ma3o = variable()
 
     return sparql`
-      ${subject} ((${rdf.type}*)/${hydra.memberAssertion}) ${memberAssertion} .
+      ${subject} ((${rdf.ns.rdf.type}*)/${rdf.ns.hydra.memberAssertion}) ${memberAssertion} .
     
-      optional { ${memberAssertion} ${hydra.property} ${ma1p} ; ${hydra.object} ${ma1o} . ${object} ${ma1p} ${ma1o} . }
+      optional { ${memberAssertion} ${rdf.ns.hydra.property} ${ma1p} ; ${rdf.ns.hydra.object} ${ma1o} . ${object} ${ma1p} ${ma1o} . }
       filter(!bound(${ma1p}) || (bound(${ma1p}) && bound(${object})))
     
-      optional { ${memberAssertion} ${hydra.property} ${ma2p} ; ${hydra.subject} ${ma2s} . ${ma2s} ${ma2p} ${object} . }
+      optional { ${memberAssertion} ${rdf.ns.hydra.property} ${ma2p} ; ${rdf.ns.hydra.subject} ${ma2s} . ${ma2s} ${ma2p} ${object} . }
       filter(!bound(${ma2p}) || (bound(${ma2p}) && bound(${object})))
     
-      optional { ${memberAssertion} ${hydra.subject} ${ma3s} ; ${hydra.object} ${ma3o} . ${ma3s} ${object} ${ma3o} . }
+      optional { ${memberAssertion} ${rdf.ns.hydra.subject} ${ma3s} ; ${rdf.ns.hydra.object} ${ma3o} . ${ma3s} ${object} ${ma3o} . }
       filter(!bound(${ma3s}) || (bound(${ma3s}) && bound(${object})))
     `
   }

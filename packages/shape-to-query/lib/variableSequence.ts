@@ -1,6 +1,6 @@
 import { Term, Variable } from 'rdf-js'
-import $rdf from 'rdf-ext'
-import { GraphPointer } from 'clownface'
+import $rdf from '@zazuko/env'
+import type { GraphPointer } from 'clownface'
 import { toSparql } from 'clownface-shacl-path'
 
 export interface VariableSequence {

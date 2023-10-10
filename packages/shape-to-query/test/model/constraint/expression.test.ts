@@ -1,9 +1,8 @@
 import { expect } from 'chai'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { sparql } from '@tpluscode/sparql-builder'
 import { rdfs, schema } from '@tpluscode/rdf-ns-builders'
 import sinon from 'sinon'
-import TermMap from '@rdfjs/term-map'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { variable } from '../../variable.js'
 import { ExpressionConstraintComponent } from '../../../model/constraint/expression.js'
@@ -62,7 +61,7 @@ describe('model/constraint/expression', () => {
 
     it('returns constraints for objects of sh:expression', () => {
       // given
-      const shape = new TermMap([
+      const shape = $rdf.termMap([
         [sh.expression, [
           { pointer: blankNode() },
           { pointer: blankNode() },

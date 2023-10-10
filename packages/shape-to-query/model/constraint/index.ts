@@ -1,6 +1,6 @@
 import { Term } from 'rdf-js'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { ModelFactory } from '../ModelFactory.js'
 import { ConstraintComponent, PropertyShape } from './ConstraintComponent.js'
 import { AndConstraintComponent } from './and.js'

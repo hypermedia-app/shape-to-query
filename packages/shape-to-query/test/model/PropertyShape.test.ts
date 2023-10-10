@@ -1,6 +1,6 @@
 import { schema } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { sparql } from '@tpluscode/sparql-builder'
 import PropertyShape from '../../model/PropertyShape.js'
 import { namedNode } from '../nodeFactory.js'

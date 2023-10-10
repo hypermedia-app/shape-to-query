@@ -1,7 +1,6 @@
 import { expect } from 'chai'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { sparql } from '@tpluscode/sparql-builder'
-import TermMap from '@rdfjs/term-map'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { LanguageInConstraintComponent } from '../../../model/constraint/languageIn.js'
 import { variable } from '../../variable.js'
@@ -13,7 +12,7 @@ describe('model/constraint/languageIn', () => {
   describe('fromShape', () => {
     it('creates instance', () => {
       // given
-      const shape: PropertyShape = new TermMap([
+      const shape: PropertyShape = $rdf.termMap([
         [sh.languageIn, [{
           list: [
             $rdf.clownface().literal('de'),
@@ -31,7 +30,7 @@ describe('model/constraint/languageIn', () => {
 
     it('skips shape without sh:languageIn', () => {
       // given
-      const shape: PropertyShape = new TermMap()
+      const shape: PropertyShape = $rdf.termMap()
 
       // when
       const [constraint] = LanguageInConstraintComponent.fromShape(shape)
@@ -42,7 +41,7 @@ describe('model/constraint/languageIn', () => {
 
     it('throws when values are not literal', () => {
       // given
-      const shape: PropertyShape = new TermMap([
+      const shape: PropertyShape = $rdf.termMap([
         [sh.languageIn, [{
           list: [
             $rdf.clownface().namedNode('de'),

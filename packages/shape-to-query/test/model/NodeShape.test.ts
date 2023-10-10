@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { sparql } from '@tpluscode/sparql-builder'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { foaf, rdf } from '@tpluscode/rdf-ns-builders'
 import NodeShape from '../../model/NodeShape.js'
 import { PropertyShape } from '../../model/PropertyShape.js'

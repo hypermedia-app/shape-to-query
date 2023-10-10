@@ -6,9 +6,8 @@ import waitOn from 'wait-on'
 import StreamClient from 'sparql-http-client'
 import { fromFile } from 'rdf-utils-fs'
 import { expect } from 'chai'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { hydra, rdf, schema, dashSparql } from '@tpluscode/rdf-ns-builders'
-import namespace from '@rdfjs/namespace'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { constructQuery } from '../lib/shapeToQuery.js'
 import { parse, raw } from './nodeFactory.js'
@@ -18,7 +17,7 @@ import './chai-dataset.js'
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 const require = module.createRequire(import.meta.url)
 
-const tbbt = namespace('http://localhost:8080/data/person/')
+const tbbt = $rdf.namespace('http://localhost:8080/data/person/')
 
 const client = new StreamClient({
   endpointUrl: 'http://localhost:3030/s2q/query',
@@ -227,23 +226,32 @@ describe('@hydrofoil/shape-to-query', () => {
         <>
           a ${sh.NodeShape} ;
           ${sh.targetNode} ${tbbt('stuart-bloom')} ; # match Stuart
-          ${sh.targetObjectsOf} ${schema.parent} ;           # match Mee-Maw
-          ${sh.targetSubjectsOf} ${schema.address} ;         # match Leonard, Sheldon and Penny
+          ${sh.targetObjectsOf} ${schema.parent} ;   # match Mee-Maw
+          ${sh.targetSubjectsOf} ${schema.address} ; # match Mee-Maw, Leonard, Sheldon and Penny
+          ${sh.property} [
+            ${sh.path} ${rdf.type}
+          ] ;
         .
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+      const query = constructQuery(shape)
+      const result = await $rdf.dataset().import(await query.execute(client.query))
 
       // then
       const expected = await raw`
         ${tbbt('mary-cooper')} a ${schema.Person} .
+        ${tbbt('mary-cooper')} ${schema.address} [] .
         ${tbbt('stuart-bloom')} a ${schema.Person} .
         ${tbbt('penny')} a ${schema.Person} .
+        ${tbbt('penny')} ${schema.address} [] .
         ${tbbt('leonard-hofstadter')} a ${schema.Person} .
+        ${tbbt('leonard-hofstadter')} ${schema.address} [] .
         ${tbbt('sheldon-cooper')} a ${schema.Person} .
+        ${tbbt('sheldon-cooper')} ${schema.address} [] .
+        ${tbbt('sheldon-cooper')} ${schema.parent}  ${tbbt('mary-cooper')} .
       `
-      expect(result.toCanonical).to.eq(expected.toCanonical)
+      expect(result.toCanonical()).to.eq(expected.toCanonical())
     })
 
     it('sh:or merges multiple reused shapes in logical sum', async () => {

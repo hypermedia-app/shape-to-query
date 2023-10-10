@@ -1,6 +1,6 @@
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { sparql } from '@tpluscode/sparql-builder'
-import { GraphPointer } from 'clownface'
+import type { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isGraphPointer } from 'is-graph-pointer'
 import { NodeExpression, PatternBuilder } from '../nodeExpression/NodeExpression.js'

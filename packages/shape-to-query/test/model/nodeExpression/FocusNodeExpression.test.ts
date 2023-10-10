@@ -1,6 +1,6 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpression.js'
 import { namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'

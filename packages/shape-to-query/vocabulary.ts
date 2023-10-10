@@ -2,8 +2,7 @@ import { DatasetCore } from 'rdf-js'
 import loadShacl from '@vocabulary/sh'
 import loadDash from '@vocabulary/dash'
 import loadDashSparql from '@vocabulary/dash-sparql'
-import $rdf from 'rdf-ext'
-import clownface from 'clownface'
+import $rdf from '@zazuko/env'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import { dashSparql } from '@tpluscode/rdf-ns-builders/loose'
 
@@ -14,7 +13,7 @@ const dataset: DatasetCore = $rdf.dataset()
   .addAll(loadDash({ factory: $rdf }))
   .addAll(loadDashSparql({ factory: $rdf }))
 
-const vocabulary = clownface({ dataset })
+const vocabulary = $rdf.clownface({ dataset })
 
 vocabulary.node([
   dashSparql.and,

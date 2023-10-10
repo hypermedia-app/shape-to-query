@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { InConstraintComponent } from '../../../model/constraint/in.js'
 import { ex } from '../../namespace.js'
 import { variable } from '../../variable.js'

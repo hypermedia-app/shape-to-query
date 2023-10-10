@@ -1,6 +1,6 @@
 import { NamedNode } from 'rdf-js'
-import $rdf from 'rdf-ext'
-import { MultiPointer } from 'clownface'
+import $rdf from '@zazuko/env'
+import type { MultiPointer } from 'clownface'
 import { sparql } from '@tpluscode/sparql-builder'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'
 import { isGraphPointer } from 'is-graph-pointer'

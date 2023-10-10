@@ -1,4 +1,4 @@
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { expect } from 'chai'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import Shape from '../../model/Shape.js'

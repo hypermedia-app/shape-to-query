@@ -1,7 +1,7 @@
 import { foaf, schema, sh } from '@tpluscode/rdf-ns-builders'
 import { fromNode } from 'clownface-shacl-path'
 import { expect } from 'chai'
-import { GraphPointer } from 'clownface'
+import type { GraphPointer } from 'clownface'
 import { sparql } from '@tpluscode/sparql-builder'
 import { parse } from '../nodeFactory.js'
 import PathVisitor from '../../lib/PathVisitor.js'

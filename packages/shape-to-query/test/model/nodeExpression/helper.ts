@@ -1,5 +1,5 @@
 import { Select, sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import sinon from 'sinon'
 import { NodeExpression, NodeExpressionResult } from '../../../model/nodeExpression/NodeExpression.js'
 

@@ -1,7 +1,7 @@
 import { schema, sh } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { sparql } from '@tpluscode/sparql-builder'
 import { blankNode } from '../../nodeFactory.js'
 import { FilterShapeExpression } from '../../../model/nodeExpression/FilterShapeExpression.js'

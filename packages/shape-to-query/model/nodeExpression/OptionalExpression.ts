@@ -1,6 +1,6 @@
 import { Term } from 'rdf-js'
 import { sparql } from '@tpluscode/sparql-builder'
-import { GraphPointer } from 'clownface'
+import type { GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 import { ModelFactory } from '../ModelFactory.js'
 import s2q from '../../ns.js'

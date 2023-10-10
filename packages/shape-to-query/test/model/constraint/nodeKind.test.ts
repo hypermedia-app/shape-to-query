@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { sparql } from '@tpluscode/sparql-builder'
 import { variable } from '../../variable.js'
 import { NodeKind, NodeKindConstraintComponent } from '../../../model/constraint/nodeKind.js'

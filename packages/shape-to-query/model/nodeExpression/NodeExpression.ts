@@ -1,6 +1,7 @@
 import { Term, Variable } from 'rdf-js'
 import { Select, SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
+import type TermMap from '@rdfjs/term-map'
 import { FocusNode } from '../../lib/FocusNode.js'
 import { VariableSequence } from '../../lib/variableSequence.js'
 
@@ -22,7 +23,7 @@ interface InlineExpressionResult {
 }
 
 export class PatternBuilder {
-  private readonly results = $rdf.termMap<Term, NodeExpressionResult>()
+  private readonly results: TermMap<Term, NodeExpressionResult> = $rdf.termMap()
 
   // eslint-disable-next-line no-use-before-define
   build(expr: NodeExpression, args: Parameters): NodeExpressionResult {

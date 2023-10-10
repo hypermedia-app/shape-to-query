@@ -1,6 +1,7 @@
 name: Netlify
 
-on: push
+on:
+  pull_request:
 
 jobs:
   Deploy:
@@ -11,26 +12,26 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - uses: nelonoel/branch-name@v1.0.1
 
       - name: Publish preview
-        uses: jsmrcaga/action-netlify-deploy@v2.0.0
+        uses: tpluscode/action-netlify-deploy@monorepo-filter
         if: env.NETLIFY_AUTH_TOKEN
         with:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ env.NETLIFY_AUTH_TOKEN }}
           NETLIFY_DEPLOY_MESSAGE: Preview ${{ env.BRANCH_NAME }}
           build_directory: packages/demo/dist
+          monorepo_package: shape-to-query
           deploy_alias: ${{ env.BRANCH_NAME }}
           NETLIFY_DEPLOY_TO_PROD: ${{ env.BRANCH_NAME == 'master' }}
 
-      - name: Status check
-        uses: Sibz/github-status-action@v1.1.1
-        if: env.NETLIFY_AUTH_TOKEN
+      - uses: exercism/pr-commenter-action@v1.4.0
         with:
-          authToken: ${{ secrets.GITHUB_TOKEN }}
-          context: Netlify Site
-          state: success
-          target_url: https://${{ env.BRANCH_NAME }}--shape-to-query.netlify.app/docs
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          template-variables: |
+            {
+              "url": "${{ env.NETLIFY_PREVIEW_URL }}"
+            }

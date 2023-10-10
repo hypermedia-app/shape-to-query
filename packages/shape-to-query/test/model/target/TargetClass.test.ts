@@ -1,5 +1,4 @@
-import clownface from 'clownface'
-import $rdf from 'rdf-ext'
+import $rdf from '@zazuko/env'
 import { foaf, rdf, schema } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import { sparql } from '@tpluscode/sparql-builder'
@@ -13,7 +12,7 @@ describe('model/TargetClass', () => {
 
   it("matches focus node's single rdf:type using pattern", () => {
     // given
-    const classes = clownface({ dataset: $rdf.dataset() }).node(
+    const classes = $rdf.clownface({ dataset: $rdf.dataset() }).node(
       [schema.Person],
     )
     const target = new TargetClass(classes)
@@ -29,7 +28,7 @@ describe('model/TargetClass', () => {
 
   it("matches focus node's single rdf:type using VALUES", () => {
     // given
-    const classes = clownface({ dataset: $rdf.dataset() }).node(
+    const classes = $rdf.clownface({ dataset: $rdf.dataset() }).node(
       [schema.Person, foaf.Person],
     )
     const target = new TargetClass(classes)
