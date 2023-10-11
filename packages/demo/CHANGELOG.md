@@ -1,5 +1,17 @@
 # shape-to-query
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [d20ee22]
+- Updated dependencies [d1a8688]
+- Updated dependencies [8846775]
+- Updated dependencies [78ca7bf]
+- Updated dependencies [d1a8688]
+- Updated dependencies [b2e09e5]
+  - @hydrofoil/shape-to-query@0.9.0
+
 ## 0.0.5
 
 ### Patch Changes
