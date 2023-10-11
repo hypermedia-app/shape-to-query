@@ -1,5 +1,19 @@
 # @hydrofoil/shape-to-query
 
+## 0.9.0
+
+### Minor Changes
+
+- d1a8688: Change the abstract methods of constraint components to separate property shape and node shape constraints
+- b2e09e5: Base `ConstraintComponent` class is now default-exported
+
+### Patch Changes
+
+- d20ee22: Use `@zazuko/env` instead of `rdf-ext`
+- d1a8688: When used in node shape, class constraint would produce an incorrect pattern
+- 8846775: Fix `sh:nodeKind` usage in node shape
+- 78ca7bf: Added `sh:languageIn` constraint (closes #52)
+
 ## 0.8.1
 
 ### Patch Changes
