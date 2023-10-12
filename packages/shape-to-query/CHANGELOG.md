@@ -1,5 +1,11 @@
 # @hydrofoil/shape-to-query
 
+## 0.9.1
+
+### Patch Changes
+
+- dfb97f6: `sh:languageIn` should also be applied to `NodeShape` so that it works with `sh:filterShape`
+
 ## 0.9.0
 
 ### Minor Changes
