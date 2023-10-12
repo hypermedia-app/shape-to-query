@@ -1,3 +1,4 @@
+import { Variable } from 'rdf-js'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { sparql } from '@tpluscode/sparql-builder'
 import { IN } from '@tpluscode/sparql-builder/expressions'
@@ -23,16 +24,24 @@ export class LanguageInConstraintComponent extends ConstraintComponent {
     super(sh.LanguageInConstraintComponent)
   }
 
-  buildNodeShapePatterns() {
-    return ''
+  buildNodeShapePatterns({ focusNode }: Parameters) {
+    if (focusNode.termType === 'NamedNode') {
+      return ''
+    }
+
+    return this.filter(focusNode)
   }
 
   buildPropertyShapePatterns({ valueNode }: Parameters) {
+    return this.filter(valueNode)
+  }
+
+  private filter(node: Variable) {
     const [first, ...rest] = this.languages.map(lang => sparql`"${lang}"`)
     if (rest.length) {
-      return sparql`FILTER (lang(${valueNode}) ${IN(first, ...rest)} )`
+      return sparql`FILTER (lang(${node}) ${IN(first, ...rest)} )`
     }
 
-    return sparql`FILTER (lang(${valueNode}) = ${first} )`
+    return sparql`FILTER (lang(${node}) = ${first} )`
   }
 }

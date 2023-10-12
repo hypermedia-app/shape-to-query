@@ -94,7 +94,7 @@ describe('model/constraint/languageIn', () => {
       expect(whereClause).to.equalPatternsVerbatim('FILTER (lang(?x) IN ("de", "en"))')
     })
 
-    it('returns nothing when shape is node shape', () => {
+    it('returns nothing when shape is node shape focus node is IRI', () => {
       // given
       const constraint = new LanguageInConstraintComponent(['de', 'en'])
       const valueNode = $rdf.variable('x')
@@ -109,6 +109,23 @@ describe('model/constraint/languageIn', () => {
 
       // then
       expect(whereClause.toString()).to.be.empty
+    })
+
+    it('returns filter when shape is node shape focus node is variable', () => {
+      // given
+      const constraint = new LanguageInConstraintComponent(['de', 'en'])
+      const valueNode = $rdf.variable('x')
+
+      // when
+      const whereClause = constraint.buildPatterns({
+        focusNode: $rdf.variable('foo'),
+        valueNode,
+        variable,
+        rootPatterns: undefined,
+      })
+
+      // then
+      expect(whereClause).to.equalPatternsVerbatim('FILTER (lang(?foo) IN ( "de", "en" ))')
     })
   })
 })
