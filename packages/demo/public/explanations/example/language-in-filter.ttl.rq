@@ -1,0 +1,21 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource1 rdf:type schema:Organization.
+  ?resource1 schema:produces ?resource2.
+  ?resource2 schema:name ?resource3.
+}
+WHERE {
+  ?resource1 rdf:type schema:Organization.
+  { ?resource1 schema:produces ?resource2. }
+  UNION
+  {
+    ?resource1 schema:produces ?resource2.
+    {
+      ?resource1 rdf:type schema:Organization;
+        schema:produces ?resource2.
+      ?resource2 schema:name ?resource3.
+      FILTER((LANG(?resource3)) = "en")
+    }
+  }
+}

@@ -1,0 +1,31 @@
+PREFIX ex: <http://example.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX sparql: <http://datashapes.org/sparql#>
+
+[
+  a sh:NodeShape ;
+  sh:targetClass schema:Organization ;
+  sh:property
+    [
+      sh:path schema:produces ;
+      sh:node
+        [
+          sh:property
+            [
+              # Populate the schema:name property
+              sh:path schema:name ;
+              sh:values
+                [
+                  # by selecting values of schema:name
+                  sh:nodes [ sh:path schema:name ] ;
+                  # but only those which are tagged as English
+                  sh:filterShape
+                    [
+                      sh:languageIn ( "en" ) ;
+                    ] ;
+                ]
+            ]
+        ] ;
+    ] ;
+] .

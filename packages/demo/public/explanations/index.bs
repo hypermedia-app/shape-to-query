@@ -1,0 +1,84 @@
+<pre class='metadata'>
+Title: @hydrofoil/shape-to-query Explanations
+Shortname: s2q-explanations
+Abstract: In-depth discussion about shape-to-query libarary
+Editor: Tomasz Pluskiewicz
+Status: LD
+Markup Shorthands: markdown yes
+Repository: https://github.com/hypermedia-app/shape-to-query
+URL: https://shape-to-query.hypermedia.app/explanations/
+Block Elements: s2q-snippet
+</pre>
+
+<pre class=include>
+path: ../include/shared.bs
+</pre>
+
+# Explanations # {#top}
+
+## Constraints vs filters ## {#constraints-filters}
+
+<h4 id="constraints-filters-problem" class="no-toc">Semantics of constraints</h4>
+
+There is an important, and possibly counter-intuitive, quality to SHACL constraints that when applied,
+they eliminate entire focus nodes from the result.
+
+For example, consider the shape and query below which use `sh:languageIn`/`FILTER LANG` to constrain
+a property.
+
+<div class="example">
+  Does this find organizations and their products with English names?
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/language-in-constraint.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/language-in-constraint.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+You will note that the constraints are applied outside the `UNION`. Thus, they are applied to the
+entire result. In practice, this means that if an organisation does not produce any products, or
+their products do not have English labels, it will not be included in the result. This is likely not
+the desired effect.
+
+This limitation is consequence of how the `@hydrofoil/shape-to-query` chooses to interpret the SHACL
+semantics. An `schema:Organizaion` resource will not satisfy the constraints if any of its products
+lack an English name. You can see that in this [SHACL Playground link](https://s.zazuko.com/ewVhBZ).
+
+Note: The library deviates from the spec by being too strict in also eliminating organisation whose
+products do not have any labels at all but that is a different subject.
+
+<h4 id="constraints-filters-solution" class="no-toc">Filter to the rescue</h4>
+
+In order to filter on the values of the `schema:name` property of individual products, a combination
+of [[S2Q-DOCS#shacl-property-value-rules|Property Value Rule]] and [[S2Q-DOCS#shacl-filter-shape-expression|Filter Expression]] must be used.
+
+<div class="example">
+  Filtering only the values of products' names
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/language-in-filter.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/language-in-filter.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+Note: The Property Value Rules are typically used for projections, where a **new property** is computed
+from the inner expression. Here, however, you will see that the property `schema:name` is used twice.
+The computation is filtering of `schema:name` objects which are then "projected" to the same property.
