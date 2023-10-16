@@ -24,7 +24,7 @@
     "@tpluscode/rdf-ns-builders": ">=3.0.2",
     "@tpluscode/rdf-string": "^1.0.3",
     "@tpluscode/sparql-builder": "^1.1.0",
-    "@vocabulary/dash": "^1.0.1",
+    "@vocabulary/dash": "^1.0.2",
     "@vocabulary/dash-sparql": "^1.0.1",
     "@vocabulary/sh": "^1.0.1",
     "@zazuko/env": "^1.5.1",
