@@ -307,8 +307,10 @@ describe('@hydrofoil/shape-to-query', () => {
           }
           
           ?resource ${schema.knows} ?org .
-          ?org ${schema.name} ?orgName .
-          FILTER(REGEX(?orgName, "gmbh", "i")) 
+          {
+            ?org ${schema.name} ?orgName .
+            FILTER(REGEX(?orgName, "gmbh", "i"))
+          }
           ?org ${rdf.type} ${schema.Organization} .
           FILTER(isiri(?org)) 
         }`)

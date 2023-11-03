@@ -14,7 +14,9 @@ WHERE {
     ?resource2 schema:name ?resource3.
   }
   ?resource1 schema:containsPlace ?resource2.
-  ?resource2 schema:name ?resource3.
-  FILTER(?resource3 = "Schwytz")
-  ?resource5 rdf:type <https://schema.ld.admin.ch/Municipality>.
+  {
+    ?resource2 schema:name ?resource3.
+    FILTER(?resource3 = "Schwytz")
+    ?resource5 rdf:type <https://schema.ld.admin.ch/Municipality>.
+  }
 }
