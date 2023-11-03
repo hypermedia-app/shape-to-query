@@ -15,7 +15,7 @@ import createConstraints from './constraint/factory.js'
 import { Rule } from './rule/Rule.js'
 
 interface TargetConstructor {
-  new(...args: any[]): target.Target
+  new(...args: unknown[]): target.Target
 }
 
 export interface ModelFactory {

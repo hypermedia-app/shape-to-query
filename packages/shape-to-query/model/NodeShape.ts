@@ -22,10 +22,13 @@ export default class extends Shape implements NodeShape {
     super(constraints)
   }
 
-  buildPatterns(arg: BuildParameters): ShapePatterns {
+  buildPatterns({ focusNode, ...arg }: BuildParameters): ShapePatterns {
     let targets: ShapePatterns = emptyPatterns
-    if (arg.focusNode.termType === 'Variable') {
-      targets = union(...this.targets.flatMap(target => target.buildPatterns(<any>arg)))
+    if (focusNode.termType === 'Variable') {
+      targets = union(...this.targets.flatMap(target => target.buildPatterns({
+        ...arg,
+        focusNode,
+      })))
     }
 
     const rootPatterns = sparql`${arg.rootPatterns}\n${targets.whereClause}`
@@ -33,15 +36,16 @@ export default class extends Shape implements NodeShape {
     if (this.properties.length) {
       properties = union(...this.properties.map(p => p.buildPatterns({
         ...arg,
+        focusNode,
         rootPatterns,
       })))
     }
     let rules = emptyPatterns
     if (this.rules.length) {
-      rules = union(...this.rules.map(r => r.buildPatterns({ ...arg, rootPatterns })))
+      rules = union(...this.rules.map(r => r.buildPatterns({ ...arg, focusNode, rootPatterns })))
     }
 
-    const logical = this.buildLogicalConstraints({ ...arg, rootPatterns })
+    const logical = this.buildLogicalConstraints({ ...arg, focusNode, rootPatterns })
 
     return flatten(targets, union(properties, rules), logical)
   }

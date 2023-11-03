@@ -11,7 +11,8 @@
     {
       "files": ["packages/shape-to-query/test/**"],
       "rules": {
-        "import/no-extraneous-dependencies": ["error", {"devDependencies": true}]
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+        "@typescript-eslint/no-explicit-any": "off"
       }
     },
     {

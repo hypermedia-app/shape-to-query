@@ -4,8 +4,7 @@ import * as url from 'url'
 import * as path from 'path'
 import * as shapeTo from '@hydrofoil/shape-to-query/index.js'
 import { nodeExpressions } from '@hydrofoil/shape-to-query/nodeExpressions.js'
-import { fromFile } from 'rdf-utils-fs'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env-node'
 import { rdf, sh } from '@tpluscode/rdf-ns-builders'
 import sparql from 'sparqljs'
 import { globby } from 'globby'
@@ -31,7 +30,7 @@ nodeExpressions.push(
   await Promise.all(shapeGraphs.map(toAbsolutePath).map(async shapeGraphPath => {
     let generated
     try {
-      const dataset = await $rdf.dataset().import(fromFile(shapeGraphPath))
+      const dataset = await $rdf.dataset().import($rdf.fromFile(shapeGraphPath))
       const shapePointer = $rdf.clownface({ dataset })
         .has(rdf.type, sh.NodeShape)
         .toArray().shift()

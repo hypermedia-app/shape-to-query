@@ -1,6 +1,6 @@
 import { DatasetCore } from 'rdf-js'
 import { Assertion } from 'chai'
-import toCanonical from 'rdf-dataset-ext/toCanonical.js'
+import { Dataset } from '@zazuko/env/lib/Dataset'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -11,6 +11,6 @@ declare global {
   }
 }
 
-Assertion.addMethod('equalDataset', function (this: Chai.AssertionStatic, expected: DatasetCore) {
-  new Assertion(toCanonical(this._obj)).to.equal(toCanonical(expected))
+Assertion.addMethod('equalDataset', function (this: Chai.AssertionStatic, expected: Dataset) {
+  new Assertion(this._obj.toCanonical()).to.equal(expected.toCanonical())
 })

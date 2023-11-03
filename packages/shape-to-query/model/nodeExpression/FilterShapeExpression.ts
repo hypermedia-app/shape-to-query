@@ -7,7 +7,7 @@ import { ModelFactory } from '../ModelFactory.js'
 import { NodeShape } from '../NodeShape.js'
 import { getOne, getOneOrZero } from './util.js'
 import { FocusNodeExpression } from './FocusNodeExpression.js'
-import NodeExpressionBase, { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
+import NodeExpressionBase, { NodeExpression, NodeExpressionResult, Parameters, PatternBuilder } from './NodeExpression.js'
 
 export class FilterShapeExpression extends NodeExpressionBase {
   constructor(public readonly term: Term, public readonly shape: NodeShape, public readonly nodes: NodeExpression = new FocusNodeExpression()) {
@@ -31,7 +31,7 @@ export class FilterShapeExpression extends NodeExpressionBase {
 
   _buildPatterns({ subject, variable, rootPatterns, object }: Parameters, builder: PatternBuilder) {
     let focusNode = subject
-    let patterns: any = sparql``
+    let patterns : NodeExpressionResult['patterns'] = sparql``
     let valueNode: Variable
 
     if (this.nodes instanceof FocusNodeExpression) {

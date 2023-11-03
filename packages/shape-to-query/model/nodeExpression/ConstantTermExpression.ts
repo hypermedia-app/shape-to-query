@@ -30,7 +30,7 @@ export class ConstantTermExpression extends NodeExpression {
     return sparql`BIND(${this.term} as ${object})`
   }
 
-  buildInlineExpression(arg: Parameters) {
+  buildInlineExpression() {
     return {
       inline: sparql`${this.term}`,
     }
