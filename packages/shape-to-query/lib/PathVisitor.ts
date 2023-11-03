@@ -50,7 +50,7 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
   visitPredicatePath(path: Path.PredicatePath, { pathStart, pathEnd = this.variable() }: Context): ShapePatterns {
     return {
       whereClause: sparql`${pathStart} ${path.term} ${pathEnd} .`,
-      constructClause: [$rdf.quad(<any>pathStart, path.term, <any>pathEnd)],
+      constructClause: [$rdf.quad(pathStart, path.term, pathEnd)],
     }
   }
 
@@ -115,7 +115,7 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
 
     return {
       whereClause: sparql`${pathStart} ${path.term}* ${intermediateNode} . \n${outPattern}`,
-      constructClause: [$rdf.quad(intermediateNode, path.term, <any>pathEnd)],
+      constructClause: [$rdf.quad(intermediateNode, path.term, pathEnd)],
     }
   }
 }

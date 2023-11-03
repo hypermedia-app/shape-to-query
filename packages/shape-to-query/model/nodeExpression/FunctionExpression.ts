@@ -49,6 +49,7 @@ export abstract class FunctionExpression extends NodeExpressionBase {
       return new RelationalExpression(functionPtr.term, symbol.value, getParameters(functionPtr.term), expressionList)
     }
     if (functionPtr.term.equals(dashSparql.in) || functionPtr.term.equals(dashSparql.notin)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return new InExpression(<any>functionPtr.term, expressionList)
     }
 

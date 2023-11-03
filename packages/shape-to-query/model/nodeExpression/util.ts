@@ -6,7 +6,7 @@ interface Check<P extends GraphPointer> {
   (arg: AnyPointer): arg is P
 }
 
-export function getOne<P extends GraphPointer>(pointer: P | GraphPointer, prop: NamedNode, check: Check<P> = <any>isGraphPointer): P {
+export function getOne<P extends GraphPointer>(pointer: P | GraphPointer, prop: NamedNode, check = <Check<P>>isGraphPointer): P {
   const object = pointer.out(prop)
   if (!check(object)) {
     throw new Error(`${prop.value} must have a single object`)
@@ -15,7 +15,7 @@ export function getOne<P extends GraphPointer>(pointer: P | GraphPointer, prop: 
   return object
 }
 
-export function getOneOrZero<P extends GraphPointer>(pointer: P | GraphPointer, prop: NamedNode, check: Check<P> = <any>isGraphPointer): P {
+export function getOneOrZero<P extends GraphPointer>(pointer: P | GraphPointer, prop: NamedNode, check = <Check<P>>isGraphPointer): P {
   const object = pointer.out(prop)
   if (check(object)) {
     return object
