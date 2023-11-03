@@ -1,5 +1,11 @@
 # @hydrofoil/shape-to-query
 
+## 0.9.2
+
+### Patch Changes
+
+- 8a19d88: Improve performance of shapes with deep `sh:node` constraints
+
 ## 0.9.1
 
 ### Patch Changes
