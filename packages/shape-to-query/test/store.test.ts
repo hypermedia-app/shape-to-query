@@ -4,9 +4,8 @@ import module from 'module'
 import * as compose from 'docker-compose'
 import waitOn from 'wait-on'
 import StreamClient from 'sparql-http-client'
-import { fromFile } from 'rdf-utils-fs'
 import { expect } from 'chai'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env-node'
 import { hydra, rdf, schema, dashSparql } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { constructQuery } from '../lib/shapeToQuery.js'
@@ -35,8 +34,8 @@ describe('@hydrofoil/shape-to-query', () => {
       resources: ['http://localhost:3030'],
     })
 
-    await client.store.put(fromFile(require.resolve('tbbt-ld/dist/tbbt.nq')))
-    await client.store.post(fromFile(require.resolve('./store-data.trig')))
+    await client.store.put($rdf.fromFile(require.resolve('tbbt-ld/dist/tbbt.nq')))
+    await client.store.post($rdf.fromFile(require.resolve('./store-data.trig')))
   })
 
   context('executing queries', () => {

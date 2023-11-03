@@ -1,13 +1,11 @@
-import { DatasetCore, NamedNode } from 'rdf-js'
+import { NamedNode } from 'rdf-js'
 import module from 'module'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env-node'
 import { Dataset } from '@zazuko/env/lib/Dataset'
-import type { AnyPointer, GraphPointer } from 'clownface'
+import type { AnyPointer, AnyContext, GraphPointer } from 'clownface'
 import { turtle } from '@tpluscode/rdf-string'
 import { Parser } from 'n3'
-import addAll from 'rdf-dataset-ext/addAll.js'
 import debug from 'debug'
-import fromFile from 'rdf-utils-fs/fromFile.js'
 
 const log = debug('turtle')
 
@@ -39,7 +37,7 @@ export const parse: ParseHelper = ((...[strings, ...values]: Parameters<typeof t
 const require = module.createRequire(import.meta.url)
 parse.file = async (file: string) => {
   const fullPath = require.resolve(`./example/${file}`)
-  const dataset = await $rdf.dataset().import(fromFile(fullPath))
+  const dataset = await $rdf.dataset().import($rdf.fromFile(fullPath))
   return $rdf.clownface({ dataset }).namedNode('')
 }
 
@@ -51,9 +49,9 @@ export function raw(...[strings, ...values]: Parameters<typeof turtle>): Dataset
 
 export function append(...[strings, ...values]: Parameters<typeof turtle>) {
   return {
-    to(other: DatasetCore | AnyPointer) {
+    to(other: Dataset | AnyPointer<AnyContext, Dataset>) {
       const dataset = 'dataset' in other ? other.dataset : other
-      addAll(dataset, raw(strings, ...values))
+      dataset.addAll(raw(strings, ...values))
     },
   }
 }
