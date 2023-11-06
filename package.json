@@ -19,7 +19,7 @@
     "@changesets/cli": "^2.26.0",
     "@rdfjs/types": "^1.1.0",
     "@tpluscode/eslint-config": "0.4.3",
-    "@types/mocha": "^10.0.1",
+    "@types/mocha": "^10.0.3",
     "@types/sinon-chai": "^3.2.9",
     "@typescript-eslint/eslint-plugin": "^6.9.1",
     "@typescript-eslint/parser": "^6.9.1",
