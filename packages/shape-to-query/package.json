@@ -41,7 +41,7 @@
     "@types/n3": "^1.10.4",
     "@types/sinon": "^10.0.15",
     "@types/sparql-http-client": "^2.2.8",
-    "@types/sparqljs": "^3.1.7",
+    "@types/sparqljs": "^3.1.8",
     "@zazuko/env-node": "^1",
     "chai": "^4.3.7",
     "chai-string": "^1.5.0",
