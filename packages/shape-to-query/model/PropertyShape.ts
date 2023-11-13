@@ -66,7 +66,13 @@ export default class extends Shape implements PropertyShape {
           rootPatterns: sparql`${rootPatterns}\n${patterns.whereClause}`,
         })
 
-        return this.buildNodeConstraintPatterns(result, patterns)
+        return this.nodeConstraintPatterns({
+          constructClause: result.constructClause,
+          whereClause: sparql`
+            ${patterns.whereClause}
+            ${result.whereClause}
+          `,
+        })
       })
 
     if (deepPatterns.length) {
@@ -76,14 +82,8 @@ export default class extends Shape implements PropertyShape {
     return patterns
   }
 
-  protected buildNodeConstraintPatterns(nodeConstraintPatterns: ShapePatterns, parentPatterns: ShapePatterns): ShapePatterns {
-    return {
-      constructClause: nodeConstraintPatterns.constructClause,
-      whereClause: sparql`
-        ${parentPatterns.whereClause}
-        ${nodeConstraintPatterns.whereClause}
-      `,
-    }
+  protected nodeConstraintPatterns(patterns: ShapePatterns): ShapePatterns {
+    return patterns
   }
 
   buildConstraints({ focusNode, variable, rootPatterns }: BuildParameters): string | SparqlTemplateResult {
