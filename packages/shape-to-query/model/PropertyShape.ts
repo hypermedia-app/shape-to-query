@@ -66,19 +66,23 @@ export default class extends Shape implements PropertyShape {
           rootPatterns: sparql`${rootPatterns}\n${patterns.whereClause}`,
         })
 
-        return {
+        return this.nodeConstraintPatterns({
           constructClause: result.constructClause,
           whereClause: sparql`
             ${patterns.whereClause}
             ${result.whereClause}
           `,
-        }
+        })
       })
 
     if (deepPatterns.length) {
       return union(patterns, ...deepPatterns)
     }
 
+    return patterns
+  }
+
+  protected nodeConstraintPatterns(patterns: ShapePatterns): ShapePatterns {
     return patterns
   }
 

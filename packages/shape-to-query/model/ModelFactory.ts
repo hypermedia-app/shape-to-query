@@ -14,8 +14,14 @@ import PVR, { PropertyValueRule } from './rule/PropertyValueRule.js'
 import createConstraints from './constraint/factory.js'
 import { Rule } from './rule/Rule.js'
 
-interface TargetConstructor {
-  new(...args: unknown[]): target.Target
+interface Constructor<T> {
+  new(...args: unknown[]): T
+}
+
+export interface ModelFactoryOptions {
+  NodeShape?: Constructor<NodeShape>
+  PropertyShape?: Constructor<PropertyShape>
+  PropertyValueRule?: Constructor<PropertyValueRule>
 }
 
 export interface ModelFactory {
@@ -28,6 +34,16 @@ export interface ModelFactory {
 }
 
 export default class {
+  private readonly PropertyShape: Constructor<PropertyShape>
+  private readonly NodeShape: Constructor<NodeShape>
+  private readonly PropertyValueRule: Constructor<PropertyValueRule>
+
+  constructor({ PropertyShape = PS, NodeShape = NodeShapeImpl, PropertyValueRule = PVR }: ModelFactoryOptions = {}) {
+    this.PropertyShape = PropertyShape
+    this.NodeShape = NodeShape
+    this.PropertyValueRule = PropertyValueRule
+  }
+
   nodeShape(pointer: GraphPointer): NodeShape {
     const properties = pointer
       .out(sh.property)
@@ -36,7 +52,7 @@ export default class {
 
     const rules = pointer.out(sh.rule).toArray().flatMap(x => this.rule(x))
 
-    return new NodeShapeImpl(
+    return new this.NodeShape(
       [...this.targets(pointer)],
       properties,
       [...createConstraints(pointer, this)],
@@ -45,7 +61,7 @@ export default class {
   }
 
   targets(pointer: GraphPointer): target.Target[] {
-    const targetMap = $rdf.termMap<Term, TargetConstructor>([
+    const targetMap = $rdf.termMap<Term, Constructor<target.Target>>([
       [sh.targetNode, target.TargetNode],
       [sh.targetClass, target.TargetClass],
       [sh.targetSubjectsOf, target.TargetSubjectsOf],
@@ -74,7 +90,7 @@ export default class {
       throw new Error('Rules can only be used with Predicate Path')
     }
 
-    return new PS(path, {
+    return new this.PropertyShape(path, {
       rules,
       constraints: [...createConstraints(pointer, this)],
     })
@@ -85,7 +101,7 @@ export default class {
       throw new Error('Property Shape with Property value rule must have an IRI path')
     }
 
-    return new PVR(path.term, this.nodeExpression(expression))
+    return new this.PropertyValueRule(path.term, this.nodeExpression(expression))
   }
 
   rule(pointer: GraphPointer): Rule[] {
