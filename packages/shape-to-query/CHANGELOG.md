@@ -1,5 +1,13 @@
 # @hydrofoil/shape-to-query
 
+## 0.9.3
+
+### Patch Changes
+
+- 11d9a15: Export `PropertyShape`, `NodeShape`, `Options`, and `ShapePatterns` from `@hydrofoil/shape-to-query`
+- 882b13f: Allow changing the implementation of `NodeShape`, `PropertyShape` and `PropertyValueRule`
+- 882b13f: Add top-level module exporting constraints
+
 ## 0.9.2
 
 ### Patch Changes
