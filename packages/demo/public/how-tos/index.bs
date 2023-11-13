@@ -87,3 +87,18 @@ With function metadata in place, you can now use the custom function in any node
 </div>
 
 Issue(130): simplify the example when `sh:expressions` is implemented to use the result of the palindrome function call as a constraint
+
+
+## Optimising joins in Stardog ## {#stardog-joins}
+
+Deep and broad structures described with `sh:node` tend to degrade join performance in some versions of Stardog which
+fail to optimise the joins necessary to combine the results coming from nested base graph patterns. 
+
+This can be remedied by introducing `group.joins` [query hint](https://docs.stardog.com/operating-stardog/database-administration/managing-query-performance#groupjoins)
+to the combined properties of a `sh:node` constraint. To do that, it will be necessary to provide a customized instance
+of `PropertyShape` class which builds the property constraints. The following example shows how to do that:
+
+<pre class="include-code">
+path: example/joins.ts
+highlight: typescript
+</pre>
