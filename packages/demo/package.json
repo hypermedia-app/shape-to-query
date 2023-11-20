@@ -16,7 +16,7 @@
     "@hydrofoil/shape-to-query": "^0.9.0",
     "@rdfjs-elements/rdf-editor": "^0.5.5",
     "@rdfjs-elements/sparql-editor": "^0.2.1",
-    "@shoelace-style/shoelace": "^2.4.0",
+    "@shoelace-style/shoelace": "^2.12.0",
     "@tpluscode/rdf-ns-builders": "^4",
     "@tpluscode/rdf-string": "^1.0.2",
     "@tpluscode/sparql-builder": "^1.0.0",
