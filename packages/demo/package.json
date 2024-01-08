@@ -35,6 +35,6 @@
     "rollup-plugin-node-polyfills": "^0.2.1",
     "standard": "^17.0.0",
     "util": "^0.12.5",
-    "vite": "^4.3.9"
+    "vite": "^5.0.11"
   }
 }
