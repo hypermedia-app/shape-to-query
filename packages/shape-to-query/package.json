@@ -27,7 +27,7 @@
     "@vocabulary/dash": "^1.0.1",
     "@vocabulary/dash-sparql": "^1.0.1",
     "@vocabulary/sh": "^1.0.1",
-    "@zazuko/env": "^1.5.1",
+    "@zazuko/env": "^2.0.3",
     "@zazuko/prefixes": ">=2",
     "clownface-shacl-path": "^2.0.1",
     "is-graph-pointer": "^2.0.0",
