@@ -1,4 +1,4 @@
-import { Term } from 'rdf-js'
+import { NamedNode, Term } from 'rdf-js'
 import type { AnyPointer, GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isGraphPointer, isNamedNode } from 'is-graph-pointer'
@@ -86,9 +86,6 @@ export default class {
     }
 
     const rules = pointer.out(sh.values).map(x => this.propertyRule(x, path))
-    if (rules.length && !isNamedNode(path)) {
-      throw new Error('Rules can only be used with Predicate Path')
-    }
 
     return new this.PropertyShape(path, {
       rules,
@@ -97,11 +94,24 @@ export default class {
   }
 
   propertyRule(expression: GraphPointer, path: GraphPointer) {
-    if (!isNamedNode(path)) {
-      throw new Error('Property Shape with Property value rule must have an IRI path')
+    let pathTerm : NamedNode | undefined
+    let inverse = false
+
+    if (isNamedNode(path)) {
+      pathTerm = path.term
+    } else {
+      const inversePath = path.out(sh.inversePath)
+      if (isNamedNode(inversePath)) {
+        pathTerm = inversePath.term
+        inverse = true
+      }
     }
 
-    return new this.PropertyValueRule(path.term, this.nodeExpression(expression))
+    if (!pathTerm) {
+      throw new Error('Property Shape with Property value rule must have an IRI path or a inverse of an IRI path')
+    }
+
+    return new this.PropertyValueRule(pathTerm, this.nodeExpression(expression), { inverse })
   }
 
   rule(pointer: GraphPointer): Rule[] {

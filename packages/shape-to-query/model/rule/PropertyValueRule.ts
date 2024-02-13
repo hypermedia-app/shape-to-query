@@ -19,7 +19,7 @@ export interface PropertyValueRule {
 }
 
 export default class implements PropertyValueRule {
-  constructor(public readonly path: NamedNode, public readonly nodeExpression: NodeExpression) {
+  constructor(public readonly path: NamedNode, public readonly nodeExpression: NodeExpression, public readonly options: { inverse?: boolean } = {}) {
   }
 
   buildPatterns({ focusNode, objectNode, variable, rootPatterns, builder }: Parameters): ShapePatterns {
@@ -31,8 +31,12 @@ export default class implements PropertyValueRule {
       whereClause = sparql`{ ${rootPatterns}\n${patterns} }`
     }
 
+    const constructClause = !this.options.inverse
+      ? [$rdf.quad(focusNode, this.path, objectNode)]
+      : [$rdf.quad(objectNode, this.path, focusNode)]
+
     return {
-      constructClause: [$rdf.quad(focusNode, this.path, objectNode)],
+      constructClause,
       whereClause,
     }
   }
