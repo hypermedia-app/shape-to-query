@@ -52,6 +52,26 @@ describe('model/Rule', () => {
       // then
       expect(sparql`${constructClause}`).to.equalPatterns('<foo> schema:knows ?bar .')
     })
+
+    it('constructs inverse property path', () => {
+      // given
+      const expr = fakeExpression(() => sparql``)
+      const rule = new PropertyValueRule(schema.knows, expr, {
+        inverse: true,
+      })
+
+      // when
+      const { constructClause } = rule.buildPatterns({
+        variable,
+        rootPatterns: sparql`a b c .`,
+        focusNode: $rdf.namedNode('foo'),
+        objectNode: variable(),
+        builder: new PatternBuilder(),
+      })
+
+      // then
+      expect(sparql`${constructClause}`).to.equalPatterns('?bar schema:knows <foo> .')
+    })
   })
 
   describe('TripleRule', () => {

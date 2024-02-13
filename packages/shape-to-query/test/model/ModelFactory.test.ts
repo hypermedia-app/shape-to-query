@@ -154,6 +154,22 @@ describe('model/ModelFactory', () => {
       // then
       expect(shape.rules).to.have.length(1)
     })
+
+    it('creates for inverse path', () => {
+      // given
+      const pointer = parse`
+        <> 
+          ${sh.path} [ ${sh.inversePath} ${ex.foo} ] ;
+          ${sh.values} ${sh.this} ;
+        .
+      `
+
+      // when
+      const [rule] = (<PropertyShape>modelFactory.propertyShape(pointer)).rules
+
+      // then
+      expect(rule).to.have.deep.nested.property('options.inverse', true)
+    })
   })
 
   describe('nodeExpression', () => {
