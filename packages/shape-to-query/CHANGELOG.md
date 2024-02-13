@@ -1,5 +1,14 @@
 # @hydrofoil/shape-to-query
 
+## 0.9.4
+
+### Patch Changes
+
+- 956bd42: Support simple inverse paths in property value rules
+- 1f744c3: Updated dependencies:
+
+  1. `@zazuko/env` to `2.0.3`
+
 ## 0.9.3
 
 ### Patch Changes
