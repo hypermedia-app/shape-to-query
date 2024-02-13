@@ -1,5 +1,21 @@
 # shape-to-query
 
+## 0.0.7
+
+### Patch Changes
+
+- 1f744c3: Updated dependencies:
+
+  1. `@rdfjs-elements/rdf-editor` to `0.5.7`
+  2. `@shoelace-style/shoelace` to `2.13.1`
+  3. `@zazuko/env` to `2.0.3`
+  4. `@zazuko/env-node` to `2.1.1`
+  5. `lit` to `3.1.2`
+
+- Updated dependencies [956bd42]
+- Updated dependencies [1f744c3]
+  - @hydrofoil/shape-to-query@0.9.4
+
 ## 0.0.6
 
 ### Patch Changes
