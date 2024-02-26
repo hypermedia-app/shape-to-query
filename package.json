@@ -33,7 +33,7 @@
     "patch-package": "^7.0.0",
     "sinon-chai": "^3.7.0",
     "standard": ">=11",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.0.4"
   },
   "workspaces": [
