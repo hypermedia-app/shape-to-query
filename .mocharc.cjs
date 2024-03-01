@@ -3,5 +3,5 @@ module.exports = {
     './**/*.ts'
   ],
   require: require.resolve('./mocha-setup.cjs'),
-  loader: 'ts-node/esm'
+  loader: 'ts-node/esm/transpile-only'
 }

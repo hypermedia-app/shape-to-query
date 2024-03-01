@@ -6,12 +6,15 @@ CONSTRUCT {
   ?resource2 schema:name ?resource3.
 }
 WHERE {
-  ?resource1 rdf:type schema:Organization.
-  { ?resource1 schema:produces ?resource2. }
+  {
+    SELECT * WHERE {
+      ?resource1 rdf:type schema:Organization;
+        schema:produces ?resource2.
+    }
+  }
   UNION
   {
-    ?resource1 schema:produces ?resource2.
-    {
+    SELECT * WHERE {
       ?resource1 rdf:type schema:Organization;
         schema:produces ?resource2.
       ?resource2 schema:name ?resource3.

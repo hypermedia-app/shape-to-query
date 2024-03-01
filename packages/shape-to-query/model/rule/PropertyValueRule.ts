@@ -24,11 +24,11 @@ export default class implements PropertyValueRule {
 
   buildPatterns({ focusNode, objectNode, variable, rootPatterns, builder }: Parameters): ShapePatterns {
     const { patterns } = builder.build(this.nodeExpression, { subject: focusNode, object: objectNode, variable, rootPatterns })
-    let whereClause: SparqlTemplateResult
+    let whereClause = patterns
     if ('build' in patterns) {
       whereClause = sparql`${patterns.WHERE`${rootPatterns}`}`
     } else {
-      whereClause = sparql`{ ${rootPatterns}\n${patterns} }`
+      whereClause = patterns
     }
 
     const constructClause = !this.options.inverse

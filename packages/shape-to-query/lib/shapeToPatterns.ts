@@ -1,9 +1,11 @@
 import { NamedNode } from 'rdf-js'
 import type { GraphPointer } from 'clownface'
-import { sparql } from '@tpluscode/sparql-builder'
+import { SELECT, sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import ModelFactory, { ModelFactoryOptions } from '../model/ModelFactory.js'
-import { flatten, ShapePatterns } from './shapePatterns.js'
-import { createVariableSequence } from './variableSequence.js'
+import { NodeShape } from '../model/NodeShape.js'
+import { flatten, ShapePatterns, union } from './shapePatterns.js'
+import { createVariableSequence, VariableSequence } from './variableSequence.js'
+import { FocusNode } from './FocusNode.js'
 
 export interface Options extends ModelFactoryOptions {
   focusNode?: NamedNode
@@ -17,6 +19,37 @@ export function shapeToPatterns(shape: GraphPointer, options: Options = {}): Sha
   const variable = createVariableSequence(options.objectVariablePrefix || 'resource')
   const focusNode = options.focusNode || variable()
 
+  const { patterns, constraints } = buildNodeShape({ nodeShape, variable, focusNode })
+
+  if (patterns.childPatterns && patterns.childPatterns.length) {
+    const subQueries = flattenChildPatterns(patterns)
+
+    return union(toSubquery()(patterns), ...[...subQueries].map(toSubquery(constraints.whereClause)))
+  }
+
+  return patterns
+}
+
+function * flattenChildPatterns(patterns: ShapePatterns) {
+  for (const child of patterns.childPatterns) {
+    yield child
+
+    if (child.childPatterns && child.childPatterns.length) {
+      yield * flattenChildPatterns(child)
+    }
+  }
+}
+
+function toSubquery(constraints: string | SparqlTemplateResult = '') {
+  return (patterns: ShapePatterns) : ShapePatterns => {
+    return {
+      constructClause: patterns.constructClause,
+      whereClause: sparql`${SELECT.ALL.WHERE`${patterns.whereClause}`.WHERE`${constraints}`}`,
+    }
+  }
+}
+
+function buildNodeShape({ nodeShape, variable, focusNode }: { nodeShape: NodeShape; variable: VariableSequence ; focusNode: FocusNode }) {
   const properties = nodeShape.buildPatterns({
     focusNode,
     variable,
@@ -33,5 +66,8 @@ export function shapeToPatterns(shape: GraphPointer, options: Options = {}): Sha
     }),
   }
 
-  return flatten(properties, constraints)
+  return {
+    patterns: flatten(properties, constraints),
+    constraints,
+  }
 }

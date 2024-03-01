@@ -11,14 +11,17 @@ describe('model/constraint/and', () => {
     const foo: NodeShape = {
       buildConstraints: () => 'foo constraint',
       buildPatterns: () => emptyPatterns,
+      properties: [],
     }
     const bar = {
       buildConstraints: () => 'bar constraint',
       buildPatterns: () => emptyPatterns,
+      properties: [],
     }
     const baz = {
       buildConstraints: () => 'baz constraint',
       buildPatterns: () => emptyPatterns,
+      properties: [],
     }
     const constraint = new AndConstraintComponent([foo, bar, baz])
 

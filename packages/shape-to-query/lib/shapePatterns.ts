@@ -6,11 +6,13 @@ import { UNION } from '@tpluscode/sparql-builder/expressions'
 export interface ShapePatterns {
   whereClause: string | SparqlTemplateResult
   constructClause: BaseQuad[]
+  childPatterns?: ShapePatterns[]
 }
 
 export const emptyPatterns: ShapePatterns = {
   whereClause: '',
   constructClause: [],
+  childPatterns: [],
 }
 
 export function flatten(...patterns: ShapePatterns[]): ShapePatterns {
@@ -23,6 +25,7 @@ export function flatten(...patterns: ShapePatterns[]): ShapePatterns {
   return {
     whereClause,
     constructClause: unique(patterns.flatMap(p => p.constructClause)),
+    childPatterns: patterns.flatMap(p => p.childPatterns || []),
   }
 }
 
@@ -41,5 +44,6 @@ export function union(...patterns: ShapePatterns[]): ShapePatterns {
   return {
     constructClause: unique(nonEmpty.flatMap(p => p.constructClause)),
     whereClause: sparql`${UNION(...nonEmpty.map(({ whereClause }) => whereClause).filter(Boolean))}`,
+    childPatterns: nonEmpty.flatMap(p => p.childPatterns || []),
   }
 }

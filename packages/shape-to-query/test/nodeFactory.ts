@@ -24,7 +24,7 @@ export function literal(value: string, dtOrLang?: string | NamedNode) {
 }
 
 interface ParseHelper {
-  (...[strings, ...values]: Parameters<typeof turtle>): GraphPointer<NamedNode, Dataset>
+  (...params: Parameters<typeof turtle>): GraphPointer<NamedNode, Dataset>
   file(file: string): Promise<GraphPointer<NamedNode>>
 }
 
