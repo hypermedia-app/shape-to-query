@@ -21,11 +21,7 @@ export class HasValueConstraintComponent extends ConstraintComponent {
     return ''
   }
 
-  buildPropertyShapePatterns({ focusNode, propertyPath, valueNode }: Omit<Parameters, 'rootPatterns'>): string | SparqlTemplateResult {
-    if (this.terms.length === 1) {
-      return sparql`FILTER( ${valueNode} = ${this.terms[0]} )`
-    }
-
+  buildPropertyShapePatterns({ focusNode, propertyPath }: Omit<Parameters, 'rootPatterns'>): string | SparqlTemplateResult {
     return sparql`FILTER EXISTS {
       ${focusNode} ${propertyPath} ${objectList(this.terms)}
     }`

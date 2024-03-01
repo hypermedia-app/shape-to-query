@@ -9,6 +9,6 @@ WHERE {
   {
     ?resource1 rdf:type schema:Person;
       (schema:address/schema:addressRegion) ?resource3.
-    FILTER(?resource3 = "CA")
+    FILTER(EXISTS { ?resource1 (schema:address/schema:addressRegion) "CA". })
   }
 }

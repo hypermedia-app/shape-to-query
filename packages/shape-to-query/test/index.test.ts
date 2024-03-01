@@ -382,7 +382,7 @@ describe('@hydrofoil/shape-to-query', () => {
                     ?resource1 schema:mainEntity ?resource2.
                     ?resource2 rdf:type*/hydra:memberAssertion ?resource9.
                     ?resource9 hydra:property ?resource11.
-                    FILTER(?resource11 = rdf:type)
+                    FILTER(EXISTS { ?resource9 hydra:property rdf:type. })
                     ?resource9 hydra:object ?resource8.
                     ?resource8 ^rdf:type ?resource7.
                     ?resource7 skos:prefLabel ?resource6.
@@ -390,7 +390,7 @@ describe('@hydrofoil/shape-to-query', () => {
                     BIND(rdfs:label as ?resource4)
                     ?resource2 rdf:type*/hydra:memberAssertion ?resource9.
                     ?resource9 hydra:property ?resource11.
-                    FILTER(?resource11 = rdf:type)
+                    FILTER(EXISTS { ?resource9 hydra:property rdf:type. })
                     ?resource9 hydra:object ?resource8.
                     ?resource8 ^rdf:type ?resource7.
                     ?resource7 skos:prefLabel ?resource6.

@@ -13,8 +13,8 @@ WHERE {
   ?q1 rdf:type <http://example.org/Object>;
     ?q2 ?q3.
   ?q2 rdfs:subPropertyOf ?q4.
-  FILTER(?q4 = skos:related)
+  FILTER(EXISTS { ?q2 rdfs:subPropertyOf skos:related. })
   ?q3 rdf:type ?q5.
-  FILTER(?q5 = schema:Organization)
+  FILTER(EXISTS { ?q3 rdf:type schema:Organization. })
 }"
 `;

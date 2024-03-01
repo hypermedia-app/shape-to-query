@@ -37,7 +37,7 @@ describe('model/constraint/hasValue', () => {
 
     // then
     expect(whereClause).to.equalPatterns(sparql`
-      FILTER ( ?x = ${ex.foo} )
+      FILTER EXISTS { <foo> path ${ex.foo} }
     `)
   })
 
