@@ -24,6 +24,10 @@ export class PathExpression extends NodeExpressionBase {
     return new PathExpression(pointer.term, toSparql(path))
   }
 
+  public get requiresFullContext(): boolean {
+    return this.nodes?.requiresFullContext ?? false
+  }
+
   constructor(public readonly term: Term, public readonly path: SparqlTemplateResult, public readonly nodes?: NodeExpression) {
     super()
   }

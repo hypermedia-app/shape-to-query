@@ -21,6 +21,10 @@ export class OrderByExpression extends NodeExpressionBase {
     return new OrderByExpression(pointer.term, fromNode.nodeExpression(orderBy), fromNode.nodeExpression(nodes), descending)
   }
 
+  public get requiresFullContext(): boolean {
+    return this.nodes.requiresFullContext || this.orderExpression.requiresFullContext
+  }
+
   constructor(
     public readonly term: Term,
     public readonly orderExpression: NodeExpression,

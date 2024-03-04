@@ -45,6 +45,10 @@ export class ShorthandSubselectExpression implements NodeExpression {
     return new ShorthandSubselectExpression(pointer.blankNode().term, subselect)
   }
 
+  get requiresFullContext(): boolean {
+    return this.expression.requiresFullContext
+  }
+
   constructor(public readonly term: Term, public expression: NodeExpression) {
   }
 

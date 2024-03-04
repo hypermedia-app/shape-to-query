@@ -16,6 +16,10 @@ export class CountExpression extends NodeExpressionImpl {
     return new CountExpression(pointer.term, createExpr.nodeExpression(getOne(pointer, sh.count)))
   }
 
+  public get requiresFullContext(): boolean {
+    return this.expression.requiresFullContext
+  }
+
   constructor(public readonly term: Term, public expression: NodeExpression) {
     super()
   }

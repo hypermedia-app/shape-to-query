@@ -6,6 +6,10 @@ import { sh } from '@tpluscode/rdf-ns-builders'
 import NodeExpression, { Parameters } from './NodeExpression.js'
 
 export class ConstantTermExpression extends NodeExpression {
+  public get requiresFullContext(): boolean {
+    return false
+  }
+
   constructor(public readonly term: NamedNode | Literal) {
     super()
   }

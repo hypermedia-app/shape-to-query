@@ -12,19 +12,16 @@ export interface Parameters {
   rootPatterns: SparqlTemplateResult
 }
 
-interface ResultBase {
+export interface NodeExpressionResult {
+  patterns: Select | SparqlTemplateResult
+  object: Variable
   /**
-   * True if a built node expression requires all query pattern leading from shape target to current node
+   * True if a built node expression requires all query patterns leading from shape target to current node
    */
   requiresFullContext?: boolean
 }
 
-export interface NodeExpressionResult extends ResultBase {
-  patterns: Select | SparqlTemplateResult
-  object: Variable
-}
-
-interface InlineExpressionResult extends ResultBase {
+interface InlineExpressionResult {
   inline: SparqlTemplateResult
   patterns?: SparqlTemplateResult
 }
@@ -50,13 +47,24 @@ export interface NodeExpression {
    * Implemented to have the expression result inlined in the parent expression.
    */
   buildInlineExpression?(arg: Parameters, builder: PatternBuilder): InlineExpressionResult
+
+  /**
+   * True if a node expression requires all query patterns leading from shape target to current node
+   */
+  requiresFullContext: boolean
 }
 
 export default abstract class {
   build({ subject, rootPatterns, variable, object = variable() }: Parameters, builder: PatternBuilder): NodeExpressionResult {
     const patterns = this._buildPatterns({ subject, rootPatterns, variable, object }, builder)
-    return { patterns, object }
+    return {
+      patterns,
+      object,
+      requiresFullContext: this.requiresFullContext,
+    }
   }
+
+  public abstract get requiresFullContext(): boolean
 
   protected abstract _buildPatterns(arg: Required<Parameters>, builder: PatternBuilder): Select | SparqlTemplateResult
 }
