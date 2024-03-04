@@ -297,7 +297,7 @@ describe('@hydrofoil/shape-to-query', () => {
           ?org ${schema.name} ?orgName .
         } WHERE {
           {
-            SELECT * {
+            SELECT ?resource ?org {
               ?resource ${rdf.type} ${schema.Person} .
               ?resource ${schema.knows} ?org .
           
@@ -312,7 +312,7 @@ describe('@hydrofoil/shape-to-query', () => {
           }
           UNION
           {
-            SELECT * {
+            SELECT ?org ?orgName {
               ?resource ${rdf.type} ${schema.Person} .
               ?resource ${schema.knows} ?org .
               ?org ${schema.name} ?orgName .
@@ -381,7 +381,7 @@ describe('@hydrofoil/shape-to-query', () => {
               }
               WHERE {
                 { 
-                  SELECT * {
+                  SELECT ?resource1 ?resource2 {
                     VALUES (?resource1) {
                       (<https://new.wikibus.org/page/brands>)
                     }
@@ -390,7 +390,7 @@ describe('@hydrofoil/shape-to-query', () => {
                 }
                 UNION
                 {
-                    SELECT * {
+                    SELECT ?resource3 ?resource4 ?resource5 {
                       VALUES (?resource1) {
                         (<https://new.wikibus.org/page/brands>)
                       }
@@ -665,7 +665,7 @@ describe('@hydrofoil/shape-to-query', () => {
         expect(query).to.be.a.query(sparql`
           SELECT * WHERE {
             {
-              SELECT * {
+              SELECT ?node_0_i ?node_0 {
                 {
                   BIND(?node as ?node_0)
                 } UNION {
@@ -676,7 +676,7 @@ describe('@hydrofoil/shape-to-query', () => {
             }
             UNION
             {
-              SELECT * {
+              SELECT ?node_0 ?node_0_0 {
                 {
                   BIND(?node as ?node_0)
                 } UNION {
@@ -800,14 +800,14 @@ describe('@hydrofoil/shape-to-query', () => {
         expect(query).to.be.a.query(sparql`
           SELECT * WHERE {
             {
-              SELECT * WHERE {
+              SELECT ?node_0_i ?node_0 WHERE {
                 ?node ${foaf.knows}* ?node_0_i .
                 ?node_0_i ${foaf.knows} ?node_0 .
               }
             }
             UNION
             {
-              SELECT * {
+              SELECT ?node_0 ?node_0_0 {
                 ?node ${foaf.knows}* ?node_0_i .
                 ?node_0_i ${foaf.knows} ?node_0 .
                 ?node_0 ${foaf.name} ?node_0_0 .
