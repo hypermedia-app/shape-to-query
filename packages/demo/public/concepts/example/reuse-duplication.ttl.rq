@@ -14,7 +14,9 @@ WHERE {
     }
     ?resource1 ((rdf:type*)/hydra:memberAssertion) ?resource4.
     ?resource4 hydra:property ?resource6.
-    FILTER(EXISTS { ?resource4 hydra:property rdf:type. })
+    VALUES ?resource6 {
+      rdf:type
+    }
     ?resource4 hydra:object ?resource3.
     ?resource3 ^rdf:type ?resource2.
   }
@@ -23,7 +25,9 @@ WHERE {
     SELECT (COUNT(?resource8) AS ?resource7) WHERE {
       ?resource1 ((rdf:type*)/hydra:memberAssertion) ?resource10.
       ?resource10 hydra:property ?resource12.
-      FILTER(EXISTS { ?resource10 hydra:property rdf:type. })
+      VALUES ?resource12 {
+        rdf:type
+      }
       ?resource10 hydra:object ?resource9.
       ?resource9 ^rdf:type ?resource8.
       VALUES ?resource1 {
