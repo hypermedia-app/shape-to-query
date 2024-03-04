@@ -11,7 +11,9 @@ WHERE {
     ?resource1 rdf:type schema:Person;
       schema:parent ?resource3.
     ?resource3 schema:gender ?resource5.
-    FILTER(EXISTS { ?resource3 schema:gender schema:Female. })
+    VALUES ?resource5 {
+      schema:Female
+    }
     ?resource3 schema:givenName ?resource2.
   }
   UNION
@@ -19,7 +21,9 @@ WHERE {
     ?resource1 rdf:type schema:Person;
       schema:parent ?resource7.
     ?resource7 schema:gender ?resource9.
-    FILTER(EXISTS { ?resource7 schema:gender schema:Male. })
+    VALUES ?resource9 {
+      schema:Male
+    }
     ?resource7 schema:givenName ?resource6.
   }
 }

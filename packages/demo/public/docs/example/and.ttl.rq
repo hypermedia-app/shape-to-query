@@ -7,7 +7,11 @@ WHERE {
   ?resource1 schema:knows ?resource2;
     schema:jobTitle ?resource3;
     schema:knows ?resource2.
-  FILTER(EXISTS { ?resource1 schema:knows <https://tbbt.tv/sheldon-cooper>. })
+  VALUES ?resource2 {
+    <https://tbbt.tv/sheldon-cooper>
+  }
   ?resource1 schema:jobTitle ?resource3.
-  FILTER(EXISTS { ?resource1 schema:jobTitle "microbiologist". })
+  VALUES ?resource3 {
+    "microbiologist"
+  }
 }
