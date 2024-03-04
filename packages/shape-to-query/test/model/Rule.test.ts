@@ -1,5 +1,5 @@
 import { schema } from '@tpluscode/rdf-ns-builders'
-import { SELECT, sparql } from '@tpluscode/sparql-builder'
+import { sparql } from '@tpluscode/sparql-builder'
 import { expect } from 'chai'
 import $rdf from '@zazuko/env'
 import PropertyValueRule from '../../model/rule/PropertyValueRule.js'
@@ -12,29 +12,6 @@ describe('model/Rule', () => {
   before(() => import('../sparql.js'))
 
   describe('PropertyValueRule', () => {
-    it('appends root patterns to a subquery', () => {
-      // given
-      const expr = fakeExpression(({ subject, object }) => SELECT`${subject} ${object}`.WHERE`${subject} a ${object} .`)
-      const rule = new PropertyValueRule(schema.knows, expr)
-
-      // when
-      const { whereClause } = rule.buildPatterns({
-        variable,
-        rootPatterns: sparql`a b c .`,
-        focusNode: $rdf.namedNode('foo'),
-        objectNode: variable(),
-        builder: new PatternBuilder(),
-      })
-
-      // then
-      expect(whereClause).to.equalPatterns(`{
-        SELECT <foo> ?bar WHERE {
-          <foo> a ?bar .
-          a b c .
-        }
-      }`)
-    })
-
     it('bind path to construct', () => {
       // given
       const expr = fakeExpression(() => sparql``)

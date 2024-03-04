@@ -6,19 +6,33 @@ CONSTRUCT {
   ?resource2 schema:name ?resource3.
 }
 WHERE {
-  ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>.
-  { ?resource1 schema:containsPlace ?resource2. }
+  {
+    SELECT ?resource1 ?resource2 WHERE {
+      ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>;
+        schema:containsPlace ?resource2, ?resource2.
+      {
+        ?resource2 schema:name ?resource3.
+        VALUES ?resource3 {
+          "Schwytz"
+        }
+        ?resource6 rdf:type <https://schema.ld.admin.ch/Municipality>.
+      }
+    }
+  }
   UNION
   {
-    ?resource1 schema:containsPlace ?resource2.
-    ?resource2 schema:name ?resource3.
-  }
-  ?resource1 schema:containsPlace ?resource2.
-  {
-    ?resource2 schema:name ?resource3.
-    VALUES ?resource3 {
-      "Schwytz"
+    SELECT ?resource2 ?resource3 WHERE {
+      ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>;
+        schema:containsPlace ?resource2.
+      ?resource2 schema:name ?resource3.
+      ?resource1 schema:containsPlace ?resource2.
+      {
+        ?resource2 schema:name ?resource3.
+        VALUES ?resource3 {
+          "Schwytz"
+        }
+        ?resource6 rdf:type <https://schema.ld.admin.ch/Municipality>.
+      }
     }
-    ?resource5 rdf:type <https://schema.ld.admin.ch/Municipality>.
   }
 }

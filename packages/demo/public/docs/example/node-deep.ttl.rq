@@ -5,12 +5,16 @@ CONSTRUCT {
   ?resource3 schema:givenName ?resource4.
 }
 WHERE {
-  { ?resource1 schema:givenName ?resource2. }
+  {
+    SELECT ?resource1 ?resource2 ?resource3 WHERE {
+      { ?resource1 schema:givenName ?resource2. }
+      UNION
+      { ?resource1 schema:knows ?resource3. }
+    }
+  }
   UNION
   {
-    { ?resource1 schema:knows ?resource3. }
-    UNION
-    {
+    SELECT ?resource3 ?resource4 WHERE {
       ?resource1 schema:knows ?resource3.
       ?resource3 schema:givenName ?resource4.
     }

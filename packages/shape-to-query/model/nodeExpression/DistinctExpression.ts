@@ -17,7 +17,11 @@ export class DistinctExpression extends SubselectExpression {
     return new DistinctExpression(pointer.term, distinct)
   }
 
-  public constructor(term: Term, distinct: NodeExpression) {
+  public get requiresFullContext(): boolean {
+    return this.distinct.requiresFullContext
+  }
+
+  public constructor(term: Term, private distinct: NodeExpression) {
     super(term, distinct)
   }
 

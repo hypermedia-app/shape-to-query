@@ -126,6 +126,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       const shape: NodeShape = {
         buildPatterns: () => <any>{},
         buildConstraints: ({ focusNode }) => sparql`${focusNode} a ${schema.Organization} .`,
+        properties: [],
       }
       const expr = new FilterShapeExpression($rdf.blankNode(), shape)
 
@@ -152,6 +153,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
           whereClause: sparql``,
         }),
         buildConstraints: ({ focusNode, valueNode }) => sparql`${focusNode} path ${valueNode} .`,
+        properties: [],
       }
       const expr = new FilterShapeExpression($rdf.blankNode(), shape)
 
@@ -174,6 +176,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       const shape: NodeShape = {
         buildPatterns: () => <any>{},
         buildConstraints: ({ focusNode, valueNode }) => sparql`${focusNode} path ${valueNode} .`,
+        properties: [],
       }
       const nodes = fakeExpression(({ subject, object }) => sparql`${subject} nodes ${object} .`)
       const expr = new FilterShapeExpression($rdf.blankNode(), shape, nodes)

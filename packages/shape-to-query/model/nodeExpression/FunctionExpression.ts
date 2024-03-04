@@ -81,6 +81,10 @@ export abstract class FunctionExpression extends NodeExpressionBase {
     assertFunctionArguments(this, args, unlimitedParameters)
   }
 
+  get requiresFullContext() {
+    return this.args.some(arg => arg.requiresFullContext)
+  }
+
   _buildPatterns(args: Parameters, builder: PatternBuilder) {
     const { expressions, patterns } = this.evaluateArguments(args, builder)
 

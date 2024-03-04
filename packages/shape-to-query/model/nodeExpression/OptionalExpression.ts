@@ -17,6 +17,10 @@ export class OptionalExpression extends NodeExpressionBase {
     return new OptionalExpression(pointer.term, factory.nodeExpression(inner))
   }
 
+  public get requiresFullContext(): boolean {
+    return this.inner.requiresFullContext
+  }
+
   constructor(public readonly term: Term, public readonly inner: NodeExpression) {
     super()
   }

@@ -14,6 +14,10 @@ export class FocusNodeExpression extends NodeExpression {
     return new FocusNodeExpression()
   }
 
+  get requiresFullContext() {
+    return true
+  }
+
   _buildPatterns({ subject, object }: Omit<Parameters, 'rootPatterns'>) {
     return sparql`BIND (${subject} as ${object})`
   }

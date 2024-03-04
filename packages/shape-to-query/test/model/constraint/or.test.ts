@@ -11,14 +11,17 @@ describe('model/constraint/or', () => {
     const foo: NodeShape = {
       buildConstraints: () => 'foo constraint',
       buildPatterns: () => emptyPatterns,
+      properties: [],
     }
     const bar = {
       buildConstraints: () => 'bar constraint',
       buildPatterns: () => emptyPatterns,
+      properties: [],
     }
     const baz = {
       buildConstraints: () => 'baz constraint',
       buildPatterns: () => emptyPatterns,
+      properties: [],
     }
     const constraint = new OrConstraintComponent([foo, bar, baz])
 
@@ -40,14 +43,17 @@ describe('model/constraint/or', () => {
     const foo: NodeShape = {
       buildConstraints: () => 'foo constraint',
       buildPatterns: () => emptyPatterns,
+      properties: [],
     }
     const bar = {
       buildConstraints: () => '',
       buildPatterns: () => emptyPatterns,
+      properties: [],
     }
     const baz = {
       buildConstraints: () => 'baz constraint',
       buildPatterns: () => emptyPatterns,
+      properties: [],
     }
     const constraint = new OrConstraintComponent([foo, bar, baz])
 

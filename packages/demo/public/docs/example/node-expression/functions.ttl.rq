@@ -5,10 +5,7 @@ CONSTRUCT {
   ?resource1 <http://example.org/drivingExperienceYears> ?resource2.
 }
 WHERE {
-  ?resource1 rdf:type schema:Person.
-  {
-    ?resource1 rdf:type schema:Person;
-      (<http://example.org/drivingLicense>/<http://example.org/issueDate>) ?resource3.
-    BIND((YEAR(NOW())) - (YEAR(?resource3)) AS ?resource2)
-  }
+  ?resource1 rdf:type schema:Person;
+    (<http://example.org/drivingLicense>/<http://example.org/issueDate>) ?resource3.
+  BIND((YEAR(NOW())) - (YEAR(?resource3)) AS ?resource2)
 }

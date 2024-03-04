@@ -13,6 +13,10 @@ export interface BuildParameters {
   rootPatterns: SparqlTemplateResult
 }
 
+export interface Shape {
+  constraints: ReadonlyArray<ConstraintComponent>
+}
+
 export default class {
   constructor(public readonly constraints: ReadonlyArray<ConstraintComponent>) {
   }

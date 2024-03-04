@@ -15,6 +15,10 @@ export class HydraCollectionMemberExpression extends NodeExpressionBase {
     return new HydraCollectionMemberExpression(term)
   }
 
+  get requiresFullContext(): boolean {
+    return false
+  }
+
   constructor(public readonly term: Term) {
     super()
   }

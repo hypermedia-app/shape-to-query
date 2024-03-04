@@ -1,17 +1,23 @@
 PREFIX schema: <http://schema.org/>
 CONSTRUCT {
   ?resource1 schema:parent ?resource2.
+  ?resource1 schema:children ?resource6.
   ?resource2 schema:givenName ?resource3.
   ?resource2 schema:familyName ?resource4.
-  ?resource1 schema:children ?resource5.
-  ?resource5 schema:givenName ?resource6.
-  ?resource5 schema:familyName ?resource7.
+  ?resource6 schema:givenName ?resource7.
+  ?resource6 schema:familyName ?resource8.
 }
 WHERE {
   {
-    { ?resource1 schema:parent ?resource2. }
-    UNION
-    {
+    SELECT ?resource1 ?resource2 ?resource6 WHERE {
+      { ?resource1 schema:parent ?resource2. }
+      UNION
+      { ?resource1 schema:children ?resource6. }
+    }
+  }
+  UNION
+  {
+    SELECT ?resource2 ?resource3 ?resource4 WHERE {
       ?resource1 schema:parent ?resource2.
       { ?resource2 schema:givenName ?resource3. }
       UNION
@@ -20,13 +26,11 @@ WHERE {
   }
   UNION
   {
-    { ?resource1 schema:children ?resource5. }
-    UNION
-    {
-      ?resource1 schema:children ?resource5.
-      { ?resource5 schema:givenName ?resource6. }
+    SELECT ?resource6 ?resource7 ?resource8 WHERE {
+      ?resource1 schema:children ?resource6.
+      { ?resource6 schema:givenName ?resource7. }
       UNION
-      { ?resource5 schema:familyName ?resource7. }
+      { ?resource6 schema:familyName ?resource8. }
     }
   }
 }

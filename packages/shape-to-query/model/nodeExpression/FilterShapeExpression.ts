@@ -10,6 +10,10 @@ import { FocusNodeExpression } from './FocusNodeExpression.js'
 import NodeExpressionBase, { NodeExpression, NodeExpressionResult, Parameters, PatternBuilder } from './NodeExpression.js'
 
 export class FilterShapeExpression extends NodeExpressionBase {
+  public get requiresFullContext(): boolean {
+    return this.nodes.requiresFullContext
+  }
+
   constructor(public readonly term: Term, public readonly shape: NodeShape, public readonly nodes: NodeExpression = new FocusNodeExpression()) {
     super()
   }

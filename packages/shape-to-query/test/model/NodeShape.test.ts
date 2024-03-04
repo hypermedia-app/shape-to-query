@@ -6,6 +6,7 @@ import NodeShape from '../../model/NodeShape.js'
 import { PropertyShape } from '../../model/PropertyShape.js'
 import { OrConstraintComponent } from '../../model/constraint/or.js'
 import { variable } from '../variable.js'
+import { emptyPatterns } from '../../lib/shapePatterns.js'
 
 describe('model/NodeShape', () => {
   const rootPatterns = undefined
@@ -97,12 +98,16 @@ describe('model/NodeShape', () => {
           constructClause: [],
           whereClause: 'foo bar baz',
         }),
+        constraints: [],
+        buildLogicalConstraints: () => emptyPatterns,
       }, {
         buildConstraints: () => '',
         buildPatterns: () => ({
           constructClause: [],
           whereClause: 'A B C',
         }),
+        constraints: [],
+        buildLogicalConstraints: () => emptyPatterns,
       }]
       const shape = new NodeShape([], properties, [], [])
 

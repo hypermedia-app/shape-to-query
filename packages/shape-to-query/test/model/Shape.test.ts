@@ -52,12 +52,14 @@ describe('lib/model/Shape', () => {
             whereClause: 'foo shape',
             constructClause: [],
           }),
+          properties: [],
         }, {
           buildConstraints: () => '',
           buildPatterns: () => ({
             whereClause: 'bar shape',
             constructClause: [],
           }),
+          properties: [],
         }]),
       ])
 
@@ -82,12 +84,14 @@ describe('lib/model/Shape', () => {
             whereClause: 'foo shape',
             constructClause: [],
           }),
+          properties: [],
         }, {
           buildConstraints: () => '',
           buildPatterns: () => ({
             whereClause: 'bar shape',
             constructClause: [],
           }),
+          properties: [],
         }]),
       ])
 

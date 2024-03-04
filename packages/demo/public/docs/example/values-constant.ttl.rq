@@ -7,17 +7,7 @@ WHERE {
   VALUES ?resource1 {
     <https://tbbt.tv/sheldon-cooper>
   }
-  {
-    VALUES ?resource1 {
-      <https://tbbt.tv/sheldon-cooper>
-    }
-    BIND("Sheldon" AS ?resource2)
-  }
+  { BIND("Sheldon" AS ?resource2) }
   UNION
-  {
-    VALUES ?resource1 {
-      <https://tbbt.tv/sheldon-cooper>
-    }
-    BIND("Cooper" AS ?resource3)
-  }
+  { BIND("Cooper" AS ?resource3) }
 }

@@ -17,7 +17,7 @@ interface Components {
   constraints?: ConstraintComponent[]
 }
 
-export interface PropertyShape {
+export interface PropertyShape extends Shape {
   buildPatterns(arg: BuildParameters): ShapePatterns
   buildConstraints(arg: BuildParameters): string | SparqlTemplateResult
 }
@@ -57,33 +57,37 @@ export default class extends Shape implements PropertyShape {
     const logical = this.buildLogicalConstraints({ focusNode, variable, rootPatterns })
     patterns = flatten(patterns, logical)
 
-    const deepPatterns = this.constraints
+    const nodeContstrains = this.constraints
       .filter((c): c is NodeConstraintComponent => c.type.equals(sh.NodeConstraintComponent))
-      .map((nodeConstraint): ShapePatterns => {
+      .map((nodeConstraint) => {
         const result = nodeConstraint.shape.buildPatterns({
           focusNode: pathEnd,
           variable,
           rootPatterns: sparql`${rootPatterns}\n${patterns.whereClause}`,
         })
 
-        return this.nodeConstraintPatterns({
-          constructClause: result.constructClause,
-          whereClause: sparql`
+        const childConstraints = nodeConstraint.shape.buildConstraints({
+          focusNode: pathEnd,
+          variable,
+          rootPatterns: sparql`${rootPatterns}\n${patterns.whereClause}`,
+          valueNode: variable(),
+        })
+
+        return {
+          childPatterns: {
+            ...result,
+            whereClause: sparql`
+            ${rootPatterns}
             ${patterns.whereClause}
             ${result.whereClause}
           `,
-        })
+          },
+          childConstraints,
+        }
       })
 
-    if (deepPatterns.length) {
-      return union(patterns, ...deepPatterns)
-    }
-
-    return patterns
-  }
-
-  protected nodeConstraintPatterns(patterns: ShapePatterns): ShapePatterns {
-    return patterns
+    const childPatterns = nodeContstrains.map(c => c.childPatterns)
+    return { ...patterns, childPatterns }
   }
 
   buildConstraints({ focusNode, variable, rootPatterns }: BuildParameters): string | SparqlTemplateResult {

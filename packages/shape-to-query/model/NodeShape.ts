@@ -8,6 +8,7 @@ import Shape, { BuildParameters } from './Shape.js'
 import { Rule } from './rule/Rule.js'
 
 export interface NodeShape {
+  properties: ReadonlyArray<PropertyShape>
   buildPatterns(arg: BuildParameters): ShapePatterns
   buildConstraints(arg: BuildParameters & { valueNode: Variable }): string | SparqlTemplateResult
 }

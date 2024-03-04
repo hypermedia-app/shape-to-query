@@ -296,23 +296,36 @@ describe('@hydrofoil/shape-to-query', () => {
           ?resource ${schema.knows} ?org .
           ?org ${schema.name} ?orgName .
         } WHERE {
-          ?resource ${rdf.type} ${schema.Person} .
           {
-            ?resource ${schema.knows} ?org .
+            SELECT ?resource ?org {
+              ?resource ${rdf.type} ${schema.Person} .
+              ?resource ${schema.knows} ?org .
+          
+              ?resource ${schema.knows} ?org .
+              {
+                ?org ${schema.name} ?orgName .
+                FILTER(REGEX(?orgName, "gmbh", "i"))
+              }
+              ?org ${rdf.type} ${schema.Organization} .
+              FILTER(isiri(?org)) 
+            }
           }
           UNION
           {
-            ?resource ${schema.knows} ?org .
-            ?org ${schema.name} ?orgName .
-          }
+            SELECT ?org ?orgName {
+              ?resource ${rdf.type} ${schema.Person} .
+              ?resource ${schema.knows} ?org .
+              ?org ${schema.name} ?orgName .
           
-          ?resource ${schema.knows} ?org .
-          {
-            ?org ${schema.name} ?orgName .
-            FILTER(REGEX(?orgName, "gmbh", "i"))
+              ?resource ${schema.knows} ?org .
+              {
+                ?org ${schema.name} ?orgName .
+                FILTER(REGEX(?orgName, "gmbh", "i"))
+              }
+              ?org ${rdf.type} ${schema.Organization} .
+              FILTER(isiri(?org)) 
+            }
           }
-          ?org ${rdf.type} ${schema.Organization} .
-          FILTER(isiri(?org)) 
         }`)
       })
 
@@ -367,36 +380,43 @@ describe('@hydrofoil/shape-to-query', () => {
                 ?resource3 ?resource4 ?resource5.
               }
               WHERE {
-                VALUES (?resource1) {
-                  (<https://new.wikibus.org/page/brands>)
-                }
                 { 
-                  ?resource1 schema:mainEntity ?resource2. 
-                }
-                UNION
-                {
-                  ?resource1 schema:mainEntity ?resource2.
+                  SELECT ?resource1 ?resource2 {
                     VALUES (?resource1) {
                       (<https://new.wikibus.org/page/brands>)
                     }
-                    ?resource1 schema:mainEntity ?resource2.
-                    ?resource2 rdf:type*/hydra:memberAssertion ?resource9.
-                    ?resource9 hydra:property ?resource11.
-                    VALUES ?resource11 { rdf:type }
-                    ?resource9 hydra:object ?resource8.
-                    ?resource8 ^rdf:type ?resource7.
-                    ?resource7 skos:prefLabel ?resource6.
-                    BIND(IRI((CONCAT((str(?resource2)), "?i=", (ENCODE_FOR_URI((LCASE((SUBSTR(?resource6, 1, 1))))))))) as ?resource3)
-                    BIND(rdfs:label as ?resource4)
-                    ?resource2 rdf:type*/hydra:memberAssertion ?resource9.
-                    ?resource9 hydra:property ?resource11.
-                    VALUES ?resource11 { rdf:type }
-                    ?resource9 hydra:object ?resource8.
-                    ?resource8 ^rdf:type ?resource7.
-                    ?resource7 skos:prefLabel ?resource6.
-                    BIND(UCASE((SUBSTR(?resource6, 1 , 1 ))) as ?resource5)
+                    ?resource1 schema:mainEntity ?resource2, ?resource2.
+                  } 
                 }
-                ?resource1 schema:mainEntity ?resource2.
+                UNION
+                {
+                    SELECT ?resource3 ?resource4 ?resource5 {
+                      VALUES (?resource1) {
+                        (<https://new.wikibus.org/page/brands>)
+                      }
+                      ?resource1 schema:mainEntity ?resource2.
+                      VALUES (?resource1) {
+                        (<https://new.wikibus.org/page/brands>)
+                      }
+                      ?resource1 schema:mainEntity ?resource2.
+                      ?resource2 rdf:type*/hydra:memberAssertion ?resource9.
+                      ?resource9 hydra:property ?resource11.
+                      VALUES ?resource11 { rdf:type }
+                      ?resource9 hydra:object ?resource8.
+                      ?resource8 ^rdf:type ?resource7.
+                      ?resource7 skos:prefLabel ?resource6.
+                      BIND(IRI((CONCAT((str(?resource2)), "?i=", (ENCODE_FOR_URI((LCASE((SUBSTR(?resource6, 1, 1))))))))) as ?resource3)
+                      BIND(rdfs:label as ?resource4)
+                      ?resource2 rdf:type*/hydra:memberAssertion ?resource9.
+                      ?resource9 hydra:property ?resource11.
+                      VALUES ?resource11 { rdf:type }
+                      ?resource9 hydra:object ?resource8.
+                      ?resource8 ^rdf:type ?resource7.
+                      ?resource7 skos:prefLabel ?resource6.
+                      BIND(UCASE((SUBSTR(?resource6, 1 , 1 ))) as ?resource5)
+                      ?resource1 schema:mainEntity ?resource2.
+                    }
+                }
               }`)
           })
 
@@ -645,22 +665,26 @@ describe('@hydrofoil/shape-to-query', () => {
         expect(query).to.be.a.query(sparql`
           SELECT * WHERE {
             {
-              {
-                BIND(?node as ?node_0)
-              } UNION {
-                ?node ${foaf.knows}* ?node_0_i .
-                ?node_0_i ${foaf.knows} ?node_0 .
+              SELECT ?node_0_i ?node_0 {
+                {
+                  BIND(?node as ?node_0)
+                } UNION {
+                  ?node ${foaf.knows}* ?node_0_i .
+                  ?node_0_i ${foaf.knows} ?node_0 .
+                }
               }
             }
             UNION
             {
-              {
-                BIND(?node as ?node_0)
-              } UNION {
-                ?node ${foaf.knows}* ?node_0_i .
-                ?node_0_i ${foaf.knows} ?node_0 .
+              SELECT ?node_0 ?node_0_0 {
+                {
+                  BIND(?node as ?node_0)
+                } UNION {
+                  ?node ${foaf.knows}* ?node_0_i .
+                  ?node_0_i ${foaf.knows} ?node_0 .
+                }
+                ?node_0 ${foaf.name} ?node_0_0 .
               }
-              ?node_0 ${foaf.name} ?node_0_0 .
             }
           }
         `)
@@ -776,14 +800,18 @@ describe('@hydrofoil/shape-to-query', () => {
         expect(query).to.be.a.query(sparql`
           SELECT * WHERE {
             {
-              ?node ${foaf.knows}* ?node_0_i .
-              ?node_0_i ${foaf.knows} ?node_0 .
+              SELECT ?node_0_i ?node_0 WHERE {
+                ?node ${foaf.knows}* ?node_0_i .
+                ?node_0_i ${foaf.knows} ?node_0 .
+              }
             }
             UNION
             {
-              ?node ${foaf.knows}* ?node_0_i .
-              ?node_0_i ${foaf.knows} ?node_0 .
-              ?node_0 ${foaf.name} ?node_0_0 .
+              SELECT ?node_0 ?node_0_0 {
+                ?node ${foaf.knows}* ?node_0_i .
+                ?node_0_i ${foaf.knows} ?node_0 .
+                ?node_0 ${foaf.name} ?node_0_0 .
+              }
             }
           }
         `)
