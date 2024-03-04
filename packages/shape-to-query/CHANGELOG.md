@@ -1,5 +1,17 @@
 # @hydrofoil/shape-to-query
 
+## 0.10.0
+
+### Minor Changes
+
+- f4ed155: Massive performance improvement achieved by reducing nesting on `sh:node` with the use of a union of subqueries
+- 7b337cc: Added a `requiresFullContext` to control node expressions which need the full path from targets when rendered in a `UNION`
+
+### Patch Changes
+
+- 52f18ab: build(deps): bump @vocabulary/sh from 1.0.1 to 1.1.3
+- 8b10285: Avoid equality `FILTER` in the implementation of `sh:hasValue` which would produce unexpected results.
+
 ## 0.9.4
 
 ### Patch Changes
