@@ -1,6 +1,7 @@
 import { NamedNode } from 'rdf-js'
 import type { GraphPointer } from 'clownface'
 import { SELECT, sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
+import rdf from '@zazuko/env'
 import ModelFactory, { ModelFactoryOptions } from '../model/ModelFactory.js'
 import { NodeShape } from '../model/NodeShape.js'
 import { flatten, ShapePatterns, union } from './shapePatterns.js'
@@ -42,9 +43,13 @@ function * flattenChildPatterns(patterns: ShapePatterns) {
 
 function toSubquery(constraints: string | SparqlTemplateResult = '') {
   return (patterns: ShapePatterns) : ShapePatterns => {
+    const variables = rdf.termSet(patterns.constructClause
+      .flatMap(quad => [quad.subject, quad.predicate, quad.object])
+      .filter(term => term.termType === 'Variable'))
+
     return {
       constructClause: patterns.constructClause,
-      whereClause: sparql`${SELECT.ALL.WHERE`${patterns.whereClause}`.WHERE`${constraints}`}`,
+      whereClause: sparql`${SELECT`${[...variables]}`.WHERE`${patterns.whereClause}`.WHERE`${constraints}`}`,
     }
   }
 }

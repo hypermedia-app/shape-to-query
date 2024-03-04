@@ -9,7 +9,7 @@ CONSTRUCT {
 }
 WHERE {
   {
-    SELECT * WHERE {
+    SELECT ?resource1 ?resource2 WHERE {
       VALUES ?resource1 {
         <https://new.wikibus.org/page/brands>
       }
@@ -18,7 +18,7 @@ WHERE {
   }
   UNION
   {
-    SELECT * WHERE {
+    SELECT ?resource2 ?resource3 ?resource9 WHERE {
       VALUES ?resource1 {
         <https://new.wikibus.org/page/brands>
       }

@@ -7,14 +7,14 @@ CONSTRUCT {
 }
 WHERE {
   {
-    SELECT * WHERE {
+    SELECT ?resource1 ?resource2 WHERE {
       ?resource1 rdf:type schema:Person;
         schema:address ?resource2.
     }
   }
   UNION
   {
-    SELECT * WHERE {
+    SELECT ?resource2 ?resource3 ?resource4 WHERE {
       ?resource1 rdf:type schema:Person;
         schema:address ?resource2.
       ?resource2 ?resource3 ?resource4.

@@ -9,7 +9,7 @@ CONSTRUCT {
 }
 WHERE {
   {
-    SELECT * WHERE {
+    SELECT ?resource1 ?resource2 ?resource6 WHERE {
       { ?resource1 schema:parent ?resource2. }
       UNION
       { ?resource1 schema:children ?resource6. }
@@ -17,7 +17,7 @@ WHERE {
   }
   UNION
   {
-    SELECT * WHERE {
+    SELECT ?resource2 ?resource3 ?resource4 WHERE {
       ?resource1 schema:parent ?resource2.
       { ?resource2 schema:givenName ?resource3. }
       UNION
@@ -26,7 +26,7 @@ WHERE {
   }
   UNION
   {
-    SELECT * WHERE {
+    SELECT ?resource6 ?resource7 ?resource8 WHERE {
       ?resource1 schema:children ?resource6.
       { ?resource6 schema:givenName ?resource7. }
       UNION
