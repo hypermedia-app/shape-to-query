@@ -12,12 +12,19 @@ export interface Parameters {
   rootPatterns: SparqlTemplateResult
 }
 
-export interface NodeExpressionResult {
+interface ResultBase {
+  /**
+   * True if a built node expression requires all query pattern leading from shape target to current node
+   */
+  requiresFullContext?: boolean
+}
+
+export interface NodeExpressionResult extends ResultBase {
   patterns: Select | SparqlTemplateResult
   object: Variable
 }
 
-interface InlineExpressionResult {
+interface InlineExpressionResult extends ResultBase {
   inline: SparqlTemplateResult
   patterns?: SparqlTemplateResult
 }

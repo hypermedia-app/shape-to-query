@@ -21,6 +21,7 @@ export class FocusNodeExpression extends NodeExpression {
   buildInlineExpression(arg: Parameters) {
     return {
       inline: sparql`${arg.subject}`,
+      requiresFullContext: true,
     }
   }
 }

@@ -597,13 +597,46 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+      const query = constructQuery(shape)
+      const result = await $rdf.dataset().import(await query.execute(client.query))
 
       // then
       const expected = raw`
         ${ex.people} a ${hydra.Collection} .
         ${ex.people} ${hydra.view} ${ex['people#index']} .
         ${ex['people#index']} a ${ex.AlphabeticallyPagedView}, ${hydra.PartialCollectionView} .
+      `
+      expect(result).to.equalDataset(expected)
+    })
+
+    it('ensure VALUES when sh:this is inside UNION', async () => {
+      // given
+      const shape = parse`
+        <> 
+          ${sh.targetNode} ${ex.people} ;
+          ${sh.property} [ 
+            ${sh.path} ${rdf.type} ; 
+          ] ;
+          ${sh.property} [ 
+            ${sh.path} ${hydra.view} ;
+            ${sh.values} [
+              ${dashSparql.iri}
+              (
+                [ ${dashSparql.concat} ( [ ${dashSparql.str} ( ${sh.this} ) ] "#index" ) ]
+              )
+            ];
+          ];
+        .
+      `
+
+      // when
+      const query = constructQuery(shape)
+      const result = await $rdf.dataset().import(await query.execute(client.query))
+
+      // then
+      const expected = raw`
+        ${ex.people} a ${hydra.Collection} .
+        ${ex.people} ${hydra.view} ${ex['people#index']} .
       `
       expect(result).to.equalDataset(expected)
     })
