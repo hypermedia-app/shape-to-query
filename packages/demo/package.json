@@ -1,6 +1,6 @@
 {
   "name": "shape-to-query",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "repository": "git@github.com:hypermedia-app/shape-to-query.git",
   "author": "tpluscode <tpluscode@users.noreply.github.com>",
   "license": "MIT",
@@ -13,7 +13,7 @@
   },
   "homepage": "https://shape-to-query.hypermedia.app/docs",
   "dependencies": {
-    "@hydrofoil/shape-to-query": "^0.9.4",
+    "@hydrofoil/shape-to-query": "^0.10.0",
     "@rdfjs-elements/rdf-editor": "^0.5.7",
     "@rdfjs-elements/sparql-editor": "^0.2.1",
     "@shoelace-style/shoelace": "^2.13.1",
