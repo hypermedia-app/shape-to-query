@@ -3,4 +3,4 @@
 
 npx lint-staged
 npm run -w shape-to-query postinstall
-git add packages/demo/public/docs/example/
+git add packages/demo/public/docs/example/**/*.rq

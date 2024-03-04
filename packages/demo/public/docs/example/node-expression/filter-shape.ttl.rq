@@ -7,5 +7,7 @@ CONSTRUCT {
 WHERE {
   ?resource1 rdf:type schema:Person;
     (schema:address/schema:addressRegion) ?resource3.
-  FILTER(?resource3 = "CA")
+  VALUES ?resource3 {
+    "CA"
+  }
 }

@@ -25,19 +25,20 @@ describe('model/constraint/hasValue', () => {
   it('generates equality filter for single term', () => {
     // given
     const constraint = new HasValueConstraintComponent([ex.foo])
+    const valueNode = variable()
 
     // when
     const whereClause = constraint.buildPatterns({
       focusNode: $rdf.namedNode('foo'),
-      valueNode: variable(),
+      valueNode,
       variable,
       propertyPath: sparql`path`,
       rootPatterns: undefined,
     })
 
     // then
-    expect(whereClause).to.equalPatterns(sparql`
-      FILTER ( ?x = ${ex.foo} )
+    expect(whereClause).to.equalPatternsVerbatim(sparql`
+      VALUES (${valueNode}) { (${ex.foo}) }
     `)
   })
 

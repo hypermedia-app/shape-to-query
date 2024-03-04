@@ -150,6 +150,25 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
+    it('sh:hasValues', async () => {
+      // given
+      const shape = parse`<>
+        ${sh.property} [
+          ${sh.path} ${schema.knows} ;
+          ${sh.hasValue} ${tbbt('mary-cooper')} ;
+        ] .
+      `
+
+      // when
+      const query = constructQuery(shape)
+      const dataset = await $rdf.dataset().import(await query.execute(client.query))
+
+      // then
+      const subjects = $rdf.clownface({ dataset }).has(schema.knows, tbbt('mary-cooper')).terms
+      expect(subjects).to.have.length(1)
+      expect(subjects).to.deep.contain.members([tbbt('leonard-hofstadter')])
+    })
+
     it('sh:alternativePath chained first in a sequence', async () => {
       // given
       const shape = parse`<> 
