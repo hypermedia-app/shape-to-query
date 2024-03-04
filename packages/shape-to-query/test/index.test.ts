@@ -19,7 +19,7 @@ describe('@hydrofoil/shape-to-query', () => {
       context('class target', () => {
         it('creates an rdf:type pattern', async () => {
           // given
-          const shape = await parse`
+          const shape = parse`
             <>
               a ${sh.NodeShape} ;
               ${sh.targetClass} ${foaf.Person} .
@@ -37,7 +37,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         it('creates an rdf:type pattern for multiple targets', async () => {
           // given
-          const shape = await parse`
+          const shape = parse`
             <>
               a ${sh.NodeShape} ;
               ${sh.targetClass} ${foaf.Person}, ${schema.Person} .
@@ -59,7 +59,7 @@ describe('@hydrofoil/shape-to-query', () => {
     context('property constraints', () => {
       it('creates a simple pattern for predicate path', async () => {
         // given
-        const shape = await parse`
+        const shape = parse`
           <>
             a ${sh.NodeShape} ;
             ${sh.property}
@@ -81,7 +81,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
       it('creates patterns for multiple properties', async () => {
         // given
-        const shape = await parse`
+        const shape = parse`
           <>
             a ${sh.NodeShape} ;
             ${sh.property}
@@ -112,7 +112,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
       it('skips deactivated properties', async () => {
         // given
-        const shape = await parse`
+        const shape = parse`
           <>
             a ${sh.NodeShape} ;
             ${sh.property}
@@ -142,7 +142,7 @@ describe('@hydrofoil/shape-to-query', () => {
     describe('construct', () => {
       it('generates a query for variable', async () => {
         // given
-        const shape = await parse`
+        const shape = parse`
           <>
             a ${sh.NodeShape} ;
             ${sh.property}
@@ -171,7 +171,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
       it('generates a query for IRI node', async () => {
         // given
-        const shape = await parse`
+        const shape = parse`
           <>
             a ${sh.NodeShape} ;
             ${sh.property}
@@ -201,7 +201,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
       it('generates a query with multiple target types', async () => {
         // given
-        const shape = await parse`
+        const shape = parse`
           <>
             a ${sh.NodeShape} ;
             ${sh.targetClass} ${foaf.Person}, ${schema.Person} ;
@@ -228,7 +228,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
       it('generates a query with multiple targets', async () => {
         // given
-        const shape = await parse`
+        const shape = parse`
           <>
             a ${sh.NodeShape} ;
             ${sh.targetNode} ${ex.John} ;
@@ -267,7 +267,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
       it('avoids duplicating variable for same path between constraints', async () => {
         // given
-        const shape = await parse`
+        const shape = parse`
           <>
             a ${sh.NodeShape} ;
             ${sh.targetClass} ${schema.Person} ;
@@ -320,7 +320,7 @@ describe('@hydrofoil/shape-to-query', () => {
         context('constant term expression', () => {
           it('binds the constant values', async () => {
             // given
-            const shape = await parse`
+            const shape = parse`
               <>
                 a ${sh.NodeShape} ;
                 ${sh.property}
@@ -382,7 +382,7 @@ describe('@hydrofoil/shape-to-query', () => {
                     ?resource1 schema:mainEntity ?resource2.
                     ?resource2 rdf:type*/hydra:memberAssertion ?resource9.
                     ?resource9 hydra:property ?resource11.
-                    FILTER(EXISTS { ?resource9 hydra:property rdf:type. })
+                    VALUES ?resource11 { rdf:type }
                     ?resource9 hydra:object ?resource8.
                     ?resource8 ^rdf:type ?resource7.
                     ?resource7 skos:prefLabel ?resource6.
@@ -390,7 +390,7 @@ describe('@hydrofoil/shape-to-query', () => {
                     BIND(rdfs:label as ?resource4)
                     ?resource2 rdf:type*/hydra:memberAssertion ?resource9.
                     ?resource9 hydra:property ?resource11.
-                    FILTER(EXISTS { ?resource9 hydra:property rdf:type. })
+                    VALUES ?resource11 { rdf:type }
                     ?resource9 hydra:object ?resource8.
                     ?resource8 ^rdf:type ?resource7.
                     ?resource7 skos:prefLabel ?resource6.
@@ -417,7 +417,7 @@ describe('@hydrofoil/shape-to-query', () => {
     describe('delete', () => {
       it('deletes from default graph', async () => {
         // given
-        const shape = await parse`
+        const shape = parse`
           <>
             a ${sh.NodeShape} ;
             ${sh.property}
@@ -449,7 +449,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
       it('adds a WITH clause when graph is passed', async () => {
         // given
-        const shape = await parse`
+        const shape = parse`
           <>
             a ${sh.NodeShape} ;
             ${sh.property}
@@ -488,7 +488,7 @@ describe('@hydrofoil/shape-to-query', () => {
     let shape: GraphPointer
 
     before(async () => {
-      shape = await parse`
+      shape = parse`
         <>
           a ${sh.NodeShape} ;
           ${sh.property}
@@ -620,7 +620,7 @@ describe('@hydrofoil/shape-to-query', () => {
     context('sh:zeroOrMorePath', () => {
       it('generates a deep pattern', async () => {
         // given
-        const shape = await parse`
+        const shape = parse`
           <>
             a ${sh.NodeShape} ;
             ${sh.property}
@@ -668,7 +668,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
       it.skip('produces correct CONSTRUCT clause', async () => {
         // given
-        const shape = await parse`
+        const shape = parse`
         <>
           ${sh.property}
             [
@@ -751,7 +751,7 @@ describe('@hydrofoil/shape-to-query', () => {
     context('sh:oneOrMorePath', () => {
       it('generates a deep pattern', async () => {
         // given
-        const shape = await parse`
+        const shape = parse`
           <>
             a ${sh.NodeShape} ;
             ${sh.property}
