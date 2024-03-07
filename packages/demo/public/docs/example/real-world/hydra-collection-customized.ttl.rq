@@ -2,39 +2,39 @@ PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX schema: <http://schema.org/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-CONSTRUCT { ?resource1 hydra:member ?resource2. }
+CONSTRUCT { ?resource1 hydra:member ?resource3. }
 WHERE {
   VALUES ?resource1 {
     <https://new.wikibus.org/brands>
   }
   {
-    SELECT ?resource1 ?resource2 WHERE {
-      ?resource1 ((rdf:type*)/hydra:memberAssertion) ?resource3.
+    SELECT ?resource1 ?resource3 WHERE {
+      ?resource1 ((rdf:type*)/hydra:memberAssertion) ?resource4.
       OPTIONAL {
-        ?resource3 hydra:property ?resource5;
-          hydra:object ?resource4.
-        ?resource2 ?resource5 ?resource4.
+        ?resource4 hydra:property ?resource6;
+          hydra:object ?resource5.
+        ?resource3 ?resource6 ?resource5.
       }
-      FILTER((!(BOUND(?resource5))) || ((BOUND(?resource5)) && (BOUND(?resource2))))
+      FILTER((!(BOUND(?resource6))) || ((BOUND(?resource6)) && (BOUND(?resource3))))
       OPTIONAL {
-        ?resource3 hydra:property ?resource7;
-          hydra:subject ?resource6.
-        ?resource6 ?resource7 ?resource2.
+        ?resource4 hydra:property ?resource8;
+          hydra:subject ?resource7.
+        ?resource7 ?resource8 ?resource3.
       }
-      FILTER((!(BOUND(?resource7))) || ((BOUND(?resource7)) && (BOUND(?resource2))))
+      FILTER((!(BOUND(?resource8))) || ((BOUND(?resource8)) && (BOUND(?resource3))))
       OPTIONAL {
-        ?resource3 hydra:subject ?resource8;
-          hydra:object ?resource9.
-        ?resource8 ?resource2 ?resource9.
+        ?resource4 hydra:subject ?resource9;
+          hydra:object ?resource10.
+        ?resource9 ?resource3 ?resource10.
       }
-      FILTER((!(BOUND(?resource8))) || ((BOUND(?resource8)) && (BOUND(?resource2))))
-      OPTIONAL { ?resource2 schema:dateModified ?resource10. }
-      OPTIONAL { ?resource2 rdfs:label ?resource11. }
+      FILTER((!(BOUND(?resource9))) || ((BOUND(?resource9)) && (BOUND(?resource3))))
+      OPTIONAL { ?resource3 schema:dateModified ?resource11. }
+      OPTIONAL { ?resource3 rdfs:label ?resource12. }
       VALUES ?resource1 {
         <https://new.wikibus.org/brands>
       }
     }
-    ORDER BY DESC (?resource10) (?resource11)
+    ORDER BY DESC (?resource11) (?resource12)
     OFFSET 78
     LIMIT 39
   }

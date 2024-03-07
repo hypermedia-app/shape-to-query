@@ -10,6 +10,7 @@ interface Parameters {
   focusNode: FocusNode
   variable: VariableSequence
   rootPatterns: SparqlTemplateResult
+  rootConstraints?: string | SparqlTemplateResult
   objectNode: Variable
   builder: PatternBuilder
 }
@@ -22,12 +23,12 @@ export default class implements PropertyValueRule {
   constructor(public readonly path: NamedNode, public readonly nodeExpression: NodeExpression, public readonly options: { inverse?: boolean } = {}) {
   }
 
-  buildPatterns({ focusNode, objectNode, variable, rootPatterns, builder }: Parameters): ShapePatterns {
+  buildPatterns({ focusNode, objectNode, variable, rootPatterns, builder, rootConstraints }: Parameters): ShapePatterns {
     const { patterns, requiresFullContext } = builder.build(this.nodeExpression, { subject: focusNode, object: objectNode, variable, rootPatterns })
     let whereClause: SparqlTemplateResult
     let unionPatterns: string | SparqlTemplateResult | undefined
     if ('build' in patterns) {
-      whereClause = sparql`${patterns.WHERE`${rootPatterns}`}`
+      whereClause = sparql`${patterns.WHERE`${rootPatterns}\n${rootConstraints}`}`
     } else {
       whereClause = patterns
       if (requiresFullContext) {

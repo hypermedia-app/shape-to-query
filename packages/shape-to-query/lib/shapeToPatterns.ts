@@ -55,12 +55,6 @@ function toSubquery(constraints: string | SparqlTemplateResult = '') {
 }
 
 function buildNodeShape({ nodeShape, variable, focusNode }: { nodeShape: NodeShape; variable: VariableSequence ; focusNode: FocusNode }) {
-  const properties = nodeShape.buildPatterns({
-    focusNode,
-    variable,
-    rootPatterns: sparql``,
-  })
-
   const constraints = {
     constructClause: [],
     whereClause: nodeShape.buildConstraints({
@@ -70,6 +64,13 @@ function buildNodeShape({ nodeShape, variable, focusNode }: { nodeShape: NodeSha
       rootPatterns: sparql``,
     }),
   }
+
+  const properties = nodeShape.buildPatterns({
+    focusNode,
+    variable,
+    rootPatterns: sparql``,
+    rootConstraints: constraints.whereClause,
+  })
 
   return {
     patterns: flatten(properties, constraints),

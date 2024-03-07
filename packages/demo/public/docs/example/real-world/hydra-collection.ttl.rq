@@ -3,59 +3,59 @@ PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 CONSTRUCT {
-  ?resource1 schema:mainEntity ?resource2.
-  ?resource2 hydra:member ?resource3.
-  ?resource2 hydra:totalItems ?resource9.
+  ?resource1 schema:mainEntity ?resource3.
+  ?resource3 hydra:member ?resource5.
+  ?resource3 hydra:totalItems ?resource11.
 }
 WHERE {
   {
-    SELECT ?resource1 ?resource2 WHERE {
+    SELECT ?resource1 ?resource3 WHERE {
       VALUES ?resource1 {
         <https://new.wikibus.org/page/brands>
       }
-      ?resource1 schema:mainEntity ?resource2.
+      ?resource1 schema:mainEntity ?resource3.
     }
   }
   UNION
   {
-    SELECT ?resource2 ?resource3 ?resource9 WHERE {
+    SELECT ?resource3 ?resource5 ?resource11 WHERE {
       VALUES ?resource1 {
         <https://new.wikibus.org/page/brands>
       }
-      ?resource1 schema:mainEntity ?resource2.
+      ?resource1 schema:mainEntity ?resource3.
       {
-        SELECT ?resource2 ?resource3 WHERE {
-          ?resource2 ((rdf:type*)/hydra:memberAssertion) ?resource5.
-          ?resource5 hydra:property ?resource7.
-          VALUES ?resource7 {
+        SELECT ?resource3 ?resource5 WHERE {
+          ?resource3 ((rdf:type*)/hydra:memberAssertion) ?resource7.
+          ?resource7 hydra:property ?resource9.
+          VALUES ?resource9 {
             rdf:type
           }
-          ?resource5 hydra:object ?resource4.
-          ?resource4 ^rdf:type ?resource3.
-          OPTIONAL { ?resource3 rdfs:label ?resource8. }
+          ?resource7 hydra:object ?resource6.
+          ?resource6 ^rdf:type ?resource5.
+          OPTIONAL { ?resource5 rdfs:label ?resource10. }
           VALUES ?resource1 {
             <https://new.wikibus.org/page/brands>
           }
-          ?resource1 schema:mainEntity ?resource2.
+          ?resource1 schema:mainEntity ?resource3.
         }
-        ORDER BY (?resource8)
+        ORDER BY (?resource10)
         OFFSET 78
         LIMIT 39
       }
       UNION
       {
-        SELECT (COUNT(?resource10) AS ?resource9) WHERE {
-          ?resource2 ((rdf:type*)/hydra:memberAssertion) ?resource12.
-          ?resource12 hydra:property ?resource14.
-          VALUES ?resource14 {
+        SELECT (COUNT(?resource12) AS ?resource11) WHERE {
+          ?resource3 ((rdf:type*)/hydra:memberAssertion) ?resource14.
+          ?resource14 hydra:property ?resource16.
+          VALUES ?resource16 {
             rdf:type
           }
-          ?resource12 hydra:object ?resource11.
-          ?resource11 ^rdf:type ?resource10.
+          ?resource14 hydra:object ?resource13.
+          ?resource13 ^rdf:type ?resource12.
           VALUES ?resource1 {
             <https://new.wikibus.org/page/brands>
           }
-          ?resource1 schema:mainEntity ?resource2.
+          ?resource1 schema:mainEntity ?resource3.
         }
       }
     }

@@ -2,36 +2,36 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX schema: <http://schema.org/>
 CONSTRUCT {
   ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>.
-  ?resource1 schema:containsPlace ?resource2.
-  ?resource2 schema:name ?resource3.
+  ?resource1 schema:containsPlace ?resource3.
+  ?resource3 schema:name ?resource5.
 }
 WHERE {
   {
-    SELECT ?resource1 ?resource2 WHERE {
+    SELECT ?resource1 ?resource3 WHERE {
       ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>;
-        schema:containsPlace ?resource2, ?resource2.
+        schema:containsPlace ?resource3, ?resource3.
       {
-        ?resource2 schema:name ?resource3.
-        VALUES ?resource3 {
+        ?resource3 schema:name ?resource5.
+        VALUES ?resource5 {
           "Schwytz"
         }
-        ?resource6 rdf:type <https://schema.ld.admin.ch/Municipality>.
+        ?resource4 rdf:type <https://schema.ld.admin.ch/Municipality>.
       }
     }
   }
   UNION
   {
-    SELECT ?resource2 ?resource3 WHERE {
+    SELECT ?resource3 ?resource5 WHERE {
       ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>;
-        schema:containsPlace ?resource2.
-      ?resource2 schema:name ?resource3.
-      ?resource1 schema:containsPlace ?resource2.
+        schema:containsPlace ?resource3.
+      ?resource3 schema:name ?resource5.
+      ?resource1 schema:containsPlace ?resource3.
       {
-        ?resource2 schema:name ?resource3.
-        VALUES ?resource3 {
+        ?resource3 schema:name ?resource5.
+        VALUES ?resource5 {
           "Schwytz"
         }
-        ?resource6 rdf:type <https://schema.ld.admin.ch/Municipality>.
+        ?resource4 rdf:type <https://schema.ld.admin.ch/Municipality>.
       }
     }
   }
