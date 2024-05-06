@@ -1,42 +1,35 @@
-import * as path from 'path'
-import * as url from 'url'
 import module from 'module'
-import * as compose from 'docker-compose'
-import waitOn from 'wait-on'
-import StreamClient from 'sparql-http-client'
+import oxigraph from 'oxigraph'
 import { expect } from 'chai'
 import $rdf from '@zazuko/env-node'
 import { hydra, rdf, schema, dashSparql } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
+import { Construct } from '@tpluscode/sparql-builder'
 import { constructQuery } from '../lib/shapeToQuery.js'
 import { parse, raw } from './nodeFactory.js'
 import { ex } from './namespace.js'
 import './chai-dataset.js'
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 const require = module.createRequire(import.meta.url)
 
 const tbbt = $rdf.namespace('http://localhost:8080/data/person/')
 
-const client = new StreamClient({
-  endpointUrl: 'http://localhost:3030/s2q/query',
-  updateUrl: 'http://localhost:3030/s2q/update',
-  storeUrl: 'http://localhost:3030/s2q/data',
-})
-
 describe('@hydrofoil/shape-to-query', () => {
-  before(async function () {
-    this.timeout(100000)
-    await compose.upAll({
-      cwd: path.resolve(__dirname, '../..'),
-    })
-    await waitOn({
-      resources: ['http://localhost:3030'],
-    })
+  let store: oxigraph.Store
 
-    await client.store.put($rdf.fromFile(require.resolve('tbbt-ld/dist/tbbt.nq')))
-    await client.store.post($rdf.fromFile(require.resolve('./store-data.trig')))
+  before(async function () {
+    const dataset = $rdf.dataset()
+    await dataset.import($rdf.fromFile(require.resolve('tbbt-ld/dist/tbbt.nq')))
+    await dataset.import($rdf.fromFile(require.resolve('./store-data.trig')))
+
+    store = new oxigraph.Store([...dataset])
   })
+
+  function runQuery(query: Construct) {
+    return $rdf.dataset(store.query(query.build(), {
+      use_default_graph_as_union: true,
+    }))
+  }
 
   context('executing queries', () => {
     it('sh:zeroOrMorePath includes self node', async () => {
@@ -51,9 +44,9 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape, {
+      const result = runQuery(constructQuery(shape, {
         focusNode: tbbt('sheldon-cooper'),
-      }).execute(client.query))
+      }))
 
       // then
       const expected = raw`
@@ -76,9 +69,9 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape, {
+      const result = runQuery(constructQuery(shape, {
         focusNode: tbbt('sheldon-cooper'),
-      }).execute(client.query))
+      }))
 
       // then
       const expected = raw`
@@ -100,9 +93,9 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape, {
+      const result = runQuery(constructQuery(shape, {
         focusNode: tbbt('howard-wolowitz'),
-      }).execute(client.query))
+      }))
 
       // then
       const expected = raw`
@@ -133,9 +126,9 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape, {
+      const result = runQuery(constructQuery(shape, {
         focusNode: tbbt('penny'),
-      }).execute(client.query))
+      }))
 
       // then
       const expected = raw`
@@ -161,12 +154,12 @@ describe('@hydrofoil/shape-to-query', () => {
 
       // when
       const query = constructQuery(shape)
-      const dataset = await $rdf.dataset().import(await query.execute(client.query))
+      const dataset = runQuery(query)
 
       // then
       const subjects = $rdf.clownface({ dataset }).has(schema.knows, tbbt('mary-cooper')).terms
       expect(subjects).to.have.length(1)
-      expect(subjects).to.deep.contain.members([tbbt('leonard-hofstadter')])
+      expect(subjects[0].value).to.eq(tbbt('leonard-hofstadter').value)
     })
 
     it('sh:alternativePath chained first in a sequence', async () => {
@@ -181,9 +174,9 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape, {
+      const result = runQuery(constructQuery(shape, {
         focusNode: tbbt('mary-cooper'),
-      }).execute(client.query))
+      }))
 
       // then
       const expected = raw`
@@ -214,9 +207,9 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape, {
+      const result = runQuery(constructQuery(shape, {
         focusNode: tbbt('mary-cooper'),
-      }).execute(client.query))
+      }))
 
       // then
       const expected = raw`
@@ -254,7 +247,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
       // when
       const query = constructQuery(shape)
-      const result = await $rdf.dataset().import(await query.execute(client.query))
+      const result = runQuery(query)
 
       // then
       const expected = raw`
@@ -288,7 +281,7 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+      const result = runQuery(constructQuery(shape))
 
       // then
       const expected = raw`
@@ -320,7 +313,7 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+      const result = runQuery(constructQuery(shape))
 
       // then
       const expected = raw`
@@ -343,7 +336,7 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+      const result = runQuery(constructQuery(shape))
 
       // then
       const expected = raw`
@@ -367,7 +360,7 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+      const result = runQuery(constructQuery(shape))
 
       // then
       const expected = raw`
@@ -412,7 +405,7 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+      const result = runQuery(constructQuery(shape))
       const filtered = result.match(null, schema.givenName)
 
       // then
@@ -454,7 +447,7 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+      const result = runQuery(constructQuery(shape))
 
       // then
       const expected = raw`
@@ -509,7 +502,7 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+      const result = runQuery(constructQuery(shape))
 
       // then
       const expected = raw`
@@ -554,7 +547,7 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
       // when
-      const result = await $rdf.dataset().import(await constructQuery(shape).execute(client.query))
+      const result = runQuery(constructQuery(shape))
 
       // then
       const expected = raw`
@@ -598,7 +591,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
       // when
       const query = constructQuery(shape)
-      const result = await $rdf.dataset().import(await query.execute(client.query))
+      const result = runQuery(query)
 
       // then
       const expected = raw`
@@ -631,7 +624,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
       // when
       const query = constructQuery(shape)
-      const result = await $rdf.dataset().import(await query.execute(client.query))
+      const result = runQuery(query)
 
       // then
       const expected = raw`
