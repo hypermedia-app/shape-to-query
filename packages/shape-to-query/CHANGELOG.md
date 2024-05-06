@@ -1,5 +1,11 @@
 # @hydrofoil/shape-to-query
 
+## 0.11.1
+
+### Patch Changes
+
+- 5386bc2: build(deps): bump @vocabulary/dash-sparql from 1.0.1 to 1.0.4
+
 ## 0.11.0
 
 ### Minor Changes
