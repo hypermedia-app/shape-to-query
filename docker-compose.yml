@@ -1,6 +1,16 @@
 version: "3"
 
 services:
+  fuseki:
+    image: ghcr.io/zazuko/fuseki-geosparql:v2.0.3
+    ports:
+      - 3030:3030
+    environment:
+      - ENABLE_DATA_WRITE=true
+      - ENABLE_UPDATE=true
+      - ENABLE_UPLOAD=true
+    volumes:
+      - ./packages/shape-to-query/test/fuseki-config.ttl:/fuseki/config.ttl
   bikeshed:
     build:
       context: .
