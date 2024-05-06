@@ -1,5 +1,17 @@
 # shape-to-query
 
+## 0.0.9
+
+### Patch Changes
+
+- ae800dc: Built with `moduleResolution=NodeNext`
+- Updated dependencies [180f85b]
+- Updated dependencies [ae800dc]
+- Updated dependencies [ae800dc]
+- Updated dependencies [08010b8]
+- Updated dependencies [180f85b]
+  - @hydrofoil/shape-to-query@0.11.0
+
 ## 0.0.8
 
 ### Patch Changes
