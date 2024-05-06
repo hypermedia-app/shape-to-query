@@ -37,7 +37,7 @@
     "@types/chai": "^4.3.5",
     "@types/chai-string": "^1.4.5",
     "@types/debug": "^4.1.8",
-    "@types/n3": "^1.10.4",
+    "@types/n3": "^1.16.4",
     "@types/sinon": "^10.0.15",
     "@types/sparql-http-client": "^3.0.2",
     "@types/sparqljs": "^3.1.10",
