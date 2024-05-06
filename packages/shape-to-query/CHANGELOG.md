@@ -1,5 +1,18 @@
 # @hydrofoil/shape-to-query
 
+## 0.11.0
+
+### Minor Changes
+
+- ae800dc: Update `sparql-http-client` to v3
+
+### Patch Changes
+
+- 180f85b: Update `@tpluscode/rdf-string` to `v1.3.1`
+- ae800dc: Built with `moduleResolution=NodeNext`
+- 08010b8: build(deps): bump @vocabulary/dash from 1.0.1 to 1.0.4
+- 180f85b: Updated `@tpluscode/sparql-builder` to `v2.0.3`
+
 ## 0.10.0
 
 ### Minor Changes
