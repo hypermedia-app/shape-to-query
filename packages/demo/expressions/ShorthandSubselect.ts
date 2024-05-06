@@ -15,7 +15,7 @@ import {
   Parameters,
 } from '@hydrofoil/shape-to-query/nodeExpressions.js'
 import { getOne, getOneOrZero } from '@hydrofoil/shape-to-query/model/nodeExpression/util.js'
-import { ModelFactory } from '@hydrofoil/shape-to-query/model/ModelFactory'
+import { ModelFactory } from '@hydrofoil/shape-to-query/model/ModelFactory.js'
 
 const ex = rdf.namespace('http://example.org/')
 
