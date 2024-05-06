@@ -1,6 +1,6 @@
 import { DatasetCore } from 'rdf-js'
 import { Assertion } from 'chai'
-import { Dataset } from '@zazuko/env/lib/Dataset'
+import { Dataset } from '@zazuko/env/lib/Dataset.js'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

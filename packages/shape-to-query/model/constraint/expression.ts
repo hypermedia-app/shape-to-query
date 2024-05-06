@@ -1,6 +1,6 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { Select, sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import type { SparqlValue } from '@tpluscode/rdf-string/lib/sparql'
+import type { SparqlValue } from '@tpluscode/rdf-string'
 import { NodeExpression, PatternBuilder } from '../nodeExpression/NodeExpression.js'
 import { ModelFactory } from '../ModelFactory.js'
 import ConstraintComponent, { assertTerm, Parameters, PropertyShape } from './ConstraintComponent.js'

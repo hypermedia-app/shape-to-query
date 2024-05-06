@@ -1,7 +1,7 @@
 import { NamedNode } from 'rdf-js'
 import module from 'module'
 import $rdf from '@zazuko/env-node'
-import { Dataset } from '@zazuko/env/lib/Dataset'
+import { Dataset } from '@zazuko/env/lib/Dataset.js'
 import type { AnyPointer, AnyContext, GraphPointer } from 'clownface'
 import { turtle } from '@tpluscode/rdf-string'
 import { Parser } from 'n3'

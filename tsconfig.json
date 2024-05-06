@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2019",
-    "module": "ES2020",
-    "moduleResolution": "Node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "declaration": true,
