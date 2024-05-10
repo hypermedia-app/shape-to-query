@@ -1,6 +1,6 @@
 import { schema } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import { sparql } from '@tpluscode/rdf-string'
 import { variable } from '../../variable.js'
 import { ClassConstraintComponent } from '../../../model/constraint/class.js'

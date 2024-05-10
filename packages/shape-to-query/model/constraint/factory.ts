@@ -1,5 +1,5 @@
 import type { GraphPointer } from 'clownface'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { TRUE } from '../../lib/rdf.js'
 import type { ModelFactory } from '../ModelFactory.js'

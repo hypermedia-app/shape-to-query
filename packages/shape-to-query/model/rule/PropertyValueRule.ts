@@ -1,5 +1,5 @@
-import { NamedNode, Variable } from 'rdf-js'
-import $rdf from '@zazuko/env'
+import type { NamedNode, Variable } from '@rdfjs/types'
+import $rdf from '@zazuko/env/web.js'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { FocusNode } from '../../lib/FocusNode.js'
 import { ShapePatterns } from '../../lib/shapePatterns.js'

@@ -1,7 +1,7 @@
 import type { Term } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import { sparql } from '@tpluscode/sparql-builder'
-import rdf from '@zazuko/env'
+import rdf from '@zazuko/env/web.js'
 import { NodeExpressionBase, Parameters } from '@hydrofoil/shape-to-query/nodeExpressions.js'
 
 const ex = rdf.namespace('http://example.org/')

@@ -1,4 +1,4 @@
-import { Variable } from 'rdf-js'
+import type { Variable } from '@rdfjs/types'
 import { VariableSequence } from '../../lib/variableSequence.js'
 import { ShapePatterns } from '../../lib/shapePatterns.js'
 

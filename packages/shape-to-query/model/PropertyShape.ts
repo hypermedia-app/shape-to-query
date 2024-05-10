@@ -1,4 +1,4 @@
-import { Variable } from 'rdf-js'
+import type { Variable } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import { fromNode, ShaclPropertyPath, toSparql } from 'clownface-shacl-path'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'

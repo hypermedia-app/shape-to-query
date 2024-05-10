@@ -1,4 +1,4 @@
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import type { NamespaceBuilder } from '@rdfjs/namespace'
 
 type Terms = 'optional'

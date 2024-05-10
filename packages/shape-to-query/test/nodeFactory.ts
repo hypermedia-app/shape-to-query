@@ -1,5 +1,5 @@
-import { NamedNode } from 'rdf-js'
 import module from 'module'
+import type { NamedNode } from '@rdfjs/types'
 import $rdf from '@zazuko/env-node'
 import { Dataset } from '@zazuko/env/lib/Dataset.js'
 import type { AnyPointer, AnyContext, GraphPointer } from 'clownface'

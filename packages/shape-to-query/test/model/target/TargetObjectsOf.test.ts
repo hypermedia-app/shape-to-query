@@ -1,5 +1,5 @@
 import { schema } from '@tpluscode/rdf-ns-builders'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import { expect } from 'chai'
 import { sparql } from '@tpluscode/sparql-builder'
 import { createVariableSequence } from '../../../lib/variableSequence.js'

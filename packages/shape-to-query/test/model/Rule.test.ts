@@ -1,7 +1,7 @@
 import { schema } from '@tpluscode/rdf-ns-builders'
 import { sparql } from '@tpluscode/sparql-builder'
 import { expect } from 'chai'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import PropertyValueRule from '../../model/rule/PropertyValueRule.js'
 import TripleRule from '../../model/rule/TripleRule.js'
 import { variable } from '../variable.js'

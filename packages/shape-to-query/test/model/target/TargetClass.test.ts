@@ -1,4 +1,4 @@
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import { foaf, rdf, schema } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import { sparql } from '@tpluscode/sparql-builder'

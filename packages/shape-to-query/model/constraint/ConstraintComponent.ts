@@ -1,4 +1,4 @@
-import { NamedNode, Term, Variable } from 'rdf-js'
+import type { NamedNode, Term, Variable } from '@rdfjs/types'
 import { SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import type { GraphPointer } from 'clownface'
 import { VariableSequence } from '../../lib/variableSequence.js'

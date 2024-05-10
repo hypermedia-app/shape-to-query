@@ -1,6 +1,6 @@
 import { schema, sh } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import { ConstantTermExpression } from '../../../model/nodeExpression/ConstantTermExpression.js'
 import { blankNode, literal, namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'

@@ -1,4 +1,4 @@
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import { sparql } from '@tpluscode/sparql-builder'
 import type { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'

@@ -1,8 +1,8 @@
-import { DatasetCore } from 'rdf-js'
+import type { DatasetCore } from '@rdfjs/types'
 import loadShacl from '@vocabulary/sh'
 import loadDash from '@vocabulary/dash'
 import loadDashSparql from '@vocabulary/dash-sparql'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import { dashSparql } from '@tpluscode/rdf-ns-builders/loose'
 

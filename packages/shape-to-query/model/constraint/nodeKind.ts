@@ -1,4 +1,4 @@
-import { NamedNode, Variable } from 'rdf-js'
+import type { NamedNode, Variable } from '@rdfjs/types'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import ConstraintComponent, { Parameters, PropertyShape } from './ConstraintComponent.js'

@@ -1,3 +1,3 @@
-import { NamedNode, Variable } from 'rdf-js'
+import type { NamedNode, Variable } from '@rdfjs/types'
 
 export type FocusNode = NamedNode | Variable

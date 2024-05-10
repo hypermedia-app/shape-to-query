@@ -2,7 +2,7 @@ import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { expect } from 'chai'
 import { dashSparql, rdf, xsd } from '@tpluscode/rdf-ns-builders'
 import sinon from 'sinon'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import { sparql } from '@tpluscode/sparql-builder'
 import type { GraphPointer } from 'clownface'
 import {
