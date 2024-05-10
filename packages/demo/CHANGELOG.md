@@ -1,5 +1,14 @@
 # shape-to-query
 
+## 0.0.10
+
+### Patch Changes
+
+- 5368d99: Remove usages of `rdf-js`
+- Updated dependencies [23ee904]
+- Updated dependencies [5368d99]
+  - @hydrofoil/shape-to-query@0.11.2
+
 ## 0.0.9
 
 ### Patch Changes

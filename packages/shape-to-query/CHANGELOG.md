@@ -1,5 +1,12 @@
 # @hydrofoil/shape-to-query
 
+## 0.11.2
+
+### Patch Changes
+
+- 23ee904: Using the environment without dependency on streams
+- 5368d99: Remove usages of `rdf-js`
+
 ## 0.11.1
 
 ### Patch Changes
