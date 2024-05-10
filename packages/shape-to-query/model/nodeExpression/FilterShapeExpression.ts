@@ -1,4 +1,4 @@
-import { Term, Variable } from 'rdf-js'
+import type { Term, Variable } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'

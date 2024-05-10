@@ -1,4 +1,4 @@
-import { Term } from 'rdf-js'
+import type { Term } from '@rdfjs/types'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import $rdf from '@zazuko/env'
 import { ModelFactory } from '../ModelFactory.js'

@@ -1,4 +1,4 @@
-import { NamedNode } from 'rdf-js'
+import type { NamedNode } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import { CONSTRUCT, DELETE, WITH } from '@tpluscode/sparql-builder'
 import { shapeToPatterns, Options } from './shapeToPatterns.js'

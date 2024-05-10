@@ -1,4 +1,4 @@
-import { Variable } from 'rdf-js'
+import type { Variable } from '@rdfjs/types'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { sparql } from '@tpluscode/sparql-builder'
 import { IN } from '@tpluscode/sparql-builder/expressions'

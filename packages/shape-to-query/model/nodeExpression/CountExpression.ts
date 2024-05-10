@@ -1,4 +1,4 @@
-import { Term } from 'rdf-js'
+import type { Term } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isBlankNode, isGraphPointer } from 'is-graph-pointer'

@@ -1,4 +1,4 @@
-import { Term } from 'rdf-js'
+import type { Term } from '@rdfjs/types'
 import { SparqlTemplateResult, sparql } from '@tpluscode/sparql-builder'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'

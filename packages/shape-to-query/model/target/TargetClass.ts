@@ -1,4 +1,4 @@
-import { NamedNode } from 'rdf-js'
+import type { NamedNode } from '@rdfjs/types'
 import { sparql } from '@tpluscode/sparql-builder'
 import type { MultiPointer } from 'clownface'
 import $rdf from '@zazuko/env'

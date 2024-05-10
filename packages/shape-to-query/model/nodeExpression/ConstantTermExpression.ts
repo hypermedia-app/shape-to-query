@@ -1,4 +1,4 @@
-import { NamedNode, Literal } from 'rdf-js'
+import type { NamedNode, Literal } from '@rdfjs/types'
 import { sparql } from '@tpluscode/sparql-builder'
 import type { GraphPointer } from 'clownface'
 import { isLiteral, isNamedNode } from 'is-graph-pointer'

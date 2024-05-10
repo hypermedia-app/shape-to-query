@@ -1,4 +1,4 @@
-import { Variable } from 'rdf-js'
+import type { Variable } from '@rdfjs/types'
 import { Assertion, AssertionError } from 'chai'
 import sparql, { SparqlQuery } from 'sparqljs'
 import type { SparqlTemplateResult } from '@tpluscode/rdf-string'

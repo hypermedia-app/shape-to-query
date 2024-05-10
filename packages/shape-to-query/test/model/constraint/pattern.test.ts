@@ -1,4 +1,4 @@
-import { NamedNode } from 'rdf-js'
+import type { NamedNode } from '@rdfjs/types'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import $rdf from '@zazuko/env'

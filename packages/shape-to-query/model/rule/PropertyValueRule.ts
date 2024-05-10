@@ -1,4 +1,4 @@
-import { NamedNode, Variable } from 'rdf-js'
+import type { NamedNode, Variable } from '@rdfjs/types'
 import $rdf from '@zazuko/env'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { FocusNode } from '../../lib/FocusNode.js'

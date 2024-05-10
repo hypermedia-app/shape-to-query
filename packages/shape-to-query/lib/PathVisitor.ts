@@ -1,4 +1,4 @@
-import type { Term } from 'rdf-js'
+import type { Term } from '@rdfjs/types'
 import * as Path from 'clownface-shacl-path'
 import $rdf from '@zazuko/env'
 import { sparql } from '@tpluscode/sparql-builder'

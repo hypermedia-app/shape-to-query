@@ -1,4 +1,4 @@
-import { Term, Variable } from 'rdf-js'
+import type { Term, Variable } from '@rdfjs/types'
 import { Select, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import $rdf from '@zazuko/env'
 import type TermMap from '@rdfjs/term-map'

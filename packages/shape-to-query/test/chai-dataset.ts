@@ -1,4 +1,4 @@
-import { DatasetCore } from 'rdf-js'
+import type { DatasetCore } from '@rdfjs/types'
 import { Assertion } from 'chai'
 import { Dataset } from '@zazuko/env/lib/Dataset.js'
 

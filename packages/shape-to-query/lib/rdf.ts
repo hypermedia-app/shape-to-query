@@ -1,4 +1,4 @@
-import { Literal } from 'rdf-js'
+import type { Literal } from '@rdfjs/types'
 import $rdf from '@zazuko/env'
 import { xsd } from '@tpluscode/rdf-ns-builders/loose'
 

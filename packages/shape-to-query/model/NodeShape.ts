@@ -1,4 +1,4 @@
-import { Variable } from 'rdf-js'
+import type { Variable } from '@rdfjs/types'
 import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { emptyPatterns, flatten, ShapePatterns, union } from '../lib/shapePatterns.js'
 import { PropertyShape } from './PropertyShape.js'
