@@ -1,5 +1,5 @@
 import { sparql } from '@tpluscode/sparql-builder'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import type { GraphPointer } from 'clownface'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import { ShapePatterns } from '../../lib/shapePatterns.js'

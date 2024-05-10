@@ -1,5 +1,5 @@
 import type { NamedNode } from '@rdfjs/types'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import type { MultiPointer } from 'clownface'
 import { sparql } from '@tpluscode/sparql-builder'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'

@@ -1,7 +1,7 @@
 import type { NamedNode } from '@rdfjs/types'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import { PatternConstraintComponent } from '../../../model/constraint/pattern.js'
 import { literal } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'

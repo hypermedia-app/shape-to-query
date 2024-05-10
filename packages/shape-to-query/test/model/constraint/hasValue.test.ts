@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import { sparql } from '@tpluscode/sparql-builder'
 import { ex } from '../../namespace.js'
 import { HasValueConstraintComponent } from '../../../model/constraint/hasValue.js'

@@ -262,7 +262,7 @@ describe('@hydrofoil/shape-to-query', () => {
         ${tbbt('sheldon-cooper')} ${schema.address} [] .
         ${tbbt('sheldon-cooper')} ${schema.parent}  ${tbbt('mary-cooper')} .
       `
-      expect(result.toCanonical()).to.eq(expected.toCanonical())
+      expect(result.toCanonical()).to.eq($rdf.dataset.toCanonical(expected))
     })
 
     it('sh:or merges multiple reused shapes in logical sum', async () => {

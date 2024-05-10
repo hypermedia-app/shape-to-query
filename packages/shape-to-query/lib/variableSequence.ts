@@ -1,5 +1,5 @@
 import type { Term, Variable } from '@rdfjs/types'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import type { GraphPointer } from 'clownface'
 import { toSparql } from 'clownface-shacl-path'
 

@@ -1,6 +1,6 @@
 import type { DatasetCore } from '@rdfjs/types'
 import { Assertion } from 'chai'
-import { Dataset } from '@zazuko/env/lib/Dataset.js'
+import { Dataset } from '@zazuko/env/lib/DatasetExt.js'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

@@ -1,7 +1,7 @@
 import type { NamedNode } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import { SELECT, sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import rdf from '@zazuko/env'
+import rdf from '@zazuko/env/web.js'
 import ModelFactory, { ModelFactoryOptions } from '../model/ModelFactory.js'
 import { NodeShape } from '../model/NodeShape.js'
 import { flatten, ShapePatterns, union } from './shapePatterns.js'

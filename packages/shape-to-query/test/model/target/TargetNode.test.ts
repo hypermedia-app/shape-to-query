@@ -1,5 +1,5 @@
 import { foaf, schema } from '@tpluscode/rdf-ns-builders'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import { expect } from 'chai'
 import { TargetNode } from '../../../model/target/index.js'
 import { createVariableSequence } from '../../../lib/variableSequence.js'

@@ -1,7 +1,7 @@
 import type { NamedNode } from '@rdfjs/types'
 import { sparql } from '@tpluscode/sparql-builder'
 import type { MultiPointer } from 'clownface'
-import $rdf from '@zazuko/env'
+import $rdf from '@zazuko/env/web.js'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import { isGraphPointer } from 'is-graph-pointer'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'
