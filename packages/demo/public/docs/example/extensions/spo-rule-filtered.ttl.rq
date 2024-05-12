@@ -1,10 +1,10 @@
 PREFIX schema: <http://schema.org/>
-CONSTRUCT { ?resource1 ?resource2 ?resource3. }
+CONSTRUCT { ?resource1 ?resource3 ?resource4. }
 WHERE {
   VALUES ?resource1 {
     <https://tbbt.tv/sheldon-cooper>
   }
-  ?resource1 ?resource2 ?resource3.
-  FILTER(!(?resource2 = schema:knows))
-  FILTER((ISIRI(?resource3)) || (ISLITERAL(?resource3)))
+  ?resource1 ?resource3 ?resource4.
+  FILTER(!(?resource3 = schema:knows))
+  FILTER((ISIRI(?resource4)) || (ISLITERAL(?resource4)))
 }

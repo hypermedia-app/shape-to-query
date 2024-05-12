@@ -2,10 +2,10 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX schema: <http://schema.org/>
 CONSTRUCT {
   ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>.
-  ?resource1 schema:containsPlace ?resource2.
+  ?resource1 schema:containsPlace ?resource3.
 }
 WHERE {
   ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>;
-    schema:containsPlace ?resource2, ?resource2.
-  ?resource2 rdf:type <https://schema.ld.admin.ch/Municipality>.
+    schema:containsPlace ?resource3, ?resource3.
+  ?resource3 rdf:type <https://schema.ld.admin.ch/Municipality>.
 }

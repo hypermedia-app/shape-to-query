@@ -3,22 +3,22 @@ PREFIX schema: <http://schema.org/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 CONSTRUCT {
   ?resource1 rdf:type schema:Person.
-  ?resource1 schema:givenName ?resource2.
-  ?resource1 schema:familyName ?resource3.
-  ?resource4 ?resource5 ?resource6.
+  ?resource1 schema:givenName ?resource3.
+  ?resource1 schema:familyName ?resource4.
+  ?resource5 ?resource6 ?resource7.
 }
 WHERE {
   ?resource1 rdf:type schema:Person.
   {
-    { ?resource1 schema:givenName ?resource2. }
+    { ?resource1 schema:givenName ?resource3. }
     UNION
-    { ?resource1 schema:familyName ?resource3. }
+    { ?resource1 schema:familyName ?resource4. }
   }
   UNION
   {
     ?resource1 rdf:type schema:Person.
-    BIND(<http://example.org/JobTitles> AS ?resource4)
-    BIND(hydra:member AS ?resource5)
-    ?resource1 schema:jobTitle ?resource6.
+    BIND(<http://example.org/JobTitles> AS ?resource5)
+    BIND(hydra:member AS ?resource6)
+    ?resource1 schema:jobTitle ?resource7.
   }
 }
