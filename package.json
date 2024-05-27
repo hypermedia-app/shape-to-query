@@ -2,7 +2,7 @@
   "name": "shape-to-query",
   "private": "true",
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "husky",
     "postinstall": "patch-package",
     "lint": "eslint . --ext .ts --quiet --ignore-path .gitignore",
     "test:query": "c8 -o coverage/query --all --reporter=lcov --reporter=text mocha packages/shape-to-query/test/store.test.ts",
@@ -24,7 +24,7 @@
     "@typescript-eslint/eslint-plugin": "^6.9.1",
     "@typescript-eslint/parser": "^6.9.1",
     "c8": "^9.1.0",
-    "husky": "^8.0.3",
+    "husky": "^9.0.11",
     "jest-resolve": "^29.5.0",
     "lint-staged": "^15",
     "madge": "^7.0.0",
