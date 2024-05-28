@@ -1,0 +1,9 @@
+undefined
+
+Unknown file extension: rq
+at
+Error: Unknown file extension: rq
+    at fromFile (file:///Users/tplus/projects/github/hydrofoil/shape-to-query/node_modules/@zazuko/rdf-utils-fs/fromFile.js:18:15)
+    at file:///Users/tplus/projects/github/hydrofoil/shape-to-query/packages/demo/build-examples.ts:33:56
+    at Array.map (<anonymous>)
+    at file:///Users/tplus/projects/github/hydrofoil/shape-to-query/packages/demo/build-examples.ts:30:53
