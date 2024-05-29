@@ -13,10 +13,13 @@ interface FakePatternsImpl {
 
 interface FakeInlinePatterns {
   (...args: Parameters<NodeExpression['buildInlineExpression']>): ReturnType<NodeExpression['buildInlineExpression']>
-
 }
 
-export function fakeExpression(patterns: Select | SparqlTemplateResult | FakePatternsImpl = sparql``, inlinePatterns?: FakeInlinePatterns): NodeExpression {
+interface FakeExpression extends NodeExpression {
+  rootIsFocusNode: boolean
+}
+
+export function fakeExpression(patterns: Select | SparqlTemplateResult | FakePatternsImpl = sparql``, inlinePatterns?: FakeInlinePatterns): FakeExpression {
   const build = sinon.stub()
   if (typeof patterns === 'function') {
     build.callsFake(({ variable, object = variable(), ...args }, builder) => ({
@@ -30,6 +33,7 @@ export function fakeExpression(patterns: Select | SparqlTemplateResult | FakePat
   const fake: any = {
     term: $rdf.blankNode(),
     build,
+    rootIsFocusNode: false,
   }
 
   if (inlinePatterns) {

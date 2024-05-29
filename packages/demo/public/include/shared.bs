@@ -11,6 +11,17 @@
 	"s2q-how-tos": {
 		"href": "../how-tos",
 		"title": "How-Tos"
+	},
+	"shacl-af": {
+		"href": "https://w3c.github.io/shacl/shacl-af/",
+		"title": "SHACL Advanced Features 1.1 (draft)",
+    "authors": [
+      "Holger Knublauch",
+      "Dean Allemang",
+      "Simon Steyskal"
+    ],
+    "status": "Community Group Draft Report",
+    "date": "8 March 2024"
 	}
 }
 </pre>

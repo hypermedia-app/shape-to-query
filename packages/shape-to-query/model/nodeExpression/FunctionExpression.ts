@@ -85,6 +85,10 @@ export abstract class FunctionExpression extends NodeExpressionBase {
     return this.args.some(arg => arg.requiresFullContext)
   }
 
+  public get rootIsFocusNode() {
+    return false
+  }
+
   _buildPatterns(args: Parameters, builder: PatternBuilder) {
     const { expressions, patterns } = this.evaluateArguments(args, builder)
 

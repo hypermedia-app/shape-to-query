@@ -19,6 +19,10 @@ export class HydraCollectionMemberExpression extends NodeExpressionBase {
     return false
   }
 
+  get rootIsFocusNode(): boolean {
+    return false
+  }
+
   constructor(public readonly term: Term) {
     super()
   }

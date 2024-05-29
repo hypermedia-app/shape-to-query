@@ -25,6 +25,10 @@ export class OrderByExpression extends NodeExpressionBase {
     return this.nodes.requiresFullContext || this.orderExpression.requiresFullContext
   }
 
+  public get rootIsFocusNode() {
+    return this.nodes.rootIsFocusNode
+  }
+
   constructor(
     public readonly term: Term,
     public readonly orderExpression: NodeExpression,
@@ -34,9 +38,11 @@ export class OrderByExpression extends NodeExpressionBase {
   }
 
   _buildPatterns({ subject, object, rootPatterns, variable }: Parameters, builder: PatternBuilder): Select {
-    const selectOrPatterns = builder.build(this.nodes, { subject, object, variable, rootPatterns })
+    const innerSubject = this.rootIsFocusNode ? subject : variable()
+
+    const selectOrPatterns = builder.build(this.nodes, { subject: innerSubject, object, variable, rootPatterns })
     const { patterns: orderPatterns, object: orderVariable } = builder.build(this.orderExpression, {
-      subject: selectOrPatterns.object,
+      subject: this.rootIsFocusNode ? innerSubject : selectOrPatterns.object,
       variable,
       rootPatterns,
     })
@@ -45,7 +51,13 @@ export class OrderByExpression extends NodeExpressionBase {
     if ('build' in selectOrPatterns.patterns) {
       select = selectOrPatterns.patterns
     } else {
-      select = SELECT`${subject} ${selectOrPatterns.object}`.WHERE`${selectOrPatterns.patterns}`
+      if (this.rootIsFocusNode) {
+        select = SELECT`${subject}`
+      } else {
+        select = SELECT`(${innerSubject} as ${subject}) ${selectOrPatterns.object}`
+      }
+
+      select = select.WHERE`${selectOrPatterns.patterns}`
     }
 
     return select.WHERE`OPTIONAL { ${orderPatterns} }`.ORDER().BY(orderVariable, this.descending)

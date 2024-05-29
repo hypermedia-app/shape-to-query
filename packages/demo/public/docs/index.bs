@@ -55,6 +55,8 @@ Targets are used to match specific focus nodes of a given Node Shape. The most c
 a target of the root shape. However, targets declared in nested shapes, such as when using [[#shacl-logical-constraints]] or 
 [[#shacl-node]], can also be used to narrow down the query results.
 
+Note: Multiple target types are combined with `UNION`
+
 ### Node targets (`sh:targetNode`) ### {#target-node}
 
 Note: SHACL spec: [[shacl#targetNode]]
@@ -392,7 +394,7 @@ Advisement: `sh:in` is not currently supported as property of the root node shap
 
 # SHACL Advanced Features # {#shacl-advanced}
 
-Advisement: This section uses the currently published [[!shacl-af|SHACL Advanced Features]] spec as well as parts of the [Community Group Draft](https://w3c.github.io/shacl/shacl-af). The implementation may become outdated in time or deviate from the spec to accommodate for the specifics of generating queries.
+Advisement: This section uses the currently published [[shacl-af|SHACL Advanced Features]] spec as well as parts of the [Community Group Draft](https://w3c.github.io/shacl/shacl-af). The implementation may become outdated in time or deviate from the spec to accommodate for the specifics of generating queries.
 
 Issue(19): Issue epic on GitHub
 
@@ -428,7 +430,7 @@ The object of the property at `sh:path` is the current focus node
   </s2q-snippet>
 </div>
 
-Issue: the example above is quite nonsensical, just shows the mechanics of `sh:this`. Would be nice to come up with something more pragmatic
+Note: For a pragmatic use of Focus Node Expression, see [[#extension-node-expression-target]].
 
 ### Constant Term Expression ### {#shacl-constant-term-expressions}
 
@@ -479,7 +481,8 @@ It will be used to filter the values of said property to only those conforming t
   </s2q-snippet>
 </div>
 
-Issue: The above example is nonsensical. Should come up with a better use of `sh:filterShape` without `sh:nodes`
+Note: For a practical use of Filter Shape Expression using a [[#shacl-focus-node-expressions]]
+(without `sh:nodes`), see [[#extension-node-expression-target]].
 
 Additionally, `sh:nodes` property can be used to select different set of values nodes for that property.
 
@@ -798,11 +801,60 @@ The shape-to-query library introduces some additional constructs which handle sp
 
 ALl extensions use the namespace `https://hypermedia.app/shape-to-query#`. The preferred prefix is `s2q:`.
 
+## Targets ## {#extension-targets}
+
+### Node Expression Target ### {#extension-node-expression-target}
+
+Custom targets, which are instances of `s2q:NodeExpressionTarget` ar called **Node Expression Targets**. They are used to define the focus nodes of a shape using [[shacl-af#node-expressions|Node Expressions]].
+
+Any of the simple expressions will generate SPARQL patterns directly in the query.
+
+<div class="example">
+  Find names of resources which are elements of `ex:prop` lists
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/target/nodeExpression-path.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/target/nodeExpression-path.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+Node Expression Targets become especially useful when combined with [[#shacl-limit]], [[#shacl-offset]] 
+and [[#shacl-orderBy-expression]] to paginate the results and only select a subset of candidate focus
+nodes, which cannot be achieved by other means of SHACL-AF. Such as in the example below, where the 
+Node Expression generates a [[sparql11-query#subqueries|subselect]].
+
+<div class="example">
+  Find names of resources which are elements of `ex:prop` lists
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/target/nodeExpression-subquery.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/target/nodeExpression-subquery.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
 ## Node Expressions ## {#extension-expressions}
 
 ### Optional Expression ### {#extension-optional}
 
-An optional expression is a [[rdf11-concepts#dfn-blank-node|blank node]] which has a single object of the `s2q:optional` property which is a well-formed [[!shacl-af|dfn-node-expression]].
+An optional expression is a [[rdf11-concepts#dfn-blank-node|blank node]] which has a single object of the `s2q:optional` property which is a well-formed [[shacl-af#node-expressions|Node Expression]].
 
 <div class="example">
   Find people who do not have an address region or whose address region is Texas
@@ -826,7 +878,7 @@ An optional expression is a [[rdf11-concepts#dfn-blank-node|blank node]] which h
 
 ### SPO rule ### {#extension-spo-rule}
 
-An SPO rule is a blank node with the RDF type `s2q:SPORule`. It can optionally have the properties `s2q:predicateFilter` and `s2q:objectFilter`, value of which must be a well-formed [[!shacl-af|dfn-node-expression]].
+An SPO rule is a blank node with the RDF type `s2q:SPORule`. It can optionally have the properties `s2q:predicateFilter` and `s2q:objectFilter`, value of which must be a well-formed [[shacl-af#node-expressions|Node Expression]].
 
 This rule can be used to mimic a behavior of `DESCRIBE` queries which would return all direct properties of the given focus node, which is otherwise not possible with other SHACL constructs.
 

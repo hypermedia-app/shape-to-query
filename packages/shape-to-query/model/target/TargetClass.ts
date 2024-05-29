@@ -2,15 +2,16 @@ import type { NamedNode } from '@rdfjs/types'
 import { sparql } from '@tpluscode/sparql-builder'
 import type { MultiPointer } from 'clownface'
 import $rdf from '@zazuko/env/web.js'
-import { rdf } from '@tpluscode/rdf-ns-builders'
+import { rdf, sh } from '@tpluscode/rdf-ns-builders'
 import { isGraphPointer } from 'is-graph-pointer'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'
 import { ShapePatterns } from '../../lib/shapePatterns.js'
-import { Target, Parameters } from './Target.js'
+import { Parameters, Target } from './Target.js'
 
-export class TargetClass extends Target {
+export class TargetClass implements Target {
+  static readonly property = sh.targetClass
+
   constructor(public readonly classes: MultiPointer<NamedNode>) {
-    super()
   }
 
   buildPatterns({ focusNode, variable }: Parameters): ShapePatterns {

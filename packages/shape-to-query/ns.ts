@@ -5,6 +5,7 @@ type Terms = 'optional'
 | 'SPORule'
 | 'predicateFilter'
 | 'objectFilter'
+| 'NodeExpressionTarget'
 
 const ns: NamespaceBuilder<Terms> = $rdf.namespace('https://hypermedia.app/shape-to-query#')
 

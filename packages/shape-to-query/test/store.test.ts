@@ -6,6 +6,7 @@ import { hydra, rdf, schema, dashSparql } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { Construct } from '@tpluscode/sparql-builder'
 import { constructQuery } from '../lib/shapeToQuery.js'
+import { s2q } from '../index.js'
 import { parse, raw } from './nodeFactory.js'
 import { ex } from './namespace.js'
 import './chai-dataset.js'
@@ -630,6 +631,49 @@ describe('@hydrofoil/shape-to-query', () => {
       const expected = raw`
         ${ex.people} a ${hydra.Collection} .
         ${ex.people} ${hydra.view} ${ex['people#index']} .
+      `
+      expect(result).to.equalDataset(expected)
+    })
+
+    it('node expression target subquery', () => {
+      // given
+      const shape = parse`
+        <> 
+          ${sh.target} [
+            a ${s2q.NodeExpressionTarget} ;
+            ${sh.expression} [
+              ${sh.limit} 1 ;
+              ${sh.nodes} [
+                ${sh.orderBy} [ ${sh.path} ${schema.familyName} ] ;
+                ${sh.nodes} [
+                  ${sh.filterShape} [
+                    ${sh.expression} [
+                      ${dashSparql.contains} (
+                        [ ${sh.path} ${schema.jobTitle} ]
+                        "physicist" 
+                      )
+                    ] ;
+                  ] ;
+                ] ;
+              ] ;
+            ] ;
+          ] ;
+          ${sh.property} [ 
+            ${sh.path} ${schema.givenName} ; 
+          ],[ 
+            ${sh.path} ${schema.familyName} ; 
+          ] ;
+        .
+      `
+
+      // when
+      const query = constructQuery(shape)
+      const result = runQuery(query)
+
+      // then
+      const expected = raw`
+        ${tbbt('sheldon-cooper')} ${schema.givenName} "Sheldon" .
+        ${tbbt('sheldon-cooper')} ${schema.familyName} "Cooper" .
       `
       expect(result).to.equalDataset(expected)
     })

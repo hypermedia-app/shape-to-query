@@ -3,9 +3,16 @@ import { expect } from 'chai'
 import ModelFactory from '../../model/ModelFactory.js'
 import { blankNode, parse } from '../nodeFactory.js'
 import { ex } from '../namespace.js'
-import { TargetNode } from '../../model/target/index.js'
+import {
+  NodeExpressionTarget,
+  TargetClass,
+  TargetNode,
+  TargetObjectsOf,
+  TargetSubjectsOf,
+} from '../../model/target/index.js'
 import NodeShape from '../../model/NodeShape.js'
 import PropertyShape from '../../model/PropertyShape.js'
+import s2q from '../../ns.js'
 
 describe('model/ModelFactory', () => {
   let modelFactory: ModelFactory
@@ -17,7 +24,7 @@ describe('model/ModelFactory', () => {
   describe('nodeShape', () => {
     it('creates one TargetNode for all values', async () => {
       // given
-      const pointer = await parse`
+      const pointer = parse`
         <> ${sh.targetNode} ${ex.Foo}, ${ex.Bar} .
       `
 
@@ -175,6 +182,93 @@ describe('model/ModelFactory', () => {
   describe('nodeExpression', () => {
     it('throws when expression is unrecognized', () => {
       expect(() => modelFactory.nodeExpression(blankNode())).to.throw(/Unsupported node expression/)
+    })
+  })
+
+  describe('targets', () => {
+    context('finds built-in target', () => {
+      it('sh:targetNode', async () => {
+        // given
+        const shape = parse`<>
+          ${sh.targetNode} ${ex.Foo} .
+        `
+
+        // when
+        const [target] = modelFactory.targets(shape)
+
+        // then
+        expect(target).to.be.instanceof(TargetNode)
+      })
+
+      it('sh:targetClass', async () => {
+        // given
+        const shape = parse`<>
+          ${sh.targetClass} ${ex.Foo} .
+        `
+
+        // when
+        const [target] = modelFactory.targets(shape)
+
+        // then
+        expect(target).to.be.instanceof(TargetClass)
+      })
+
+      it('sh:targetSubjectsOf', async () => {
+        // given
+        const shape = parse`<>
+          ${sh.targetSubjectsOf} ${ex.foo} .
+        `
+
+        // when
+        const [target] = modelFactory.targets(shape)
+
+        // then
+        expect(target).to.be.instanceof(TargetSubjectsOf)
+      })
+
+      it('sh:targetObjectsOf', async () => {
+        // given
+        const shape = parse`<>
+          ${sh.targetObjectsOf} ${ex.foo} .
+        `
+
+        // when
+        const [target] = modelFactory.targets(shape)
+
+        // then
+        expect(target).to.be.instanceof(TargetObjectsOf)
+      })
+    })
+
+    it('finds custom target', () => {
+      // given
+      const shape = parse`<>
+        ${sh.target} [
+          a ${s2q.NodeExpressionTarget} ;
+          ${sh.expression} ${sh.this} ;
+        ] .
+      `
+
+      // when
+      const [target] = modelFactory.targets(shape)
+
+      // then
+      expect(target).to.be.instanceof(NodeExpressionTarget)
+    })
+
+    it('ignores unrecognized custom targets', () => {
+      // given
+      const shape = parse`<>
+        ${sh.target} [
+          a ${ex.Target} ;
+        ] .
+      `
+
+      // when
+      const targets = modelFactory.targets(shape)
+
+      // then
+      expect(targets).to.be.empty
     })
   })
 })

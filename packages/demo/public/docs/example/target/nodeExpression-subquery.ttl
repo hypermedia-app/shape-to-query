@@ -1,0 +1,46 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX s2q: <https://hypermedia.app/shape-to-query#>
+
+[
+  a sh:NodeShape ;
+  sh:target
+    [
+      a s2q:NodeExpressionTarget ;
+      sh:expression
+        [
+          # 3. Select 10 first results
+          sh:limit 10 ;
+          sh:nodes
+            [
+              # 2. Order by position
+              sh:orderBy
+                [
+                  sh:path schema:position ;
+                ] ;
+              sh:nodes
+                [
+                  # 1. Find all people named John
+                  sh:filterShape
+                    [
+                      sh:property
+                        [
+                          sh:path schema:name ;
+                          sh:pattern "John" ;
+                        ] ;
+                      sh:property
+                        [
+                          sh:path rdf:type ;
+                          sh:hasValue schema:Person ;
+                        ] ;
+                    ] ;
+                ] ;
+            ]
+        ] ;
+    ] ;
+  sh:property
+    [
+      sh:path schema:name ;
+    ] ;
+] .

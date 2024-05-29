@@ -52,9 +52,13 @@ export interface NodeExpression {
    * True if a node expression requires all query patterns leading from shape target to current node
    */
   requiresFullContext: boolean
+
+  get rootIsFocusNode(): boolean
 }
 
-export default abstract class {
+export default abstract class implements NodeExpression {
+  term: Term
+
   build({ subject, rootPatterns, variable, object = variable() }: Parameters, builder: PatternBuilder): NodeExpressionResult {
     const patterns = this._buildPatterns({ subject, rootPatterns, variable, object }, builder)
     return {
@@ -65,6 +69,6 @@ export default abstract class {
   }
 
   public abstract get requiresFullContext(): boolean
-
+  public abstract get rootIsFocusNode(): boolean
   protected abstract _buildPatterns(arg: Required<Parameters>, builder: PatternBuilder): Select | SparqlTemplateResult
 }

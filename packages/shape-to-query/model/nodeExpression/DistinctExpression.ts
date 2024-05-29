@@ -21,6 +21,10 @@ export class DistinctExpression extends SubselectExpression {
     return this.distinct.requiresFullContext
   }
 
+  public get rootIsFocusNode() {
+    return this.distinct.rootIsFocusNode
+  }
+
   public constructor(term: Term, private distinct: NodeExpression) {
     super(term, distinct)
   }

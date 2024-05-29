@@ -20,6 +20,10 @@ export class CountExpression extends NodeExpressionImpl {
     return this.expression.requiresFullContext
   }
 
+  public get rootIsFocusNode() {
+    return this.expression.rootIsFocusNode
+  }
+
   constructor(public readonly term: Term, public expression: NodeExpression) {
     super()
   }

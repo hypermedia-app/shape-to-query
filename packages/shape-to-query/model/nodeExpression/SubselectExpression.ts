@@ -7,6 +7,10 @@ export abstract class SubselectExpression extends NodeExpressionBase {
     return this.nodes.requiresFullContext
   }
 
+  public get rootIsFocusNode() {
+    return this.nodes.rootIsFocusNode
+  }
+
   protected constructor(public readonly term: Term, private readonly nodes: NodeExpression) {
     super()
   }
@@ -18,7 +22,14 @@ export abstract class SubselectExpression extends NodeExpressionBase {
     if ('build' in selectOrPatterns.patterns) {
       select = selectOrPatterns.patterns
     } else {
-      select = SELECT`${arg.subject} ${selectOrPatterns.object}`.WHERE`${selectOrPatterns.patterns}`
+      const root = this.rootIsFocusNode
+        ? `(${arg.subject} as ?root)`
+        : arg.subject
+      const leaf = this.rootIsFocusNode
+        ? `(${selectOrPatterns.object} as ?root)`
+        : selectOrPatterns.object
+
+      select = SELECT`${root} ${leaf}`.WHERE`${selectOrPatterns.patterns}`
     }
 
     return this._applySubselectClause(select)

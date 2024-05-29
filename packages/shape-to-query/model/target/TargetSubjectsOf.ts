@@ -4,12 +4,14 @@ import type { MultiPointer } from 'clownface'
 import { sparql } from '@tpluscode/sparql-builder'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'
 import { isGraphPointer } from 'is-graph-pointer'
+import { sh } from '@tpluscode/rdf-ns-builders'
 import { ShapePatterns } from '../../lib/shapePatterns.js'
 import { Target, Parameters } from './Target.js'
 
-export class TargetSubjectsOf extends Target {
+export class TargetSubjectsOf implements Target {
+  static readonly property = sh.targetSubjectsOf
+
   constructor(public readonly properties: MultiPointer<NamedNode>) {
-    super()
   }
 
   buildPatterns({ focusNode, variable }: Parameters): ShapePatterns {

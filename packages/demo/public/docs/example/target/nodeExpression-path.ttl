@@ -1,0 +1,20 @@
+PREFIX ex: <http://example.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+PREFIX tbbt: <https://tbbt.tv/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX s2q: <https://hypermedia.app/shape-to-query#>
+
+[
+  a sh:NodeShape ;
+  sh:target [
+    a s2q:NodeExpressionTarget ;
+    sh:expression [
+      sh:path ( ex:prop [ sh:zeroOrMorePath rdf:rest] rdf:first ) ;
+    ] ;
+  ] ;
+  sh:property
+    [
+      sh:path schema:name ;
+    ] ;
+] .
