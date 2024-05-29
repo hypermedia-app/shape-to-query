@@ -2,11 +2,11 @@ PREFIX schema: <http://schema.org/>
 CONSTRUCT { ?resource1 <http://example.org/latestArticles> ?resource2. }
 WHERE {
   {
-    SELECT (?resource3 AS ?resource1) ?resource2 WHERE {
-      ?resource3 schema:publication ?resource2.
-      OPTIONAL { ?resource2 schema:datePublished ?resource4. }
+    SELECT ?resource1 ?resource2 WHERE {
+      ?resource1 schema:publication ?resource2.
+      OPTIONAL { ?resource2 schema:datePublished ?resource3. }
     }
-    ORDER BY DESC (?resource4)
+    ORDER BY DESC (?resource3)
     LIMIT 10
   }
 }

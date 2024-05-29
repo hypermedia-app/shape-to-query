@@ -134,7 +134,7 @@ describe('model/nodeExpression/OrderByExpression', () => {
       }, new PatternBuilder())
 
       // then
-      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT (?root as ?ret) ?foo WHERE {
+      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
         ?root prop ?foo .
         OPTIONAL { ?foo order-by ?bar . }
       }
@@ -179,7 +179,7 @@ describe('model/nodeExpression/OrderByExpression', () => {
       }, new PatternBuilder())
 
       // then
-      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT (?root as ?ret) ?foo WHERE {
+      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
         ?root prop ?foo .
         OPTIONAL { ?foo order-by ?bar . }
       }
@@ -189,7 +189,7 @@ describe('model/nodeExpression/OrderByExpression', () => {
     it('appends order to a root subquery expression', () => {
       // given
       const orderBy = fakeExpression(({ subject, object }) => sparql`${subject} order-by ${object} .`)
-      const nodes = fakeExpression(({ subject, object }) => SELECT`${subject} ${object}`.WHERE`${object} a ${schema.Article} .`)
+      const nodes = fakeExpression(({ subject, object }) => SELECT`${subject} ${object}`.WHERE`${subject} read ${object} . ${object} a ${schema.Article} .`)
       const expr = new OrderByExpression($rdf.blankNode(), orderBy, nodes, true)
 
       // when
@@ -202,6 +202,7 @@ describe('model/nodeExpression/OrderByExpression', () => {
 
       // then
       expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
+        ?root read ?foo .
         ?foo a schema:Article .
         OPTIONAL { ?foo order-by ?bar . }
       }
