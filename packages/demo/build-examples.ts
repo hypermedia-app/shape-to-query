@@ -25,7 +25,7 @@ nodeExpressions.push(
 )
 
 ;(async function () {
-  const shapeGraphs = await globby('**/example/**/*.ttl', { cwd })
+  const shapeGraphs = await globby(process.argv[2] || '**/example/**/*.ttl', { cwd })
 
   await Promise.all(shapeGraphs.map(toAbsolutePath).map(async shapeGraphPath => {
     let generated

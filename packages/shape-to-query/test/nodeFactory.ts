@@ -2,7 +2,7 @@ import module from 'module'
 import type { NamedNode } from '@rdfjs/types'
 import $rdf from '@zazuko/env-node'
 import { Dataset } from '@zazuko/env/lib/Dataset.js'
-import type { AnyPointer, AnyContext, GraphPointer } from 'clownface'
+import type { AnyContext, AnyPointer, GraphPointer } from 'clownface'
 import { turtle } from '@tpluscode/rdf-string'
 import { Parser } from 'n3'
 import debug from 'debug'
@@ -26,13 +26,19 @@ export function literal(value: string, dtOrLang?: string | NamedNode) {
 interface ParseHelper {
   (...params: Parameters<typeof turtle>): GraphPointer<NamedNode, Dataset>
   file(file: string): Promise<GraphPointer<NamedNode>>
+  any(...params: Parameters<typeof turtle>): AnyPointer<AnyContext, Dataset>
 }
 
-export const parse: ParseHelper = ((...[strings, ...values]: Parameters<typeof turtle>) => {
-  const dataset = raw(strings, ...values)
+function parseWrapper<T extends AnyPointer>(getNode: (ptr: AnyPointer) => T) {
+  return (...[strings, ...values]: Parameters<typeof turtle>) => {
+    const dataset = raw(strings, ...values)
+    return getNode($rdf.clownface({ dataset }))
+  }
+}
 
-  return $rdf.clownface({ dataset }).namedNode('')
-}) as any
+export const parse: ParseHelper = parseWrapper(ptr => ptr.namedNode('')) as any
+
+parse.any = parseWrapper(ptr => ptr) as any
 
 const require = module.createRequire(import.meta.url)
 parse.file = async (file: string) => {

@@ -10,6 +10,10 @@ export class ConstantTermExpression extends NodeExpression {
     return false
   }
 
+  public get rootIsFocusNode() {
+    return false
+  }
+
   constructor(public readonly term: NamedNode | Literal) {
     super()
   }

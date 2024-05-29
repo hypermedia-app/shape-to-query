@@ -248,18 +248,18 @@ describe('@hydrofoil/shape-to-query', () => {
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
           ?resource ${rdf.type} ${schema.Person} .
-          ?resource ${schema.spouse} ?spouse .
           ?parent ${schema.parent} ?resource .
+          ?resource ${schema.spouse} ?spouse .
           ?resource ${foaf.name} ?resource_0 .
         } WHERE {
           {
-            VALUES (?resource) { (${ex.John}) }
-          } UNION {
             ?resource ${rdf.type} ${schema.Person} .
           } UNION {
-            ?resource ${schema.spouse} ?spouse .
+            VALUES (?resource) { (${ex.John}) }
           } UNION {
             ?parent ${schema.parent} ?resource .
+          } UNION {
+            ?resource ${schema.spouse} ?spouse .
           }
           ?resource ${foaf.name} ?resource_0 .
         }`)

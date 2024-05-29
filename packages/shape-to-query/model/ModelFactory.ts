@@ -1,18 +1,20 @@
-import type { NamedNode, Term } from '@rdfjs/types'
+import type { NamedNode } from '@rdfjs/types'
 import type { AnyPointer, GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isGraphPointer, isNamedNode } from 'is-graph-pointer'
-import $rdf from '@zazuko/env/web.js'
 import { turtle } from '@tpluscode/rdf-string'
+import { rdf } from '@tpluscode/rdf-ns-builders'
 import { TRUE } from '../lib/rdf.js'
 import { NodeExpression, nodeExpressions } from '../nodeExpressions.js'
 import { rules } from '../rules.js'
 import NodeShapeImpl, { NodeShape } from './NodeShape.js'
-import * as target from './target/index.js'
+import { Target } from './target/index.js'
+import * as builtInTargets from './target/index.js'
 import PS, { PropertyShape } from './PropertyShape.js'
 import PVR, { PropertyValueRule } from './rule/PropertyValueRule.js'
 import createConstraints from './constraint/factory.js'
 import { Rule } from './rule/Rule.js'
+import { TargetConstructor } from './target/Target.js'
 
 interface Constructor<T> {
   new(...args: unknown[]): T
@@ -22,26 +24,44 @@ export interface ModelFactoryOptions {
   NodeShape?: Constructor<NodeShape>
   PropertyShape?: Constructor<PropertyShape>
   PropertyValueRule?: Constructor<PropertyValueRule>
+  targets?: Iterable<TargetConstructor>
 }
 
 export interface ModelFactory {
   nodeShape(pointer: GraphPointer): NodeShape
-  targets(pointer: GraphPointer): target.Target[]
+  targets(pointer: GraphPointer): Target[]
   propertyShape(pointer: GraphPointer): PropertyShape
   propertyRule(expression: GraphPointer, path: GraphPointer): PropertyValueRule
   rule(rule: GraphPointer): Rule[]
   nodeExpression(pointer: AnyPointer): NodeExpression
 }
 
-export default class {
+export default class implements ModelFactory {
   private readonly PropertyShape: Constructor<PropertyShape>
   private readonly NodeShape: Constructor<NodeShape>
   private readonly PropertyValueRule: Constructor<PropertyValueRule>
+  private readonly targetLookups: Array<(ptr: GraphPointer) => Target[]>
 
-  constructor({ PropertyShape = PS, NodeShape = NodeShapeImpl, PropertyValueRule = PVR }: ModelFactoryOptions = {}) {
+  constructor({ PropertyShape = PS, NodeShape = NodeShapeImpl, PropertyValueRule = PVR, targets = Object.values(builtInTargets) }: ModelFactoryOptions = {}) {
     this.PropertyShape = PropertyShape
     this.NodeShape = NodeShape
     this.PropertyValueRule = PropertyValueRule
+    this.targetLookups = [...targets].map((Target) => (ptr) => {
+      if ('property' in Target) {
+        const nodes = ptr.out(Target.property)
+
+        if (nodes.terms.length) {
+          return [new Target(nodes, this)]
+        }
+
+        return []
+      }
+
+      return ptr
+        .out(sh.target)
+        .has(rdf.type, Target.type)
+        .map((x) => new Target(x, this))
+    })
   }
 
   nodeShape(pointer: GraphPointer): NodeShape {
@@ -60,23 +80,8 @@ export default class {
     )
   }
 
-  targets(pointer: GraphPointer): target.Target[] {
-    const targetMap = $rdf.termMap<Term, Constructor<target.Target>>([
-      [sh.targetNode, target.TargetNode],
-      [sh.targetClass, target.TargetClass],
-      [sh.targetSubjectsOf, target.TargetSubjectsOf],
-      [sh.targetObjectsOf, target.TargetObjectsOf],
-    ])
-
-    const result: target.Target[] = []
-    for (const [prop, Impl] of targetMap) {
-      const nodes = pointer.out(prop)
-      if (nodes.terms.length) {
-        result.push(new Impl(nodes))
-      }
-    }
-
-    return result
+  targets(pointer: GraphPointer): Target[] {
+    return this.targetLookups.flatMap(lookup => lookup(pointer))
   }
 
   propertyShape(pointer: GraphPointer) {

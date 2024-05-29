@@ -14,6 +14,10 @@ export class FilterShapeExpression extends NodeExpressionBase {
     return this.nodes.requiresFullContext
   }
 
+  public get rootIsFocusNode() {
+    return this.nodes.rootIsFocusNode
+  }
+
   constructor(public readonly term: Term, public readonly shape: NodeShape, public readonly nodes: NodeExpression = new FocusNodeExpression()) {
     super()
   }

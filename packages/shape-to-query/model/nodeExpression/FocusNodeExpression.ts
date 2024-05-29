@@ -18,6 +18,10 @@ export class FocusNodeExpression extends NodeExpression {
     return true
   }
 
+  public get rootIsFocusNode() {
+    return true
+  }
+
   _buildPatterns({ subject, object }: Omit<Parameters, 'rootPatterns'>) {
     return sparql`BIND (${subject} as ${object})`
   }

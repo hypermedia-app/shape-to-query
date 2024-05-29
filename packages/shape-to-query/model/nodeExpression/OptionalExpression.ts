@@ -21,6 +21,10 @@ export class OptionalExpression extends NodeExpressionBase {
     return this.inner.requiresFullContext
   }
 
+  public get rootIsFocusNode() {
+    return this.inner.rootIsFocusNode
+  }
+
   constructor(public readonly term: Term, public readonly inner: NodeExpression) {
     super()
   }

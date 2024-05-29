@@ -1,10 +1,14 @@
 import type { Term } from '@rdfjs/types'
 import { SELECT, Select } from '@tpluscode/sparql-builder'
-import NodeExpressionBase, { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
+import NodeExpressionBase, { NodeExpression, NodeExpressionResult, Parameters, PatternBuilder } from './NodeExpression.js'
 
 export abstract class SubselectExpression extends NodeExpressionBase {
   public get requiresFullContext(): boolean {
     return this.nodes.requiresFullContext
+  }
+
+  public get rootIsFocusNode() {
+    return this.nodes.rootIsFocusNode
   }
 
   protected constructor(public readonly term: Term, private readonly nodes: NodeExpression) {
@@ -13,16 +17,22 @@ export abstract class SubselectExpression extends NodeExpressionBase {
 
   _buildPatterns(arg: Parameters, builder: PatternBuilder) {
     const selectOrPatterns = builder.build(this.nodes, arg)
-    let select: Select
 
     if ('build' in selectOrPatterns.patterns) {
-      select = selectOrPatterns.patterns
-    } else {
-      select = SELECT`${arg.subject} ${selectOrPatterns.object}`.WHERE`${selectOrPatterns.patterns}`
+      return this._applySubselectClause(selectOrPatterns.patterns, selectOrPatterns, arg, builder)
     }
 
-    return this._applySubselectClause(select)
+    const { subject: focusNode } = arg
+
+    let select: Select
+    if (this.rootIsFocusNode) {
+      select = SELECT`${focusNode}`
+    } else {
+      select = SELECT`${focusNode} ${selectOrPatterns.object}`
+    }
+
+    return this._applySubselectClause(select.WHERE`${selectOrPatterns.patterns}`, selectOrPatterns, arg, builder)
   }
 
-  protected abstract _applySubselectClause(select: Select): Select
+  protected abstract _applySubselectClause(select: Select, queryPatterns: NodeExpressionResult, arg: Parameters, builder: PatternBuilder): Select
 }

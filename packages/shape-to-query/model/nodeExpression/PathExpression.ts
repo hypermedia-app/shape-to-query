@@ -28,6 +28,10 @@ export class PathExpression extends NodeExpressionBase {
     return this.nodes?.requiresFullContext ?? false
   }
 
+  public get rootIsFocusNode() {
+    return false
+  }
+
   constructor(public readonly term: Term, public readonly path: SparqlTemplateResult, public readonly nodes?: NodeExpression) {
     super()
   }

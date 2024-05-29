@@ -49,6 +49,10 @@ export class ShorthandSubselectExpression implements NodeExpression {
     return this.expression.requiresFullContext
   }
 
+  get rootIsFocusNode(): boolean {
+    return this.expression.rootIsFocusNode
+  }
+
   constructor(public readonly term: Term, public expression: NodeExpression) {
   }
 
