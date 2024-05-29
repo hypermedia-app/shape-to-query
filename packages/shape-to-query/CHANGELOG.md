@@ -1,5 +1,18 @@
 # @hydrofoil/shape-to-query
 
+## 0.12.0
+
+### Minor Changes
+
+- e4991e9: Added a required field `rootIsFocusNode` to `NodeExpression`
+
+### Patch Changes
+
+- e4991e9: Added general support for Custom Targets in code (not yet possible to inject own implementations)
+- e4991e9: Subqueries now only select the one variable when it's the Focus Node itself
+- e4991e9: Added a custom target `Node Expression Target`
+- e4991e9: Order By Expression incorrectly bound return variables
+
 ## 0.11.2
 
 ### Patch Changes
