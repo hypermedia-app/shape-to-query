@@ -11,11 +11,8 @@ import { RdfEditor } from '@rdfjs-elements/rdf-editor/src/RdfEditor.js'
 import { SlInput } from '@shoelace-style/shoelace'
 import { isGraphPointer } from 'is-graph-pointer'
 import { turtle } from '@tpluscode/rdf-string'
-import sparql from 'sparqljs'
 import type { MultiPointer } from 'clownface'
-
-const parser = new sparql.Parser()
-const generator = new sparql.Generator()
+import optimize from '@hydrofoil/s2q-optimizer'
 
 const initialShape = turtle`[
   a ${$rdf.ns.sh.NodeShape} ;
@@ -74,8 +71,6 @@ export class App extends LitElement {
       })
       : constructQuery(this.shape)
 
-    const generated = query.build()
-    const parsed = parser.parse(generated)
-    this.query = generator.stringify(parsed)
+    this.query = optimize(query.build())
   }
 }

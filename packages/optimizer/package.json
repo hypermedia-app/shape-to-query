@@ -1,0 +1,14 @@
+{
+  "name": "@hydrofoil/s2q-optimizer",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "@zazuko/env": "^2.2",
+    "sparqljs": "^3.7.1",
+    "ts-pattern": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/sparqljs": "^3.1.10"
+  }
+}

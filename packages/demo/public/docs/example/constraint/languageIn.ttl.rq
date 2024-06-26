@@ -6,6 +6,6 @@ CONSTRUCT {
 }
 WHERE {
   ?resource1 rdf:type schema:Person;
-    schema:jobTitle ?resource2, ?resource2.
+    schema:jobTitle ?resource2.
   FILTER(LANG(?resource2) IN("de", "en"))
 }
