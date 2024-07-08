@@ -1,5 +1,5 @@
 import type { Term } from '@rdfjs/types'
-import { SELECT, Select } from '@tpluscode/sparql-builder'
+import type sparqljs from 'sparqljs'
 import NodeExpressionBase, { NodeExpression, NodeExpressionResult, Parameters, PatternBuilder } from './NodeExpression.js'
 
 export abstract class SubselectExpression extends NodeExpressionBase {
@@ -15,24 +15,28 @@ export abstract class SubselectExpression extends NodeExpressionBase {
     super()
   }
 
-  _buildPatterns(arg: Parameters, builder: PatternBuilder) {
+  _buildPatterns(arg: Parameters, builder: PatternBuilder): sparqljs.SelectQuery {
     const selectOrPatterns = builder.build(this.nodes, arg)
 
-    if ('build' in selectOrPatterns.patterns) {
-      return this._applySubselectClause(selectOrPatterns.patterns, selectOrPatterns, arg, builder)
+    if (selectOrPatterns.patterns[0].type === 'query') {
+      return this._applySubselectClause(selectOrPatterns.patterns[0], selectOrPatterns, arg, builder)
     }
 
     const { subject: focusNode } = arg
-
-    let select: Select
-    if (this.rootIsFocusNode) {
-      select = SELECT`${focusNode}`
-    } else {
-      select = SELECT`${focusNode} ${selectOrPatterns.object}`
+    if (focusNode.termType !== 'Variable') {
+      throw new Error('Focus node must be a variable in subselect')
     }
 
-    return this._applySubselectClause(select.WHERE`${selectOrPatterns.patterns}`, selectOrPatterns, arg, builder)
+    const select: sparqljs.SelectQuery = {
+      type: 'query',
+      queryType: 'SELECT',
+      prefixes: {},
+      variables: this.rootIsFocusNode ? [focusNode] : [focusNode, selectOrPatterns.object],
+      where: selectOrPatterns.patterns,
+    }
+
+    return this._applySubselectClause(select, selectOrPatterns, arg, builder)
   }
 
-  protected abstract _applySubselectClause(select: Select, queryPatterns: NodeExpressionResult, arg: Parameters, builder: PatternBuilder): Select
+  protected abstract _applySubselectClause(select: sparqljs.SelectQuery, queryPatterns: NodeExpressionResult, arg: Parameters, builder: PatternBuilder): sparqljs.SelectQuery
 }

@@ -1,8 +1,8 @@
 import type { Variable } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
-import { fromNode, ShaclPropertyPath, toSparql } from 'clownface-shacl-path'
-import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
+import { fromNode, ShaclPropertyPath, toAlgebra } from 'clownface-shacl-path'
 import { sh } from '@tpluscode/rdf-ns-builders'
+import type sparqljs from 'sparqljs'
 import { flatten, ShapePatterns, union } from '../lib/shapePatterns.js'
 import PathVisitor from '../lib/PathVisitor.js'
 import { PropertyValueRule } from './rule/PropertyValueRule.js'
@@ -19,7 +19,7 @@ interface Components {
 
 export interface PropertyShape extends Shape {
   buildPatterns(arg: BuildParameters): ShapePatterns
-  buildConstraints(arg: BuildParameters): string | SparqlTemplateResult
+  buildConstraints(arg: BuildParameters): sparqljs.Pattern[]
 }
 
 export default class extends Shape implements PropertyShape {
@@ -63,24 +63,24 @@ export default class extends Shape implements PropertyShape {
         const result = nodeConstraint.shape.buildPatterns({
           focusNode: pathEnd,
           variable,
-          rootPatterns: sparql`${rootPatterns}\n${patterns.whereClause}`,
+          rootPatterns: [...rootPatterns, ...patterns.whereClause],
         })
 
         const childConstraints = nodeConstraint.shape.buildConstraints({
           focusNode: pathEnd,
           variable,
-          rootPatterns: sparql`${rootPatterns}\n${patterns.whereClause}`,
+          rootPatterns: [...rootPatterns, ...patterns.whereClause],
           valueNode: variable(),
         })
 
         return {
           childPatterns: {
             ...result,
-            whereClause: sparql`
-            ${rootPatterns}
-            ${patterns.whereClause}
-            ${result.whereClause}
-          `,
+            whereClause: [
+              ...rootPatterns,
+              ...patterns.whereClause,
+              ...result.whereClause,
+            ],
           },
           childConstraints,
         }
@@ -90,29 +90,34 @@ export default class extends Shape implements PropertyShape {
     return { ...patterns, childPatterns }
   }
 
-  buildConstraints({ focusNode, variable, rootPatterns }: BuildParameters): string | SparqlTemplateResult {
+  buildConstraints({ focusNode, variable, rootPatterns }: BuildParameters): sparqljs.Pattern[] {
     if (!this.constraints.length) {
-      return ''
+      return []
     }
 
     const valueNode = variable.for(focusNode, this._path)
 
-    const propertyPath = toSparql(this._path)
-    const constraints = this.constraints.map(c => c.buildPatterns({
+    const propertyPath = toAlgebra(this._path)
+    const constraints: sparqljs.Pattern[] = this.constraints.flatMap(c => c.buildPatterns({
       focusNode,
       valueNode,
       propertyPath,
       variable,
       rootPatterns,
-    })).filter(Boolean)
+    }))
 
     if (constraints.length === 0) {
-      return ''
+      return []
     }
 
-    return sparql`
-      ${focusNode} ${propertyPath} ${valueNode} .
-      ${constraints}
-    `
+    return [{
+      type: 'bgp',
+      triples: [{
+        subject: focusNode,
+        predicate: propertyPath,
+        object: valueNode,
+      }],
+    },
+    ...constraints]
   }
 }

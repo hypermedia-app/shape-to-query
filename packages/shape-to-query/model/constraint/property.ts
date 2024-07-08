@@ -1,4 +1,5 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
+import type sparqljs from 'sparqljs'
 import { PropertyShape } from '../PropertyShape.js'
 import { ModelFactory } from '../ModelFactory.js'
 import ConstraintComponent, { assertTerm, Parameters, PropertyShape as PS } from './ConstraintComponent.js'
@@ -16,7 +17,7 @@ export class PropertyConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPropertyShapePatterns(arg: Parameters) {
+  buildPropertyShapePatterns(arg: Parameters): sparqljs.Pattern[] {
     return this.shape.buildConstraints(arg)
   }
 }

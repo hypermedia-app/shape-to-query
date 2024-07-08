@@ -2,7 +2,7 @@ import type { Term } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isBlankNode, isGraphPointer } from 'is-graph-pointer'
-import { SELECT } from '@tpluscode/sparql-builder'
+import type sparqljs from 'sparqljs'
 import { ModelFactory } from '../ModelFactory.js'
 import NodeExpressionImpl, { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
 import { getOne, getOneOrZero } from './util.js'
@@ -28,14 +28,26 @@ export class CountExpression extends NodeExpressionImpl {
     super()
   }
 
-  _buildPatterns({ subject, variable, object, rootPatterns }: Parameters, builder: PatternBuilder) {
+  _buildPatterns({ subject, variable, object, rootPatterns }: Parameters, builder: PatternBuilder): sparqljs.SelectQuery {
     const where = builder.build(this.expression, {
       subject,
       variable,
       rootPatterns,
     })
 
-    return SELECT`(COUNT(${where.object}) as ${object})`
-      .WHERE`${where.patterns}`
+    return {
+      type: 'query',
+      queryType: 'SELECT',
+      prefixes: {},
+      variables: [{
+        variable: object,
+        expression: {
+          type: 'aggregate',
+          aggregation: 'count',
+          expression: where.object,
+        },
+      }],
+      where: where.patterns,
+    }
   }
 }

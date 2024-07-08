@@ -1,20 +1,19 @@
 import type { BaseQuad } from '@rdfjs/types'
 import $rdf from '@zazuko/env/web.js'
-import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import { UNION } from '@tpluscode/sparql-builder/expressions'
+import type sparqljs from 'sparqljs'
 
 export interface ShapePatterns {
-  whereClause: string | SparqlTemplateResult
+  whereClause: sparqljs.Pattern[]
   constructClause: BaseQuad[]
   childPatterns?: ShapePatterns[]
   /**
    * Patterns to inserted into a UNION block
    */
-  unionPatterns?: string | SparqlTemplateResult
+  unionPatterns?: sparqljs.Pattern[]
 }
 
 export const emptyPatterns: ShapePatterns = {
-  whereClause: '',
+  whereClause: [],
   constructClause: [],
   childPatterns: [],
 }
@@ -24,8 +23,8 @@ export function flatten(...patterns: ShapePatterns[]): ShapePatterns {
     return emptyPatterns
   }
 
-  const whereClause = patterns.reduce((prev, next) => sparql`${prev}\n${next.whereClause}`, sparql``)
-  const unionPatterns = patterns.reduce((prev, next) => !next.unionPatterns ? prev : sparql`${prev}\n${next.unionPatterns}`, sparql``)
+  const whereClause = patterns.flatMap(p => p.whereClause)
+  const unionPatterns = patterns.flatMap(p => p.unionPatterns || [])
 
   return {
     whereClause,
@@ -50,16 +49,27 @@ export function union(...patterns: ShapePatterns[]): ShapePatterns {
   const unionedPatterns = nonEmpty.filter(({ whereClause }) => whereClause)
 
   if (unionedPatterns.length === 1) {
-    return unionedPatterns[0]
+    let whereClause = unionedPatterns[0].whereClause
+    if (whereClause.length === 1 && whereClause[0].type === 'group' && whereClause[0].patterns[0].type !== 'query') {
+      whereClause = whereClause[0].patterns
+    }
+
+    return {
+      ...unionedPatterns[0],
+      whereClause,
+    }
   }
 
-  const unionedBgps = unionedPatterns.map(({ unionPatterns, whereClause }, _, arr) =>
-    arr.length > 1 && unionPatterns ? sparql`${unionPatterns}\n${whereClause}` : whereClause,
+  const unionedBgps = unionedPatterns.flatMap(({ unionPatterns, whereClause }, _, arr) =>
+    arr.length > 1 && unionPatterns ? [...unionPatterns, ...whereClause] : whereClause,
   )
 
   return {
     constructClause: unique(nonEmpty.flatMap(p => p.constructClause)),
-    whereClause: sparql`${UNION(...unionedBgps)}`,
+    whereClause: [{
+      type: 'union',
+      patterns: unionedBgps,
+    }],
     childPatterns: nonEmpty.flatMap(p => p.childPatterns || []),
   }
 }

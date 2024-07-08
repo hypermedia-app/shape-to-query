@@ -1,10 +1,8 @@
 import type { NamedNode } from '@rdfjs/types'
-import { sparql } from '@tpluscode/sparql-builder'
 import type { MultiPointer } from 'clownface'
 import $rdf from '@zazuko/env/web.js'
 import { rdf, sh } from '@tpluscode/rdf-ns-builders'
 import { isGraphPointer } from 'is-graph-pointer'
-import { VALUES } from '@tpluscode/sparql-builder/expressions'
 import { ShapePatterns } from '../../lib/shapePatterns.js'
 import { Parameters, Target } from './Target.js'
 
@@ -19,19 +17,25 @@ export class TargetClass implements Target {
       const typeQuad = $rdf.quad(focusNode, rdf.type, this.classes.term)
       return {
         constructClause: [typeQuad],
-        whereClause: sparql`${typeQuad}`,
+        whereClause: [{
+          type: 'bgp',
+          triples: [typeQuad],
+        }],
       }
     }
 
     const classVariable = variable()
     const typeQuad = $rdf.quad(focusNode, rdf.type, classVariable)
-    const values = this.classes.terms.map(term => ({ [classVariable.value]: term }))
+    const values = this.classes.terms.map(term => ({ ['?' + classVariable.value]: term }))
     return {
       constructClause: [typeQuad],
-      whereClause: sparql`
-        ${typeQuad}
-        ${VALUES(...values)}
-      `,
+      whereClause: [{
+        type: 'bgp',
+        triples: [typeQuad],
+      }, {
+        type: 'values',
+        values,
+      }],
     }
   }
 }

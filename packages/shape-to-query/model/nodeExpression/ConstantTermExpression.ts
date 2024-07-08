@@ -1,9 +1,9 @@
 import type { NamedNode, Literal } from '@rdfjs/types'
-import { sparql } from '@tpluscode/sparql-builder'
 import type { GraphPointer } from 'clownface'
 import { isLiteral, isNamedNode } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import NodeExpression, { Parameters } from './NodeExpression.js'
+import type sparqljs from 'sparqljs'
+import NodeExpression, { InlineExpressionResult, Parameters } from './NodeExpression.js'
 
 export class ConstantTermExpression extends NodeExpression {
   public get requiresFullContext(): boolean {
@@ -34,13 +34,17 @@ export class ConstantTermExpression extends NodeExpression {
     return isLiteral(pointer)
   }
 
-  _buildPatterns({ object }: Omit<Parameters, 'rootPatterns'>) {
-    return sparql`BIND(${this.term} as ${object})`
+  _buildPatterns({ object }: Omit<Parameters, 'rootPatterns'>): sparqljs.BindPattern {
+    return {
+      type: 'bind',
+      expression: this.term,
+      variable: object,
+    }
   }
 
-  buildInlineExpression() {
+  buildInlineExpression(): InlineExpressionResult {
     return {
-      inline: sparql`${this.term}`,
+      inline: this.term,
     }
   }
 }

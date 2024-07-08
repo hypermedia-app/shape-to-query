@@ -1,7 +1,7 @@
 import type { Term } from '@rdfjs/types'
-import { sparql } from '@tpluscode/sparql-builder'
 import type { GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
+import type sparqljs from 'sparqljs'
 import { ModelFactory } from '../ModelFactory.js'
 import s2q from '../../ns.js'
 import NodeExpressionBase, { PatternBuilder, Parameters, NodeExpression } from './NodeExpression.js'
@@ -29,9 +29,10 @@ export class OptionalExpression extends NodeExpressionBase {
     super()
   }
 
-  protected _buildPatterns(arg: Required<Parameters>, builder: PatternBuilder) {
-    return sparql`OPTIONAL {
-      ${builder.build(this.inner, arg).patterns}
-    }`
+  protected _buildPatterns(arg: Required<Parameters>, builder: PatternBuilder): sparqljs.OptionalPattern {
+    return {
+      type: 'optional',
+      patterns: builder.build(this.inner, arg).patterns,
+    }
   }
 }

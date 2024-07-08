@@ -1,6 +1,6 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import { emptyPatterns, flatten, union } from '../lib/shapePatterns.js'
+import type sparqljs from 'sparqljs'
+import { emptyPatterns, flatten, ShapePatterns, union } from '../lib/shapePatterns.js'
 import { FocusNode } from '../lib/FocusNode.js'
 import { VariableSequence } from '../lib/variableSequence.js'
 import { ConstraintComponent } from './constraint/ConstraintComponent.js'
@@ -10,7 +10,7 @@ import type { AndConstraintComponent } from './constraint/and.js'
 export interface BuildParameters {
   focusNode: FocusNode
   variable: VariableSequence
-  rootPatterns: SparqlTemplateResult
+  rootPatterns: sparqljs.Pattern[]
 }
 
 export interface Shape {
@@ -21,7 +21,7 @@ export default class {
   constructor(public readonly constraints: ReadonlyArray<ConstraintComponent>) {
   }
 
-  buildLogicalConstraints({ focusNode, variable, rootPatterns }: BuildParameters) {
+  buildLogicalConstraints({ focusNode, variable, rootPatterns }: BuildParameters): ShapePatterns {
     if (!this.constraints.length) {
       return emptyPatterns
     }

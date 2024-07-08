@@ -1,6 +1,6 @@
 import type { NamedNode, Term, Variable } from '@rdfjs/types'
-import { SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import type { GraphPointer } from 'clownface'
+import type sparqljs from 'sparqljs'
 import { VariableSequence } from '../../lib/variableSequence.js'
 import { FocusNode } from '../../lib/FocusNode.js'
 
@@ -13,20 +13,20 @@ export interface Parameters {
   focusNode: FocusNode
   valueNode: Variable
   variable: VariableSequence
-  propertyPath?: SparqlTemplateResult
-  rootPatterns: SparqlTemplateResult
+  propertyPath?: sparqljs.PropertyPath | NamedNode
+  rootPatterns: sparqljs.Pattern[]
 }
 
 export interface ConstraintComponent {
   readonly type: NamedNode
-  buildPatterns(arg: Parameters): string | SparqlTemplateResult | SparqlTemplateResult[]
+  buildPatterns(arg: Parameters): sparqljs.Pattern[]
 }
 
 export default abstract class {
   protected constructor(public readonly type: NamedNode) {
   }
 
-  buildPatterns(arg: Parameters): string | SparqlTemplateResult | SparqlTemplateResult[] {
+  buildPatterns(arg: Parameters): sparqljs.Pattern[] {
     if (arg.propertyPath) {
       return this.buildPropertyShapePatterns(arg)
     }
@@ -34,11 +34,11 @@ export default abstract class {
     return this.buildNodeShapePatterns(arg)
   }
 
-  buildNodeShapePatterns(arg: Parameters): string | SparqlTemplateResult | SparqlTemplateResult[] {
+  buildNodeShapePatterns(arg: Parameters): sparqljs.Pattern[] {
     return this.buildPropertyShapePatterns(arg)
   }
 
-  abstract buildPropertyShapePatterns(arg: Parameters): string | SparqlTemplateResult | SparqlTemplateResult[]
+  abstract buildPropertyShapePatterns(arg: Parameters): sparqljs.Pattern[]
 }
 
 export function assertList(arg: ListOrPointer): asserts arg is List {

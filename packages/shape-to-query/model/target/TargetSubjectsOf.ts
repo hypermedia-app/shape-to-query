@@ -1,8 +1,6 @@
 import type { NamedNode } from '@rdfjs/types'
 import $rdf from '@zazuko/env/web.js'
 import type { MultiPointer } from 'clownface'
-import { sparql } from '@tpluscode/sparql-builder'
-import { VALUES } from '@tpluscode/sparql-builder/expressions'
 import { isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { ShapePatterns } from '../../lib/shapePatterns.js'
@@ -20,19 +18,25 @@ export class TargetSubjectsOf implements Target {
       const patternQuad = $rdf.quad(focusNode, this.properties.term, propObject)
       return {
         constructClause: [patternQuad],
-        whereClause: sparql`${patternQuad}`,
+        whereClause: [{
+          type: 'bgp',
+          triples: [patternQuad],
+        }],
       }
     }
 
     const propVariable = variable()
-    const values = this.properties.map(({ term }) => ({ [propVariable.value]: term }))
+    const values = this.properties.map(({ term }) => ({ ['?' + propVariable.value]: term }))
     const propPatternQuad = $rdf.quad(focusNode, propVariable, propObject)
     return {
       constructClause: [propPatternQuad],
-      whereClause: sparql`
-        ${propPatternQuad}
-        ${VALUES(...values)}
-      `,
+      whereClause: [{
+        type: 'bgp',
+        triples: [propPatternQuad],
+      }, {
+        type: 'values',
+        values,
+      }],
     }
   }
 }

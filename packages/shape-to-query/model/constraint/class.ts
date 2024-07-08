@@ -1,10 +1,11 @@
-import type { Term } from '@rdfjs/types'
-import { sparql } from '@tpluscode/sparql-builder'
-import { sh } from '@tpluscode/rdf-ns-builders'
+import type { NamedNode } from '@rdfjs/types'
+import { rdf, sh } from '@tpluscode/rdf-ns-builders'
+import type sparqljs from 'sparqljs'
+import { isNamedNode } from 'is-graph-pointer'
 import ConstraintComponent, { Parameters, PropertyShape } from './ConstraintComponent.js'
 
 export class ClassConstraintComponent extends ConstraintComponent {
-  constructor(public readonly clas: Term) {
+  constructor(public readonly clas: NamedNode) {
     super(sh.ClassConstraintComponent)
   }
 
@@ -14,17 +15,35 @@ export class ClassConstraintComponent extends ConstraintComponent {
     if (values) {
       for (const value of values) {
         if ('pointer' in value) {
+          if (!isNamedNode(value.pointer)) {
+            throw new Error('sh:class value must be a NamedNode')
+          }
+
           yield new ClassConstraintComponent(value.pointer.term)
         }
       }
     }
   }
 
-  buildPropertyShapePatterns({ valueNode }: Parameters) {
-    return sparql`${valueNode} a ${this.clas} .`
+  buildPropertyShapePatterns({ valueNode }: Parameters): [sparqljs.BgpPattern] {
+    return [{
+      type: 'bgp',
+      triples: [{
+        subject: valueNode,
+        predicate: rdf.type,
+        object: this.clas,
+      }],
+    }]
   }
 
-  buildNodeShapePatterns({ focusNode }: Parameters) {
-    return sparql`${focusNode} a ${this.clas} .`
+  buildNodeShapePatterns({ focusNode }: Parameters): [sparqljs.BgpPattern] {
+    return [{
+      type: 'bgp',
+      triples: [{
+        subject: focusNode,
+        predicate: rdf.type,
+        object: this.clas,
+      }],
+    }]
   }
 }

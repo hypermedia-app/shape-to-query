@@ -1,10 +1,10 @@
 import type { Term } from '@rdfjs/types'
-import { Select } from '@tpluscode/sparql-builder'
 import type { GraphPointer } from 'clownface'
 import { isGraphPointer, isLiteral } from 'is-graph-pointer'
 import { xsd } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { fromRdf } from 'rdf-literal'
+import type sparqljs from 'sparqljs'
 import { ModelFactory } from '../ModelFactory.js'
 import { getOne } from './util.js'
 import { NodeExpression } from './NodeExpression.js'
@@ -28,7 +28,10 @@ export class OffsetExpression extends SubselectExpression {
     super(term, nodes)
   }
 
-  protected _applySubselectClause(select: Select): Select {
-    return select.OFFSET(this.offset)
+  protected _applySubselectClause(select: sparqljs.SelectQuery): sparqljs.SelectQuery {
+    return {
+      ...select,
+      offset: this.offset,
+    }
   }
 }

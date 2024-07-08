@@ -22,7 +22,7 @@ nodeExpressions.push(
 )
 
 ;(async function () {
-  const shapeGraphs = await globby(process.argv[2] || '**/example/**/*.ttl', { cwd })
+  const shapeGraphs = await globby(process.argv[2] || '**/example/**/or.ttl', { cwd })
 
   await Promise.all(shapeGraphs.map(toAbsolutePath).map(async shapeGraphPath => {
     let query
@@ -31,7 +31,7 @@ nodeExpressions.push(
       const shapePointer = $rdf.clownface({ dataset })
         .has(rdf.type, sh.NodeShape)
         .toArray().shift()
-      query = shapeTo.constructQuery(shapePointer).build()
+      query = shapeTo.constructQuery(shapePointer)
 
       await writeFile(`${shapeGraphPath}.rq`, optimize(query))
     } catch (e) {

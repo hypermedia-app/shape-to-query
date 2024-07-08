@@ -1,11 +1,10 @@
-import type { Term } from '@rdfjs/types'
-import { SparqlTemplateResult, sparql } from '@tpluscode/sparql-builder'
+import type { BlankNode, Literal, NamedNode } from '@rdfjs/types'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { VALUES } from '@tpluscode/sparql-builder/expressions'
+import type sparqljs from 'sparqljs'
 import ConstraintComponent, { Parameters, PropertyShape } from './ConstraintComponent.js'
 
 export class HasValueConstraintComponent extends ConstraintComponent {
-  constructor(public readonly terms: ReadonlyArray<Term>) {
+  constructor(public readonly terms: ReadonlyArray<NamedNode | BlankNode | Literal>) {
     super(sh.HasValueConstraintComponent)
   }
 
@@ -18,23 +17,36 @@ export class HasValueConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildNodeShapePatterns(): string | SparqlTemplateResult | SparqlTemplateResult[] {
-    return ''
+  buildNodeShapePatterns(): sparqljs.Pattern[] {
+    return []
   }
 
-  buildPropertyShapePatterns({ focusNode, propertyPath, valueNode }: Omit<Parameters, 'rootPatterns'>): string | SparqlTemplateResult {
+  buildPropertyShapePatterns({ focusNode, propertyPath, valueNode }: Omit<Parameters, 'rootPatterns'>): [sparqljs.ValuesPattern | sparqljs.FilterPattern] {
     if (this.terms.length === 1) {
-      return VALUES({
-        [valueNode.value]: this.terms,
-      })
+      return [{
+        type: 'values',
+        values: this.terms.map(term => ({
+          ['?' + valueNode.value]: term,
+        })),
+      }]
     }
 
-    return sparql`FILTER EXISTS {
-      ${focusNode} ${propertyPath} ${objectList(this.terms)}
-    }`
-  }
-}
+    const triples = this.terms.map(term => ({
+      subject: focusNode,
+      predicate: propertyPath,
+      object: term,
+    }))
 
-function objectList([first, ...rest]: Iterable<Term>) {
-  return rest.reduce((list, term) => sparql`${list} , ${term}`, sparql`${first}`)
+    return [{
+      type: 'filter',
+      expression: {
+        type: 'operation',
+        operator: 'exists',
+        args: [{
+          type: 'bgp',
+          triples,
+        }],
+      },
+    }]
+  }
 }

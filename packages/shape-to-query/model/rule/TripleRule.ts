@@ -1,5 +1,4 @@
 import $rdf from '@zazuko/env/web.js'
-import { sparql } from '@tpluscode/sparql-builder'
 import type { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isGraphPointer } from 'is-graph-pointer'
@@ -39,12 +38,12 @@ export default class TripleRule implements Rule {
 
     return {
       constructClause: [$rdf.quad(subject.object, predicate.object, object.object)],
-      whereClause: sparql`
-        ${rootPatterns}
-        ${subject.patterns}
-        ${predicate.patterns}
-        ${object.patterns}
-      `,
+      whereClause: [
+        ...rootPatterns,
+        ...subject.patterns,
+        ...predicate.patterns,
+        ...object.patterns,
+      ],
     }
   }
 }
