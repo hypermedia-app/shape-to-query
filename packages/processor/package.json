@@ -10,7 +10,7 @@
   "devDependencies": {
     "@types/rdfjs__environment": "^1.0.0",
     "@types/rdfjs__data-model": "^2.0.0",
-    "@types/rdfjs__term-set": "^^2.0.0",
+    "@types/rdfjs__term-set": "^2.0.0",
     "@types/sparqljs": "^3.1.10"
   }
 }
