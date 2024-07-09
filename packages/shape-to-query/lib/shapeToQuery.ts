@@ -1,38 +1,37 @@
 import type { NamedNode } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import sparqljs from 'sparqljs'
-import prefixes from '@zazuko/prefixes'
 import rdf from '@zazuko/env/web.js'
-import { shapeToPatterns, Options } from './shapeToPatterns.js'
+import { DuplicatePatternRemover } from '@hydrofoil/sparql-processor/DuplicatePatternRemover.js'
+import { PrefixExtractor } from '@hydrofoil/sparql-processor/PrefixExtractor.js'
+import type { Processor } from '@hydrofoil/sparql-processor'
+import type { Options } from './shapeToPatterns.js'
+import { shapeToPatterns } from './shapeToPatterns.js'
 
 const generator = new sparqljs.Generator()
 
-export function constructQuery(shape: GraphPointer, options: Options = {}) {
+const defaultOptimizers = (): Processor[] => [
+  new DuplicatePatternRemover(rdf),
+  new PrefixExtractor(rdf),
+]
+
+export function constructQuery(shape: GraphPointer, options: Options = { optimizers: [] }) {
   const patterns = shapeToPatterns(shape, options)
 
-  const query: sparqljs.ConstructQuery = {
+  return optimizeAndStringify({
     type: 'query',
     queryType: 'CONSTRUCT',
     where: patterns.whereClause,
-    prefixes: {
-      schema: prefixes.schema,
-      rdfs: prefixes.rdfs,
-      rdf: prefixes.rdf,
-      xsd: prefixes.xsd,
-      foaf: prefixes.foaf,
-      hydra: prefixes.hydra,
-    },
+    prefixes: {},
     template: patterns.constructClause as sparqljs.Triple[],
-  }
-
-  return generator.stringify(query)
+  }, options.optimizers)
 }
 
 interface DeleteOptions extends Options {
   graph?: NamedNode | string
 }
 
-export function deleteQuery(shape: GraphPointer, options: DeleteOptions = {}) {
+export function deleteQuery(shape: GraphPointer, options: DeleteOptions = { optimizers: [] }) {
   const patterns = shapeToPatterns(shape, options)
 
   const graph: sparqljs.GraphOrDefault = {
@@ -47,7 +46,7 @@ export function deleteQuery(shape: GraphPointer, options: DeleteOptions = {}) {
     }
   }
 
-  const update: sparqljs.Update = {
+  return optimizeAndStringify({
     type: 'update',
     updates: [{
       updateType: 'insertdelete',
@@ -58,15 +57,11 @@ export function deleteQuery(shape: GraphPointer, options: DeleteOptions = {}) {
       where: patterns.whereClause,
       graph,
     }],
-    prefixes: {
-      schema: prefixes.schema,
-      rdfs: prefixes.rdfs,
-      rdf: prefixes.rdf,
-      xsd: prefixes.xsd,
-      foaf: prefixes.foaf,
-      hydra: prefixes.hydra,
-    },
-  }
+    prefixes: {},
+  }, options.optimizers)
+}
 
-  return generator.stringify(update)
+function optimizeAndStringify(query: sparqljs.SparqlQuery, optimizers: Processor[]) {
+  return generator.stringify([...optimizers, ...defaultOptimizers()]
+    .reduce((query, optimizer) => optimizer.optimize(query), query))
 }

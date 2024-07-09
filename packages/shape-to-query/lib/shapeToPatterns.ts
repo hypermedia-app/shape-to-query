@@ -2,16 +2,21 @@ import type { NamedNode, Variable } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import rdf from '@zazuko/env/web.js'
 import type sparqljs from 'sparqljs'
-import ModelFactory, { ModelFactoryOptions } from '../model/ModelFactory.js'
-import { NodeShape } from '../model/NodeShape.js'
-import { flatten, ShapePatterns, union } from './shapePatterns.js'
-import { createVariableSequence, VariableSequence } from './variableSequence.js'
-import { FocusNode } from './FocusNode.js'
+import type { Processor } from '@hydrofoil/sparql-processor'
+import type { ModelFactoryOptions } from '../model/ModelFactory.js'
+import ModelFactory from '../model/ModelFactory.js'
+import type { NodeShape } from '../model/NodeShape.js'
+import type { ShapePatterns } from './shapePatterns.js'
+import { flatten, union } from './shapePatterns.js'
+import type { VariableSequence } from './variableSequence.js'
+import { createVariableSequence } from './variableSequence.js'
+import type { FocusNode } from './FocusNode.js'
 
 export interface Options extends ModelFactoryOptions {
   focusNode?: NamedNode
   subjectVariable?: string
   objectVariablePrefix?: string
+  optimizers?: Processor[]
 }
 
 export function shapeToPatterns(shape: GraphPointer, options: Options = {}): ShapePatterns {

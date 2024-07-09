@@ -1,5 +1,5 @@
-PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
 CONSTRUCT {
   ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>.
   ?resource1 schema:containsPlace ?resource2.
@@ -9,13 +9,13 @@ WHERE {
   {
     SELECT ?resource1 ?resource2 WHERE {
       ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>;
-        schema:containsPlace ?resource2, ?resource2.
+        schema:containsPlace ?resource2.
       {
         ?resource2 schema:name ?resource3.
+        ?resource6 rdf:type <https://schema.ld.admin.ch/Municipality>.
         VALUES ?resource3 {
           "Schwytz"
         }
-        ?resource6 rdf:type <https://schema.ld.admin.ch/Municipality>.
       }
     }
   }
@@ -25,13 +25,12 @@ WHERE {
       ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>;
         schema:containsPlace ?resource2.
       ?resource2 schema:name ?resource3.
-      ?resource1 schema:containsPlace ?resource2.
       {
         ?resource2 schema:name ?resource3.
+        ?resource6 rdf:type <https://schema.ld.admin.ch/Municipality>.
         VALUES ?resource3 {
           "Schwytz"
         }
-        ?resource6 rdf:type <https://schema.ld.admin.ch/Municipality>.
       }
     }
   }

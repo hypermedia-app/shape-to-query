@@ -7,12 +7,11 @@ import '@shoelace-style/shoelace/dist/components/button/button.js'
 import '@shoelace-style/shoelace/dist/components/input/input.js'
 import { constructQuery } from '@hydrofoil/shape-to-query'
 import $rdf from '@zazuko/env/web.js'
-import { RdfEditor } from '@rdfjs-elements/rdf-editor/src/RdfEditor.js'
-import { SlInput } from '@shoelace-style/shoelace'
+import type { RdfEditor } from '@rdfjs-elements/rdf-editor/src/RdfEditor.js'
+import type { SlInput } from '@shoelace-style/shoelace'
 import { isGraphPointer } from 'is-graph-pointer'
 import { turtle } from '@tpluscode/rdf-string'
 import type { MultiPointer } from 'clownface'
-import optimize from '@hydrofoil/s2q-optimizer'
 
 const initialShape = turtle`[
   a ${$rdf.ns.sh.NodeShape} ;
@@ -71,6 +70,6 @@ export class App extends LitElement {
       })
       : constructQuery(this.shape)
 
-    this.query = optimize(query.build())
+    this.query = query
   }
 }

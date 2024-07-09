@@ -2,11 +2,12 @@ PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 CONSTRUCT { ?resource1 schema:name ?resource7. }
 WHERE {
+  ?resource1 schema:name ?resource7.
   {
     SELECT ?resource2 (?resource2 AS ?resource1) WHERE {
-      ?resource2 schema:name ?resource4.
+      ?resource2 schema:name ?resource4;
+        rdf:type ?resource5.
       FILTER(REGEX(?resource4, "John"))
-      ?resource2 rdf:type ?resource5.
       VALUES ?resource5 {
         schema:Person
       }
@@ -15,5 +16,4 @@ WHERE {
     ORDER BY (?resource6)
     LIMIT 10
   }
-  ?resource1 schema:name ?resource7.
 }

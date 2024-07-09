@@ -13,7 +13,6 @@
   },
   "homepage": "https://shape-to-query.hypermedia.app/docs",
   "dependencies": {
-    "@hydrofoil/s2q-optimizer": "*",
     "@hydrofoil/shape-to-query": "^0.12.0",
     "@rdfjs-elements/rdf-editor": "^0.5.7",
     "@rdfjs-elements/sparql-editor": "^0.2.1",

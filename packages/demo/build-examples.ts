@@ -6,7 +6,6 @@ import * as shapeTo from '@hydrofoil/shape-to-query/index.js'
 import { nodeExpressions } from '@hydrofoil/shape-to-query/nodeExpressions.js'
 import $rdf from '@zazuko/env-node'
 import { rdf, sh } from '@tpluscode/rdf-ns-builders'
-import optimize from '@hydrofoil/s2q-optimizer'
 import { globby } from 'globby'
 import { HydraCollectionMemberExpression } from './expressions/HydraCollectionMembers.js'
 import { ShorthandSubselectExpression } from './expressions/ShorthandSubselect.js'
@@ -22,7 +21,7 @@ nodeExpressions.push(
 )
 
 ;(async function () {
-  const shapeGraphs = await globby(process.argv[2] || '**/example/**/or.ttl', { cwd })
+  const shapeGraphs = await globby(process.argv[2] || '**/example/**/*.ttl', { cwd })
 
   await Promise.all(shapeGraphs.map(toAbsolutePath).map(async shapeGraphPath => {
     let query
@@ -33,7 +32,7 @@ nodeExpressions.push(
         .toArray().shift()
       query = shapeTo.constructQuery(shapePointer)
 
-      await writeFile(`${shapeGraphPath}.rq`, optimize(query))
+      await writeFile(`${shapeGraphPath}.rq`, query)
     } catch (e) {
       await writeFile(`${shapeGraphPath}.rq`, `${query}
 

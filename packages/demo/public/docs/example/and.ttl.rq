@@ -9,7 +9,6 @@ WHERE {
   VALUES ?resource2 {
     <https://tbbt.tv/sheldon-cooper>
   }
-  ?resource1 schema:jobTitle ?resource3.
   VALUES ?resource3 {
     "microbiologist"
   }
