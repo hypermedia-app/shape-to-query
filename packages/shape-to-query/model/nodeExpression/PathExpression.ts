@@ -4,9 +4,10 @@ import { isBlankNode, isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { toAlgebra } from 'clownface-shacl-path'
 import type sparqljs from 'sparqljs'
-import { ModelFactory } from '../ModelFactory.js'
+import type { ModelFactory } from '../ModelFactory.js'
 import { getOne, getOneOrZero } from './util.js'
-import NodeExpressionBase, { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
+import type { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
+import NodeExpressionBase from './NodeExpression.js'
 
 export class PathExpression extends NodeExpressionBase {
   static match(pointer: GraphPointer) {

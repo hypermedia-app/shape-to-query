@@ -3,7 +3,8 @@ import type { GraphPointer } from 'clownface'
 import { isLiteral, isNamedNode } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import type sparqljs from 'sparqljs'
-import NodeExpression, { InlineExpressionResult, Parameters } from './NodeExpression.js'
+import type { InlineExpressionResult, Parameters } from './NodeExpression.js'
+import NodeExpression from './NodeExpression.js'
 
 export class ConstantTermExpression extends NodeExpression {
   public get requiresFullContext(): boolean {

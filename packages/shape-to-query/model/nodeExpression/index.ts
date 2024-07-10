@@ -1,6 +1,6 @@
 import type { AnyPointer, GraphPointer } from 'clownface'
-import { ModelFactory } from '../ModelFactory.js'
-import { NodeExpression } from './NodeExpression.js'
+import type { ModelFactory } from '../ModelFactory.js'
+import type { NodeExpression } from './NodeExpression.js'
 
 export interface NodeExpressionFactory {
   (pointer: AnyPointer): NodeExpression

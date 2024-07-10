@@ -1,8 +1,8 @@
 import type { NamedNode, Variable } from '@rdfjs/types'
 import type { GraphPointer, MultiPointer } from 'clownface'
-import { VariableSequence } from '../../lib/variableSequence.js'
-import { ShapePatterns } from '../../lib/shapePatterns.js'
-import { ModelFactory } from '../ModelFactory.js'
+import type { VariableSequence } from '../../lib/variableSequence.js'
+import type { ShapePatterns } from '../../lib/shapePatterns.js'
+import type { ModelFactory } from '../ModelFactory.js'
 
 export interface Parameters {
   focusNode: Variable

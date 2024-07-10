@@ -2,7 +2,8 @@ import type { Literal, Variable } from '@rdfjs/types'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { isLiteral } from 'is-graph-pointer'
 import type sparqljs from 'sparqljs'
-import ConstraintComponent, { assertList, Parameters, PropertyShape } from './ConstraintComponent.js'
+import type { Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { assertList } from './ConstraintComponent.js'
 
 export class LanguageInConstraintComponent extends ConstraintComponent {
   static * fromShape(shape: PropertyShape) {

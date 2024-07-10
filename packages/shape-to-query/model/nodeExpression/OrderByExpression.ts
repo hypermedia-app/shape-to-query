@@ -4,9 +4,9 @@ import { isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import type sparqljs from 'sparqljs'
 import { TRUE } from '../../lib/rdf.js'
-import { ModelFactory } from '../ModelFactory.js'
+import type { ModelFactory } from '../ModelFactory.js'
 import { getOne } from './util.js'
-import { NodeExpression, NodeExpressionResult, Parameters, PatternBuilder } from './NodeExpression.js'
+import type { NodeExpression, NodeExpressionResult, Parameters, PatternBuilder } from './NodeExpression.js'
 import { SubselectExpression } from './SubselectExpression.js'
 
 export class OrderByExpression extends SubselectExpression {

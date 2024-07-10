@@ -2,9 +2,10 @@ import type { Term } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 import type sparqljs from 'sparqljs'
-import { ModelFactory } from '../ModelFactory.js'
+import type { ModelFactory } from '../ModelFactory.js'
 import s2q from '../../ns.js'
-import NodeExpressionBase, { PatternBuilder, Parameters, NodeExpression } from './NodeExpression.js'
+import type { PatternBuilder, Parameters, NodeExpression } from './NodeExpression.js'
+import NodeExpressionBase from './NodeExpression.js'
 
 export class OptionalExpression extends NodeExpressionBase {
   static match(pointer: GraphPointer) {

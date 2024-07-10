@@ -1,7 +1,8 @@
 import type { Literal, NamedNode } from '@rdfjs/types'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import type sparqljs from 'sparqljs'
-import ConstraintComponent, { assertList, Parameters, PropertyShape } from './ConstraintComponent.js'
+import type { Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { assertList } from './ConstraintComponent.js'
 
 export class InConstraintComponent extends ConstraintComponent {
   static * fromShape(shape: PropertyShape) {

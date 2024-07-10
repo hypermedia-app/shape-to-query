@@ -2,7 +2,8 @@ import type { NamedNode } from '@rdfjs/types'
 import { rdf, sh } from '@tpluscode/rdf-ns-builders'
 import type sparqljs from 'sparqljs'
 import { isNamedNode } from 'is-graph-pointer'
-import ConstraintComponent, { Parameters, PropertyShape } from './ConstraintComponent.js'
+import type { Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent from './ConstraintComponent.js'
 
 export class ClassConstraintComponent extends ConstraintComponent {
   constructor(public readonly clas: NamedNode) {

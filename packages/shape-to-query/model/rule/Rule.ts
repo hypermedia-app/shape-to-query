@@ -1,9 +1,9 @@
 import type { GraphPointer } from 'clownface'
 import type sparqljs from 'sparqljs'
-import { FocusNode } from '../../lib/FocusNode.js'
-import { VariableSequence } from '../../lib/variableSequence.js'
-import { ShapePatterns } from '../../lib/shapePatterns.js'
-import { ModelFactory } from '../ModelFactory.js'
+import type { FocusNode } from '../../lib/FocusNode.js'
+import type { VariableSequence } from '../../lib/variableSequence.js'
+import type { ShapePatterns } from '../../lib/shapePatterns.js'
+import type { ModelFactory } from '../ModelFactory.js'
 import type { PropertyShape } from '../PropertyShape.js'
 
 export interface Parameters {

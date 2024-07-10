@@ -2,11 +2,12 @@ import type { BlankNode } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import type sparqljs from 'sparqljs'
-import { ShapePatterns } from '../../lib/shapePatterns.js'
+import type { ShapePatterns } from '../../lib/shapePatterns.js'
 import s2q from '../../ns.js'
-import { ModelFactory } from '../ModelFactory.js'
-import { NodeExpression, PatternBuilder } from '../nodeExpression/NodeExpression.js'
-import { Parameters, Target } from './Target.js'
+import type { ModelFactory } from '../ModelFactory.js'
+import type { NodeExpression } from '../nodeExpression/NodeExpression.js'
+import { PatternBuilder } from '../nodeExpression/NodeExpression.js'
+import type { Parameters, Target } from './Target.js'
 
 export class NodeExpressionTarget implements Target {
   static readonly type = s2q.NodeExpressionTarget

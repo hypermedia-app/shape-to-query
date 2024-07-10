@@ -2,10 +2,11 @@ import $rdf from '@zazuko/env/web.js'
 import type { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isGraphPointer } from 'is-graph-pointer'
-import { NodeExpression, PatternBuilder } from '../nodeExpression/NodeExpression.js'
-import { ShapePatterns } from '../../lib/shapePatterns.js'
-import { ModelFactory } from '../ModelFactory.js'
-import { Rule, Parameters } from './Rule.js'
+import type { NodeExpression } from '../nodeExpression/NodeExpression.js'
+import { PatternBuilder } from '../nodeExpression/NodeExpression.js'
+import type { ShapePatterns } from '../../lib/shapePatterns.js'
+import type { ModelFactory } from '../ModelFactory.js'
+import type { Rule, Parameters } from './Rule.js'
 
 export default class TripleRule implements Rule {
   constructor(public subject: NodeExpression, public predicate: NodeExpression, public object: NodeExpression) {

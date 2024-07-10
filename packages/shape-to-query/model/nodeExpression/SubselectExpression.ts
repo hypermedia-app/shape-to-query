@@ -1,6 +1,7 @@
 import type { Term } from '@rdfjs/types'
 import type sparqljs from 'sparqljs'
-import NodeExpressionBase, { NodeExpression, NodeExpressionResult, Parameters, PatternBuilder } from './NodeExpression.js'
+import type { NodeExpression, NodeExpressionResult, Parameters, PatternBuilder } from './NodeExpression.js'
+import NodeExpressionBase from './NodeExpression.js'
 
 export abstract class SubselectExpression extends NodeExpressionBase {
   public get requiresFullContext(): boolean {

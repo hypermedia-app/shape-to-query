@@ -3,8 +3,8 @@ import $rdf from '@zazuko/env/web.js'
 import type { MultiPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { ShapePatterns } from '../../lib/shapePatterns.js'
-import { Target, Parameters } from './Target.js'
+import type { ShapePatterns } from '../../lib/shapePatterns.js'
+import type { Target, Parameters } from './Target.js'
 
 export class TargetSubjectsOf implements Target {
   static readonly property = sh.targetSubjectsOf

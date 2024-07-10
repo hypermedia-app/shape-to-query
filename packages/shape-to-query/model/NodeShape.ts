@@ -1,10 +1,12 @@
 import type { Variable } from '@rdfjs/types'
 import type sparqljs from 'sparqljs'
-import { emptyPatterns, flatten, ShapePatterns, union } from '../lib/shapePatterns.js'
-import { PropertyShape } from './PropertyShape.js'
-import { Target } from './target/index.js'
-import { ConstraintComponent } from './constraint/ConstraintComponent.js'
-import Shape, { BuildParameters } from './Shape.js'
+import type { ShapePatterns } from '../lib/shapePatterns.js'
+import { emptyPatterns, flatten, union } from '../lib/shapePatterns.js'
+import type { PropertyShape } from './PropertyShape.js'
+import type { Target } from './target/index.js'
+import type { ConstraintComponent } from './constraint/ConstraintComponent.js'
+import type { BuildParameters } from './Shape.js'
+import Shape from './Shape.js'
 import * as Rule from './rule/Rule.js'
 
 export interface NodeShape {

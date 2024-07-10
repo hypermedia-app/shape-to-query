@@ -3,8 +3,9 @@ import type { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isBlankNode, isGraphPointer } from 'is-graph-pointer'
 import type sparqljs from 'sparqljs'
-import { ModelFactory } from '../ModelFactory.js'
-import NodeExpressionImpl, { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
+import type { ModelFactory } from '../ModelFactory.js'
+import type { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
+import NodeExpressionImpl from './NodeExpression.js'
 import { getOne, getOneOrZero } from './util.js'
 
 export class CountExpression extends NodeExpressionImpl {

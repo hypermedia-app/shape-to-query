@@ -5,9 +5,9 @@ import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { xsd } from '@tpluscode/rdf-ns-builders'
 import { fromRdf } from 'rdf-literal'
 import type sparqljs from 'sparqljs'
-import { ModelFactory } from '../ModelFactory.js'
+import type { ModelFactory } from '../ModelFactory.js'
 import { getOne } from './util.js'
-import { NodeExpression } from './NodeExpression.js'
+import type { NodeExpression } from './NodeExpression.js'
 import { SubselectExpression } from './SubselectExpression.js'
 
 export class LimitExpression extends SubselectExpression {

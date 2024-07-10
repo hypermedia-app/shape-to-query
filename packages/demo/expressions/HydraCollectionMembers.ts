@@ -2,7 +2,8 @@ import type { Term } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import { SELECT } from '@tpluscode/sparql-builder'
 import rdf from '@zazuko/env/web.js'
-import { NodeExpressionBase, Parameters } from '@hydrofoil/shape-to-query/nodeExpressions.js'
+import type { Parameters } from '@hydrofoil/shape-to-query/nodeExpressions.js'
+import { NodeExpressionBase } from '@hydrofoil/shape-to-query/nodeExpressions.js'
 import sparqljs from 'sparqljs'
 
 const ex = rdf.namespace('http://example.org/')

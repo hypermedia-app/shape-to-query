@@ -1,8 +1,9 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
 import type sparqljs from 'sparqljs'
-import { NodeShape } from '../NodeShape.js'
-import { ModelFactory } from '../ModelFactory.js'
-import ConstraintComponent, { assertList, Parameters, PropertyShape } from './ConstraintComponent.js'
+import type { NodeShape } from '../NodeShape.js'
+import type { ModelFactory } from '../ModelFactory.js'
+import type { Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { assertList } from './ConstraintComponent.js'
 
 export class OrConstraintComponent extends ConstraintComponent {
   constructor(public readonly inner: ReadonlyArray<NodeShape>) {

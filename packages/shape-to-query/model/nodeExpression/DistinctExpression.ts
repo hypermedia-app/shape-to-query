@@ -3,9 +3,9 @@ import type { GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import type sparqljs from 'sparqljs'
-import { ModelFactory } from '../ModelFactory.js'
+import type { ModelFactory } from '../ModelFactory.js'
 import { SubselectExpression } from './SubselectExpression.js'
-import { NodeExpression } from './NodeExpression.js'
+import type { NodeExpression } from './NodeExpression.js'
 
 export class DistinctExpression extends SubselectExpression {
   static match(pointer: GraphPointer) {

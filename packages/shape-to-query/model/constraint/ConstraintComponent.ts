@@ -1,8 +1,8 @@
 import type { NamedNode, Term, Variable } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import type sparqljs from 'sparqljs'
-import { VariableSequence } from '../../lib/variableSequence.js'
-import { FocusNode } from '../../lib/FocusNode.js'
+import type { VariableSequence } from '../../lib/variableSequence.js'
+import type { FocusNode } from '../../lib/FocusNode.js'
 
 type List = { list: GraphPointer[] }
 type Pointer = { pointer: GraphPointer }

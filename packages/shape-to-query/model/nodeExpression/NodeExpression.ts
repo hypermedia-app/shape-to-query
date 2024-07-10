@@ -2,8 +2,8 @@ import type { Term, Variable } from '@rdfjs/types'
 import $rdf from '@zazuko/env/web.js'
 import type TermMap from '@rdfjs/term-map'
 import type sparqljs from 'sparqljs'
-import { FocusNode } from '../../lib/FocusNode.js'
-import { VariableSequence } from '../../lib/variableSequence.js'
+import type { FocusNode } from '../../lib/FocusNode.js'
+import type { VariableSequence } from '../../lib/variableSequence.js'
 
 export interface Parameters {
   subject: FocusNode

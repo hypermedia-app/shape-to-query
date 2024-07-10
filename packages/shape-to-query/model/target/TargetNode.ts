@@ -1,9 +1,9 @@
 import type { MultiPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { isNamedNode } from 'is-graph-pointer'
-import { ShapePatterns } from '../../lib/shapePatterns.js'
-import { FocusNode } from '../../lib/FocusNode.js'
-import { Target, Parameters } from './Target.js'
+import type { ShapePatterns } from '../../lib/shapePatterns.js'
+import type { FocusNode } from '../../lib/FocusNode.js'
+import type { Target, Parameters } from './Target.js'
 
 export class TargetNode implements Target {
   static readonly property = sh.targetNode

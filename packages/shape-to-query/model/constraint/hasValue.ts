@@ -1,7 +1,8 @@
 import type { BlankNode, Literal, NamedNode } from '@rdfjs/types'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import type sparqljs from 'sparqljs'
-import ConstraintComponent, { Parameters, PropertyShape } from './ConstraintComponent.js'
+import type { Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent from './ConstraintComponent.js'
 
 export class HasValueConstraintComponent extends ConstraintComponent {
   constructor(public readonly terms: ReadonlyArray<NamedNode | BlankNode | Literal>) {
