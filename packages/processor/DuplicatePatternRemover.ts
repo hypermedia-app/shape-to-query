@@ -1,6 +1,6 @@
-import type { BaseQuad, DataFactory } from '@rdfjs/types'
+import type { DataFactory } from '@rdfjs/types'
 import type sparqljs from 'sparqljs'
-import { match, P } from 'ts-pattern'
+import { match } from 'ts-pattern'
 import type TermSetFactory from '@rdfjs/term-set/Factory.js'
 import type { Environment } from '@rdfjs/environment/Environment.js'
 import { Processor } from './index.js'
@@ -8,84 +8,102 @@ import { Processor } from './index.js'
 type E = Environment<DataFactory | TermSetFactory>
 
 /**
- * Merges duplicate quad patterns. Optionally, it can reorder the patterns to place all BGPs first.
+ * Merges duplicate quad patterns.
  */
 export class DuplicatePatternRemover extends Processor<E> {
-  constructor(factory: E, private options: { reorder: boolean } = { reorder: true }) {
-    super(factory)
-  }
-
   processPatterns(patterns: sparqljs.Pattern[]): sparqljs.Pattern[] {
-    if (this.options.reorder) {
-      // place BGPs first
-      patterns = patterns.sort((a, b) => (a.type === 'bgp' ? -1 : 1) - (b.type === 'bgp' ? -1 : 1))
-    }
+    const cleaned: sparqljs.Pattern[] = []
 
-    // merge consecutive BGPs
-    const merged = patterns.reduce<sparqljs.Pattern[]>((acc, pattern) => {
-      const last = acc[acc.length - 1]
-      if (last?.type === 'bgp' && pattern.type === 'bgp') {
-        last.triples.push(...pattern.triples)
-      } else {
-        acc.push(pattern)
-      }
+    for (const pattern of patterns) {
+      match(pattern)
+        .with({ type: 'bgp' }, bgp => {
+          const triples: sparqljs.Triple[] = []
 
-      return acc
-    }, [])
-
-    return super.processPatterns(merged)
-  }
-
-  processBgp(bgp: sparqljs.BgpPattern): sparqljs.BgpPattern {
-    const previousQuads = this.factory.termSet<BaseQuad>()
-    const pathPatterns: sparqljs.Triple[] = []
-
-    const triples = bgp.triples.reduce<sparqljs.Triple[]>((acc, triple) => {
-      match(triple)
-        .with({ predicate: { type: 'path' } }, triple => {
-          if (!pathPatterns.find(matchingPath(triple))) {
-            acc.push(triple)
+          for (const triple of bgp.triples) {
+            // keep triple if it was not seen before in another BGP
+            if (!cleaned.some(bgpHasTriple(triple))) {
+              triples.push(triple)
+            }
           }
 
-          pathPatterns.push(triple)
+          if (triples.length) {
+            cleaned.push({
+              type: 'bgp',
+              triples,
+            })
+          }
         })
-        .with({ predicate: { termType: P.any } }, triple => {
-          const quad = this.factory.quad(
-            this.processTerm(triple.subject),
-            this.processTerm(triple.predicate),
-            this.processTerm(triple.object),
-          )
-          if (previousQuads.has(quad)) return
+        .with({ type: 'values' }, values => {
+          const rows: sparqljs.ValuePatternRow[] = []
 
-          previousQuads.add(quad)
-          acc.push(triple)
+          for (const row of values.values) {
+            // keep row if it was not seen before in another VALUES
+            if (!cleaned.some(hasValuesWithRow(row))) {
+              rows.push(row)
+            }
+          }
+
+          if (rows.length) {
+            cleaned.push({
+              type: 'values',
+              values: rows,
+            })
+          }
         })
-        .exhaustive()
-
-      return acc
-    }, [])
-
-    return {
-      ...bgp,
-      triples,
+        .otherwise(p => cleaned.push(p))
     }
+
+    return super.processPatterns(cleaned)
   }
 }
 
-function matchingPath(path: sparqljs.Triple) {
+function bgpHasTriple(triple: sparqljs.Triple) {
+  return (pattern: sparqljs.Pattern) => {
+    if (pattern.type === 'bgp') {
+      return pattern.triples.some(triplesEqual(triple))
+    }
+
+    return false
+  }
+}
+
+function hasValuesWithRow(row: sparqljs.ValuePatternRow) {
+  const entries = Object.entries(row)
+
+  return (pattern: sparqljs.Pattern) => {
+    if (pattern.type === 'values') {
+      return pattern.values.some(other => {
+        return entries.every(([key, value]) => {
+          return other[key]?.equals(value)
+        })
+      })
+    }
+
+    return false
+  }
+}
+
+function triplesEqual(triple: sparqljs.Triple) {
   return (other: sparqljs.Triple) => {
-    if (!path.subject.equals(other.subject)) {
+    if (!triple.subject.equals(other.subject)) {
       return false
     }
-    if (!path.object.equals(other.object)) {
-      return false
-    }
-
-    if ('termType' in path.predicate || 'termType' in other.predicate) {
+    if (!triple.object.equals(other.object)) {
       return false
     }
 
-    return pathsEqual(path.predicate, other.predicate)
+    if ('termType' in triple.predicate) {
+      if ('termType' in other.predicate) {
+        return triple.predicate.equals(other.predicate)
+      }
+      return false
+    }
+
+    if (!('termType' in other.predicate)) {
+      return pathsEqual(triple.predicate, other.predicate)
+    }
+
+    return false
   }
 }
 

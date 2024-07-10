@@ -11,12 +11,12 @@ CONSTRUCT {
 WHERE {
   {
     SELECT ?resource1 ?resource2 WHERE {
-      ?resource1 <http://example.org/memberType> ?resource3.
-      ?resource3 ^rdf:type ?resource2.
-      ?resource2 schema:jobTitle ?resource5.
       VALUES ?resource1 {
         <http://example.org/people>
       }
+      ?resource1 <http://example.org/memberType> ?resource3.
+      ?resource3 ^rdf:type ?resource2.
+      ?resource2 schema:jobTitle ?resource5.
       VALUES ?resource5 {
         \\"neurobiologist\\"
       }
@@ -25,16 +25,16 @@ WHERE {
   UNION
   {
     SELECT ?resource2 ?resource6 WHERE {
-      ?resource1 <http://example.org/memberType> ?resource3.
-      ?resource3 ^rdf:type ?resource2.
-      ?resource2 schema:jobTitle ?resource5;
-        schema:givenName ?resource6.
       VALUES ?resource1 {
         <http://example.org/people>
       }
+      ?resource1 <http://example.org/memberType> ?resource3.
+      ?resource3 ^rdf:type ?resource2.
+      ?resource2 schema:jobTitle ?resource5.
       VALUES ?resource5 {
         \\"neurobiologist\\"
       }
+      ?resource2 schema:givenName ?resource6.
     }
   }
 }"
@@ -45,12 +45,12 @@ exports[`@hydrofoil/shape-to-query executing queries complex sparql functions 1`
 PREFIX schema: <http://schema.org/>
 CONSTRUCT { ?resource1 <http://example.org/initial> ?resource2. }
 WHERE {
-  ?resource1 <http://example.org/memberType> ?resource5.
-  ?resource5 ^rdf:type ?resource4.
-  ?resource4 schema:givenName ?resource3.
   VALUES ?resource1 {
     <http://example.org/people>
   }
+  ?resource1 <http://example.org/memberType> ?resource5.
+  ?resource5 ^rdf:type ?resource4.
+  ?resource4 schema:givenName ?resource3.
   BIND(IRI(CONCAT(STR(?resource1), \\"?i=\\", LCASE(SUBSTR(?resource3, 1 , 1 )))) AS ?resource2)
 }"
 `;
@@ -91,8 +91,7 @@ CONSTRUCT {
 WHERE {
   {
     SELECT ?resource1 ?resource2 ?resource4 ?resource5 WHERE {
-      ?resource1 rdf:type schema:Person;
-        (schema:knows|schema:parent) ?resource3.
+      ?resource1 rdf:type schema:Person.
       { ?resource1 schema:givenName ?resource2. }
       UNION
       {
@@ -106,6 +105,7 @@ WHERE {
           BIND(?resource5 AS ?resource3)
         }
       }
+      ?resource1 (schema:knows|schema:parent) ?resource3.
       {
         ?resource3 schema:address ?resource6.
         {
@@ -120,9 +120,7 @@ WHERE {
   UNION
   {
     SELECT ?resource3 ?resource6 WHERE {
-      ?resource1 rdf:type schema:Person;
-        (schema:knows|schema:parent) ?resource3.
-      ?resource3 schema:address ?resource6.
+      ?resource1 rdf:type schema:Person.
       {
         ?resource1 schema:knows ?resource4.
         BIND(?resource4 AS ?resource3)
@@ -132,6 +130,8 @@ WHERE {
         ?resource1 schema:parent ?resource5.
         BIND(?resource5 AS ?resource3)
       }
+      ?resource3 schema:address ?resource6.
+      ?resource1 (schema:knows|schema:parent) ?resource3.
       {
         ?resource3 schema:address ?resource6.
         {
@@ -146,10 +146,7 @@ WHERE {
   UNION
   {
     SELECT ?resource6 ?resource7 WHERE {
-      ?resource1 rdf:type schema:Person;
-        (schema:knows|schema:parent) ?resource3.
-      ?resource3 schema:address ?resource6.
-      ?resource6 schema:addressRegion ?resource7.
+      ?resource1 rdf:type schema:Person.
       {
         ?resource1 schema:knows ?resource4.
         BIND(?resource4 AS ?resource3)
@@ -159,6 +156,9 @@ WHERE {
         ?resource1 schema:parent ?resource5.
         BIND(?resource5 AS ?resource3)
       }
+      ?resource3 schema:address ?resource6.
+      ?resource6 schema:addressRegion ?resource7.
+      ?resource1 (schema:knows|schema:parent) ?resource3.
       {
         ?resource3 schema:address ?resource6.
         {
@@ -180,24 +180,23 @@ CONSTRUCT {
   ?resource1 schema:jobTitle ?resource3.
 }
 WHERE {
-  ?resource1 schema:jobTitle ?resource3.
   { ?resource1 schema:givenName ?resource2. }
   UNION
   { ?resource1 schema:jobTitle ?resource3. }
+  ?resource1 schema:jobTitle ?resource3.
   FILTER(?resource3 IN(\\"theoretical physicist\\", \\"neurobiologist\\", \\"microbiologist\\"))
 }"
 `;
 
 exports[`@hydrofoil/shape-to-query executing queries mix of sh:target 1`] = `
-"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX schema: <http://schema.org/>
+"PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 CONSTRUCT {
   ?resource2 schema:parent ?resource1.
   ?resource1 schema:address ?resource3.
   ?resource1 rdf:type ?resource4.
 }
 WHERE {
-  ?resource1 rdf:type ?resource4.
   {
     VALUES ?resource1 {
       <http://localhost:8080/data/person/stuart-bloom>
@@ -207,6 +206,7 @@ WHERE {
   { ?resource2 schema:parent ?resource1. }
   UNION
   { ?resource1 schema:address ?resource3. }
+  ?resource1 rdf:type ?resource4.
 }"
 `;
 
@@ -240,7 +240,6 @@ CONSTRUCT {
   ?resource2 schema:givenName ?resource1.
 }
 WHERE {
-  ?resource2 schema:givenName ?resource1.
   {
     <http://localhost:8080/data/person/mary-cooper> schema:children ?resource3.
     BIND(?resource3 AS ?resource2)
@@ -250,6 +249,7 @@ WHERE {
     <http://localhost:8080/data/person/mary-cooper> schema:knows ?resource4.
     BIND(?resource4 AS ?resource2)
   }
+  ?resource2 schema:givenName ?resource1.
 }"
 `;
 
@@ -299,10 +299,10 @@ CONSTRUCT {
   ?resource1 schema:familyName ?resource3.
 }
 WHERE {
-  ?resource1 schema:familyName ?resource3.
   { ?resource1 schema:givenName ?resource2. }
   UNION
   { ?resource1 schema:familyName ?resource3. }
+  ?resource1 schema:familyName ?resource3.
   VALUES ?resource3 {
     \\"Cooper\\"
   }
@@ -379,13 +379,13 @@ CONSTRUCT {
   ?resource2 schema:givenName ?resource1.
 }
 WHERE {
-  ?resource2 schema:givenName ?resource1.
   { BIND(<http://localhost:8080/data/person/sheldon-cooper> AS ?resource2) }
   UNION
   {
     <http://localhost:8080/data/person/sheldon-cooper> (schema:parent*) ?resource3.
     ?resource3 schema:parent ?resource2.
   }
+  ?resource2 schema:givenName ?resource1.
 }"
 `;
 
@@ -396,13 +396,13 @@ CONSTRUCT {
   ?resource2 schema:givenName ?resource1.
 }
 WHERE {
-  ?resource2 schema:givenName ?resource1.
   { BIND(<http://localhost:8080/data/person/howard-wolowitz> AS ?resource2) }
   UNION
   {
     <http://localhost:8080/data/person/howard-wolowitz> schema:spouse ?resource3.
     BIND(?resource3 AS ?resource2)
   }
+  ?resource2 schema:givenName ?resource1.
 }"
 `;
 

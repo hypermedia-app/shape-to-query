@@ -9,10 +9,10 @@ WHERE {
   ?q1 rdf:type <http://example.org/Object>;
     ?q2 ?q3.
   ?q2 rdfs:subPropertyOf ?q4.
-  ?q3 rdf:type ?q5.
   VALUES ?q4 {
     skos:related
   }
+  ?q3 rdf:type ?q5.
   VALUES ?q5 {
     schema:Organization
   }
