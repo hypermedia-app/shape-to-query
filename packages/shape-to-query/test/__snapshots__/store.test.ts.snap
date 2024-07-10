@@ -1,0 +1,521 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@hydrofoil/shape-to-query executing queries chaining properties from a subquery with sh:node 1`] = `
+"PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+CONSTRUCT {
+  ?resource1 hydra:member ?resource2.
+  ?resource2 schema:givenName ?resource6.
+}
+WHERE {
+  {
+    SELECT ?resource1 ?resource2 WHERE {
+      VALUES ?resource1 {
+        <http://example.org/people>
+      }
+      ?resource1 <http://example.org/memberType> ?resource3.
+      ?resource3 ^rdf:type ?resource2.
+      ?resource2 schema:jobTitle ?resource5.
+      VALUES ?resource5 {
+        \\"neurobiologist\\"
+      }
+    }
+  }
+  UNION
+  {
+    SELECT ?resource2 ?resource6 WHERE {
+      VALUES ?resource1 {
+        <http://example.org/people>
+      }
+      ?resource1 <http://example.org/memberType> ?resource3.
+      ?resource3 ^rdf:type ?resource2.
+      ?resource2 schema:jobTitle ?resource5.
+      VALUES ?resource5 {
+        \\"neurobiologist\\"
+      }
+      ?resource2 schema:givenName ?resource6.
+    }
+  }
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries complex sparql functions 1`] = `
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+CONSTRUCT { ?resource1 <http://example.org/initial> ?resource2. }
+WHERE {
+  VALUES ?resource1 {
+    <http://example.org/people>
+  }
+  ?resource1 <http://example.org/memberType> ?resource5.
+  ?resource5 ^rdf:type ?resource4.
+  ?resource4 schema:givenName ?resource3.
+  BIND(IRI(CONCAT(STR(?resource1), \\"?i=\\", LCASE(SUBSTR(?resource3, 1 , 1 )))) AS ?resource2)
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries ensure VALUES when sh:this is inside UNION 1`] = `
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+CONSTRUCT {
+  ?resource1 rdf:type ?resource2.
+  ?resource1 hydra:view ?resource3.
+}
+WHERE {
+  VALUES ?resource1 {
+    <http://example.org/people>
+  }
+  { ?resource1 rdf:type ?resource2. }
+  UNION
+  {
+    VALUES ?resource1 {
+      <http://example.org/people>
+    }
+    BIND(IRI(CONCAT(STR(?resource1), \\"#index\\")) AS ?resource3)
+  }
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries filtering deep inside sh:node 1`] = `
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource1 rdf:type schema:Person.
+  ?resource1 schema:givenName ?resource2.
+  ?resource1 schema:knows ?resource4.
+  ?resource1 schema:parent ?resource5.
+  ?resource3 schema:address ?resource6.
+  ?resource6 schema:addressRegion ?resource7.
+}
+WHERE {
+  {
+    SELECT ?resource1 ?resource2 ?resource4 ?resource5 WHERE {
+      ?resource1 rdf:type schema:Person.
+      { ?resource1 schema:givenName ?resource2. }
+      UNION
+      {
+        {
+          ?resource1 schema:knows ?resource4.
+          BIND(?resource4 AS ?resource3)
+        }
+        UNION
+        {
+          ?resource1 schema:parent ?resource5.
+          BIND(?resource5 AS ?resource3)
+        }
+      }
+      ?resource1 (schema:knows|schema:parent) ?resource3.
+      {
+        ?resource3 schema:address ?resource6.
+        {
+          ?resource6 schema:addressRegion ?resource7.
+          VALUES ?resource7 {
+            \\"TX\\"
+          }
+        }
+      }
+    }
+  }
+  UNION
+  {
+    SELECT ?resource3 ?resource6 WHERE {
+      ?resource1 rdf:type schema:Person.
+      {
+        ?resource1 schema:knows ?resource4.
+        BIND(?resource4 AS ?resource3)
+      }
+      UNION
+      {
+        ?resource1 schema:parent ?resource5.
+        BIND(?resource5 AS ?resource3)
+      }
+      ?resource3 schema:address ?resource6.
+      ?resource1 (schema:knows|schema:parent) ?resource3.
+      {
+        ?resource3 schema:address ?resource6.
+        {
+          ?resource6 schema:addressRegion ?resource7.
+          VALUES ?resource7 {
+            \\"TX\\"
+          }
+        }
+      }
+    }
+  }
+  UNION
+  {
+    SELECT ?resource6 ?resource7 WHERE {
+      ?resource1 rdf:type schema:Person.
+      {
+        ?resource1 schema:knows ?resource4.
+        BIND(?resource4 AS ?resource3)
+      }
+      UNION
+      {
+        ?resource1 schema:parent ?resource5.
+        BIND(?resource5 AS ?resource3)
+      }
+      ?resource3 schema:address ?resource6.
+      ?resource6 schema:addressRegion ?resource7.
+      ?resource1 (schema:knows|schema:parent) ?resource3.
+      {
+        ?resource3 schema:address ?resource6.
+        {
+          ?resource6 schema:addressRegion ?resource7.
+          VALUES ?resource7 {
+            \\"TX\\"
+          }
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries filtering property by sh:in 1`] = `
+"PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource1 schema:givenName ?resource2.
+  ?resource1 schema:jobTitle ?resource3.
+}
+WHERE {
+  { ?resource1 schema:givenName ?resource2. }
+  UNION
+  { ?resource1 schema:jobTitle ?resource3. }
+  ?resource1 schema:jobTitle ?resource3.
+  FILTER(?resource3 IN(\\"theoretical physicist\\", \\"neurobiologist\\", \\"microbiologist\\"))
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries mix of sh:target 1`] = `
+"PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+CONSTRUCT {
+  ?resource2 schema:parent ?resource1.
+  ?resource1 schema:address ?resource3.
+  ?resource1 rdf:type ?resource4.
+}
+WHERE {
+  {
+    VALUES ?resource1 {
+      <http://localhost:8080/data/person/stuart-bloom>
+    }
+  }
+  UNION
+  { ?resource2 schema:parent ?resource1. }
+  UNION
+  { ?resource1 schema:address ?resource3. }
+  ?resource1 rdf:type ?resource4.
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries node expression target subquery 1`] = `
+"PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource1 schema:givenName ?resource6.
+  ?resource1 schema:familyName ?resource7.
+}
+WHERE {
+  {
+    SELECT ?resource2 (?resource2 AS ?resource1) WHERE {
+      ?resource2 schema:jobTitle ?resource4.
+      FILTER(CONTAINS(?resource4, \\"physicist\\"))
+      OPTIONAL { ?resource2 schema:familyName ?resource5. }
+    }
+    ORDER BY (?resource5)
+    LIMIT 1
+  }
+  { ?resource1 schema:givenName ?resource6. }
+  UNION
+  { ?resource1 schema:familyName ?resource7. }
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries sh:alternativePath chained first in a sequence 1`] = `
+"PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  <http://localhost:8080/data/person/mary-cooper> schema:children ?resource3.
+  <http://localhost:8080/data/person/mary-cooper> schema:knows ?resource4.
+  ?resource2 schema:givenName ?resource1.
+}
+WHERE {
+  {
+    <http://localhost:8080/data/person/mary-cooper> schema:children ?resource3.
+    BIND(?resource3 AS ?resource2)
+  }
+  UNION
+  {
+    <http://localhost:8080/data/person/mary-cooper> schema:knows ?resource4.
+    BIND(?resource4 AS ?resource2)
+  }
+  ?resource2 schema:givenName ?resource1.
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries sh:alternativePath chained last in a sequence 1`] = `
+"PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  <http://localhost:8080/data/person/penny> schema:address ?resource2.
+  ?resource2 schema:addressCountry ?resource4.
+  ?resource2 schema:addressLocality ?resource5.
+  ?resource2 schema:addressRegion ?resource6.
+  ?resource2 schema:postalCode ?resource7.
+  ?resource2 schema:streetAddress ?resource8.
+}
+WHERE {
+  <http://localhost:8080/data/person/penny> schema:address ?resource2.
+  {
+    ?resource2 schema:addressCountry ?resource4.
+    BIND(?resource4 AS ?resource1)
+  }
+  UNION
+  {
+    ?resource2 schema:addressLocality ?resource5.
+    BIND(?resource5 AS ?resource1)
+  }
+  UNION
+  {
+    ?resource2 schema:addressRegion ?resource6.
+    BIND(?resource6 AS ?resource1)
+  }
+  UNION
+  {
+    ?resource2 schema:postalCode ?resource7.
+    BIND(?resource7 AS ?resource1)
+  }
+  UNION
+  {
+    ?resource2 schema:streetAddress ?resource8.
+    BIND(?resource8 AS ?resource1)
+  }
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries sh:hasValue filters entire focus nodes 1`] = `
+"PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource1 schema:givenName ?resource2.
+  ?resource1 schema:familyName ?resource3.
+}
+WHERE {
+  { ?resource1 schema:givenName ?resource2. }
+  UNION
+  { ?resource1 schema:familyName ?resource3. }
+  ?resource1 schema:familyName ?resource3.
+  VALUES ?resource3 {
+    \\"Cooper\\"
+  }
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries sh:hasValues 1`] = `
+"PREFIX schema: <http://schema.org/>
+CONSTRUCT { ?resource1 schema:knows ?resource2. }
+WHERE {
+  ?resource1 schema:knows ?resource2, ?resource2.
+  VALUES ?resource2 {
+    <http://localhost:8080/data/person/mary-cooper>
+  }
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries sh:oneOrMore returns "second level" properties 1`] = `
+"PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource3 schema:parent ?resource2.
+  ?resource2 schema:givenName ?resource1.
+}
+WHERE {
+  <http://localhost:8080/data/person/sheldon-cooper> (schema:parent*) ?resource3.
+  ?resource3 schema:parent ?resource2.
+  ?resource2 schema:givenName ?resource1.
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries sh:or merges multiple reused shapes in logical sum 1`] = `
+"PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource1 schema:givenName ?resource2.
+  ?resource1 schema:familyName ?resource3.
+  ?resource1 schema:children ?resource4.
+  ?resource1 schema:parent ?resource5.
+}
+WHERE {
+  { ?resource1 schema:givenName ?resource2. }
+  UNION
+  { ?resource1 schema:familyName ?resource3. }
+  { ?resource1 schema:children ?resource4. }
+  UNION
+  { ?resource1 schema:parent ?resource5. }
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries sh:or nested in sh:node 1`] = `
+"PREFIX schema: <http://schema.org/>
+CONSTRUCT { ?resource1 schema:familyName ?resource2. }
+WHERE {
+  ?resource1 schema:familyName ?resource2, ?resource2.
+  {
+    ?resource1 schema:familyName ?resource2.
+    VALUES ?resource2 {
+      \\"Cooper\\"
+    }
+  }
+  UNION
+  {
+    ?resource1 schema:familyName ?resource2.
+    VALUES ?resource2 {
+      \\"Bloom\\"
+    }
+  }
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries sh:zeroOrMorePath includes self node 1`] = `
+"PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource3 schema:parent ?resource2.
+  ?resource2 schema:givenName ?resource1.
+}
+WHERE {
+  { BIND(<http://localhost:8080/data/person/sheldon-cooper> AS ?resource2) }
+  UNION
+  {
+    <http://localhost:8080/data/person/sheldon-cooper> (schema:parent*) ?resource3.
+    ?resource3 schema:parent ?resource2.
+  }
+  ?resource2 schema:givenName ?resource1.
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries sh:zeroOrOne returns self and child properties 1`] = `
+"PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  <http://localhost:8080/data/person/howard-wolowitz> schema:spouse ?resource3.
+  ?resource2 schema:givenName ?resource1.
+}
+WHERE {
+  { BIND(<http://localhost:8080/data/person/howard-wolowitz> AS ?resource2) }
+  UNION
+  {
+    <http://localhost:8080/data/person/howard-wolowitz> schema:spouse ?resource3.
+    BIND(?resource3 AS ?resource2)
+  }
+  ?resource2 schema:givenName ?resource1.
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries two sh:alternativePath in a sequence 1`] = `
+"PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  <http://localhost:8080/data/person/mary-cooper> schema:children ?resource3.
+  <http://localhost:8080/data/person/mary-cooper> schema:knows ?resource4.
+  ?resource2 schema:givenName ?resource6.
+  ?resource2 schema:familyName ?resource7.
+}
+WHERE {
+  {
+    <http://localhost:8080/data/person/mary-cooper> schema:children ?resource3.
+    BIND(?resource3 AS ?resource2)
+  }
+  UNION
+  {
+    <http://localhost:8080/data/person/mary-cooper> schema:knows ?resource4.
+    BIND(?resource4 AS ?resource2)
+  }
+  {
+    ?resource2 schema:givenName ?resource6.
+    BIND(?resource6 AS ?resource1)
+  }
+  UNION
+  {
+    ?resource2 schema:familyName ?resource7.
+    BIND(?resource7 AS ?resource1)
+  }
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries union of property value rules 1`] = `
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+CONSTRUCT {
+  ?resource1 rdf:type ?resource2.
+  ?resource1 hydra:view ?resource3.
+  ?resource3 rdf:type ?resource4.
+  ?resource3 rdf:type ?resource6.
+}
+WHERE {
+  {
+    SELECT ?resource1 ?resource2 ?resource3 WHERE {
+      VALUES ?resource1 {
+        <http://example.org/people>
+      }
+      { ?resource1 rdf:type ?resource2. }
+      UNION
+      {
+        VALUES ?resource1 {
+          <http://example.org/people>
+        }
+        BIND(IRI(CONCAT(STR(?resource1), \\"#index\\")) AS ?resource3)
+      }
+    }
+  }
+  UNION
+  {
+    SELECT ?resource3 ?resource4 WHERE {
+      VALUES ?resource1 {
+        <http://example.org/people>
+      }
+      BIND(IRI(CONCAT(STR(?resource1), \\"#index\\")) AS ?resource3)
+      BIND(<http://example.org/AlphabeticallyPagedView> AS ?resource4)
+    }
+  }
+  UNION
+  {
+    SELECT ?resource3 ?resource6 WHERE {
+      VALUES ?resource1 {
+        <http://example.org/people>
+      }
+      BIND(IRI(CONCAT(STR(?resource1), \\"#index\\")) AS ?resource3)
+      BIND(hydra:PartialCollectionView AS ?resource6)
+    }
+  }
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query executing queries union of triple rules 1`] = `
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+CONSTRUCT {
+  ?resource1 rdf:type ?resource2.
+  ?resource3 ?resource4 ?resource5.
+  ?resource6 ?resource7 ?resource8.
+}
+WHERE {
+  VALUES ?resource1 {
+    <http://example.org/people>
+  }
+  { ?resource1 rdf:type ?resource2. }
+  UNION
+  {
+    {
+      VALUES ?resource1 {
+        <http://example.org/people>
+      }
+      BIND(?resource1 AS ?resource3)
+      BIND(hydra:view AS ?resource4)
+      BIND(IRI(CONCAT(STR(?resource1), \\"#index\\")) AS ?resource5)
+    }
+    UNION
+    {
+      VALUES ?resource1 {
+        <http://example.org/people>
+      }
+      BIND(IRI(CONCAT(STR(?resource1), \\"#index\\")) AS ?resource6)
+      BIND(rdf:type AS ?resource7)
+      BIND(<http://example.org/AlphabeticallyPagedView> AS ?resource8)
+    }
+  }
+}"
+`;

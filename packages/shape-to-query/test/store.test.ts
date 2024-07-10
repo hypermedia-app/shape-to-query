@@ -1,10 +1,12 @@
 import module from 'module'
 import oxigraph from 'oxigraph'
-import { expect } from 'chai'
+import chai, { expect } from 'chai'
 import $rdf from '@zazuko/env-node'
 import { hydra, rdf, schema, dashSparql } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
-import { Construct } from '@tpluscode/sparql-builder'
+import type { Construct } from '@tpluscode/sparql-builder'
+import { jestSnapshotPlugin } from 'mocha-chai-jest-snapshot'
+import sparql from 'sparqljs'
 import { constructQuery } from '../lib/shapeToQuery.js'
 import { s2q } from '../index.js'
 import { parse, raw } from './nodeFactory.js'
@@ -15,7 +17,12 @@ const require = module.createRequire(import.meta.url)
 
 const tbbt = $rdf.namespace('http://localhost:8080/data/person/')
 
+const parser = new sparql.Parser()
+const generator = new sparql.Generator()
+
 describe('@hydrofoil/shape-to-query', () => {
+  chai.use(jestSnapshotPlugin())
+
   let store: oxigraph.Store
 
   before(async function () {
@@ -27,7 +34,11 @@ describe('@hydrofoil/shape-to-query', () => {
   })
 
   function runQuery(query: Construct) {
-    return $rdf.dataset(store.query(query.build(), {
+    const built = query.build()
+
+    expect(generator.stringify(parser.parse(built))).toMatchSnapshot()
+
+    return $rdf.dataset(store.query(built, {
       use_default_graph_as_union: true,
     }))
   }
