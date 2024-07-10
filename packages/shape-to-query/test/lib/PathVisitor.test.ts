@@ -3,9 +3,11 @@ import { fromNode } from 'clownface-shacl-path'
 import { expect } from 'chai'
 import type { GraphPointer } from 'clownface'
 import { sparql } from '@tpluscode/sparql-builder'
+import type { SparqlTemplateResult } from '@tpluscode/rdf-string'
 import { parse } from '../nodeFactory.js'
 import PathVisitor from '../../lib/PathVisitor.js'
-import { createVariableSequence, VariableSequence } from '../../lib/variableSequence.js'
+import type { VariableSequence } from '../../lib/variableSequence.js'
+import { createVariableSequence } from '../../lib/variableSequence.js'
 import '../sparql.js'
 
 describe('lib/PathVisitor', () => {
@@ -24,7 +26,7 @@ describe('lib/PathVisitor', () => {
           ${sh.path} ${foaf.knows} ;
         .
       `,
-      expectedWherePatterns: '?n1 foaf:knows ?n2 .',
+      expectedWherePatterns: sparql`?n1 ${foaf.knows} ?n2 .`,
     })
   })
 
@@ -35,7 +37,7 @@ describe('lib/PathVisitor', () => {
           ${sh.path} ( ${foaf.knows} ${foaf.name} ) ;
         .
       `,
-      expectedWherePatterns: '?in foaf:knows ?mid .\n?mid foaf:name ?out .',
+      expectedWherePatterns: sparql`?in ${foaf.knows} ?mid .\n?mid ${foaf.name} ?out .`,
     })
   })
 
@@ -44,7 +46,7 @@ describe('lib/PathVisitor', () => {
       shape: parse`
         <> ${sh.path} [ ${sh.inversePath} ${foaf.knows} ] .
       `,
-      expectedWherePatterns: '?n2 foaf:knows ?n1 .',
+      expectedWherePatterns: sparql`?n2 ${foaf.knows} ?n1 .`,
     })
   })
 
@@ -53,15 +55,15 @@ describe('lib/PathVisitor', () => {
       shape: parse`
         <> ${sh.path} [ ${sh.zeroOrOnePath} ${foaf.knows} ] .
       `,
-      expectedWherePatterns: `
+      expectedWherePatterns: sparql`
         {
-          BIND(?n1 as ?n2)
+          BIND(?n1 AS ?n2)
         } UNION {
-          ?n1 foaf:knows ?n4 .
-          BIND (?n4 as ?n2)
+          ?n1 ${foaf.knows} ?n4 .
+          BIND (?n4 AS ?n2)
         }
       `,
-      expectedConstructPatterns: '?n1 foaf:knows ?n4 .',
+      expectedConstructPatterns: sparql`?n1 ${foaf.knows} ?n4 .`,
     })
   })
 
@@ -70,16 +72,16 @@ describe('lib/PathVisitor', () => {
       shape: parse`
         <> ${sh.path} [ ${sh.alternativePath} ( ${foaf.knows} ${schema.knows} ) ] .
       `,
-      expectedWherePatterns: `{
-          ?n1 foaf:knows ?n3 .
-          BIND(?n3 as ?n2)
+      expectedWherePatterns: sparql`{
+          ?n1 ${foaf.knows} ?n3 .
+          BIND(?n3 AS ?n2)
         } UNION {
-          ?n1 schema:knows ?n4 .
-          BIND(?n4 as ?n2)
+          ?n1 ${schema.knows} ?n4 .
+          BIND(?n4 AS ?n2)
         }`,
-      expectedConstructPatterns: `
-        ?n1 foaf:knows ?n3 .
-        ?n1 schema:knows ?n4 .`,
+      expectedConstructPatterns: sparql`
+        ?n1 ${foaf.knows} ?n3 .
+        ?n1 ${schema.knows} ?n4 .`,
     })
   })
 
@@ -88,11 +90,11 @@ describe('lib/PathVisitor', () => {
       shape: parse`
         <> ${sh.path} [ ${sh.oneOrMorePath} ${foaf.knows} ] .
       `,
-      expectedWherePatterns: `
-        ?n1 foaf:knows* ?n3 .
-        ?n3 foaf:knows ?n2 .
+      expectedWherePatterns: sparql`
+        ?n1 (${foaf.knows}*) ?n3 .
+        ?n3 ${foaf.knows} ?n2 .
       `,
-      expectedConstructPatterns: '?n3 foaf:knows ?n2 .',
+      expectedConstructPatterns: sparql`?n3 ${foaf.knows} ?n2 .`,
     })
   })
 
@@ -101,22 +103,22 @@ describe('lib/PathVisitor', () => {
       shape: parse`
         <> ${sh.path} [ ${sh.zeroOrMorePath} ${foaf.knows} ] .
       `,
-      expectedWherePatterns: `
+      expectedWherePatterns: sparql`
         {
-          BIND (?n1 as ?n2)
+          BIND (?n1 AS ?n2)
         } UNION {
-          ?n1 foaf:knows* ?n3 .
-          ?n3 foaf:knows ?n2 .
+          ?n1 (${foaf.knows}*) ?n3 .
+          ?n3 ${foaf.knows} ?n2 .
         }
       `,
-      expectedConstructPatterns: '?n3 foaf:knows ?n2 .',
+      expectedConstructPatterns: sparql`?n3 ${foaf.knows} ?n2 .`,
     })
   })
 
   interface Iit {
     shape: GraphPointer
-    expectedWherePatterns: string
-    expectedConstructPatterns?: string
+    expectedWherePatterns: SparqlTemplateResult
+    expectedConstructPatterns?: SparqlTemplateResult
   }
 
   function iit(name: string, { shape, expectedWherePatterns, expectedConstructPatterns }: Iit) {

@@ -1,14 +1,23 @@
-import { Select, sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
+import type { Select } from '@tpluscode/sparql-builder'
 import $rdf from '@zazuko/env/web.js'
 import sinon from 'sinon'
-import { NodeExpression, NodeExpressionResult } from '../../../model/nodeExpression/NodeExpression.js'
+import sparqljs from 'sparqljs'
+import type { NodeExpression, NodeExpressionResult } from '../../../model/nodeExpression/NodeExpression.js'
 
-export function combinedNRE({ patterns, object }: NodeExpressionResult): SparqlTemplateResult {
-  return sparql`SELECT ${object} WHERE { ${patterns} }`
+const parser = new sparqljs.Parser()
+
+export function combinedNRE({ patterns, object }: NodeExpressionResult): sparqljs.SelectQuery {
+  return {
+    type: 'query',
+    prefixes: {},
+    queryType: 'SELECT',
+    variables: [object],
+    where: patterns,
+  }
 }
 
 interface FakePatternsImpl {
-  (...args: Parameters<NodeExpression['build']>): Select | SparqlTemplateResult
+  (...args: Parameters<NodeExpression['build']>): Select | sparqljs.Pattern[]
 }
 
 interface FakeInlinePatterns {
@@ -19,15 +28,15 @@ interface FakeExpression extends NodeExpression {
   rootIsFocusNode: boolean
 }
 
-export function fakeExpression(patterns: Select | SparqlTemplateResult | FakePatternsImpl = sparql``, inlinePatterns?: FakeInlinePatterns): FakeExpression {
+export function fakeExpression(patterns: Select | sparqljs.Pattern[] | FakePatternsImpl = [], inlinePatterns?: FakeInlinePatterns): FakeExpression {
   const build = sinon.stub()
   if (typeof patterns === 'function') {
     build.callsFake(({ variable, object = variable(), ...args }, builder) => ({
       object,
-      patterns: patterns({ object, variable, ...args }, builder),
+      patterns: queryToPatterns(patterns({ object, variable, ...args }, builder)),
     }))
   } else {
-    build.returns(patterns)
+    build.returns(queryToPatterns(patterns))
   }
 
   const fake: any = {
@@ -41,4 +50,12 @@ export function fakeExpression(patterns: Select | SparqlTemplateResult | FakePat
   }
 
   return fake
+}
+
+function queryToPatterns(patterns: Select | sparqljs.Pattern[]): sparqljs.Pattern[] {
+  if (Array.isArray(patterns)) {
+    return patterns
+  }
+
+  return [parser.parse(patterns.build()) as sparqljs.SelectQuery]
 }

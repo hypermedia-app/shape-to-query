@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`model/constraint/or combines all inner constraints where in UNION 1`] = `
+Array [
+  Object {
+    "patterns": Array [
+      Object {
+        "patterns": Array [
+          Object {
+            "triples": Array [
+              Object {
+                "object": Variable {
+                  "value": "o",
+                },
+                "predicate": Variable {
+                  "value": "p",
+                },
+                "subject": Variable {
+                  "value": "s",
+                },
+              },
+            ],
+            "type": "bgp",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "patterns": Array [
+          Object {
+            "triples": Array [
+              Object {
+                "object": Variable {
+                  "value": "c",
+                },
+                "predicate": Variable {
+                  "value": "b",
+                },
+                "subject": Variable {
+                  "value": "a",
+                },
+              },
+            ],
+            "type": "bgp",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "patterns": Array [
+          Object {
+            "triples": Array [
+              Object {
+                "object": Variable {
+                  "value": "z",
+                },
+                "predicate": Variable {
+                  "value": "y",
+                },
+                "subject": Variable {
+                  "value": "x",
+                },
+              },
+            ],
+            "type": "bgp",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "type": "union",
+  },
+]
+`;
+
+exports[`model/constraint/or skips constraints which returned empty 1`] = `
+Array [
+  Object {
+    "patterns": Array [
+      Object {
+        "patterns": Array [
+          Object {
+            "triples": Array [
+              Object {
+                "object": Variable {
+                  "value": "o",
+                },
+                "predicate": Variable {
+                  "value": "p",
+                },
+                "subject": Variable {
+                  "value": "s",
+                },
+              },
+            ],
+            "type": "bgp",
+          },
+        ],
+        "type": "group",
+      },
+      Object {
+        "patterns": Array [
+          Object {
+            "triples": Array [
+              Object {
+                "object": Variable {
+                  "value": "z",
+                },
+                "predicate": Variable {
+                  "value": "y",
+                },
+                "subject": Variable {
+                  "value": "x",
+                },
+              },
+            ],
+            "type": "bgp",
+          },
+        ],
+        "type": "group",
+      },
+    ],
+    "type": "union",
+  },
+]
+`;

@@ -1,9 +1,8 @@
-import { schema } from '@tpluscode/rdf-ns-builders'
+import { rdf, schema } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
-import { sparql } from '@tpluscode/rdf-string'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import { SELECT } from '@tpluscode/sparql-builder'
+import { SELECT, sparql } from '@tpluscode/sparql-builder'
 import $rdf from '@zazuko/env/web.js'
 import { LimitExpression } from '../../../model/nodeExpression/LimitExpression.js'
 import { blankNode } from '../../nodeFactory.js'
@@ -108,7 +107,10 @@ describe('model/nodeExpression/LimitExpression', () => {
     it('creates a limited subselect', () => {
       // given
       const limit = 10
-      const nodes = fakeExpression(({ object }) => sparql`${object} a ${schema.Article} .`)
+      const nodes = fakeExpression(({ object }) => [{
+        type: 'bgp',
+        triples: [{ subject: object, predicate: rdf.type, object: schema.Article }],
+      }])
       const expr = new LimitExpression($rdf.blankNode(), limit, nodes)
 
       // when
@@ -116,12 +118,12 @@ describe('model/nodeExpression/LimitExpression', () => {
         subject: variable(),
         object: variable(),
         variable,
-        rootPatterns: sparql``,
+        rootPatterns: [],
       }, new PatternBuilder())
 
       // then
-      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
-        ?foo a schema:Article .
+      expect(patterns[0]).to.be.query(sparql`SELECT ?root ?foo WHERE {
+        ?foo a ${schema.Article} .
       }
       LIMIT 10`)
     })
@@ -137,12 +139,12 @@ describe('model/nodeExpression/LimitExpression', () => {
         subject: variable(),
         object: variable(),
         variable,
-        rootPatterns: sparql``,
+        rootPatterns: [],
       }, new PatternBuilder())
 
       // then
-      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
-        ?foo a schema:Article .
+      expect(patterns[0]).to.be.query(sparql`SELECT ?root ?foo WHERE {
+        ?foo a ${schema.Article} .
       }
       LIMIT 10`)
     })

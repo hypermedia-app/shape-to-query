@@ -4,7 +4,6 @@ import { expect } from 'chai'
 import $rdf from '@zazuko/env-node'
 import { hydra, rdf, schema, dashSparql } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
-import { Construct } from '@tpluscode/sparql-builder'
 import { constructQuery } from '../lib/shapeToQuery.js'
 import { s2q } from '../index.js'
 import { parse, raw } from './nodeFactory.js'
@@ -26,8 +25,8 @@ describe('@hydrofoil/shape-to-query', () => {
     store = new oxigraph.Store([...dataset])
   })
 
-  function runQuery(query: Construct) {
-    return $rdf.dataset(store.query(query.build(), {
+  function runQuery(query: string) {
+    return $rdf.dataset(store.query(query, {
       use_default_graph_as_union: true,
     }))
   }

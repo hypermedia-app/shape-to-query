@@ -13,7 +13,7 @@ export class PrefixExtractor extends Processor {
     super(factory)
   }
 
-  processQuery(query) {
+  process(query) {
     let root: boolean
     if (!this.prefixes) {
       root = true

@@ -1,7 +1,8 @@
 import type { NamedNode, Variable } from '@rdfjs/types'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import type sparqljs from 'sparqljs'
-import ConstraintComponent, { Parameters, PropertyShape } from './ConstraintComponent.js'
+import type { Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent from './ConstraintComponent.js'
 
 export type NodeKind = typeof sh.IRI
   | typeof sh.IRIOrLiteral

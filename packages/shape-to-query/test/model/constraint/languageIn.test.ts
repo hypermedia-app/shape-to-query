@@ -1,10 +1,10 @@
 import { expect } from 'chai'
 import $rdf from '@zazuko/env/web.js'
-import { sparql } from '@tpluscode/sparql-builder'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { LanguageInConstraintComponent } from '../../../model/constraint/languageIn.js'
 import { variable } from '../../variable.js'
-import { PropertyShape } from '../../../model/constraint/ConstraintComponent.js'
+import type { PropertyShape } from '../../../model/constraint/ConstraintComponent.js'
+import { ex } from '../../namespace.js'
 
 describe('model/constraint/languageIn', () => {
   before(() => import('../../sparql.js'))
@@ -25,7 +25,7 @@ describe('model/constraint/languageIn', () => {
       const [constraint] = LanguageInConstraintComponent.fromShape(shape)
 
       // then
-      expect(constraint.languages).to.contain.all.members(['de', 'en'])
+      expect(constraint.languages).to.deep.contain.all.members([$rdf.literal('de'), $rdf.literal('en')])
     })
 
     it('skips shape without sh:languageIn', () => {
@@ -60,7 +60,7 @@ describe('model/constraint/languageIn', () => {
   describe('buildPatterns', () => {
     it('returns exact filter when single language', () => {
       // given
-      const constraint = new LanguageInConstraintComponent(['de'])
+      const constraint = new LanguageInConstraintComponent([$rdf.literal('de')])
       const valueNode = $rdf.variable('x')
 
       // when
@@ -69,16 +69,33 @@ describe('model/constraint/languageIn', () => {
         valueNode,
         variable,
         rootPatterns: undefined,
-        propertyPath: sparql``,
+        propertyPath: ex.prop,
       })
 
       // then
-      expect(whereClause).to.equalPatternsVerbatim('FILTER (lang(?x) = "de")')
+      expect(whereClause).to.deep.equal(
+        // 'FILTER (lang(?x) = "de")'
+        [{
+          type: 'filter',
+          expression: {
+            type: 'operation',
+            operator: '=',
+            args: [
+              {
+                type: 'operation',
+                operator: 'lang',
+                args: [valueNode],
+              },
+              $rdf.literal('de'),
+            ],
+          },
+        }],
+      )
     })
 
     it('returns IN filter when multiple languages', () => {
       // given
-      const constraint = new LanguageInConstraintComponent(['de', 'en'])
+      const constraint = new LanguageInConstraintComponent([$rdf.literal('de'), $rdf.literal('en')])
       const valueNode = $rdf.variable('x')
 
       // when
@@ -87,16 +104,33 @@ describe('model/constraint/languageIn', () => {
         valueNode,
         variable,
         rootPatterns: undefined,
-        propertyPath: sparql``,
+        propertyPath: ex.prop,
       })
 
       // then
-      expect(whereClause).to.equalPatternsVerbatim('FILTER (lang(?x) IN ("de", "en"))')
+      expect(whereClause).to.deep.equal(
+        // 'FILTER (lang(?x) IN ("de", "en"))'
+        [{
+          type: 'filter',
+          expression: {
+            type: 'operation',
+            operator: 'in',
+            args: [
+              {
+                type: 'operation',
+                operator: 'lang',
+                args: [valueNode],
+              },
+              [$rdf.literal('de'), $rdf.literal('en')],
+            ],
+          },
+        }],
+      )
     })
 
     it('returns nothing when shape is node shape focus node is IRI', () => {
       // given
-      const constraint = new LanguageInConstraintComponent(['de', 'en'])
+      const constraint = new LanguageInConstraintComponent([$rdf.literal('de'), $rdf.literal('en')])
       const valueNode = $rdf.variable('x')
 
       // when
@@ -113,7 +147,7 @@ describe('model/constraint/languageIn', () => {
 
     it('returns filter when shape is node shape focus node is variable', () => {
       // given
-      const constraint = new LanguageInConstraintComponent(['de', 'en'])
+      const constraint = new LanguageInConstraintComponent([$rdf.literal('de'), $rdf.literal('en')])
       const valueNode = $rdf.variable('x')
 
       // when
@@ -125,7 +159,24 @@ describe('model/constraint/languageIn', () => {
       })
 
       // then
-      expect(whereClause).to.equalPatternsVerbatim('FILTER (lang(?foo) IN ( "de", "en" ))')
+      expect(whereClause).to.deep.equal(
+        // 'FILTER (lang(?foo) IN ( "de", "en" ))'
+        [{
+          type: 'filter',
+          expression: {
+            type: 'operation',
+            operator: 'in',
+            args: [
+              {
+                type: 'operation',
+                operator: 'lang',
+                args: [$rdf.variable('foo')],
+              },
+              [$rdf.literal('de'), $rdf.literal('en')],
+            ],
+          },
+        }],
+      )
     })
   })
 })

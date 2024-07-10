@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import Shape from '../../model/Shape.js'
 import { emptyPatterns } from '../../lib/shapePatterns.js'
-import { ConstraintComponent } from '../../model/constraint/ConstraintComponent.js'
+import type { ConstraintComponent } from '../../model/constraint/ConstraintComponent.js'
 import { OrConstraintComponent } from '../../model/constraint/or.js'
 import { AndConstraintComponent } from '../../model/constraint/and.js'
 import { variable } from '../variable.js'
@@ -28,10 +28,10 @@ describe('lib/model/Shape', () => {
       // given
       const inner: ConstraintComponent[] = [{
         type: sh.NodeConstraintComponent,
-        buildPatterns: () => '',
+        buildPatterns: () => [],
       }, {
         type: sh.NodeConstraintComponent,
-        buildPatterns: () => '',
+        buildPatterns: () => [],
       }]
       const shape = new Shape(inner)
 
@@ -47,16 +47,22 @@ describe('lib/model/Shape', () => {
       // given
       const shape = new Shape([
         new OrConstraintComponent([{
-          buildConstraints: () => '',
+          buildConstraints: () => [],
           buildPatterns: () => ({
-            whereClause: 'foo shape',
+            whereClause: [{
+              type: 'comment',
+              text: 'foo shape',
+            }],
             constructClause: [],
           }),
           properties: [],
         }, {
-          buildConstraints: () => '',
+          buildConstraints: () => [],
           buildPatterns: () => ({
-            whereClause: 'bar shape',
+            whereClause: [{
+              type: 'comment',
+              text: 'bar shape',
+            }],
             constructClause: [],
           }),
           properties: [],
@@ -69,9 +75,9 @@ describe('lib/model/Shape', () => {
 
       // then
       expect(whereClause).to.equalPatterns(`{
-        foo shape
+        # foo shape
       } UNION {
-        bar shape
+        # bar shape
       }`)
     })
 
@@ -79,16 +85,22 @@ describe('lib/model/Shape', () => {
       // given
       const shape = new Shape([
         new AndConstraintComponent([{
-          buildConstraints: () => '',
+          buildConstraints: () => [],
           buildPatterns: () => ({
-            whereClause: 'foo shape',
+            whereClause: [{
+              type: 'comment',
+              text: 'foo shape',
+            }],
             constructClause: [],
           }),
           properties: [],
         }, {
-          buildConstraints: () => '',
+          buildConstraints: () => [],
           buildPatterns: () => ({
-            whereClause: 'bar shape',
+            whereClause: [{
+              type: 'comment',
+              text: 'bar shape',
+            }],
             constructClause: [],
           }),
           properties: [],
@@ -101,8 +113,8 @@ describe('lib/model/Shape', () => {
 
       // then
       expect(whereClause).to.equalPatterns(`
-        foo shape
-        bar shape
+        # foo shape
+        # bar shape
       `)
     })
   })

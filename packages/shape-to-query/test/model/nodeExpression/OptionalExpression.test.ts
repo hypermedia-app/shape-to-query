@@ -1,5 +1,4 @@
-import { schema } from '@tpluscode/rdf-ns-builders'
-import { sparql } from '@tpluscode/rdf-string'
+import { rdf, schema } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import $rdf from '@zazuko/env/web.js'
@@ -51,21 +50,40 @@ describe('model/nodeExpression/OptionalExpression', () => {
   describe('build', () => {
     it('wraps inner patterns in OPTIONAL', () => {
       // given
-      const inner = fakeExpression(({ object }) => sparql`${object} a ${schema.Article} .`)
+      const inner = fakeExpression(({ object }) => [{
+        type: 'bgp',
+        triples: [{
+          subject: object,
+          predicate: rdf.type,
+          object: schema('Article'),
+        }],
+      }])
       const expr = new OptionalExpression($rdf.blankNode(), inner)
+      const object = variable()
 
       // when
       const { patterns } = expr.build({
         subject: variable(),
-        object: variable(),
+        object,
         variable,
-        rootPatterns: sparql``,
+        rootPatterns: [],
       }, new PatternBuilder())
 
       // then
-      expect(patterns).to.equalPatterns(`OPTIONAL {
-        ?foo a schema:Article .
-      }`)
+      expect(patterns).to.deep.equal(
+        // OPTIONAL { ?foo a schema:Article . }
+        [{
+          type: 'optional',
+          patterns: [{
+            type: 'bgp',
+            triples: [{
+              subject: object,
+              predicate: rdf.type,
+              object: schema.Article,
+            }],
+          }],
+        }],
+      )
     })
   })
 })

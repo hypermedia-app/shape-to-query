@@ -1,10 +1,10 @@
-import type { BaseQuad } from '@rdfjs/types'
+import type { Quad } from '@rdfjs/types'
 import $rdf from '@zazuko/env/web.js'
 import type sparqljs from 'sparqljs'
 
 export interface ShapePatterns {
   whereClause: sparqljs.Pattern[]
-  constructClause: BaseQuad[]
+  constructClause: Quad[]
   childPatterns?: ShapePatterns[]
   /**
    * Patterns to inserted into a UNION block
@@ -34,7 +34,7 @@ export function flatten(...patterns: ShapePatterns[]): ShapePatterns {
   }
 }
 
-function unique(...construct: BaseQuad[][]): BaseQuad[] {
+function unique(...construct: Quad[][]): Quad[] {
   const set = $rdf.termSet(construct.flatMap(arr => arr))
   return [...set]
 }

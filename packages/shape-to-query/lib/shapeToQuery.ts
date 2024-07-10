@@ -15,7 +15,7 @@ const defaultOptimizers = (): Processor[] => [
   new PrefixExtractor(rdf),
 ]
 
-export function constructQuery(shape: GraphPointer, options: Options = { optimizers: [] }) {
+export function constructQuery(shape: GraphPointer, { optimizers = [], ...options }: Options = { }) {
   const patterns = shapeToPatterns(shape, options)
 
   return optimizeAndStringify({
@@ -24,25 +24,22 @@ export function constructQuery(shape: GraphPointer, options: Options = { optimiz
     where: patterns.whereClause,
     prefixes: {},
     template: patterns.constructClause as sparqljs.Triple[],
-  }, options.optimizers)
+  }, optimizers)
 }
 
 interface DeleteOptions extends Options {
   graph?: NamedNode | string
 }
 
-export function deleteQuery(shape: GraphPointer, options: DeleteOptions = { optimizers: [] }) {
+export function deleteQuery(shape: GraphPointer, { optimizers = [], ...options }: DeleteOptions = { }) {
   const patterns = shapeToPatterns(shape, options)
 
-  const graph: sparqljs.GraphOrDefault = {
-    default: !!options.graph,
-    type: 'graph',
-  }
+  let graph: NamedNode | undefined
   if (options.graph) {
     if (typeof options.graph === 'string') {
-      graph.name = rdf.namedNode(options.graph)
+      graph = rdf.namedNode(options.graph)
     } else {
-      graph.name = options.graph
+      graph = options.graph
     }
   }
 
@@ -50,6 +47,7 @@ export function deleteQuery(shape: GraphPointer, options: DeleteOptions = { opti
     type: 'update',
     updates: [{
       updateType: 'insertdelete',
+      insert: [],
       delete: [{
         type: 'bgp',
         triples: patterns.constructClause as sparqljs.Triple[],
@@ -58,10 +56,10 @@ export function deleteQuery(shape: GraphPointer, options: DeleteOptions = { opti
       graph,
     }],
     prefixes: {},
-  }, options.optimizers)
+  }, optimizers)
 }
 
 function optimizeAndStringify(query: sparqljs.SparqlQuery, optimizers: Processor[]) {
   return generator.stringify([...optimizers, ...defaultOptimizers()]
-    .reduce((query, optimizer) => optimizer.optimize(query), query))
+    .reduce((query, optimizer) => optimizer.process(query), query))
 }

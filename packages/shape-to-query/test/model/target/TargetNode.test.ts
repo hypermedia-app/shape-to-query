@@ -1,6 +1,7 @@
 import { foaf, schema } from '@tpluscode/rdf-ns-builders'
 import $rdf from '@zazuko/env/web.js'
 import { expect } from 'chai'
+import { sparql } from '@tpluscode/sparql-builder'
 import { TargetNode } from '../../../model/target/index.js'
 import { createVariableSequence } from '../../../lib/variableSequence.js'
 
@@ -21,6 +22,6 @@ describe('model/TargetNode', () => {
     const { whereClause } = target.buildPatterns({ focusNode, variable })
 
     // then
-    expect(whereClause).to.equalPatternsVerbatim('VALUES ( ?foo ) { ( schema:Person ) ( foaf:Person ) }')
+    expect(whereClause).to.equalPatternsVerbatim(sparql`VALUES ?foo { ${schema.Person} ${foaf.Person} }`)
   })
 })

@@ -9,13 +9,14 @@ import $rdf from '@zazuko/env/web.js'
 import type sparqljs from 'sparqljs'
 import vocabulary from '../../vocabulary.js'
 import { TRUE } from '../../lib/rdf.js'
-import { ModelFactory } from '../ModelFactory.js'
-import NodeExpressionBase, {
+import type { ModelFactory } from '../ModelFactory.js'
+import type {
   InlineExpressionResult,
   NodeExpression,
   Parameters,
   PatternBuilder,
 } from './NodeExpression.js'
+import NodeExpressionBase from './NodeExpression.js'
 
 interface Parameter {
   datatype?: Term
@@ -149,10 +150,15 @@ export class AdditiveExpression extends FunctionExpression {
   }
 
   protected boundExpression(subject: Term, args: (sparqljs.Expression | sparqljs.Pattern)[]): sparqljs.OperationExpression {
+    const [left, right, ...rest] = args
+    return rest.reduce<sparqljs.OperationExpression>((acc, next) => this.add(acc, next), this.add(left, right))
+  }
+
+  private add(left: sparqljs.Expression | sparqljs.Pattern, right: sparqljs.Expression | sparqljs.Pattern): sparqljs.OperationExpression {
     return {
       type: 'operation',
       operator: this.symbol.value,
-      args,
+      args: [left, right],
     }
   }
 }
@@ -184,11 +190,11 @@ export class InExpression extends FunctionExpression {
     this.negated = term.equals(dashSparql.notin)
   }
 
-  protected boundExpression(subject: NamedNode | Variable, args: (sparqljs.Expression | sparqljs.Pattern)[]): sparqljs.OperationExpression {
+  protected boundExpression(subject: NamedNode | Variable, args: (sparqljs.Expression | sparqljs.Tuple)[]): sparqljs.OperationExpression {
     return {
       type: 'operation',
       operator: this.negated ? 'notin' : 'in',
-      args: [subject, ...args],
+      args: [subject, args],
     }
   }
 }

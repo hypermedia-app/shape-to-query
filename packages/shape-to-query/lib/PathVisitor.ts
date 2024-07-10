@@ -2,8 +2,9 @@ import type { NamedNode, Variable } from '@rdfjs/types'
 import * as Path from 'clownface-shacl-path'
 import $rdf from '@zazuko/env/web.js'
 import type sparqljs from 'sparqljs'
-import { VariableSequence } from './variableSequence.js'
-import { ShapePatterns, emptyPatterns, flatten } from './shapePatterns.js'
+import type { VariableSequence } from './variableSequence.js'
+import type { ShapePatterns } from './shapePatterns.js'
+import { emptyPatterns, flatten } from './shapePatterns.js'
 
 interface Context {
   pathStart: Variable | NamedNode
@@ -25,17 +26,14 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
         ...inner.whereClause,
         {
           type: 'bind',
-          variable: intermediatePath,
-          expression: pathEnd,
+          variable: pathEnd as unknown as sparqljs.VariableTerm,
+          expression: intermediatePath,
         },
       ]
 
       if (result === emptyPatterns) {
         result = {
-          whereClause: [{
-            type: 'group',
-            patterns: [...whereClause],
-          }],
+          whereClause,
           constructClause: inner.constructClause,
         }
       } else {

@@ -33,7 +33,7 @@ describe('model/constraint/pattern', () => {
       const [result] = [...PatternConstraintComponent.fromShape(shape)]
 
       // then
-      expect(result.pattern).to.eq('^foo')
+      expect(result.pattern).to.deep.eq($rdf.literal('^foo'))
       expect(result.flags).to.be.undefined
     })
 
@@ -48,8 +48,8 @@ describe('model/constraint/pattern', () => {
       const [result] = [...PatternConstraintComponent.fromShape(shape)]
 
       // then
-      expect(result.pattern).to.eq('^foo')
-      expect(result.flags).to.eq('i')
+      expect(result.pattern).to.deep.eq($rdf.literal('^foo'))
+      expect(result.flags).to.deep.eq($rdf.literal('i'))
     })
 
     it('returns patterns as cartesian', () => {
@@ -72,7 +72,7 @@ describe('model/constraint/pattern', () => {
 
     it('pattern only', () => {
       // given
-      const pattern = new PatternConstraintComponent('^(foo|bar)')
+      const pattern = new PatternConstraintComponent($rdf.literal('^(foo|bar)'))
 
       // when
       const valueNode = $rdf.variable('foo')
@@ -84,12 +84,26 @@ describe('model/constraint/pattern', () => {
       })
 
       // then
-      expect(queryPatterns).to.equalPatternsVerbatim('FILTER(REGEX(?foo, "^(foo|bar)"))')
+      expect(queryPatterns).to.deep.equal(
+        // 'FILTER(REGEX(?foo, "^(foo|bar)"))'
+        [{
+          type: 'filter',
+          expression: {
+            type: 'operation',
+            operator: 'regex',
+            args: [
+              $rdf.variable('foo'),
+              $rdf.literal('^(foo|bar)'),
+            ],
+          },
+
+        }],
+      )
     })
 
     it('pattern and flags', () => {
       // given
-      const pattern = new PatternConstraintComponent('^(foo|bar)', 'i')
+      const pattern = new PatternConstraintComponent($rdf.literal('^(foo|bar)'), $rdf.literal('i'))
 
       // when
       const valueNode = $rdf.variable('foo')
@@ -101,7 +115,21 @@ describe('model/constraint/pattern', () => {
       })
 
       // then
-      expect(queryPatterns).to.equalPatternsVerbatim('FILTER(REGEX(?foo, "^(foo|bar)", "i"))')
+      expect(queryPatterns).to.deep.equal(
+        // 'FILTER(REGEX(?foo, "^(foo|bar)", "i"))'
+        [{
+          type: 'filter',
+          expression: {
+            type: 'operation',
+            operator: 'regex',
+            args: [
+              $rdf.variable('foo'),
+              $rdf.literal('^(foo|bar)'),
+              $rdf.literal('i'),
+            ],
+          },
+        }],
+      )
     })
   })
 })

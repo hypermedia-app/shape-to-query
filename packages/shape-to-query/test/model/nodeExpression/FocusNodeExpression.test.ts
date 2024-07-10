@@ -5,7 +5,7 @@ import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpr
 import { namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
 import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
-import { combinedNRE } from './helper.js'
+import { BIND } from '../../pattern.js'
 
 describe('model/nodeExpression/FocusNodeExpression', () => {
   before(() => import('../../sparql.js'))
@@ -30,7 +30,8 @@ describe('model/nodeExpression/FocusNodeExpression', () => {
       }, new PatternBuilder())
 
       // then
-      expect(combinedNRE(result)).to.equalPatterns('SELECT ?bar WHERE { BIND(?foo as ?bar) }')
+      const bar = result.object
+      expect(result.patterns).to.deep.equal([BIND($rdf.variable('foo')).as(bar)])
     })
   })
 })

@@ -2,7 +2,8 @@ import { sh } from '@tpluscode/rdf-ns-builders'
 import type sparqljs from 'sparqljs'
 import type { Literal } from '@rdfjs/types'
 import { isLiteral } from 'is-graph-pointer'
-import ConstraintComponent, { assertTerm, Parameters, PropertyShape } from './ConstraintComponent.js'
+import type { Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { assertTerm } from './ConstraintComponent.js'
 
 export class PatternConstraintComponent extends ConstraintComponent {
   private readonly args: ReadonlyArray<Literal>
@@ -31,7 +32,7 @@ export class PatternConstraintComponent extends ConstraintComponent {
     }
   }
 
-  constructor(pattern: Literal, flags?: Literal) {
+  constructor(public readonly pattern: Literal, public readonly flags?: Literal) {
     super(sh.PatternConstraintComponent)
 
     this.args = flags ? [pattern, flags] : [pattern]

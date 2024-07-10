@@ -1,10 +1,10 @@
 import type { NamedNode, Variable } from '@rdfjs/types'
 import $rdf from '@zazuko/env/web.js'
 import type sparqljs from 'sparqljs'
-import { FocusNode } from '../../lib/FocusNode.js'
-import { ShapePatterns } from '../../lib/shapePatterns.js'
-import { VariableSequence } from '../../lib/variableSequence.js'
-import { NodeExpression, PatternBuilder } from '../nodeExpression/NodeExpression.js'
+import type { FocusNode } from '../../lib/FocusNode.js'
+import type { ShapePatterns } from '../../lib/shapePatterns.js'
+import type { VariableSequence } from '../../lib/variableSequence.js'
+import type { NodeExpression, PatternBuilder } from '../nodeExpression/NodeExpression.js'
 
 interface Parameters {
   focusNode: FocusNode
@@ -26,7 +26,7 @@ export default class implements PropertyValueRule {
     const { patterns, requiresFullContext } = builder.build(this.nodeExpression, { subject: focusNode, object: objectNode, variable, rootPatterns })
     let whereClause: sparqljs.Pattern[]
     let unionPatterns: sparqljs.Pattern[] | undefined
-    if (patterns[0].type === 'query') {
+    if (patterns[0]?.type === 'query') {
       whereClause = [{
         type: 'group',
         patterns: [{

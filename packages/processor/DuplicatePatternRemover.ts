@@ -38,10 +38,17 @@ export class DuplicatePatternRemover extends Processor<E> {
 
   processBgp(bgp: sparqljs.BgpPattern): sparqljs.BgpPattern {
     const previousQuads = this.factory.termSet<BaseQuad>()
+    const pathPatterns: sparqljs.Triple[] = []
 
     const triples = bgp.triples.reduce<sparqljs.Triple[]>((acc, triple) => {
       match(triple)
-        .with({ predicate: { type: 'path' } }, triple => acc.push(triple))
+        .with({ predicate: { type: 'path' } }, triple => {
+          if (!pathPatterns.find(matchingPath(triple))) {
+            acc.push(triple)
+          }
+
+          pathPatterns.push(triple)
+        })
         .with({ predicate: { termType: P.any } }, triple => {
           const quad = this.factory.quad(
             this.processTerm(triple.subject),
@@ -63,4 +70,38 @@ export class DuplicatePatternRemover extends Processor<E> {
       triples,
     }
   }
+}
+
+function matchingPath(path: sparqljs.Triple) {
+  return (other: sparqljs.Triple) => {
+    if (!path.subject.equals(other.subject)) {
+      return false
+    }
+    if (!path.object.equals(other.object)) {
+      return false
+    }
+
+    if ('termType' in path.predicate || 'termType' in other.predicate) {
+      return false
+    }
+
+    return pathsEqual(path.predicate, other.predicate)
+  }
+}
+
+function pathsEqual(left: sparqljs.PropertyPath, right: sparqljs.PropertyPath) {
+  return left.pathType === right.pathType &&
+    left.items.length === right.items.length &&
+    left.items.every((item, index) => {
+      const rightItem = right.items[index]
+      if ('termType' in item && 'termType' in rightItem) {
+        return item.equals(rightItem)
+      }
+
+      if ('pathType' in item && 'pathType' in rightItem) {
+        return pathsEqual(item, rightItem)
+      }
+
+      return false
+    })
 }

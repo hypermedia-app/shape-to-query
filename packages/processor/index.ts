@@ -8,7 +8,7 @@ export abstract class Processor<F extends DataFactory = DataFactory> {
   constructor(protected factory: F) {
   }
 
-  optimize<Q extends sparqljs.SparqlQuery>(query: Q): Q {
+  process<Q extends sparqljs.SparqlQuery>(query: Q): Q {
     return match(query as unknown as sparqljs.SparqlQuery)
       .with({ type: 'query' }, query => this.processQuery(query))
       .with({ type: 'update' }, (update) => this.processUpdate(update))
@@ -73,34 +73,37 @@ export abstract class Processor<F extends DataFactory = DataFactory> {
   }
 
   processInsertDeleteOperation(operation: sparqljs.InsertDeleteOperation): sparqljs.InsertDeleteOperation {
-    const { graph } = operation
-
-    const rest = match(operation)
-      .with({ updateType: 'insert' }, insert => ({
+    return match(operation)
+      .with({ updateType: 'insert' }, ({ updateType, ...insert }) => ({
+        updateType,
+        graph: this.processGraphOrDefault(insert.graph),
         insert: insert.insert.map(q => this.processQuads(q)),
       }))
-      .with({ updateType: 'delete' }, del => ({
+      .with({ updateType: 'delete' }, ({ updateType, ...del }) => ({
+        updateType,
+        graph: this.processGraphOrDefault(del.graph),
         delete: del.delete.map(q => this.processQuads(q)),
       }))
-      .with({ updateType: 'insertdelete' }, insertDel => ({
+      .with({ updateType: 'insertdelete' }, ({ updateType, ...insertDel }) => ({
+        updateType,
+        graph: insertDel.graph ? this.processIriTerm(insertDel.graph) : undefined,
         insert: insertDel.insert?.map(q => this.processQuads(q)),
         delete: insertDel.delete?.map(q => this.processQuads(q)),
-        using: {
-          default: insertDel.using?.default.map(term => this.processIriTerm(term)),
-          named: insertDel.using?.named.map(term => this.processIriTerm(term)),
-        },
+        using: match(insertDel.using)
+          .with(P.not(P.nullish), using => ({
+            default: using.default?.map(term => this.processIriTerm(term)) || [],
+            named: using.named?.map(term => this.processIriTerm(term)) || [],
+          }))
+          .with(P.nullish, () => undefined)
+          .exhaustive(),
         where: this.processPatterns(insertDel.where),
       }))
-      .with({ updateType: 'deletewhere' }, delWhere => ({
+      .with({ updateType: 'deletewhere' }, ({ updateType, ...delWhere }) => ({
+        updateType,
+        graph: this.processGraphOrDefault(delWhere.graph),
         delete: delWhere.delete.map(q => this.processQuads(q)),
       }))
       .exhaustive()
-
-    return {
-      ...operation,
-      graph: this.processGraphOrDefault(graph),
-      ...rest,
-    }
   }
 
   processIriTerm(term: sparqljs.IriTerm): sparqljs.IriTerm {
@@ -150,6 +153,7 @@ export abstract class Processor<F extends DataFactory = DataFactory> {
       .with({ type: 'filter' }, filter => this.processFilter(filter))
       .with({ type: 'bind' }, bind => this.processBind(bind))
       .with({ type: 'query', queryType: 'SELECT' }, query => this.processQuery(query))
+      .with({ type: 'comment' }, c => c)
       .exhaustive()
   }
 
@@ -291,7 +295,7 @@ export abstract class Processor<F extends DataFactory = DataFactory> {
   processGraphOrDefault(graph: sparqljs.GraphOrDefault): sparqljs.GraphOrDefault {
     return {
       ...graph,
-      name: graph.name ?? this.processTerm(graph.name),
+      name: graph.name ? this.processTerm(graph.name) : undefined,
     }
   }
 

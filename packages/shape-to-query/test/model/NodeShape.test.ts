@@ -1,41 +1,57 @@
 import { expect } from 'chai'
-import { sparql } from '@tpluscode/sparql-builder'
 import $rdf from '@zazuko/env/web.js'
 import { foaf, rdf } from '@tpluscode/rdf-ns-builders'
+import type { Quad } from '@rdfjs/types'
 import NodeShape from '../../model/NodeShape.js'
-import { PropertyShape } from '../../model/PropertyShape.js'
+import type { PropertyShape } from '../../model/PropertyShape.js'
 import { OrConstraintComponent } from '../../model/constraint/or.js'
 import { variable } from '../variable.js'
 import { emptyPatterns } from '../../lib/shapePatterns.js'
+import { ex } from '../namespace.js'
+import type { Rule } from '../../model/rule/Rule.js'
+import type { Target } from '../../model/target/index.js'
 
 describe('model/NodeShape', () => {
-  const rootPatterns = undefined
+  const rootPatterns = []
 
   before(() => import('../sparql.js'))
 
   describe('targets', () => {
     it('unions all targets in where clause', () => {
       // given
-      const targets = [1, 2, 3].map(i => ({
+      const focusNode = $rdf.variable('s')
+      const targets: Target[] = [1, 2, 3].map(i => ({
         buildPatterns: () => ({
           constructClause: [],
-          whereClause: sparql`target ${i}`,
+          whereClause: [{
+            type: 'bgp',
+            triples: [$rdf.quad<Quad>(focusNode, rdf.type, ex(`target-${i}`))],
+          }],
         }),
       }))
       const shape = new NodeShape(targets, [], [], [])
 
       // when
-      const focusNode = $rdf.variable('s')
       const { whereClause } = shape.buildPatterns({ focusNode, variable, rootPatterns })
 
       // then
-      expect(whereClause).to.equalPatterns(`{
-        target 1
-      } UNION {
-        target 2
-      } UNION {
-        target 3
-      }`)
+      expect(whereClause).to.deep.eq([{
+        type: 'union',
+        patterns: [
+          {
+            type: 'bgp',
+            triples: [$rdf.quad(focusNode, rdf.type, ex('target-1'))],
+          },
+          {
+            type: 'bgp',
+            triples: [$rdf.quad(focusNode, rdf.type, ex('target-2'))],
+          },
+          {
+            type: 'bgp',
+            triples: [$rdf.quad(focusNode, rdf.type, ex('target-3'))],
+          },
+        ],
+      }])
     })
 
     it('combines targets constructs', () => {
@@ -43,25 +59,25 @@ describe('model/NodeShape', () => {
       const targets = [{
         buildPatterns: ({ focusNode }) => ({
           constructClause: [$rdf.quad(focusNode, rdf.type, foaf.Agent)],
-          whereClause: sparql``,
+          whereClause: [],
         }),
       }, {
         buildPatterns: ({ focusNode }) => ({
           constructClause: [$rdf.quad(focusNode, rdf.type, foaf.Person)],
-          whereClause: sparql``,
+          whereClause: [],
         }),
       }]
       const shape = new NodeShape(targets, [], [], [])
 
       // when
       const focusNode = $rdf.variable('s')
-      const construct = sparql`${shape.buildPatterns({ focusNode, variable, rootPatterns }).constructClause}`
+      const construct = shape.buildPatterns({ focusNode, variable, rootPatterns }).constructClause
 
       // then
-      expect(construct).to.equalPatterns(`
-        ?s rdf:type foaf:Agent .
-        ?s rdf:type foaf:Person .
-      `)
+      expect(construct).to.deep.equal([
+        $rdf.quad(focusNode, rdf.type, foaf.Agent),
+        $rdf.quad(focusNode, rdf.type, foaf.Person),
+      ])
     })
 
     it('ignores targets when focus node is named node', () => {
@@ -69,12 +85,12 @@ describe('model/NodeShape', () => {
       const targets = [{
         buildPatterns: ({ focusNode }) => ({
           constructClause: [$rdf.quad(focusNode, rdf.type, foaf.Agent)],
-          whereClause: sparql``,
+          whereClause: [],
         }),
       }, {
         buildPatterns: ({ focusNode }) => ({
           constructClause: [$rdf.quad(focusNode, rdf.type, foaf.Person)],
-          whereClause: sparql``,
+          whereClause: [],
         }),
       }]
       const shape = new NodeShape(targets, [], [], [])
@@ -84,7 +100,7 @@ describe('model/NodeShape', () => {
       const { whereClause, constructClause } = shape.buildPatterns({ focusNode, variable, rootPatterns })
 
       // then
-      expect(whereClause).to.equalPatterns('')
+      expect(whereClause).to.be.empty
       expect(constructClause).to.be.empty
     })
   })
@@ -93,18 +109,24 @@ describe('model/NodeShape', () => {
     it('unions all where properties', () => {
       // given
       const properties: PropertyShape[] = [{
-        buildConstraints: () => '',
+        buildConstraints: () => [],
         buildPatterns: () => ({
           constructClause: [],
-          whereClause: 'foo bar baz',
+          whereClause: [{
+            type: 'comment',
+            text: 'foo bar baz',
+          }],
         }),
         constraints: [],
         buildLogicalConstraints: () => emptyPatterns,
       }, {
-        buildConstraints: () => '',
+        buildConstraints: () => [],
         buildPatterns: () => ({
           constructClause: [],
-          whereClause: 'A B C',
+          whereClause: [{
+            type: 'comment',
+            text: 'A B C',
+          }],
         }),
         constraints: [],
         buildLogicalConstraints: () => emptyPatterns,
@@ -117,9 +139,9 @@ describe('model/NodeShape', () => {
 
       // then
       expect(whereClause).to.equalPatterns(`{
-        foo bar baz
+        # foo bar baz
       } UNION {
-        A B C
+        # A B C
       }`)
     })
   })
@@ -146,12 +168,12 @@ describe('model/NodeShape', () => {
 
   describe('rules', () => {
     it('unions them', () => {
-      const rules = [{
-        buildPatterns: () => ({ constructClause: [], whereClause: sparql`A` }),
+      const rules: Rule[] = [{
+        buildPatterns: () => ({ constructClause: [], whereClause: [{ type: 'comment', text: 'A' }] }),
       }, {
-        buildPatterns: () => ({ constructClause: [], whereClause: sparql`B` }),
+        buildPatterns: () => ({ constructClause: [], whereClause: [{ type: 'comment', text: 'B' }] }),
       }, {
-        buildPatterns: () => ({ constructClause: [], whereClause: sparql`C` }),
+        buildPatterns: () => ({ constructClause: [], whereClause: [{ type: 'comment', text: 'C' }] }),
       }]
       const shape = new NodeShape([], [], [], rules)
 
@@ -160,7 +182,13 @@ describe('model/NodeShape', () => {
       const result = shape.buildPatterns({ focusNode, variable, rootPatterns })
 
       // then
-      expect(result.whereClause).to.equalPatterns('{ A } UNION { B } UNION { C }')
+      expect(result.whereClause).to.equalPatterns(`{ 
+        # A 
+      } UNION { 
+        # B 
+      } UNION { 
+        # C 
+      }`)
     })
   })
 })
