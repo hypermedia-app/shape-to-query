@@ -10,33 +10,33 @@ CONSTRUCT {
 WHERE {
   {
     SELECT ?resource1 ?resource2 WHERE {
-      ?resource1 schema:mainEntity ?resource2.
       VALUES ?resource1 {
         <https://new.wikibus.org/page/brands>
       }
+      ?resource1 schema:mainEntity ?resource2.
     }
   }
   UNION
   {
     SELECT ?resource2 ?resource3 ?resource9 WHERE {
-      ?resource1 schema:mainEntity ?resource2.
       VALUES ?resource1 {
         <https://new.wikibus.org/page/brands>
       }
+      ?resource1 schema:mainEntity ?resource2.
       {
         SELECT ?resource2 ?resource3 WHERE {
           ?resource2 ((rdf:type*)/hydra:memberAssertion) ?resource5.
-          ?resource5 hydra:property ?resource7;
-            hydra:object ?resource4.
-          ?resource4 ^rdf:type ?resource3.
-          ?resource1 schema:mainEntity ?resource2.
+          ?resource5 hydra:property ?resource7.
           VALUES ?resource7 {
             rdf:type
           }
+          ?resource5 hydra:object ?resource4.
+          ?resource4 ^rdf:type ?resource3.
           OPTIONAL { ?resource3 rdfs:label ?resource8. }
           VALUES ?resource1 {
             <https://new.wikibus.org/page/brands>
           }
+          ?resource1 schema:mainEntity ?resource2.
         }
         ORDER BY (?resource8)
         OFFSET 78
@@ -46,16 +46,16 @@ WHERE {
       {
         SELECT (COUNT(?resource10) AS ?resource9) WHERE {
           ?resource2 ((rdf:type*)/hydra:memberAssertion) ?resource12.
-          ?resource12 hydra:property ?resource14;
-            hydra:object ?resource11.
-          ?resource11 ^rdf:type ?resource10.
-          ?resource1 schema:mainEntity ?resource2.
+          ?resource12 hydra:property ?resource14.
           VALUES ?resource14 {
             rdf:type
           }
+          ?resource12 hydra:object ?resource11.
+          ?resource11 ^rdf:type ?resource10.
           VALUES ?resource1 {
             <https://new.wikibus.org/page/brands>
           }
+          ?resource1 schema:mainEntity ?resource2.
         }
       }
     }

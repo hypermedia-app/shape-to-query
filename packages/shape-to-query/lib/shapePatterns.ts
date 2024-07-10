@@ -6,10 +6,6 @@ export interface ShapePatterns {
   whereClause: sparqljs.Pattern[]
   constructClause: Quad[]
   childPatterns?: ShapePatterns[]
-  /**
-   * Patterns to inserted into a UNION block
-   */
-  unionPatterns?: sparqljs.Pattern[]
 }
 
 export const emptyPatterns: ShapePatterns = {
@@ -24,11 +20,9 @@ export function flatten(...patterns: ShapePatterns[]): ShapePatterns {
   }
 
   const whereClause = patterns.flatMap(p => p.whereClause)
-  const unionPatterns = patterns.flatMap(p => p.unionPatterns || [])
 
   return {
     whereClause,
-    unionPatterns,
     constructClause: unique(patterns.flatMap(p => p.constructClause)),
     childPatterns: patterns.flatMap(p => p.childPatterns || []),
   }
@@ -60,8 +54,8 @@ export function union(...patterns: ShapePatterns[]): ShapePatterns {
     }
   }
 
-  const unionedBgps = unionedPatterns.flatMap(({ unionPatterns, whereClause }, _, arr) =>
-    arr.length > 1 && unionPatterns ? [...unionPatterns, ...whereClause] : whereClause,
+  const unionedBgps = unionedPatterns.flatMap(({ whereClause }, _, arr) =>
+    arr.length > 1 ? [...whereClause] : whereClause,
   )
 
   return {

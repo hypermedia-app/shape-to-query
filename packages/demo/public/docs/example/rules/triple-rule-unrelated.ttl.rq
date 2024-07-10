@@ -16,9 +16,9 @@ WHERE {
   }
   UNION
   {
-    ?resource1 rdf:type schema:Person;
-      schema:jobTitle ?resource6.
+    ?resource1 rdf:type schema:Person.
     BIND(<http://example.org/JobTitles> AS ?resource4)
     BIND(hydra:member AS ?resource5)
+    ?resource1 schema:jobTitle ?resource6.
   }
 }

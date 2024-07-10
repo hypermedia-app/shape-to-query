@@ -40,7 +40,7 @@ export default class implements PropertyValueRule {
     } else {
       whereClause = patterns
       if (requiresFullContext) {
-        unionPatterns = rootPatterns
+        whereClause = [...rootPatterns, ...patterns]
       }
     }
 
@@ -49,7 +49,6 @@ export default class implements PropertyValueRule {
       : [$rdf.quad(objectNode, this.path, focusNode)]
 
     return {
-      unionPatterns,
       constructClause,
       whereClause,
     }

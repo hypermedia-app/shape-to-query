@@ -48,7 +48,6 @@ export function union(arg: Parameters) {
       constructClause: [...acc.constructClause, ...result.constructClause],
       whereClause,
       childPatterns: [...acc.childPatterns, ...result.childPatterns || []],
-      unionPatterns: [...acc.unionPatterns || [], ...result.unionPatterns || []],
     }
   }
 }

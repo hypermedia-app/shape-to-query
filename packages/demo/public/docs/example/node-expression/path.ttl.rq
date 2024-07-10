@@ -5,6 +5,6 @@ CONSTRUCT {
   ?resource1 <http://example.org/parentNames> ?resource2.
 }
 WHERE {
-  ?resource1 rdf:type schema:Person;
-    (schema:parent/schema:givenName) ?resource2.
+  ?resource1 rdf:type schema:Person.
+  ?resource1 (schema:parent/schema:givenName) ?resource2.
 }
