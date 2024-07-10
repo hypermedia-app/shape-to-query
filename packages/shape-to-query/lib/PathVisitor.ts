@@ -36,6 +36,13 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
           whereClause,
           constructClause: inner.constructClause,
         }
+      } else if (result.whereClause.length === 1 && result.whereClause[0].type === 'union') {
+        const union = result.whereClause[0]
+        union.patterns.push({
+          type: 'group',
+          patterns: whereClause,
+        })
+        result.constructClause.push(...inner.constructClause)
       } else {
         result = {
           whereClause: [{
