@@ -4,8 +4,8 @@ CONSTRUCT {
   ?resource1 schema:jobTitle ?resource3.
 }
 WHERE {
-  ?resource1 schema:knows ?resource2;
-    schema:jobTitle ?resource3.
+  ?resource1 schema:knows ?resource2.
+  ?resource1 schema:jobTitle ?resource3.
   VALUES ?resource2 {
     <https://tbbt.tv/sheldon-cooper>
   }

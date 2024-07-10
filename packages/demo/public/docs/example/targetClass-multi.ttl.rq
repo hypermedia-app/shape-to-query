@@ -6,10 +6,10 @@ CONSTRUCT {
   ?resource1 schema:name ?resource3.
 }
 WHERE {
-  ?resource1 rdf:type ?resource2;
-    schema:name ?resource3.
+  ?resource1 rdf:type ?resource2.
   VALUES ?resource2 {
     schema:Person
     foaf:Person
   }
+  ?resource1 schema:name ?resource3.
 }
