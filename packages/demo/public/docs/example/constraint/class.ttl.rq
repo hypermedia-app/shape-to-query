@@ -5,7 +5,7 @@ CONSTRUCT {
   ?resource1 schema:containsPlace ?resource2.
 }
 WHERE {
-  ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>.
-  ?resource1 schema:containsPlace ?resource2.
+  ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>;
+    schema:containsPlace ?resource2.
   ?resource2 rdf:type <https://schema.ld.admin.ch/Municipality>.
 }

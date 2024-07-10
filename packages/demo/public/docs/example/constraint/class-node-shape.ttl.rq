@@ -8,8 +8,8 @@ CONSTRUCT {
 WHERE {
   {
     SELECT ?resource1 ?resource2 WHERE {
-      ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>.
-      ?resource1 schema:containsPlace ?resource2.
+      ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>;
+        schema:containsPlace ?resource2.
       {
         ?resource2 schema:name ?resource3.
         VALUES ?resource3 {
@@ -22,8 +22,8 @@ WHERE {
   UNION
   {
     SELECT ?resource2 ?resource3 WHERE {
-      ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>.
-      ?resource1 schema:containsPlace ?resource2.
+      ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>;
+        schema:containsPlace ?resource2.
       ?resource2 schema:name ?resource3.
       {
         ?resource2 schema:name ?resource3.

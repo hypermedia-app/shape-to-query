@@ -53,8 +53,31 @@ export class DuplicatePatternRemover extends Processor<E> {
         .otherwise(p => cleaned.push(p))
     }
 
-    return super.processPatterns(cleaned)
+    return super.processPatterns(mergeConsecutiveBGPs(cleaned))
   }
+}
+
+function mergeConsecutiveBGPs(patterns: sparqljs.Pattern[]) {
+  const merged: sparqljs.Pattern[] = []
+
+  for (const pattern of patterns) {
+    if (pattern.type === 'bgp') {
+      const last = merged[merged.length - 1]
+
+      if (last?.type === 'bgp') {
+        merged[merged.length - 1] = {
+          type: 'bgp',
+          triples: last.triples.concat(pattern.triples),
+        }
+      } else {
+        merged.push(pattern)
+      }
+    } else {
+      merged.push(pattern)
+    }
+  }
+
+  return merged
 }
 
 function bgpHasTriple(triple: sparqljs.Triple) {

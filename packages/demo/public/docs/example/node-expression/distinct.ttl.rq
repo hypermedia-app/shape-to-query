@@ -8,8 +8,8 @@ WHERE {
   ?resource1 rdf:type schema:Organization.
   {
     SELECT DISTINCT ?resource1 ?resource2 WHERE {
-      ?resource1 (<http://example.org/customer>|<http://example.org/client>) ?resource2.
-      ?resource1 rdf:type schema:Organization.
+      ?resource1 (<http://example.org/customer>|<http://example.org/client>) ?resource2;
+        rdf:type schema:Organization.
     }
   }
 }
