@@ -153,8 +153,7 @@ export abstract class Processor<F extends DataFactory = DataFactory> {
       .with({ type: 'filter' }, filter => this.processFilter(filter))
       .with({ type: 'bind' }, bind => this.processBind(bind))
       .with({ type: 'query', queryType: 'SELECT' }, query => this.processQuery(query))
-      .with({ type: 'comment' }, c => c)
-      .exhaustive()
+      .otherwise(p => p)
   }
 
   processBind(bind: sparqljs.BindPattern): sparqljs.BindPattern {

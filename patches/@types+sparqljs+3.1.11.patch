@@ -1,0 +1,19 @@
+diff --git a/node_modules/@types/sparqljs/index.d.ts b/node_modules/@types/sparqljs/index.d.ts
+index 49eba18..9b94959 100644
+--- a/node_modules/@types/sparqljs/index.d.ts
++++ b/node_modules/@types/sparqljs/index.d.ts
+@@ -201,7 +201,13 @@ export type Pattern =
+     | FilterPattern
+     | BindPattern
+     | ValuesPattern
+-    | SelectQuery;
++    | SelectQuery
++    | Comment;
++
++export interface Comment {
++    type: "comment";
++    text: string;
++}
+ 
+ /**
+  * Basic Graph Pattern
