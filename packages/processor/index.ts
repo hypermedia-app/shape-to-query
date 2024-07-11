@@ -4,7 +4,11 @@ import type { DataFactory, DefaultGraph, Quad_Predicate } from '@rdfjs/types' //
 
 type Term = sparqljs.IriTerm | sparqljs.BlankTerm | sparqljs.LiteralTerm | sparqljs.Variable | sparqljs.QuadTerm | DefaultGraph
 
-export abstract class Processor<F extends DataFactory = DataFactory> {
+export interface Processor {
+  process<Q extends sparqljs.SparqlQuery>(query: Q): Q
+}
+
+export default abstract class <F extends DataFactory = DataFactory> implements Processor {
   constructor(protected factory: F) {
   }
 
