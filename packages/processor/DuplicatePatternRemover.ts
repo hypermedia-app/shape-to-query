@@ -3,7 +3,7 @@ import type sparqljs from 'sparqljs'
 import { match } from 'ts-pattern'
 import type TermSetFactory from '@rdfjs/term-set/Factory.js'
 import type { Environment } from '@rdfjs/environment/Environment.js'
-import { Processor } from './index.js'
+import Processor from './index.js'
 
 type E = Environment<DataFactory | TermSetFactory>
 

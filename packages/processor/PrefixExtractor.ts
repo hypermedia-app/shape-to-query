@@ -1,7 +1,7 @@
 import prefixes, { shrink } from '@zazuko/prefixes'
 import type { IriTerm } from 'sparqljs'
 import type { DataFactory } from '@rdfjs/types'
-import { Processor } from './index.js'
+import Processor from './index.js'
 
 /**
  * Finds all known namespaces used in a query and extracts them into prefix declarations.
