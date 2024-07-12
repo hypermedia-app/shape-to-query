@@ -180,9 +180,7 @@ CONSTRUCT {
   ?resource1 schema:jobTitle ?resource3.
 }
 WHERE {
-  { ?resource1 schema:givenName ?resource2. }
-  UNION
-  { ?resource1 schema:jobTitle ?resource3. }
+  OPTIONAL { ?resource1 schema:givenName ?resource2. }
   ?resource1 schema:jobTitle ?resource3.
   FILTER(?resource3 IN(\\"theoretical physicist\\", \\"neurobiologist\\", \\"microbiologist\\"))
 }"
@@ -299,9 +297,7 @@ CONSTRUCT {
   ?resource1 schema:familyName ?resource3.
 }
 WHERE {
-  { ?resource1 schema:givenName ?resource2. }
-  UNION
-  { ?resource1 schema:familyName ?resource3. }
+  OPTIONAL { ?resource1 schema:givenName ?resource2. }
   ?resource1 schema:familyName ?resource3.
   VALUES ?resource3 {
     \\"Cooper\\"
@@ -357,14 +353,12 @@ CONSTRUCT { ?resource1 schema:familyName ?resource2. }
 WHERE {
   ?resource1 schema:familyName ?resource2.
   {
-    ?resource1 schema:familyName ?resource2.
     VALUES ?resource2 {
       \\"Cooper\\"
     }
   }
   UNION
   {
-    ?resource1 schema:familyName ?resource2.
     VALUES ?resource2 {
       \\"Bloom\\"
     }

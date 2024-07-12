@@ -7,7 +7,7 @@ import Processor from './index.js'
  * Finds all known namespaces used in a query and extracts them into prefix declarations.
  */
 export class PrefixExtractor extends Processor {
-  private prefixes?: Record<string, string>
+  declare prefixes: Record<string, string>
 
   constructor(factory: DataFactory, private knownPrefixes: Record<string, string> = prefixes) {
     super(factory)
@@ -20,7 +20,7 @@ export class PrefixExtractor extends Processor {
       this.prefixes = {}
     }
 
-    const processed = super.processQuery(query)
+    const processed = super.process(query)
 
     if (root) {
       processed.prefixes = this.prefixes
@@ -37,5 +37,10 @@ export class PrefixExtractor extends Processor {
     }
 
     return super.processIriTerm(term)
+  }
+
+  clone() {
+    // return self to extract all prefixes combined
+    return this
   }
 }

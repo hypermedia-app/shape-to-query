@@ -7,11 +7,13 @@ import { PrefixExtractor } from '@hydrofoil/sparql-processor/PrefixExtractor.js'
 import type { Processor } from '@hydrofoil/sparql-processor'
 import type { Options } from './shapeToPatterns.js'
 import { shapeToPatterns } from './shapeToPatterns.js'
+import { UnionRepeatedPatternsRemover } from './optimizer/UnionRepeatedPatternsRemover.js'
 
 const generator = new sparqljs.Generator()
 
 const defaultOptimizers = (): Processor[] => [
   new DuplicatePatternRemover(rdf),
+  new UnionRepeatedPatternsRemover(rdf),
   new PrefixExtractor(rdf),
 ]
 

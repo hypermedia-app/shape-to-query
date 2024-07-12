@@ -8,7 +8,7 @@ export interface Processor {
   process<Q extends sparqljs.SparqlQuery>(query: Q): Q
 }
 
-export default abstract class <F extends DataFactory = DataFactory> implements Processor {
+export default abstract class ProcessorImpl<F extends DataFactory = DataFactory> implements Processor {
   constructor(protected factory: F) {
   }
 
@@ -23,10 +23,30 @@ export default abstract class <F extends DataFactory = DataFactory> implements P
     return match(query as unknown as sparqljs.SparqlQuery)
       .with({ queryType: 'SELECT' }, select => this.processSelectQuery(select))
       .with({ queryType: 'CONSTRUCT' }, (construct) => this.processConstructQuery(construct))
-      .with({ queryType: 'ASK' }, (ask) => ask)
-      .with({ queryType: 'DESCRIBE' }, (describe) => describe)
+      .with({ queryType: 'ASK' }, (ask) => this.processBaseQuery(ask))
+      .with({ queryType: 'DESCRIBE' }, (describe) => this.processDescribe(describe))
       .with({ type: 'update' }, update => this.processUpdate(update))
       .exhaustive() as Q
+  }
+
+  processBaseQuery(query: sparqljs.BaseQuery): sparqljs.BaseQuery {
+    return {
+      ...query,
+      from: query.from && {
+        default: query.from.default.map(term => this.processIriTerm(term)),
+        named: query.from.named.map(term => this.processIriTerm(term)),
+      },
+      where: this.processPatterns(query.where),
+      values: query.values?.map(row => this.processValuesRow(row)),
+    }
+  }
+
+  processDescribe(describe: sparqljs.DescribeQuery): sparqljs.DescribeQuery {
+    return {
+      queryType: 'DESCRIBE',
+      ...this.processBaseQuery(describe),
+      variables: describe.variables.map(term => this.processTerm(term)),
+    }
   }
 
   processUpdate(update: sparqljs.Update): sparqljs.Update {
@@ -128,14 +148,32 @@ export default abstract class <F extends DataFactory = DataFactory> implements P
   processSelectQuery(query: sparqljs.SelectQuery): sparqljs.SelectQuery {
     return {
       ...query,
-      where: this.processPatterns(query.where),
+      ...this.processBaseQuery(query),
+      variables: query.variables.map(term => this.processTerm(term)),
+      group: query.group?.map(group => this.processGrouping(group)),
+      having: query.having?.map(having => this.processExpression(having)),
+      order: query.order?.map(order => this.processOrdering(order)),
+    }
+  }
+
+  processOrdering(order: sparqljs.Ordering): sparqljs.Ordering {
+    return {
+      ...order,
+      expression: this.processExpression(order.expression),
+    }
+  }
+
+  processGrouping(group: sparqljs.Grouping): sparqljs.Grouping {
+    return {
+      expression: this.processExpression(group.expression),
+      variable: group.variable ? this.processTerm(group.variable) : undefined,
     }
   }
 
   processConstructQuery(query: sparqljs.ConstructQuery): sparqljs.ConstructQuery {
     return {
-      ...query,
-      where: this.processPatterns(query.where),
+      queryType: 'CONSTRUCT',
+      ...this.processBaseQuery(query),
       template: query.template?.map(triple => this.processTriple(triple)),
     }
   }
@@ -156,32 +194,35 @@ export default abstract class <F extends DataFactory = DataFactory> implements P
       .with({ type: 'minus' }, minus => this.processMinus(minus))
       .with({ type: 'filter' }, filter => this.processFilter(filter))
       .with({ type: 'bind' }, bind => this.processBind(bind))
-      .with({ type: 'query', queryType: 'SELECT' }, query => this.processQuery(query))
+      .with({ type: 'query', queryType: 'SELECT' }, query => {
+        // clones this instance to provide a separate context for the subquery
+        return this.clone().processQuery(query)
+      })
       .otherwise(p => p)
   }
 
-  processBind(bind: sparqljs.BindPattern): sparqljs.BindPattern {
+  processBind(bind: sparqljs.BindPattern): sparqljs.Pattern {
     return {
       ...bind,
       expression: this.processExpression(bind.expression),
     }
   }
 
-  processFilter(filter: sparqljs.FilterPattern): sparqljs.FilterPattern {
+  processFilter(filter: sparqljs.FilterPattern): sparqljs.Pattern {
     return {
       ...filter,
       expression: this.processExpression(filter.expression),
     }
   }
 
-  processMinus(minus: sparqljs.MinusPattern): sparqljs.MinusPattern {
+  processMinus(minus: sparqljs.MinusPattern): sparqljs.Pattern {
     return {
       ...minus,
       patterns: this.processPatterns(minus.patterns),
     }
   }
 
-  processService(service: sparqljs.ServicePattern): sparqljs.ServicePattern {
+  processService(service: sparqljs.ServicePattern): sparqljs.Pattern {
     return {
       ...service,
       name: this.processTerm(service.name),
@@ -189,19 +230,16 @@ export default abstract class <F extends DataFactory = DataFactory> implements P
     }
   }
 
-  processGraph(graph: sparqljs.GraphPattern): sparqljs.GraphPattern {
+  processGraph(graph: sparqljs.GraphPattern): sparqljs.Pattern {
     return {
       ...graph,
       patterns: this.processPatterns(graph.patterns),
     }
   }
 
-  processValues(valuesPattern: sparqljs.ValuesPattern): sparqljs.ValuesPattern {
+  processValues(valuesPattern: sparqljs.ValuesPattern): sparqljs.Pattern {
     const values = valuesPattern.values
-      .map((row): sparqljs.ValuePatternRow => {
-        const entries = Object.entries(row)
-        return Object.fromEntries(entries.map(([key, value]) => [key, this.processTerm(value)]))
-      })
+      .map((row) => this.processValuesRow(row))
 
     return {
       type: 'values',
@@ -209,19 +247,23 @@ export default abstract class <F extends DataFactory = DataFactory> implements P
     }
   }
 
-  processTerm<T extends Term>(term: T): T {
+  processValuesRow(row: sparqljs.ValuePatternRow): sparqljs.ValuePatternRow {
+    const entries = Object.entries(row)
+    return Object.fromEntries(entries.map(([key, value]) => [key, this.processTerm(value)]))
+  }
+
+  processTerm<T extends Term>(term: T | sparqljs.Wildcard): T {
     return match(term as unknown as Term)
       .with({ termType: 'NamedNode' }, iri => this.processIriTerm(iri))
       .with({ termType: 'BlankNode' }, blank => this.processBlankNode(blank))
       .with({ termType: 'Literal' }, literal => this.processLiteral(literal))
       .with({ termType: 'Quad' }, quad => this.processQuad(quad))
       .with({ termType: 'Variable' }, variable => this.processVariable(variable))
-      .with({ termType: 'DefaultGraph' }, dg => dg)
       .with({ expression: P.any }, expression => ({
         expression: this.processExpression(expression.expression),
         variable: this.processVariable(expression.variable),
       }))
-      .exhaustive() as T
+      .otherwise(t => t) as T
   }
 
   processQuad(quad: sparqljs.QuadTerm): sparqljs.QuadTerm {
@@ -274,21 +316,21 @@ export default abstract class <F extends DataFactory = DataFactory> implements P
     }
   }
 
-  processGroup(group: sparqljs.GroupPattern) : sparqljs.GroupPattern {
+  processGroup(group: sparqljs.GroupPattern) : sparqljs.Pattern {
     return {
       ...group,
       patterns: this.processPatterns(group.patterns),
     }
   }
 
-  processUnion(union: sparqljs.UnionPattern): sparqljs.UnionPattern {
+  processUnion(union: sparqljs.UnionPattern): sparqljs.Pattern {
     return {
       ...union,
-      patterns: union.patterns.map(this.processPattern.bind(this)),
+      patterns: this.processPatterns(union.patterns),
     }
   }
 
-  processOptional(optional: sparqljs.OptionalPattern): sparqljs.OptionalPattern {
+  processOptional(optional: sparqljs.OptionalPattern): sparqljs.Pattern {
     return {
       ...optional,
       patterns: this.processPatterns(optional.patterns),
@@ -333,6 +375,15 @@ export default abstract class <F extends DataFactory = DataFactory> implements P
           .otherwise(() => this.processExpression(arg as sparqljs.Expression)),
       ),
     }
+  }
+
+  /**
+   * Creates a new processor instance based on this one
+   * If a subclass takes additional parameters, it must override this method
+   * @protected
+   */
+  protected clone(): ProcessorImpl {
+    return new (this.constructor as new (factory: F) => ProcessorImpl)(this.factory)
   }
 }
 

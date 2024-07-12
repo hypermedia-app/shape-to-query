@@ -3,6 +3,8 @@ import type sparqljs from 'sparqljs'
 import { match } from 'ts-pattern'
 import type TermSetFactory from '@rdfjs/term-set/Factory.js'
 import type { Environment } from '@rdfjs/environment/Environment.js'
+import { tripleEquals } from './util/triple.js'
+import { valuesHasRow } from './util/values.js'
 import Processor from './index.js'
 
 type E = Environment<DataFactory | TermSetFactory>
@@ -11,6 +13,14 @@ type E = Environment<DataFactory | TermSetFactory>
  * Merges duplicate quad patterns.
  */
 export class DuplicatePatternRemover extends Processor<E> {
+  processUnion(union: sparqljs.UnionPattern): sparqljs.Pattern {
+    // processes UNION patterns separately to prevent collapsing them into a single BGP
+    return {
+      ...union,
+      patterns: union.patterns.map(this.processPattern.bind(this)),
+    }
+  }
+
   processPatterns(patterns: sparqljs.Pattern[]): sparqljs.Pattern[] {
     const cleaned: sparqljs.Pattern[] = []
 
@@ -38,7 +48,7 @@ export class DuplicatePatternRemover extends Processor<E> {
 
           for (const row of values.values) {
             // keep row if it was not seen before in another VALUES
-            if (!cleaned.some(hasValuesWithRow(row))) {
+            if (!cleaned.some(valuesHasRow(row))) {
               rows.push(row)
             }
           }
@@ -82,67 +92,6 @@ function mergeConsecutiveBGPs(patterns: sparqljs.Pattern[]) {
 
 function bgpHasTriple(triple: sparqljs.Triple) {
   return (pattern: sparqljs.Pattern) => {
-    if (pattern.type === 'bgp') {
-      return pattern.triples.some(triplesEqual(triple))
-    }
-
-    return false
+    return pattern.type === 'bgp' && pattern.triples.some(tripleEquals(triple))
   }
-}
-
-function hasValuesWithRow(row: sparqljs.ValuePatternRow) {
-  const entries = Object.entries(row)
-
-  return (pattern: sparqljs.Pattern) => {
-    if (pattern.type === 'values') {
-      return pattern.values.some(other => {
-        return entries.every(([key, value]) => {
-          return other[key]?.equals(value)
-        })
-      })
-    }
-
-    return false
-  }
-}
-
-function triplesEqual(triple: sparqljs.Triple) {
-  return (other: sparqljs.Triple) => {
-    if (!triple.subject.equals(other.subject)) {
-      return false
-    }
-    if (!triple.object.equals(other.object)) {
-      return false
-    }
-
-    if ('termType' in triple.predicate) {
-      if ('termType' in other.predicate) {
-        return triple.predicate.equals(other.predicate)
-      }
-      return false
-    }
-
-    if (!('termType' in other.predicate)) {
-      return pathsEqual(triple.predicate, other.predicate)
-    }
-
-    return false
-  }
-}
-
-function pathsEqual(left: sparqljs.PropertyPath, right: sparqljs.PropertyPath) {
-  return left.pathType === right.pathType &&
-    left.items.length === right.items.length &&
-    left.items.every((item, index) => {
-      const rightItem = right.items[index]
-      if ('termType' in item && 'termType' in rightItem) {
-        return item.equals(rightItem)
-      }
-
-      if ('pathType' in item && 'pathType' in rightItem) {
-        return pathsEqual(item, rightItem)
-      }
-
-      return false
-    })
 }

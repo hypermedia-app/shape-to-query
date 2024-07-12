@@ -1,0 +1,36 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+CONSTRUCT {
+  ?resource1 hydra:member ?resource2.
+  ?resource1 hydra:totalItems ?resource7.
+}
+WHERE {
+  VALUES ?resource1 {
+    <http://example.com/people>
+  }
+  {
+    ?resource1 ((rdf:type*)/hydra:memberAssertion) ?resource4.
+    ?resource4 hydra:property ?resource6.
+    VALUES ?resource6 {
+      rdf:type
+    }
+    ?resource4 hydra:object ?resource3.
+    ?resource3 ^rdf:type ?resource2.
+  }
+  UNION
+  {
+    SELECT (COUNT(?resource8) AS ?resource7) WHERE {
+      ?resource1 ((rdf:type*)/hydra:memberAssertion) ?resource10.
+      ?resource10 hydra:property ?resource12.
+      VALUES ?resource12 {
+        rdf:type
+      }
+      ?resource10 hydra:object ?resource9.
+      ?resource9 ^rdf:type ?resource8.
+      # These VALUES are not removed because they exist in a subquery
+      VALUES ?resource1 {
+        <http://example.com/people>
+      }
+    }
+  }
+}
