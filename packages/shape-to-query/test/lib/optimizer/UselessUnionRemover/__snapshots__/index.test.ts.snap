@@ -1,0 +1,281 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UselessUnionRemover multiple-patterns.rq 1`] = `
+"PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+CONSTRUCT {
+  ?resource8 schema:containedInPlace ?resource1.
+  ?resource8 schema:identifier ?resource11.
+  ?resource8 schema:name ?resource12.
+  ?resource8 schema:description ?resource13.
+  ?resource8 schema:position ?resource14.
+  ?resource8 schema:alternateName ?resource15.
+  ?resource8 rdf:type ?resource10.
+}
+WHERE {
+  VALUES ?resource1 {
+    <https://ld.admin.ch/country/CHE>
+  }
+  ?resource1 ^schema:containedInPlace ?resource8.
+  ?resource8 rdf:type ?resource10.
+  VALUES ?resource10 {
+    <https://environment.ld.admin.ch/foen/nfi/UnitOfReference/366>
+  }
+  { ?resource8 schema:identifier ?resource11. }
+  UNION
+  { ?resource8 schema:name ?resource12. }
+  UNION
+  { ?resource8 schema:description ?resource13. }
+  UNION
+  { ?resource8 schema:position ?resource14. }
+  UNION
+  { ?resource8 schema:alternateName ?resource15. }
+}"
+`;
+
+exports[`UselessUnionRemover partial-match.rq 1`] = `
+"PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+CONSTRUCT {
+  ?resource8 schema:containedInPlace ?resource1.
+  ?resource8 schema:identifier ?resource11.
+  ?resource8 schema:name ?resource12.
+  ?resource8 schema:description ?resource13.
+  ?resource8 schema:position ?resource14.
+  ?resource8 schema:alternateName ?resource15.
+  ?resource8 rdf:type ?resource10.
+}
+WHERE {
+  VALUES ?resource1 {
+    <https://ld.admin.ch/country/CHE>
+  }
+  ?resource1 ^schema:containedInPlace ?resource8.
+  ?resource8 rdf:type ?resource10.
+  VALUES ?resource10 {
+    <https://environment.ld.admin.ch/foen/nfi/UnitOfReference/366>
+  }
+  { ?resource8 schema:identifier ?resource11. }
+  UNION
+  { ?resource8 schema:name ?resource12. }
+  UNION
+  { ?resource8 schema:description ?resource13. }
+  UNION
+  { ?resource8 schema:position ?resource14. }
+  UNION
+  { ?resource8 schema:alternateName ?resource15. }
+  UNION
+  {
+    ?resource8 rdf:type ?resource10.
+    ?resource10 (rdfs:subClassOf*) schema:Place.
+  }
+}"
+`;
+
+exports[`UselessUnionRemover remove-useless-union.rq 1`] = `
+"PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+CONSTRUCT {
+  ?resource8 schema:containedInPlace ?resource1.
+  ?resource8 schema:identifier ?resource11.
+  ?resource8 rdf:type ?resource10.
+}
+WHERE {
+  VALUES ?resource1 {
+    <https://ld.admin.ch/country/CHE>
+  }
+  ?resource1 ^schema:containedInPlace ?resource8.
+  ?resource8 rdf:type ?resource10.
+  VALUES ?resource10 {
+    <https://environment.ld.admin.ch/foen/nfi/UnitOfReference/366>
+  }
+  ?resource8 schema:identifier ?resource11.
+  FILTER(REGEX(?resource11, \\"^test\\"))
+  
+}"
+`;
+
+exports[`UselessUnionRemover single-pattern.rq 1`] = `
+"PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+CONSTRUCT {
+  ?resource8 schema:containedInPlace ?resource1.
+  ?resource8 schema:identifier ?resource11.
+  ?resource8 schema:name ?resource12.
+  ?resource8 schema:description ?resource13.
+  ?resource8 schema:position ?resource14.
+  ?resource8 schema:alternateName ?resource15.
+  ?resource8 rdf:type ?resource10.
+}
+WHERE {
+  VALUES ?resource1 {
+    <https://ld.admin.ch/country/CHE>
+  }
+  ?resource1 ^schema:containedInPlace ?resource8.
+  ?resource8 rdf:type ?resource10.
+  VALUES ?resource10 {
+    <https://environment.ld.admin.ch/foen/nfi/UnitOfReference/366>
+  }
+  { ?resource8 schema:identifier ?resource11. }
+  UNION
+  { ?resource8 schema:name ?resource12. }
+  UNION
+  { ?resource8 schema:description ?resource13. }
+  UNION
+  { ?resource8 schema:position ?resource14. }
+  UNION
+  { ?resource8 schema:alternateName ?resource15. }
+}"
+`;
+
+exports[`UselessUnionRemover subquery.rq 1`] = `
+"PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+CONSTRUCT {
+  ?resource8 schema:containedInPlace ?resource1.
+  ?resource8 schema:identifier ?resource11.
+  ?resource8 schema:name ?resource12.
+  ?resource8 schema:description ?resource13.
+  ?resource8 schema:position ?resource14.
+  ?resource8 schema:alternateName ?resource15.
+  ?resource8 rdf:type ?resource10.
+}
+WHERE {
+  {
+    {
+      SELECT ?resource8 ?resource11 ?resource12 ?resource13 ?resource14 ?resource15 ?resource10 WHERE {
+        VALUES ?resource1 {
+          <https://ld.admin.ch/country/CHE>
+        }
+        ?resource1 ^schema:containedInPlace ?resource8.
+        ?resource8 rdf:type ?resource10.
+        VALUES ?resource10 {
+          <https://environment.ld.admin.ch/foen/nfi/UnitOfReference/366>
+        }
+        { ?resource8 schema:identifier ?resource11. }
+        UNION
+        { ?resource8 schema:name ?resource12. }
+        UNION
+        { ?resource8 schema:description ?resource13. }
+        UNION
+        { ?resource8 schema:position ?resource14. }
+        UNION
+        { ?resource8 schema:alternateName ?resource15. }
+      }
+    }
+  }
+}"
+`;
+
+exports[`UselessUnionRemover union-becomes-optional.rq 1`] = `
+"PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+CONSTRUCT {
+  ?resource8 schema:containedInPlace ?resource1.
+  ?resource8 schema:identifier ?resource11.
+  ?resource8 rdf:type ?resource10.
+}
+WHERE {
+  VALUES ?resource1 {
+    <https://ld.admin.ch/country/CHE>
+  }
+  ?resource1 ^schema:containedInPlace ?resource8.
+  ?resource8 rdf:type ?resource10.
+  VALUES ?resource10 {
+    <https://environment.ld.admin.ch/foen/nfi/UnitOfReference/366>
+  }
+  OPTIONAL { ?resource8 schema:identifier ?resource11. }
+}"
+`;
+
+exports[`UselessUnionRemover values.rq 1`] = `
+"PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT * WHERE {
+  VALUES ?resource1 {
+    <https://ld.admin.ch/country/CHE>
+  }
+  ?resource1 ^schema:containedInPlace ?resource8.
+  ?resource8 rdf:type ?resource10.
+  VALUES ?resource10 {
+    <https://environment.ld.admin.ch/foen/nfi/UnitOfReference/366>
+  }
+  { ?resource8 schema:identifier ?resource11. }
+  UNION
+  { ?resource8 schema:name ?resource12. }
+  UNION
+  { ?resource8 schema:description ?resource13. }
+  UNION
+  { ?resource8 schema:position ?resource14. }
+  UNION
+  { ?resource8 schema:alternateName ?resource15. }
+}"
+`;
+
+exports[`UselessUnionRemover values-in-subquery.rq 1`] = `
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+CONSTRUCT {
+  ?resource1 hydra:member ?resource2.
+  ?resource1 hydra:totalItems ?resource7.
+}
+WHERE {
+  VALUES ?resource1 {
+    <http://example.com/people>
+  }
+  {
+    ?resource1 ((rdf:type*)/hydra:memberAssertion) ?resource4.
+    ?resource4 hydra:property ?resource6.
+    VALUES ?resource6 {
+      rdf:type
+    }
+    ?resource4 hydra:object ?resource3.
+    ?resource3 ^rdf:type ?resource2.
+  }
+  UNION
+  {
+    SELECT (COUNT(?resource8) AS ?resource7) WHERE {
+      ?resource1 ((rdf:type*)/hydra:memberAssertion) ?resource10.
+      ?resource10 hydra:property ?resource12.
+      VALUES ?resource12 {
+        rdf:type
+      }
+      ?resource10 hydra:object ?resource9.
+      ?resource9 ^rdf:type ?resource8.
+      VALUES ?resource1 {
+        <http://example.com/people>
+      }
+    }
+  }
+}"
+`;
+
+exports[`UselessUnionRemover values-unique.rq 1`] = `
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource1 rdf:type schema:Person.
+  ?resource1 <http://example.org/motherName> ?resource2.
+  ?resource1 <http://example.org/fatherName> ?resource6.
+}
+WHERE {
+  ?resource1 rdf:type schema:Person.
+  {
+    ?resource1 schema:parent ?resource3.
+    ?resource3 schema:gender ?resource5.
+    VALUES ?resource5 {
+      schema:Female
+    }
+    ?resource3 schema:givenName ?resource2.
+  }
+  UNION
+  {
+    ?resource1 schema:parent ?resource7.
+    ?resource7 schema:gender ?resource9.
+    VALUES ?resource9 {
+      schema:Male
+    }
+    ?resource7 schema:givenName ?resource6.
+  }
+}"
+`;

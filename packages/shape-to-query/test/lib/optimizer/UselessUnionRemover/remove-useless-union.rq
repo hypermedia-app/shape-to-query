@@ -1,0 +1,23 @@
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+CONSTRUCT {
+  ?resource8 schema:containedInPlace ?resource1 .
+  ?resource8 schema:identifier ?resource11 .
+  ?resource8 rdf:type ?resource10 .
+}
+WHERE {
+  VALUES (?resource1) { (<https://ld.admin.ch/country/CHE>) }
+  ?resource1 ^schema:containedInPlace ?resource8 .
+  ?resource8 rdf:type ?resource10 .
+  VALUES (?resource10) { (<https://environment.ld.admin.ch/foen/nfi/UnitOfReference/366>) }
+  ?resource8 schema:identifier ?resource11 .
+  FILTER(REGEX(?resource11, "^test"))
+  # All UNIONED patterns ar bound in upper scope so this entire UNION is removed
+  {
+    ?resource8 schema:identifier ?resource11 .
+  } UNION {
+    ?resource8 rdf:type ?resource10 .
+  }
+}
