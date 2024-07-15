@@ -32,7 +32,7 @@ export default class extends Shape implements PropertyShape {
     this.path = fromNode(_path)
   }
 
-  buildPatterns({ focusNode, variable, rootPatterns }: BuildParameters): ShapePatterns {
+  buildPatterns({ focusNode, variable, rootPatterns, rootConstraints }: BuildParameters): ShapePatterns {
     let pathEnd: Variable
     const visitor = new PathVisitor(variable)
     let patterns: ShapePatterns
@@ -43,6 +43,7 @@ export default class extends Shape implements PropertyShape {
         objectNode: pathEnd,
         variable,
         rootPatterns,
+        rootConstraints,
         builder: new PatternBuilder(),
       }))
       patterns = union(...rulePatterns)

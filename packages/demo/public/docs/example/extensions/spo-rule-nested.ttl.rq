@@ -2,22 +2,22 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX schema: <http://schema.org/>
 CONSTRUCT {
   ?resource1 rdf:type schema:Person.
-  ?resource1 schema:address ?resource2.
-  ?resource2 ?resource3 ?resource4.
+  ?resource1 schema:address ?resource3.
+  ?resource3 ?resource5 ?resource6.
 }
 WHERE {
   {
-    SELECT ?resource1 ?resource2 WHERE {
+    SELECT ?resource1 ?resource3 WHERE {
       ?resource1 rdf:type schema:Person;
-        schema:address ?resource2.
+        schema:address ?resource3.
     }
   }
   UNION
   {
-    SELECT ?resource2 ?resource3 ?resource4 WHERE {
+    SELECT ?resource3 ?resource5 ?resource6 WHERE {
       ?resource1 rdf:type schema:Person;
-        schema:address ?resource2.
-      ?resource2 ?resource3 ?resource4.
+        schema:address ?resource3.
+      ?resource3 ?resource5 ?resource6.
     }
   }
 }
