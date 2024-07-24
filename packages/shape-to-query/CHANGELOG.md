@@ -1,5 +1,19 @@
 # @hydrofoil/shape-to-query
 
+## 0.13.0
+
+### Minor Changes
+
+- 5afc6e5: Added optimization which removes unnecessary parts of `UNION` clauses if the same patterns are wholly used in outer scope (re https://github.com/zazuko/cube-hierarchy-query/pull/37). If only one pattern or group remains, the `UNION` is converted to an `OPTIONAL`.
+- c6a69e9: Use `sparqljs` for internal representation
+
+### Patch Changes
+
+- Updated dependencies [c6a69e9]
+- Updated dependencies [c6a69e9]
+- Updated dependencies [c6a69e9]
+  - @hydrofoil/sparql-processor@0.1.0
+
 ## 0.12.0
 
 ### Minor Changes
