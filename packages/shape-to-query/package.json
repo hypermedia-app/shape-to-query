@@ -13,6 +13,8 @@
     "*.d.ts",
     "lib/*.js",
     "lib/*.d.ts",
+    "lib/**/*.js",
+    "lib/**/*.d.ts",
     "model/**/*.js",
     "model/**/*.d.ts"
   ],
