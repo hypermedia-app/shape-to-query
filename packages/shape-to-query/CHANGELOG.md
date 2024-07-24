@@ -1,5 +1,11 @@
 # @hydrofoil/shape-to-query
 
+## 0.13.1
+
+### Patch Changes
+
+- 3f7d281: Optimisers missing from package
+
 ## 0.13.0
 
 ### Minor Changes
