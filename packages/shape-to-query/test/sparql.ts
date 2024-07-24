@@ -1,21 +1,25 @@
 import type { Variable } from '@rdfjs/types'
 import { Assertion, AssertionError } from 'chai'
-import sparql, { SparqlQuery } from 'sparqljs'
+import type { SparqlQuery } from 'sparqljs'
+import sparqljs from 'sparqljs'
 import type { SparqlTemplateResult } from '@tpluscode/rdf-string'
+import { sparql } from '@tpluscode/rdf-string'
+import $rdf from '@zazuko/env'
 import { createVariableSequence } from '../lib/variableSequence.js'
+import { SELECT } from './pattern.js'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import 'mocha-chai-jest-snapshot'
 
-const sparqlParser = new sparql.Parser()
-const generator = new sparql.Generator()
+const sparqlParser = new sparqljs.Parser()
+const generator = new sparqljs.Generator()
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Chai {
     interface TypeComparison {
       query(expected?: string | SparqlTemplateResult | SparqlQuery): void
-      equalPatterns(expected: string | SparqlTemplateResult): void
-      equalPatternsVerbatim(expected: string | SparqlTemplateResult): void
+      equalPatterns(expected: string | SparqlTemplateResult | sparqljs.Pattern[]): void
+      equalPatternsVerbatim(expected: string | SparqlTemplateResult | sparqljs.Pattern[]): void
     }
   }
 }
@@ -40,7 +44,8 @@ ${expected}`)
     if (typeof this._obj === 'string') {
       actualQueryString = this._obj
     } else {
-      actualQueryString = this._obj.build()
+      this._obj.prefixes = expectedQuery.prefixes
+      actualQueryString = generator.stringify(this._obj)
     }
     actualQuery = stringifyAndNormalize(sparqlParser.parse(actualQueryString))
   } catch (e: any) {
@@ -57,22 +62,39 @@ ${this._obj.toString()}`)
   }
 })
 
-Assertion.addMethod('equalPatterns', function (this: Chai.AssertionStatic, expected: string | SparqlTemplateResult) {
-  const actualPatterns = normalize(this._obj.toString({ prologue: false }))
-  const expectedPatterns = normalize(expected.toString({ prologue: false }))
+Assertion.addMethod('equalPatterns', function (this: Chai.AssertionStatic, expected: string | SparqlTemplateResult | sparqljs.Pattern[]) {
+  const obj: sparqljs.Pattern[] | SparqlTemplateResult = this._obj
+
+  const actualPatterns = normalize(
+    Array.isArray(obj) ? generator.stringify(SELECT(obj)) : sparql`SELECT * WHERE { ${obj} }`._toPartialString({ env: $rdf, prologue: false, noPrefixedNames: true }).value)
+  const expectedPatterns = normalize(
+    Array.isArray(expected)
+      ? generator.stringify(SELECT(expected))
+      : sparql`SELECT * WHERE { ${expected} }`._toPartialString({ env: $rdf, prologue: false, noPrefixedNames: true }).value,
+  )
 
   new Assertion(actualPatterns).to.equalIgnoreSpaces(expectedPatterns)
 })
 
-Assertion.addMethod('equalPatternsVerbatim', function (this: Chai.AssertionStatic, expected: string | SparqlTemplateResult) {
-  const actualPatterns = this._obj.toString({ prologue: false })
-  const expectedPatterns = expected.toString({ prologue: false })
+Assertion.addMethod('equalPatternsVerbatim', function (this: Chai.AssertionStatic, expected: string | SparqlTemplateResult | sparqljs.Pattern[]) {
+  const obj: sparqljs.Pattern[] | SparqlTemplateResult = this._obj
+
+  const actualPatterns = normalize(
+    Array.isArray(obj) ? generator.stringify(SELECT(obj)) : sparql`SELECT * WHERE { ${obj} }`._toPartialString({ env: $rdf, prologue: false, noPrefixedNames: true }).value)
+  const expectedPatterns = normalize(
+    Array.isArray(expected)
+      ? generator.stringify(SELECT(expected))
+      : sparql`SELECT * WHERE { ${expected} }`._toPartialString({ env: $rdf, prologue: false, noPrefixedNames: true }).value,
+  )
 
   new Assertion(actualPatterns).to.equalIgnoreSpaces(expectedPatterns)
 })
 
 function stringifyAndNormalize(query: SparqlQuery) {
-  return normalize(generator.stringify(query))
+  const normalized = normalize(generator.stringify(query))
+
+  // remove PREFIX lines
+  return normalized.split('\n').filter(line => !line.startsWith('PREFIX')).join('\n')
 }
 
 function normalize(query: string): string {

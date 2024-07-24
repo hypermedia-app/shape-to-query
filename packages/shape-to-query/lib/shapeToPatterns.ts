@@ -1,17 +1,22 @@
-import type { NamedNode } from '@rdfjs/types'
+import type { NamedNode, Variable } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
-import { SELECT, sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import rdf from '@zazuko/env/web.js'
-import ModelFactory, { ModelFactoryOptions } from '../model/ModelFactory.js'
-import { NodeShape } from '../model/NodeShape.js'
-import { flatten, ShapePatterns, union } from './shapePatterns.js'
-import { createVariableSequence, VariableSequence } from './variableSequence.js'
-import { FocusNode } from './FocusNode.js'
+import type sparqljs from 'sparqljs'
+import type { Processor } from '@hydrofoil/sparql-processor'
+import type { ModelFactoryOptions } from '../model/ModelFactory.js'
+import ModelFactory from '../model/ModelFactory.js'
+import type { NodeShape } from '../model/NodeShape.js'
+import type { ShapePatterns } from './shapePatterns.js'
+import { flatten, union } from './shapePatterns.js'
+import type { VariableSequence } from './variableSequence.js'
+import { createVariableSequence } from './variableSequence.js'
+import type { FocusNode } from './FocusNode.js'
 
 export interface Options extends ModelFactoryOptions {
   focusNode?: NamedNode
   subjectVariable?: string
   objectVariablePrefix?: string
+  optimizers?: Processor[]
 }
 
 export function shapeToPatterns(shape: GraphPointer, options: Options = {}): ShapePatterns {
@@ -41,15 +46,27 @@ function * flattenChildPatterns(patterns: ShapePatterns) {
   }
 }
 
-function toSubquery(constraints: string | SparqlTemplateResult = '') {
+function toSubquery(constraints: sparqljs.Pattern[] = []) {
   return (patterns: ShapePatterns) : ShapePatterns => {
     const variables = rdf.termSet(patterns.constructClause
       .flatMap(quad => [quad.subject, quad.predicate, quad.object])
-      .filter(term => term.termType === 'Variable'))
+      .filter((term): term is Variable => term.termType === 'Variable'))
 
     return {
       constructClause: patterns.constructClause,
-      whereClause: sparql`${SELECT`${[...variables]}`.WHERE`${patterns.whereClause}`.WHERE`${constraints}`}`,
+      whereClause: [{
+        type: 'group',
+        patterns: [{
+          type: 'query',
+          queryType: 'SELECT',
+          prefixes: {},
+          variables: [...variables],
+          where: [
+            ...patterns.whereClause,
+            ...constraints,
+          ],
+        }],
+      }],
     }
   }
 }
@@ -58,7 +75,7 @@ function buildNodeShape({ nodeShape, variable, focusNode }: { nodeShape: NodeSha
   const properties = nodeShape.buildPatterns({
     focusNode,
     variable,
-    rootPatterns: sparql``,
+    rootPatterns: [],
   })
 
   const constraints = {
@@ -67,7 +84,7 @@ function buildNodeShape({ nodeShape, variable, focusNode }: { nodeShape: NodeSha
       focusNode,
       valueNode: variable(),
       variable,
-      rootPatterns: sparql``,
+      rootPatterns: [],
     }),
   }
 

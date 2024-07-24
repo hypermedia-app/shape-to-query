@@ -6,7 +6,7 @@ CONSTRUCT {
 }
 WHERE {
   ?resource1 rdf:type <https://schema.ld.admin.ch/Canton>;
-    schema:containsPlace ?resource2, ?resource2.
+    schema:containsPlace ?resource2.
   FILTER(ISBLANK(?resource2))
   FILTER(ISIRI(?resource1))
 }

@@ -1,11 +1,11 @@
 import type { Term } from '@rdfjs/types'
-import { Select } from '@tpluscode/sparql-builder'
 import type { GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
-import { ModelFactory } from '../ModelFactory.js'
+import type sparqljs from 'sparqljs'
+import type { ModelFactory } from '../ModelFactory.js'
 import { SubselectExpression } from './SubselectExpression.js'
-import { NodeExpression } from './NodeExpression.js'
+import type { NodeExpression } from './NodeExpression.js'
 
 export class DistinctExpression extends SubselectExpression {
   static match(pointer: GraphPointer) {
@@ -29,7 +29,10 @@ export class DistinctExpression extends SubselectExpression {
     super(term, distinct)
   }
 
-  protected _applySubselectClause(select: Select): Select {
-    return select.DISTINCT()
+  protected _applySubselectClause(select: sparqljs.SelectQuery): sparqljs.SelectQuery {
+    return {
+      ...select,
+      distinct: true,
+    }
   }
 }

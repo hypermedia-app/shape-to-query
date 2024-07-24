@@ -1,13 +1,12 @@
-import { sparql } from '@tpluscode/sparql-builder'
 import $rdf from '@zazuko/env/web.js'
 import type { GraphPointer } from 'clownface'
 import { rdf } from '@tpluscode/rdf-ns-builders'
-import { ShapePatterns } from '../../lib/shapePatterns.js'
+import type { ShapePatterns } from '../../lib/shapePatterns.js'
 import s2q from '../../ns.js'
-import { ModelFactory } from '../ModelFactory.js'
-import { NodeExpression } from '../nodeExpression/NodeExpression.js'
+import type { ModelFactory } from '../ModelFactory.js'
+import type { NodeExpression } from '../nodeExpression/NodeExpression.js'
 import { ExpressionConstraintComponent } from '../constraint/expression.js'
-import { Rule, Parameters } from './Rule.js'
+import type { Rule, Parameters } from './Rule.js'
 
 export class SPORule implements Rule {
   private objectFilters: ExpressionConstraintComponent[]
@@ -36,14 +35,14 @@ export class SPORule implements Rule {
     const object = variable()
     const spo = $rdf.quad(focusNode, predicate, object)
     const predicateFilters = this.predicateFilters
-      .map(filter => filter.buildPatterns({
+      .flatMap(filter => filter.buildPatterns({
         focusNode: predicate,
         rootPatterns: undefined,
         valueNode: predicate,
         variable,
       }))
     const objectFilters = this.objectFilters
-      .map(filter => filter.buildPatterns({
+      .flatMap(filter => filter.buildPatterns({
         focusNode: object,
         rootPatterns: undefined,
         valueNode: object,
@@ -52,11 +51,11 @@ export class SPORule implements Rule {
 
     return {
       constructClause: [spo],
-      whereClause: sparql`
-        ${spo}
-        ${predicateFilters}
-        ${objectFilters}
-      `,
+      whereClause: [
+        { type: 'bgp', triples: [spo] },
+        ...predicateFilters,
+        ...objectFilters,
+      ],
     }
   }
 }

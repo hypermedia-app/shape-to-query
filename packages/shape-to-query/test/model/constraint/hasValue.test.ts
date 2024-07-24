@@ -1,6 +1,5 @@
 import { expect } from 'chai'
 import $rdf from '@zazuko/env/web.js'
-import { sparql } from '@tpluscode/sparql-builder'
 import { ex } from '../../namespace.js'
 import { HasValueConstraintComponent } from '../../../model/constraint/hasValue.js'
 import { variable } from '../../variable.js'
@@ -19,7 +18,7 @@ describe('model/constraint/hasValue', () => {
     })
 
     // then
-    expect(whereClause).to.eq('')
+    expect(whereClause).to.be.empty
   })
 
   it('generates equality filter for single term', () => {
@@ -32,14 +31,19 @@ describe('model/constraint/hasValue', () => {
       focusNode: $rdf.namedNode('foo'),
       valueNode,
       variable,
-      propertyPath: sparql`path`,
+      propertyPath: ex.path,
       rootPatterns: undefined,
     })
 
     // then
-    expect(whereClause).to.equalPatternsVerbatim(sparql`
-      VALUES (${valueNode}) { (${ex.foo}) }
-    `)
+    expect(whereClause).to.deep.contain.all.members(
+      // VALUES (${valueNode}) { (${ex.foo}) }
+      [{
+        type: 'values',
+        values: [
+          { [`?${valueNode.value}`]: ex.foo },
+        ],
+      }])
   })
 
   it('generates EXISTS filter for multiple terms', () => {
@@ -51,13 +55,26 @@ describe('model/constraint/hasValue', () => {
       focusNode: $rdf.namedNode('foo'),
       valueNode: variable(),
       variable,
-      propertyPath: sparql`path`,
+      propertyPath: ex.path,
       rootPatterns: undefined,
     })
 
     // then
-    expect(whereClause).to.equalPatterns(sparql`
-      FILTER EXISTS { <foo> path ${ex.bar}, ${ex.baz} }
-    `)
+    expect(whereClause).to.deep.contain.all.members(
+      // FILTER EXISTS { <foo> ${ex.path} ${ex.bar}, ${ex.baz} }
+      [{
+        type: 'filter',
+        expression: {
+          type: 'operation',
+          operator: 'exists',
+          args: [{
+            type: 'bgp',
+            triples: [
+              { subject: $rdf.namedNode('foo'), predicate: ex.path, object: ex.bar },
+              { subject: $rdf.namedNode('foo'), predicate: ex.path, object: ex.baz },
+            ],
+          }],
+        },
+      }])
   })
 })

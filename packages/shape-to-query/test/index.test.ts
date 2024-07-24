@@ -1,6 +1,5 @@
 import { foaf, rdf, rdfs, schema } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
-import { SELECT } from '@tpluscode/sparql-builder'
 import chai, { expect } from 'chai'
 import { sparql } from '@tpluscode/rdf-string'
 import type { GraphPointer } from 'clownface'
@@ -9,6 +8,7 @@ import { jestSnapshotPlugin } from 'mocha-chai-jest-snapshot'
 import { constructQuery, deleteQuery, shapeToPatterns } from '../index.js'
 import { ex } from './namespace.js'
 import { parse } from './nodeFactory.js'
+import { SELECT } from './pattern.js'
 import './sparql.js'
 
 describe('@hydrofoil/shape-to-query', () => {
@@ -27,7 +27,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
           // when
           const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-          const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
+          const query = SELECT(patterns.whereClause)
 
           // then
           expect(query).to.be.a.query(sparql`SELECT * WHERE {
@@ -45,7 +45,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
           // when
           const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-          const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
+          const query = SELECT(patterns.whereClause)
 
           // then
           expect(query).to.be.a.query(sparql`SELECT * WHERE {
@@ -71,7 +71,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-        const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
+        const query = SELECT(patterns.whereClause)
 
         // then
         expect(query).to.be.a.query(sparql`SELECT * WHERE {
@@ -96,7 +96,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-        const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
+        const query = SELECT(patterns.whereClause)
 
         // then
         expect(query).to.be.a.query(sparql`SELECT * WHERE {
@@ -128,7 +128,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-        const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
+        const query = SELECT(patterns.whereClause)
 
         // then
         expect(query).to.be.a.query(sparql`SELECT * WHERE {
@@ -156,7 +156,7 @@ describe('@hydrofoil/shape-to-query', () => {
         `
 
         // when
-        const query = constructQuery(shape, { subjectVariable: 'person' }).build()
+        const query = constructQuery(shape, { subjectVariable: 'person' })
 
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
@@ -186,7 +186,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const focusNode = ex.John
-        const query = constructQuery(shape, { focusNode }).build()
+        const query = constructQuery(shape, { focusNode })
 
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
@@ -213,7 +213,7 @@ describe('@hydrofoil/shape-to-query', () => {
         `
 
         // when
-        const query = constructQuery(shape).build()
+        const query = constructQuery(shape)
 
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
@@ -243,7 +243,7 @@ describe('@hydrofoil/shape-to-query', () => {
         `
 
         // when
-        const query = constructQuery(shape).build()
+        const query = constructQuery(shape)
 
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
@@ -288,7 +288,7 @@ describe('@hydrofoil/shape-to-query', () => {
         `
 
         // when
-        const query = constructQuery(shape).build()
+        const query = constructQuery(shape)
 
         // then
         expect(query).to.be.a.query(sparql`CONSTRUCT {
@@ -300,12 +300,11 @@ describe('@hydrofoil/shape-to-query', () => {
             SELECT ?resource ?org {
               ?resource ${rdf.type} ${schema.Person} .
               ?resource ${schema.knows} ?org .
-          
-              ?resource ${schema.knows} ?org .
               {
                 ?org ${schema.name} ?orgName .
                 FILTER(REGEX(?orgName, "gmbh", "i"))
               }
+          
               ?org ${rdf.type} ${schema.Organization} .
               FILTER(isiri(?org)) 
             }
@@ -317,7 +316,6 @@ describe('@hydrofoil/shape-to-query', () => {
               ?resource ${schema.knows} ?org .
               ?org ${schema.name} ?orgName .
           
-              ?resource ${schema.knows} ?org .
               {
                 ?org ${schema.name} ?orgName .
                 FILTER(REGEX(?orgName, "gmbh", "i"))
@@ -345,7 +343,7 @@ describe('@hydrofoil/shape-to-query', () => {
             `
 
             // when
-            const query = constructQuery(shape).build()
+            const query = constructQuery(shape)
 
             // then
             expect(query).to.be.a.query(sparql`CONSTRUCT {
@@ -366,7 +364,7 @@ describe('@hydrofoil/shape-to-query', () => {
             const shape = await parse.file('rules-root-patterns.ttl')
 
             // when
-            const query = constructQuery(shape).build()
+            const query = constructQuery(shape)
 
             // then
             expect(query).to.be.query(`
@@ -385,16 +383,12 @@ describe('@hydrofoil/shape-to-query', () => {
                     VALUES (?resource1) {
                       (<https://new.wikibus.org/page/brands>)
                     }
-                    ?resource1 schema:mainEntity ?resource2, ?resource2.
+                    ?resource1 schema:mainEntity ?resource2 .
                   } 
                 }
                 UNION
                 {
                     SELECT ?resource3 ?resource4 ?resource5 {
-                      VALUES (?resource1) {
-                        (<https://new.wikibus.org/page/brands>)
-                      }
-                      ?resource1 schema:mainEntity ?resource2.
                       VALUES (?resource1) {
                         (<https://new.wikibus.org/page/brands>)
                       }
@@ -407,14 +401,7 @@ describe('@hydrofoil/shape-to-query', () => {
                       ?resource7 skos:prefLabel ?resource6.
                       BIND(IRI((CONCAT((str(?resource2)), "?i=", (ENCODE_FOR_URI((LCASE((SUBSTR(?resource6, 1, 1))))))))) as ?resource3)
                       BIND(rdfs:label as ?resource4)
-                      ?resource2 rdf:type*/hydra:memberAssertion ?resource9.
-                      ?resource9 hydra:property ?resource11.
-                      VALUES ?resource11 { rdf:type }
-                      ?resource9 hydra:object ?resource8.
-                      ?resource8 ^rdf:type ?resource7.
-                      ?resource7 skos:prefLabel ?resource6.
                       BIND(UCASE((SUBSTR(?resource6, 1 , 1 ))) as ?resource5)
-                      ?resource1 schema:mainEntity ?resource2.
                     }
                 }
               }`)
@@ -425,7 +412,7 @@ describe('@hydrofoil/shape-to-query', () => {
             const shape = await parse.file('spo-rule-filter-shapes.ttl')
 
             // when
-            const result = constructQuery(shape).build()
+            const result = constructQuery(shape)
 
             // then
             expect(result).to.be.query()
@@ -543,7 +530,7 @@ describe('@hydrofoil/shape-to-query', () => {
         const patterns = shapeToPatterns(shape, {
           subjectVariable: 'node',
         })
-        const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
+        const query = SELECT(patterns.whereClause)
 
         // then
         expect(query).to.be.a.query(sparql`SELECT * WHERE {
@@ -591,7 +578,7 @@ describe('@hydrofoil/shape-to-query', () => {
         })
 
         // then
-        expect(query.build()).to.be.a.query(sparql`CONSTRUCT {
+        expect(query).to.be.a.query(sparql`CONSTRUCT {
           ?node ${foaf.knows} ?node_0 .
           ?node_0 ${foaf.name} ?node_0_0 .
           ?node_0 ${schema.address} ?node_0_1 .
@@ -659,7 +646,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-        const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
+        const query = SELECT(patterns.whereClause)
 
         // then
         expect(query).to.be.a.query(sparql`
@@ -794,7 +781,7 @@ describe('@hydrofoil/shape-to-query', () => {
 
         // when
         const patterns = shapeToPatterns(shape, { subjectVariable: 'node' })
-        const query = SELECT.ALL.WHERE`${patterns.whereClause}`.build()
+        const query = SELECT(patterns.whereClause)
 
         // then
         expect(query).to.be.a.query(sparql`

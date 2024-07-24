@@ -3,7 +3,7 @@ import $rdf from '@zazuko/env/web.js'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { TRUE } from '../../lib/rdf.js'
 import type { ModelFactory } from '../ModelFactory.js'
-import { ConstraintComponent, PropertyShape } from './ConstraintComponent.js'
+import type { ConstraintComponent, PropertyShape } from './ConstraintComponent.js'
 import { constraintComponents } from './index.js'
 
 export default function (shape: GraphPointer, factory: ModelFactory): Array<ConstraintComponent> {

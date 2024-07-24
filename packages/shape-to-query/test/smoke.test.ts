@@ -38,7 +38,7 @@ describe('@hydrofoil/shape-to-query', () => {
       `
 
     // when
-    const result = await $rdf.dataset().import(constructQuery(shape).execute(client))
+    const result = await $rdf.dataset().import(client.query.construct(constructQuery(shape)))
 
     // then
     expect(result.size).to.equal(0)

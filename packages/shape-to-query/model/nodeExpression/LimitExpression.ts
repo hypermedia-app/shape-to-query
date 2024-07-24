@@ -1,13 +1,13 @@
 import type { Term } from '@rdfjs/types'
-import { Select } from '@tpluscode/sparql-builder'
 import type { GraphPointer } from 'clownface'
 import { isGraphPointer, isLiteral } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { xsd } from '@tpluscode/rdf-ns-builders'
 import { fromRdf } from 'rdf-literal'
-import { ModelFactory } from '../ModelFactory.js'
+import type sparqljs from 'sparqljs'
+import type { ModelFactory } from '../ModelFactory.js'
 import { getOne } from './util.js'
-import { NodeExpression } from './NodeExpression.js'
+import type { NodeExpression } from './NodeExpression.js'
 import { SubselectExpression } from './SubselectExpression.js'
 
 export class LimitExpression extends SubselectExpression {
@@ -28,7 +28,10 @@ export class LimitExpression extends SubselectExpression {
     super(term, nodes)
   }
 
-  protected _applySubselectClause(select: Select): Select {
-    return select.LIMIT(this.limit)
+  protected _applySubselectClause(select: sparqljs.SelectQuery): sparqljs.SelectQuery {
+    return {
+      ...select,
+      limit: this.limit,
+    }
   }
 }

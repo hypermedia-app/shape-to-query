@@ -1,17 +1,22 @@
-import type { Term } from '@rdfjs/types'
+import type { Literal, NamedNode, Term, Variable } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import { isGraphPointer, isLiteral } from 'is-graph-pointer'
 import { rdf, sh, xsd } from '@tpluscode/rdf-ns-builders'
 import { dashSparql } from '@tpluscode/rdf-ns-builders/loose'
-import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { shrink } from '@zazuko/prefixes'
 import { fromRdf } from 'rdf-literal'
 import $rdf from '@zazuko/env/web.js'
-import { IN } from '@tpluscode/sparql-builder/expressions'
+import type sparqljs from 'sparqljs'
 import vocabulary from '../../vocabulary.js'
 import { TRUE } from '../../lib/rdf.js'
-import { ModelFactory } from '../ModelFactory.js'
-import NodeExpressionBase, { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
+import type { ModelFactory } from '../ModelFactory.js'
+import type {
+  InlineExpressionResult,
+  NodeExpression,
+  Parameters,
+  PatternBuilder,
+} from './NodeExpression.js'
+import NodeExpressionBase from './NodeExpression.js'
 
 interface Parameter {
   datatype?: Term
@@ -29,7 +34,7 @@ export abstract class FunctionExpression extends NodeExpressionBase {
     return pointer.out(first.predicate).isList()
   }
 
-  static fromPointer(pointer: GraphPointer, createExpr: ModelFactory) {
+  static fromPointer(pointer: GraphPointer, createExpr: ModelFactory): FunctionExpression {
     const [first] = [...pointer.dataset.match(pointer.term)]
     const functionPtr = vocabulary.node(first.predicate)
     const argumentList = pointer.out(functionPtr).list()
@@ -38,6 +43,7 @@ export abstract class FunctionExpression extends NodeExpressionBase {
     }
 
     const symbol = functionPtr.out(dashSparql.symbol).term || functionPtr.term
+
     const returnType = functionPtr.out(sh.returnType).term
     const unlimitedParameters = TRUE.equals(functionPtr.out(dashSparql.unlimitedParameters).term)
 
@@ -65,7 +71,7 @@ export abstract class FunctionExpression extends NodeExpressionBase {
 
   public readonly returnType: Term | undefined
 
-  public readonly symbol: Term
+  public readonly symbol: NamedNode | Literal
 
   public readonly term = $rdf.blankNode()
 
@@ -74,6 +80,10 @@ export abstract class FunctionExpression extends NodeExpressionBase {
     public readonly args: ReadonlyArray<NodeExpression> = [],
     { symbol = functionTerm, returnType, parameters = [], unlimitedParameters = false }: { symbol?: Term; parameters?: ReadonlyArray<Parameter>; returnType?: Term; unlimitedParameters?: boolean } = {}) {
     super()
+
+    if (symbol.termType !== 'Literal' && symbol.termType !== 'NamedNode') {
+      throw new Error(`Function must be a NamedNode or a Literal. Got ${symbol.termType}`)
+    }
 
     this.symbol = symbol
     this.returnType = returnType
@@ -89,40 +99,47 @@ export abstract class FunctionExpression extends NodeExpressionBase {
     return false
   }
 
-  _buildPatterns(args: Parameters, builder: PatternBuilder) {
+  _buildPatterns(args: Parameters, builder: PatternBuilder): sparqljs.Pattern[] {
     const { expressions, patterns } = this.evaluateArguments(args, builder)
 
-    return sparql`${patterns}\nBIND(${this.boundExpression(args.subject, expressions)} as ${args.object})`
+    return [
+      ...patterns,
+      {
+        type: 'bind',
+        expression: this.boundExpression(args.subject, expressions),
+        variable: args.object,
+      },
+    ]
   }
 
-  buildInlineExpression(args: Parameters, builder: PatternBuilder) {
+  buildInlineExpression(args: Parameters, builder: PatternBuilder): InlineExpressionResult {
     const { expressions, patterns } = this.evaluateArguments(args, builder)
     return {
       patterns,
-      inline: sparql`(${this.boundExpression(args.subject, expressions)})`,
+      inline: this.boundExpression(args.subject, expressions),
     }
   }
 
-  protected abstract boundExpression(subject: Term, args: SparqlTemplateResult[]): SparqlTemplateResult
+  protected abstract boundExpression(subject: Term, args: (sparqljs.Expression | sparqljs.Pattern)[]): sparqljs.Expression
 
-  private evaluateArguments({ subject, variable, rootPatterns }: Parameters, builder: PatternBuilder) {
+  private evaluateArguments({ subject, variable, rootPatterns }: Parameters, builder: PatternBuilder): { expressions: sparqljs.Expression[]; patterns: sparqljs.Pattern[] } {
     return this.args.reduce((result, expr) => {
       if ('buildInlineExpression' in expr) {
-        const { inline, patterns } = expr.buildInlineExpression({ subject, variable, rootPatterns }, builder)
+        const { inline, patterns = [] } = expr.buildInlineExpression({ subject, variable, rootPatterns }, builder)
         return {
           expressions: [...result.expressions, inline],
-          patterns: patterns ? sparql`${result.patterns}\n${patterns}` : result.patterns,
+          patterns: [...result.patterns, ...patterns],
         }
       }
 
       const next = builder.build(expr, { subject, variable, rootPatterns })
       return {
-        expressions: [...result.expressions, sparql`${next.object}`],
-        patterns: sparql`${result.patterns}\n${next.patterns}`,
+        expressions: [...result.expressions, next.object],
+        patterns: [...result.patterns, ...next.patterns],
       }
     }, {
-      expressions: <SparqlTemplateResult[]>[],
-      patterns: sparql``,
+      expressions: <sparqljs.Expression[]>[],
+      patterns: <sparqljs.Pattern[]>[],
     })
   }
 }
@@ -132,11 +149,17 @@ export class AdditiveExpression extends FunctionExpression {
     super(term, args, { symbol: $rdf.literal(symbol), returnType })
   }
 
-  protected boundExpression(subject: Term, args: SparqlTemplateResult[]): SparqlTemplateResult {
-    const [first, ...rest] = args
-    return rest.reduce((expr, arg) => {
-      return sparql`${expr} ${this.symbol.value} ${arg}`
-    }, sparql`${first}`)
+  protected boundExpression(subject: Term, args: (sparqljs.Expression | sparqljs.Pattern)[]): sparqljs.OperationExpression {
+    const [left, right, ...rest] = args
+    return rest.reduce<sparqljs.OperationExpression>((acc, next) => this.add(acc, next), this.add(left, right))
+  }
+
+  private add(left: sparqljs.Expression | sparqljs.Pattern, right: sparqljs.Expression | sparqljs.Pattern): sparqljs.OperationExpression {
+    return {
+      type: 'operation',
+      operator: this.symbol.value,
+      args: [left, right],
+    }
   }
 }
 
@@ -145,8 +168,12 @@ export class RelationalExpression extends FunctionExpression {
     super(term, args, { symbol: $rdf.literal(symbol), parameters, returnType: xsd.boolean })
   }
 
-  protected boundExpression(subject: Term, [left, right]: SparqlTemplateResult[]): SparqlTemplateResult {
-    return sparql`${left} ${this.symbol.value} ${right}`
+  protected boundExpression(subject: Term, [left, right]: (sparqljs.Expression | sparqljs.Pattern)[]): sparqljs.OperationExpression {
+    return {
+      type: 'operation',
+      operator: this.symbol.value,
+      args: [left, right],
+    }
   }
 }
 
@@ -163,21 +190,30 @@ export class InExpression extends FunctionExpression {
     this.negated = term.equals(dashSparql.notin)
   }
 
-  protected boundExpression(subject: Term, args: SparqlTemplateResult[]): SparqlTemplateResult {
-    const not = this.negated ? 'NOT ' : ''
-    return sparql`${subject} ${not}${IN(...args)}`
+  protected boundExpression(subject: NamedNode | Variable, args: (sparqljs.Expression | sparqljs.Tuple)[]): sparqljs.OperationExpression {
+    return {
+      type: 'operation',
+      operator: this.negated ? 'notin' : 'in',
+      args: [subject, args],
+    }
   }
 }
 
 export class FunctionCallExpression extends FunctionExpression {
-  protected boundExpression(subject: Term, args: SparqlTemplateResult[]): SparqlTemplateResult {
-    const [first, ...rest] = args
-    const argList = rest.reduce((list, arg) => sparql`${list}, ${arg}`, sparql`${first}`)
-    const symbol = this.symbol.termType === 'Literal'
-      ? this.symbol.value
-      : this.symbol
+  protected boundExpression(subject: Term, args: sparqljs.Expression[]): sparqljs.FunctionCallExpression | sparqljs.OperationExpression {
+    if (this.symbol.termType === 'Literal') {
+      return {
+        type: 'operation',
+        operator: this.symbol.value,
+        args,
+      }
+    }
 
-    return sparql`${symbol}(${argList})`
+    return {
+      type: 'functionCall',
+      function: this.symbol,
+      args,
+    }
   }
 }
 

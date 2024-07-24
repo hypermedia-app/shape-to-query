@@ -1,9 +1,9 @@
-import { schema } from '@tpluscode/rdf-ns-builders'
+import { schema, rdf } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import $rdf from '@zazuko/env/web.js'
-import { sparql } from '@tpluscode/rdf-string'
 import { variable } from '../../variable.js'
 import { ClassConstraintComponent } from '../../../model/constraint/class.js'
+import { ex } from '../../namespace.js'
 
 describe('model/constraint/class', () => {
   before(() => import('../../sparql.js'))
@@ -23,7 +23,18 @@ describe('model/constraint/class', () => {
         })
 
         // then
-        expect(whereClause).to.equalPatterns('<this> a schema:DefinedTerm .')
+
+        expect(whereClause).to.deep.contain.members(
+          // <this> a schema:DefinedTerm .'
+          [{
+            type: 'bgp',
+            triples: [{
+              subject: $rdf.namedNode('this'),
+              predicate: rdf.type,
+              object: schema.DefinedTerm,
+            }],
+          }],
+        )
       })
     })
 
@@ -31,18 +42,29 @@ describe('model/constraint/class', () => {
       it('creates correct pattern', () => {
         // given
         const constraint = new ClassConstraintComponent(schema.DefinedTerm)
+        const valueNode = variable()
 
         // when
         const whereClause = constraint.buildPatterns({
           focusNode: $rdf.namedNode('this'),
-          valueNode: variable(),
+          valueNode,
           variable,
           rootPatterns: undefined,
-          propertyPath: sparql`prop`,
+          propertyPath: ex.prop,
         })
 
         // then
-        expect(whereClause).to.equalPatterns('?valueNode a schema:DefinedTerm .')
+        expect(whereClause).to.deep.contain.members(
+          // ?valueNode a schema:DefinedTerm .
+          [{
+            type: 'bgp',
+            triples: [{
+              subject: valueNode,
+              predicate: rdf.type,
+              object: schema.DefinedTerm,
+            }],
+          }],
+        )
       })
     })
   })

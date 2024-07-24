@@ -5,12 +5,10 @@ CONSTRUCT {
 }
 WHERE {
   ?resource1 schema:knows ?resource2;
-    schema:jobTitle ?resource3;
-    schema:knows ?resource2.
+    schema:jobTitle ?resource3.
   VALUES ?resource2 {
     <https://tbbt.tv/sheldon-cooper>
   }
-  ?resource1 schema:jobTitle ?resource3.
   VALUES ?resource3 {
     "microbiologist"
   }

@@ -41,7 +41,7 @@ describe('model/TargetSubjectsOf', () => {
     // then
     expect(whereClause).to.equalPatterns(sparql`
       ?foo ?prop ?value .
-      VALUES ( ?prop ) { ( ${schema.children} ) ( ${schema.parent} ) } 
+      VALUES ?prop { ${schema.children} ${schema.parent} } 
     `)
     expect(sparql`${constructClause}`).to.equalPatterns(sparql`?foo ?prop ?value .`)
     expect(constructClause[0].subject).to.equal(focusNode)

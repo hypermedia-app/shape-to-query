@@ -2,12 +2,13 @@ import type { Term, Variable } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { sparql } from '@tpluscode/sparql-builder'
-import { ModelFactory } from '../ModelFactory.js'
-import { NodeShape } from '../NodeShape.js'
+import type sparqljs from 'sparqljs'
+import type { ModelFactory } from '../ModelFactory.js'
+import type { NodeShape } from '../NodeShape.js'
 import { getOne, getOneOrZero } from './util.js'
 import { FocusNodeExpression } from './FocusNodeExpression.js'
-import NodeExpressionBase, { NodeExpression, NodeExpressionResult, Parameters, PatternBuilder } from './NodeExpression.js'
+import type { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
+import NodeExpressionBase from './NodeExpression.js'
 
 export class FilterShapeExpression extends NodeExpressionBase {
   public get requiresFullContext(): boolean {
@@ -37,9 +38,9 @@ export class FilterShapeExpression extends NodeExpressionBase {
     return new FilterShapeExpression(pointer.term, filterShape)
   }
 
-  _buildPatterns({ subject, variable, rootPatterns, object }: Parameters, builder: PatternBuilder) {
+  _buildPatterns({ subject, variable, rootPatterns, object }: Parameters, builder: PatternBuilder): sparqljs.Pattern[] {
     let focusNode = subject
-    let patterns : NodeExpressionResult['patterns'] = sparql``
+    let patterns: sparqljs.Pattern[] = []
     let valueNode: Variable
 
     if (this.nodes instanceof FocusNodeExpression) {
@@ -49,8 +50,9 @@ export class FilterShapeExpression extends NodeExpressionBase {
       valueNode = variable()
     }
 
-    return sparql`
-      ${patterns}
-      ${this.shape.buildConstraints({ focusNode, valueNode, variable, rootPatterns })}`
+    return [
+      ...patterns,
+      ...this.shape.buildConstraints({ focusNode, valueNode, variable, rootPatterns }),
+    ]
   }
 }

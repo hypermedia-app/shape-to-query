@@ -1,13 +1,14 @@
-import type { Term } from '@rdfjs/types'
+import type { NamedNode, Variable } from '@rdfjs/types'
 import * as Path from 'clownface-shacl-path'
 import $rdf from '@zazuko/env/web.js'
-import { sparql } from '@tpluscode/sparql-builder'
-import { VariableSequence } from './variableSequence.js'
-import { ShapePatterns, emptyPatterns, flatten } from './shapePatterns.js'
+import type sparqljs from 'sparqljs'
+import type { VariableSequence } from './variableSequence.js'
+import type { ShapePatterns } from './shapePatterns.js'
+import { emptyPatterns, flatten } from './shapePatterns.js'
 
 interface Context {
-  pathStart: Term
-  pathEnd?: Term
+  pathStart: Variable | NamedNode
+  pathEnd?: Variable | NamedNode
 }
 
 export default class extends Path.PathVisitor<ShapePatterns, Context> {
@@ -21,16 +22,39 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
     for (const path of paths) {
       const intermediatePath = this.variable()
       const inner = path.accept(this, { pathStart, pathEnd: intermediatePath })
-      const whereClause = sparql`${inner.whereClause}\nBIND(${intermediatePath} as ${pathEnd})`
+      const whereClause: sparqljs.Pattern[] = [
+        ...inner.whereClause,
+        {
+          type: 'bind',
+          variable: pathEnd as unknown as sparqljs.VariableTerm,
+          expression: intermediatePath,
+        },
+      ]
 
       if (result === emptyPatterns) {
         result = {
-          whereClause: sparql`{ ${whereClause} }`,
+          whereClause,
           constructClause: inner.constructClause,
         }
+      } else if (result.whereClause.length === 1 && result.whereClause[0].type === 'union') {
+        const union = result.whereClause[0]
+        union.patterns.push({
+          type: 'group',
+          patterns: whereClause,
+        })
+        result.constructClause.push(...inner.constructClause)
       } else {
         result = {
-          whereClause: sparql`${result.whereClause} UNION { ${whereClause} }`,
+          whereClause: [{
+            type: 'union',
+            patterns: [{
+              type: 'group',
+              patterns: result.whereClause,
+            }, {
+              type: 'group',
+              patterns: whereClause,
+            }],
+          }],
           constructClause: [...result.constructClause, ...inner.constructClause],
         }
       }
@@ -49,7 +73,14 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
 
   visitPredicatePath(path: Path.PredicatePath, { pathStart, pathEnd = this.variable() }: Context): ShapePatterns {
     return {
-      whereClause: sparql`${pathStart} ${path.term} ${pathEnd} .`,
+      whereClause: [{
+        type: 'bgp',
+        triples: [{
+          subject: pathStart,
+          predicate: path.term,
+          object: pathEnd,
+        }],
+      }],
       constructClause: [$rdf.quad(pathStart, path.term, pathEnd)],
     }
   }
@@ -78,13 +109,17 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
     const inner = this.greedyPath(path, { pathStart, pathEnd })
 
     return {
-      whereClause: sparql`
-      {
-        BIND (${pathStart} as ${pathEnd})
-      } UNION {
-        ${inner.whereClause}
-      }
-      `,
+      whereClause: [{
+        type: 'union',
+        patterns: [{
+          type: 'bind',
+          variable: pathEnd as unknown as sparqljs.VariableTerm,
+          expression: pathStart,
+        }, {
+          type: 'group',
+          patterns: inner.whereClause,
+        }],
+      }],
       constructClause: inner.constructClause,
     }
   }
@@ -92,12 +127,18 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
   visitZeroOrOnePath({ path }: Path.ZeroOrOnePath, { pathStart, pathEnd = this.variable() }: Context): ShapePatterns {
     const orMorePathVariable = this.variable()
     const inner: ShapePatterns = path.accept(this, { pathStart, pathEnd: orMorePathVariable })
-    const whereClause = sparql`{
-        BIND(${pathStart} as ${pathEnd})
-      } UNION {
-        ${inner.whereClause}
-        BIND(${orMorePathVariable} as ${pathEnd})
-      }`
+    const whereClause: [sparqljs.UnionPattern] = [{
+      type: 'union',
+      patterns: [{
+        type: 'bind', expression: pathStart, variable: pathEnd as sparqljs.VariableTerm,
+      }, {
+        type: 'group',
+        patterns: [
+          ...inner.whereClause,
+          { type: 'bind', expression: orMorePathVariable, variable: pathEnd as sparqljs.VariableTerm },
+        ],
+      }],
+    }]
 
     return {
       whereClause,
@@ -111,10 +152,25 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
     }
 
     const intermediateNode = this.variable()
-    const outPattern = sparql`${intermediateNode} ${path.term} ${pathEnd} .`
 
     return {
-      whereClause: sparql`${pathStart} ${path.term}* ${intermediateNode} . \n${outPattern}`,
+      whereClause: [{
+        type: 'bgp',
+        triples: [{
+          subject: pathStart,
+          predicate: {
+            type: 'path',
+            pathType: '*',
+            items: [path.term],
+          },
+          object: intermediateNode,
+        }, {
+          subject: intermediateNode,
+          predicate: path.term,
+          object: pathEnd,
+        }],
+      }],
+      // whereClause: sparql`${pathStart} ${path.term}* ${intermediateNode} . \n${outPattern}`,
       constructClause: [$rdf.quad(intermediateNode, path.term, pathEnd)],
     }
   }

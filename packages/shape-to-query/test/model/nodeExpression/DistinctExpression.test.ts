@@ -1,10 +1,10 @@
-import { schema } from '@tpluscode/rdf-ns-builders'
+import { rdf, schema } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
-import { sparql } from '@tpluscode/rdf-string'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import { SELECT } from '@tpluscode/sparql-builder'
+import { SELECT, sparql } from '@tpluscode/sparql-builder'
 import $rdf from '@zazuko/env/web.js'
+import type { Quad } from '@rdfjs/types'
 import { DistinctExpression } from '../../../model/nodeExpression/DistinctExpression.js'
 import { blankNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
@@ -68,7 +68,10 @@ describe('model/nodeExpression/DistinctExpression', () => {
   describe('build', () => {
     it('creates a DISTINCT subselect', () => {
       // given
-      const nodes = fakeExpression(({ object }) => sparql`${object} a ${schema.Article} .`)
+      const nodes = fakeExpression(({ object }) => [{
+        type: 'bgp',
+        triples: [$rdf.quad<Quad>(object, rdf.type, schema.Article)],
+      }])
       const expr = new DistinctExpression($rdf.blankNode(), nodes)
 
       // when
@@ -76,12 +79,12 @@ describe('model/nodeExpression/DistinctExpression', () => {
         subject: variable(),
         object: variable(),
         variable,
-        rootPatterns: sparql``,
+        rootPatterns: [],
       }, new PatternBuilder())
 
       // then
-      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT DISTINCT ?root ?foo WHERE {
-        ?foo a schema:Article .
+      expect(patterns[0]).to.be.query(sparql`SELECT DISTINCT ?root ?foo WHERE {
+        ?foo a ${schema.Article} .
       }`)
     })
 
@@ -95,12 +98,12 @@ describe('model/nodeExpression/DistinctExpression', () => {
         subject: variable(),
         object: variable(),
         variable,
-        rootPatterns: sparql``,
+        rootPatterns: [],
       }, new PatternBuilder())
 
       // then
-      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT DISTINCT ?root ?foo WHERE {
-        ?foo a schema:Article .
+      expect(patterns[0]).to.be.query(sparql`SELECT DISTINCT ?root ?foo WHERE {
+        ?foo a ${schema.Article} .
       }`)
     })
   })

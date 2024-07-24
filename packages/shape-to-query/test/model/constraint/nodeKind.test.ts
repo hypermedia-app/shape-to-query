@@ -1,42 +1,71 @@
 import { expect } from 'chai'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import $rdf from '@zazuko/env/web.js'
-import { sparql } from '@tpluscode/sparql-builder'
+import type sparqljs from 'sparqljs'
+import type { Variable } from '@rdfjs/types'
+import { shrink } from '@zazuko/prefixes'
 import { variable } from '../../variable.js'
-import { NodeKind, NodeKindConstraintComponent } from '../../../model/constraint/nodeKind.js'
+import type { NodeKind } from '../../../model/constraint/nodeKind.js'
+import { NodeKindConstraintComponent } from '../../../model/constraint/nodeKind.js'
 import { namedNode } from '../../nodeFactory.js'
+import { ex } from '../../namespace.js'
 
 describe('model/constraint/nodeKind', () => {
   before(() => import('../../sparql.js'))
 
   describe('fromShape', () => {
-    const nodeKinds: Array<[NodeKind, string]> = [
-      [sh.IRI, 'IsIRI(?foo)'],
-      [sh.IRIOrLiteral, 'IsIRI(?foo) || IsLiteral(?foo)'],
-      [sh.BlankNodeOrIRI, 'IsBlank(?foo) || IsIRI(?foo)'],
-      [sh.Literal, 'IsLiteral(?foo)'],
-      [sh.BlankNodeOrLiteral, 'IsBlank(?foo) || IsLiteral(?foo)'],
-      [sh.BlankNode, 'IsBlank(?foo)'],
+    const nodeKinds: Array<[NodeKind, (valueNode: Variable) => sparqljs.Expression]> = [
+      [sh.IRI, valueNode => ({ type: 'operation', operator: 'isiri', args: [valueNode] })],
+      [sh.IRIOrLiteral, valueNode => ({
+        type: 'operation',
+        operator: '||',
+        args: [
+          { type: 'operation', operator: 'isiri', args: [valueNode] },
+          { type: 'operation', operator: 'isliteral', args: [valueNode] },
+        ],
+      })],
+      [sh.BlankNodeOrIRI, valueNode => ({
+        type: 'operation',
+        operator: '||',
+        args: [
+          { type: 'operation', operator: 'isblank', args: [valueNode] },
+          { type: 'operation', operator: 'isiri', args: [valueNode] },
+        ],
+      })],
+      [sh.Literal, valueNode => ({ type: 'operation', operator: 'isliteral', args: [valueNode] })],
+      [sh.BlankNodeOrLiteral, valueNode => ({
+        type: 'operation',
+        operator: '||',
+        args: [
+          { type: 'operation', operator: 'isblank', args: [valueNode] },
+          { type: 'operation', operator: 'isliteral', args: [valueNode] },
+        ],
+      })],
+      [sh.BlankNode, valueNode => ({ type: 'operation', operator: 'isblank', args: [valueNode] })],
     ]
 
     for (const [nodeKind, filter] of nodeKinds) {
-      it(`returns correct pattern for ${nodeKind.value}`, () => {
+      it(`returns correct pattern for ${shrink(nodeKind.value)}`, () => {
         // given
         const shape = $rdf.termMap([
           [sh.nodeKind, [{ pointer: namedNode(nodeKind) }]],
         ])
         const [constraint] = [...NodeKindConstraintComponent.fromShape(shape)]
+        const focusNode = variable()
 
         // when
         const patterns = constraint.buildPatterns({
           valueNode: variable(),
           rootPatterns: undefined,
-          focusNode: variable(),
+          focusNode,
           variable,
         })
 
         // then
-        expect(patterns).to.equalPatterns(`FILTER(${filter})`)
+        expect(patterns).to.deep.equal([{
+          type: 'filter',
+          expression: filter(focusNode),
+        }])
       })
     }
 
@@ -69,7 +98,11 @@ describe('model/constraint/nodeKind', () => {
     context('node shape', () => {
       it('restricts focus node', () => {
         // given
-        const constraint = new NodeKindConstraintComponent(valueNode => sparql`IsIRI(${valueNode})`)
+        const constraint = new NodeKindConstraintComponent(valueNode => [{
+          type: 'functionCall',
+          function: 'IsIRI',
+          args: [valueNode],
+        }])
 
         // when
         const patterns = constraint.buildPatterns({
@@ -80,26 +113,51 @@ describe('model/constraint/nodeKind', () => {
         })
 
         // then
-        expect(patterns).to.equalPatterns('FILTER(IsIRI(<this>))')
+        expect(patterns).to.deep.equal(
+          // 'FILTER(IsIRI(<this>))'
+          [{
+            type: 'filter',
+            expression: [{
+              type: 'functionCall',
+              function: 'IsIRI',
+              args: [$rdf.namedNode('this')],
+            }],
+          }],
+        )
       })
     })
 
     context('property shape', () => {
       it('restricts focus node', () => {
         // given
-        const constraint = new NodeKindConstraintComponent(valueNode => sparql`IsIRI(${valueNode})`)
+        const constraint = new NodeKindConstraintComponent(valueNode => [{
+          type: 'functionCall',
+          function: 'IsIRI',
+          args: [valueNode],
+        }])
+        const valueNode = variable()
 
         // when
         const patterns = constraint.buildPatterns({
           focusNode: $rdf.namedNode('this'),
-          valueNode: variable(),
+          valueNode,
           variable,
           rootPatterns: undefined,
-          propertyPath: sparql`path`,
+          propertyPath: ex.path,
         })
 
         // then
-        expect(patterns).to.equalPatterns('FILTER(IsIRI(?q1))')
+        expect(patterns).to.deep.equal(
+          // 'FILTER(IsIRI(?q1))'
+          [{
+            type: 'filter',
+            expression: [{
+              type: 'functionCall',
+              function: 'IsIRI',
+              args: [valueNode],
+            }],
+          }],
+        )
       })
     })
   })

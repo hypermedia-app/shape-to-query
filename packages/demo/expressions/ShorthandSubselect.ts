@@ -5,17 +5,19 @@ import rdf from '@zazuko/env/web.js'
 import { isGraphPointer, isLiteral } from 'is-graph-pointer'
 import { fromRdf } from 'rdf-literal'
 import type { GraphPointer } from 'clownface'
-import {
-  OffsetExpression,
-  OrderByExpression,
-  LimitExpression,
+import type {
   NodeExpression,
   NodeExpressionFactory,
   PatternBuilder,
   Parameters,
 } from '@hydrofoil/shape-to-query/nodeExpressions.js'
+import {
+  OffsetExpression,
+  OrderByExpression,
+  LimitExpression,
+} from '@hydrofoil/shape-to-query/nodeExpressions.js'
 import { getOne, getOneOrZero } from '@hydrofoil/shape-to-query/model/nodeExpression/util.js'
-import { ModelFactory } from '@hydrofoil/shape-to-query/model/ModelFactory.js'
+import type { ModelFactory } from '@hydrofoil/shape-to-query/model/ModelFactory.js'
 
 const ex = rdf.namespace('http://example.org/')
 

@@ -2,6 +2,7 @@ import $rdf from '@zazuko/env/web.js'
 import { rdf, sh } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import { sparql } from '@tpluscode/sparql-builder'
+import type sparqljs from 'sparqljs'
 import { NodeExpressionTarget } from '../../../model/target/index.js'
 import { parse } from '../../nodeFactory.js'
 import { s2q } from '../../../index.js'
@@ -33,11 +34,15 @@ describe('model/NodeExpressionTarget', () => {
       const { whereClause, constructClause } = target.buildPatterns({ focusNode, variable })
 
       // expect
-      const wrapped = sparql`SELECT ${focusNode} WHERE { ${whereClause} }`.toString({
-        prologue: false,
-      })
+      const wrapped: sparqljs.SelectQuery = {
+        type: 'query',
+        queryType: 'SELECT',
+        variables: [focusNode],
+        where: whereClause,
+        prefixes: {},
+      }
 
-      expect(wrapped).to.equalPatterns(sparql`SELECT ?focusNode WHERE { { SELECT (?leaf as ?focusNode) WHERE { ?root ${rdf.rest}*/${rdf.first} ?leaf . } } }`)
+      expect(wrapped).to.be.query(sparql`SELECT ?focusNode WHERE { { SELECT (?leaf as ?focusNode) WHERE { ?root ${rdf.rest}*/${rdf.first} ?leaf . } } }`)
       expect(constructClause).to.equalPatternsVerbatim('')
     })
   })

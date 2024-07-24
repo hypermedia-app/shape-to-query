@@ -1,27 +1,40 @@
-import type { Term } from '@rdfjs/types'
-import { SparqlTemplateResult, sparql } from '@tpluscode/sparql-builder'
-import { IN } from '@tpluscode/sparql-builder/expressions'
+import type { Literal, NamedNode } from '@rdfjs/types'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import ConstraintComponent, { assertList, Parameters, PropertyShape } from './ConstraintComponent.js'
+import type sparqljs from 'sparqljs'
+import type { Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { assertList } from './ConstraintComponent.js'
 
 export class InConstraintComponent extends ConstraintComponent {
   static * fromShape(shape: PropertyShape) {
     const ins = shape.get(sh.in) || []
     for (const inn of ins) {
       assertList(inn)
-      yield new InConstraintComponent(inn.list.map(({ term }) => term))
+      yield new InConstraintComponent(inn.list.map(({ term }) => {
+        if (term.termType !== 'NamedNode' && term.termType !== 'Literal') {
+          throw new Error(`Unsupported term type ${term.termType} in sh:in`)
+        }
+
+        return term
+      }))
     }
   }
 
-  constructor(public values: Term[]) {
+  constructor(public readonly values: (NamedNode | Literal)[]) {
     super(sh.InConstraintComponent)
   }
 
-  buildNodeShapePatterns(): string | SparqlTemplateResult | SparqlTemplateResult[] {
-    return ''
+  buildNodeShapePatterns(): sparqljs.Pattern[] {
+    return []
   }
 
-  buildPropertyShapePatterns({ valueNode }: Parameters): string | SparqlTemplateResult {
-    return sparql`FILTER (${valueNode} ${IN(...this.values)})`
+  buildPropertyShapePatterns({ valueNode }: Parameters): [sparqljs.FilterPattern] {
+    return [{
+      type: 'filter',
+      expression: {
+        type: 'operation',
+        operator: 'in',
+        args: [valueNode, this.values],
+      },
+    }]
   }
 }

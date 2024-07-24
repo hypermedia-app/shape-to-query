@@ -8,6 +8,7 @@ import { blankNode, namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
 import ModelFactory from '../../../model/ModelFactory.js'
 import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
+import { ex } from '../../namespace.js'
 import { combinedNRE, fakeExpression } from './helper.js'
 
 describe('model/nodeExpression/PathExpression', () => {
@@ -127,7 +128,11 @@ describe('model/nodeExpression/PathExpression', () => {
   describe('build', () => {
     it('creates a single pattern from given path', () => {
       // given
-      const expr = new PathExpression($rdf.blankNode(), sparql`schema:knows/schema:familyName`)
+      const expr = new PathExpression($rdf.blankNode(), {
+        type: 'path',
+        pathType: '/',
+        items: [schema.knows, schema.familyName],
+      })
 
       // when
       const subject = sh.this
@@ -135,23 +140,26 @@ describe('model/nodeExpression/PathExpression', () => {
       const patterns = expr.build({ subject, object, variable, rootPatterns: undefined }, new PatternBuilder())
 
       // then
-      expect(combinedNRE(patterns)).to.equalPatternsVerbatim('SELECT ?obj WHERE { sh:this schema:knows/schema:familyName ?obj . }')
+      expect(combinedNRE(patterns)).to.be.query(sparql`SELECT ?obj WHERE { ${sh.this} ${schema.knows}/${schema.familyName} ?obj . }`)
     })
 
     it('joins path with nodes', () => {
       // given
-      const nodes = fakeExpression(({ subject, object }) => sparql`${subject} schema:children ${object} .`)
-      const expr = new PathExpression($rdf.blankNode(), sparql`schema:name`, nodes)
+      const nodes = fakeExpression(({ subject, object }) => [{
+        type: 'bgp',
+        triples: [{ subject, predicate: schema.children, object }],
+      }])
+      const expr = new PathExpression($rdf.blankNode(), schema.name, nodes)
 
       // when
-      const subject = $rdf.namedNode('sub')
+      const subject = ex.sub
       const object = $rdf.variable('obj')
       const patterns = expr.build({ subject, object, variable, rootPatterns: undefined }, new PatternBuilder())
 
       // then
-      expect(combinedNRE(patterns)).to.equalPatterns(`SELECT ?obj WHERE {
-        <sub> schema:children ?x .
-        ?x schema:name ?obj .
+      expect(combinedNRE(patterns)).to.be.query(sparql`SELECT ?obj WHERE {
+        ${ex.sub} ${schema.children} ?x .
+        ?x ${schema.name} ?obj .
       }`)
     })
   })

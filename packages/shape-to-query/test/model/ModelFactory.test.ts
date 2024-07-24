@@ -10,8 +10,8 @@ import {
   TargetObjectsOf,
   TargetSubjectsOf,
 } from '../../model/target/index.js'
-import NodeShape from '../../model/NodeShape.js'
-import PropertyShape from '../../model/PropertyShape.js'
+import type NodeShape from '../../model/NodeShape.js'
+import type PropertyShape from '../../model/PropertyShape.js'
 import s2q from '../../ns.js'
 
 describe('model/ModelFactory', () => {

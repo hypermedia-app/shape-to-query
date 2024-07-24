@@ -7,15 +7,11 @@ import '@shoelace-style/shoelace/dist/components/button/button.js'
 import '@shoelace-style/shoelace/dist/components/input/input.js'
 import { constructQuery } from '@hydrofoil/shape-to-query'
 import $rdf from '@zazuko/env/web.js'
-import { RdfEditor } from '@rdfjs-elements/rdf-editor/src/RdfEditor.js'
-import { SlInput } from '@shoelace-style/shoelace'
+import type { RdfEditor } from '@rdfjs-elements/rdf-editor/src/RdfEditor.js'
+import type { SlInput } from '@shoelace-style/shoelace'
 import { isGraphPointer } from 'is-graph-pointer'
 import { turtle } from '@tpluscode/rdf-string'
-import sparql from 'sparqljs'
 import type { MultiPointer } from 'clownface'
-
-const parser = new sparql.Parser()
-const generator = new sparql.Generator()
 
 const initialShape = turtle`[
   a ${$rdf.ns.sh.NodeShape} ;
@@ -74,8 +70,6 @@ export class App extends LitElement {
       })
       : constructQuery(this.shape)
 
-    const generated = query.build()
-    const parsed = parser.parse(generated)
-    this.query = generator.stringify(parsed)
+    this.query = query
   }
 }

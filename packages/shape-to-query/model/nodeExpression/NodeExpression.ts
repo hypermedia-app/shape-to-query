@@ -1,19 +1,19 @@
 import type { Term, Variable } from '@rdfjs/types'
-import { Select, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import $rdf from '@zazuko/env/web.js'
 import type TermMap from '@rdfjs/term-map'
-import { FocusNode } from '../../lib/FocusNode.js'
-import { VariableSequence } from '../../lib/variableSequence.js'
+import type sparqljs from 'sparqljs'
+import type { FocusNode } from '../../lib/FocusNode.js'
+import type { VariableSequence } from '../../lib/variableSequence.js'
 
 export interface Parameters {
   subject: FocusNode
   object?: Variable
   variable: VariableSequence
-  rootPatterns: SparqlTemplateResult
+  rootPatterns: sparqljs.Pattern[]
 }
 
 export interface NodeExpressionResult {
-  patterns: Select | SparqlTemplateResult
+  patterns: sparqljs.Pattern[]
   object: Variable
   /**
    * True if a built node expression requires all query patterns leading from shape target to current node
@@ -21,9 +21,9 @@ export interface NodeExpressionResult {
   requiresFullContext?: boolean
 }
 
-interface InlineExpressionResult {
-  inline: SparqlTemplateResult
-  patterns?: SparqlTemplateResult
+export interface InlineExpressionResult {
+  inline: sparqljs.Expression
+  patterns?: sparqljs.Pattern[]
 }
 
 export class PatternBuilder {
@@ -62,7 +62,7 @@ export default abstract class implements NodeExpression {
   build({ subject, rootPatterns, variable, object = variable() }: Parameters, builder: PatternBuilder): NodeExpressionResult {
     const patterns = this._buildPatterns({ subject, rootPatterns, variable, object }, builder)
     return {
-      patterns,
+      patterns: Array.isArray(patterns) ? patterns : [patterns],
       object,
       requiresFullContext: this.requiresFullContext,
     }
@@ -70,5 +70,5 @@ export default abstract class implements NodeExpression {
 
   public abstract get requiresFullContext(): boolean
   public abstract get rootIsFocusNode(): boolean
-  protected abstract _buildPatterns(arg: Required<Parameters>, builder: PatternBuilder): Select | SparqlTemplateResult
+  protected abstract _buildPatterns(arg: Required<Parameters>, builder: PatternBuilder): sparqljs.Pattern[] | sparqljs.Pattern
 }

@@ -1,9 +1,10 @@
-import { schema } from '@tpluscode/rdf-ns-builders'
+import { rdf, schema } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
-import { sparql } from '@tpluscode/rdf-string'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import $rdf from '@zazuko/env/web.js'
+import type { Quad } from '@rdfjs/types'
+import { sparql } from '@tpluscode/sparql-builder'
 import { CountExpression } from '../../../model/nodeExpression/CountExpression.js'
 import { blankNode, namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
@@ -90,7 +91,10 @@ describe('model/nodeExpression/CountExpression', () => {
   describe('buildPatterns', () => {
     it('creates a subselect which wraps inner', () => {
       // given
-      const inner = fakeExpression(({ object }) => sparql`${object} a ${schema.Article} .`)
+      const inner = fakeExpression(({ object }) => [{
+        type: 'bgp',
+        triples: [$rdf.quad<Quad>(object, rdf.type, schema.Article)],
+      }])
       const expr = new CountExpression($rdf.blankNode(), inner)
 
       // when
@@ -99,12 +103,12 @@ describe('model/nodeExpression/CountExpression', () => {
         subject,
         object: variable(),
         variable,
-        rootPatterns: sparql`root a ${subject}`,
+        rootPatterns: [],
       }, new PatternBuilder())
 
       // then
-      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT (COUNT(?inner) as ?count) WHERE {
-        ?inner a schema:Article .
+      expect(patterns[0]).to.be.query(sparql`SELECT (COUNT(?inner) as ?count) WHERE {
+        ?inner a ${schema.Article} .
       }`)
     })
   })

@@ -1,9 +1,10 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { Select, sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
-import type { SparqlValue } from '@tpluscode/rdf-string'
-import { NodeExpression, PatternBuilder } from '../nodeExpression/NodeExpression.js'
-import { ModelFactory } from '../ModelFactory.js'
-import ConstraintComponent, { assertTerm, Parameters, PropertyShape } from './ConstraintComponent.js'
+import type sparqljs from 'sparqljs'
+import type { NodeExpression } from '../nodeExpression/NodeExpression.js'
+import { PatternBuilder } from '../nodeExpression/NodeExpression.js'
+import type { ModelFactory } from '../ModelFactory.js'
+import type { Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { assertTerm } from './ConstraintComponent.js'
 
 export class ExpressionConstraintComponent extends ConstraintComponent {
   static * fromShape(shape: PropertyShape, factory: ModelFactory) {
@@ -19,20 +20,32 @@ export class ExpressionConstraintComponent extends ConstraintComponent {
     super(sh.ExpressionConstraintComponent)
   }
 
-  buildPropertyShapePatterns({ focusNode: subject, valueNode: object, rootPatterns, variable }: Parameters) {
-    let patterns: Select | SparqlTemplateResult
-    let filter: SparqlValue
+  buildPropertyShapePatterns({ focusNode: subject, valueNode: object, rootPatterns, variable }: Parameters): sparqljs.Pattern[] {
+    let patterns: sparqljs.Pattern[]
+    let filter: sparqljs.Expression
 
     if ('buildInlineExpression' in this.expression) {
       ({ patterns, inline: filter } = this.expression.buildInlineExpression({ subject, object, rootPatterns, variable }, new PatternBuilder()))
-      return sparql`${patterns}\nFILTER(${filter})`
+      return [
+        ...(Array.isArray(patterns) ? patterns : [patterns]),
+        {
+          type: 'filter',
+          expression: filter,
+        },
+      ]
     }
 
     ({ patterns, object: filter } = this.expression.build({ subject, object, rootPatterns, variable }, new PatternBuilder()))
 
     if (subject.equals(object)) {
-      return sparql`${patterns}`
+      return patterns
     }
-    return sparql`${patterns}\nFILTER(${filter})`
+    return [
+      ...(Array.isArray(patterns) ? patterns : [patterns]),
+      {
+        type: 'filter',
+        expression: filter,
+      },
+    ]
   }
 }

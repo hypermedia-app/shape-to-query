@@ -1,10 +1,11 @@
 import { schema, sh } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import $rdf from '@zazuko/env/web.js'
+import { sparql } from '@tpluscode/sparql-builder'
 import { ConstantTermExpression } from '../../../model/nodeExpression/ConstantTermExpression.js'
 import { blankNode, literal, namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
-import { combinedNRE } from './helper.js'
+import { BIND } from '../../pattern.js'
 
 describe('model/nodeExpression/ConstantTermExpression', () => {
   before(() => import('../../sparql.js'))
@@ -48,7 +49,7 @@ describe('model/nodeExpression/ConstantTermExpression', () => {
       }, builder)
 
       // then
-      expect(combinedNRE(result)).to.equalPatterns('SELECT ?bar WHERE { BIND(schema:Person as ?bar) }')
+      expect(result.patterns).to.deep.equal([BIND(schema.Person).as(result.object)])
     })
 
     it('reuses object', () => {
@@ -64,7 +65,8 @@ describe('model/nodeExpression/ConstantTermExpression', () => {
       }, builder)
 
       // then
-      expect(combinedNRE(result)).to.equalPatternsVerbatim('SELECT ?bar WHERE { BIND(schema:Person as ?bar) }')
+      expect(result.object).to.deep.eq($rdf.variable('bar'))
+      expect(result.patterns).to.deep.equal([BIND(schema.Person).as(result.object)])
     })
   })
 
@@ -77,7 +79,7 @@ describe('model/nodeExpression/ConstantTermExpression', () => {
       const { inline } = expr.buildInlineExpression()
 
       // then
-      expect(inline).to.equalPatternsVerbatim('schema:Person')
+      expect(inline).to.equalPatternsVerbatim(sparql`${schema.Person}`)
     })
   })
 })

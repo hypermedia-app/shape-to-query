@@ -2,11 +2,11 @@ import type { Term } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
-import { Select } from '@tpluscode/sparql-builder'
+import type sparqljs from 'sparqljs'
 import { TRUE } from '../../lib/rdf.js'
-import { ModelFactory } from '../ModelFactory.js'
+import type { ModelFactory } from '../ModelFactory.js'
 import { getOne } from './util.js'
-import { NodeExpression, NodeExpressionResult, Parameters, PatternBuilder } from './NodeExpression.js'
+import type { NodeExpression, NodeExpressionResult, Parameters, PatternBuilder } from './NodeExpression.js'
 import { SubselectExpression } from './SubselectExpression.js'
 
 export class OrderByExpression extends SubselectExpression {
@@ -34,7 +34,7 @@ export class OrderByExpression extends SubselectExpression {
     super(term, nodes)
   }
 
-  protected _applySubselectClause(select: Select, queryPatterns: NodeExpressionResult, arg: Parameters, builder: PatternBuilder): Select {
+  protected _applySubselectClause(select: sparqljs.SelectQuery, queryPatterns: NodeExpressionResult, arg: Parameters, builder: PatternBuilder): sparqljs.SelectQuery {
     const { rootPatterns, variable } = arg
 
     const { patterns: orderPatterns, object: orderVariable } = builder.build(this.orderExpression, {
@@ -43,6 +43,24 @@ export class OrderByExpression extends SubselectExpression {
       rootPatterns,
     })
 
-    return select.WHERE`OPTIONAL { ${orderPatterns} }`.ORDER().BY(orderVariable, this.descending)
+    const selectWhere = select.where || []
+    const selectOrder = select.order || []
+    return {
+      ...select,
+      where: [
+        ...selectWhere,
+        {
+          type: 'optional',
+          patterns: orderPatterns,
+        },
+      ],
+      order: [
+        ...selectOrder,
+        {
+          expression: orderVariable,
+          descending: this.descending,
+        },
+      ],
+    }
   }
 }

@@ -1,8 +1,9 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { sparql } from '@tpluscode/sparql-builder'
-import { ModelFactory } from '../ModelFactory.js'
-import { NodeShape } from '../NodeShape.js'
-import ConstraintComponent, { assertTerm, Parameters, PropertyShape } from './ConstraintComponent.js'
+import type sparqljs from 'sparqljs'
+import type { ModelFactory } from '../ModelFactory.js'
+import type { NodeShape } from '../NodeShape.js'
+import type { Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent, { assertTerm } from './ConstraintComponent.js'
 
 export class NodeConstraintComponent extends ConstraintComponent {
   constructor(public readonly shape: NodeShape) {
@@ -17,7 +18,7 @@ export class NodeConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPropertyShapePatterns({ valueNode, variable, ...arg }: Parameters) {
+  buildPropertyShapePatterns({ valueNode, variable, ...arg }: Parameters): [sparqljs.GroupPattern] | sparqljs.Pattern[] {
     const patterns = this.shape.buildConstraints({
       ...arg,
       variable,
@@ -25,10 +26,13 @@ export class NodeConstraintComponent extends ConstraintComponent {
       valueNode: variable(),
     })
 
-    if (patterns.toString().trim() === '') {
+    if (!patterns.length) {
       return patterns
     }
 
-    return sparql`{ ${patterns} }`
+    return [{
+      type: 'group',
+      patterns,
+    }]
   }
 }

@@ -18,6 +18,6 @@ describe('model/constraint/in', () => {
     })
 
     // then
-    expect(whereClause).to.eq('')
+    expect(whereClause).to.be.empty
   })
 })

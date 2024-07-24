@@ -1,0 +1,26 @@
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT *
+WHERE {
+  VALUES (?resource1) { (<https://ld.admin.ch/country/CHE>) }
+  ?resource1 ^schema:containedInPlace ?resource8 .
+  ?resource8 rdf:type ?resource10 .
+  VALUES (?resource10) { (<https://environment.ld.admin.ch/foen/nfi/UnitOfReference/366>) }
+  {
+    ?resource8 schema:identifier ?resource11 .
+  } UNION {
+    ?resource8 schema:name ?resource12 .
+  } UNION {
+    ?resource8 schema:description ?resource13 .
+  } UNION {
+    ?resource8 schema:position ?resource14 .
+  } UNION {
+    ?resource8 schema:alternateName ?resource15 .
+  } UNION {
+    # All patterns including VALUES exist in upper scope so this group is removed from UNION
+    VALUES (?resource1) { (<https://ld.admin.ch/country/CHE>) }
+    ?resource1 ^schema:containedInPlace ?resource8 .
+    ?resource8 rdf:type ?resource10 .
+  }
+}

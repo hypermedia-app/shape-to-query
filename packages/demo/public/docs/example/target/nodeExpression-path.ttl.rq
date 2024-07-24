@@ -1,5 +1,5 @@
-PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
 CONSTRUCT { ?resource1 schema:name ?resource4. }
 WHERE {
   { SELECT (?resource3 AS ?resource1) WHERE { ?resource2 (<http://example.org/prop>/(rdf:rest*)/rdf:first) ?resource3. } }

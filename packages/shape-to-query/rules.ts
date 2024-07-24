@@ -1,4 +1,4 @@
-import { RuleStatic } from './model/rule/Rule.js'
+import type { RuleStatic } from './model/rule/Rule.js'
 import TripleRule from './model/rule/TripleRule.js'
 import { SPORule } from './model/rule/SPORule.js'
 

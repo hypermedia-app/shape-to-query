@@ -1,7 +1,8 @@
 import type { NamedNode, Variable } from '@rdfjs/types'
-import { sparql, SparqlTemplateResult } from '@tpluscode/sparql-builder'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import ConstraintComponent, { Parameters, PropertyShape } from './ConstraintComponent.js'
+import type sparqljs from 'sparqljs'
+import type { Parameters, PropertyShape } from './ConstraintComponent.js'
+import ConstraintComponent from './ConstraintComponent.js'
 
 export type NodeKind = typeof sh.IRI
   | typeof sh.IRIOrLiteral
@@ -11,7 +12,7 @@ export type NodeKind = typeof sh.IRI
   | typeof sh.BlankNode
 
 interface CreateFilterExpression {
-  (valueNode: Variable | NamedNode): SparqlTemplateResult
+  (valueNode: Variable | NamedNode): sparqljs.Expression
 }
 
 export class NodeKindConstraintComponent extends ConstraintComponent {
@@ -32,22 +33,22 @@ export class NodeKindConstraintComponent extends ConstraintComponent {
         let createFilterExpression: CreateFilterExpression | undefined
         switch (nodeKind.value) {
           case 'http://www.w3.org/ns/shacl#IRI':
-            createFilterExpression = valueNode => sparql`IsIRI(${valueNode})`
+            createFilterExpression = is.bind(null, 'iri')
             break
           case 'http://www.w3.org/ns/shacl#IRIOrLiteral':
-            createFilterExpression = valueNode => sparql`IsIRI(${valueNode}) || IsLiteral(${valueNode})`
+            createFilterExpression = alternative.bind(null, ['iri', 'literal'])
             break
           case 'http://www.w3.org/ns/shacl#BlankNodeOrIRI':
-            createFilterExpression = valueNode => sparql`IsBlank(${valueNode}) || IsIRI(${valueNode})`
+            createFilterExpression = alternative.bind(null, ['blank', 'iri'])
             break
           case 'http://www.w3.org/ns/shacl#Literal':
-            createFilterExpression = valueNode => sparql`IsLiteral(${valueNode})`
+            createFilterExpression = is.bind(null, 'literal')
             break
           case 'http://www.w3.org/ns/shacl#BlankNodeOrLiteral':
-            createFilterExpression = valueNode => sparql`IsBlank(${valueNode}) || IsLiteral(${valueNode})`
+            createFilterExpression = alternative.bind(null, ['blank', 'literal'])
             break
           case 'http://www.w3.org/ns/shacl#BlankNode':
-            createFilterExpression = valueNode => sparql`IsBlank(${valueNode})`
+            createFilterExpression = is.bind(null, 'blank')
             break
         }
 
@@ -58,15 +59,39 @@ export class NodeKindConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildNodeShapePatterns({ focusNode }: Parameters) {
-    return this.__buildFilter(focusNode)
+  buildNodeShapePatterns({ focusNode }: Parameters): [sparqljs.Pattern] {
+    return [this.__buildFilter(focusNode)]
   }
 
-  buildPropertyShapePatterns({ valueNode }: Parameters) {
-    return this.__buildFilter(valueNode)
+  buildPropertyShapePatterns({ valueNode }: Parameters): [sparqljs.Pattern] {
+    return [this.__buildFilter(valueNode)]
   }
 
-  private __buildFilter(subject: NamedNode | Variable) {
-    return sparql`FILTER( ${this.__createFilterExpression(subject)} )`
+  private __buildFilter(subject: NamedNode | Variable): sparqljs.FilterPattern {
+    return {
+      type: 'filter',
+      expression: this.__createFilterExpression(subject),
+    }
+  }
+}
+
+type Kind = 'iri' | 'literal' | 'blank'
+
+function is(what: Kind, value: NamedNode | Variable): sparqljs.Expression {
+  return {
+    type: 'operation',
+    operator: `is${what}`,
+    args: [value],
+  }
+}
+
+function alternative([left, right]: [Kind, Kind], value: NamedNode | Variable): sparqljs.Expression {
+  return {
+    type: 'operation',
+    operator: '||',
+    args: [
+      is(left, value),
+      is(right, value),
+    ],
   }
 }

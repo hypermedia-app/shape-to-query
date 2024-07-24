@@ -12,4 +12,5 @@ WHERE {
   { ?resource1 schema:parent ?resource4. }
   UNION
   { ?resource1 schema:children ?resource5. }
+  
 }

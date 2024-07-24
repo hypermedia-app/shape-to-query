@@ -1,15 +1,18 @@
-import { schema, sh } from '@tpluscode/rdf-ns-builders'
+import { rdf, schema, sh } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import $rdf from '@zazuko/env/web.js'
 import { sparql } from '@tpluscode/sparql-builder'
+import type { Quad } from '@rdfjs/types'
 import { blankNode } from '../../nodeFactory.js'
 import { FilterShapeExpression } from '../../../model/nodeExpression/FilterShapeExpression.js'
 import { variable } from '../../variable.js'
-import { NodeShape } from '../../../model/NodeShape.js'
+import type { NodeShape } from '../../../model/NodeShape.js'
 import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
 import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpression.js'
 import ModelFactory from '../../../model/ModelFactory.js'
+import { emptyPatterns } from '../../../lib/shapePatterns.js'
+import { ex } from '../../namespace.js'
 import { combinedNRE, fakeExpression } from './helper.js'
 
 describe('model/nodeExpression/FilterShapeExpression', () => {
@@ -124,8 +127,11 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
     it('creates constraints for focus node subject', () => {
       // given
       const shape: NodeShape = {
-        buildPatterns: () => <any>{},
-        buildConstraints: ({ focusNode }) => sparql`${focusNode} a ${schema.Organization} .`,
+        buildPatterns: () => emptyPatterns,
+        buildConstraints: ({ focusNode }) => [{
+          type: 'bgp',
+          triples: [$rdf.quad<Quad>(focusNode, rdf.type, schema.Organization)],
+        }],
         properties: [],
       }
       const expr = new FilterShapeExpression($rdf.blankNode(), shape)
@@ -140,7 +146,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       }, new PatternBuilder())
 
       // then
-      expect(combinedNRE(result)).to.equalPatterns(sparql`SELECT ?this WHERE {
+      expect(combinedNRE(result)).to.be.query(sparql`SELECT ?this WHERE {
         ?this a ${schema.Organization} .
       }`)
     })
@@ -150,15 +156,18 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       const shape: NodeShape = {
         buildPatterns: () => ({
           constructClause: [],
-          whereClause: sparql``,
+          whereClause: [],
         }),
-        buildConstraints: ({ focusNode, valueNode }) => sparql`${focusNode} path ${valueNode} .`,
+        buildConstraints: ({ focusNode, valueNode }) => [{
+          type: 'bgp',
+          triples: [$rdf.quad<Quad>(focusNode, ex.path, valueNode)],
+        }],
         properties: [],
       }
       const expr = new FilterShapeExpression($rdf.blankNode(), shape)
 
       // when
-      const subject = $rdf.namedNode('this')
+      const subject = ex.this
       const result = expr.build({
         subject,
         variable,
@@ -166,8 +175,8 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       }, new PatternBuilder())
 
       // then
-      expect(combinedNRE(result)).to.equalPatterns(`SELECT ?bar WHERE {
-        <this> path ?bar .
+      expect(combinedNRE(result)).to.be.query(sparql`SELECT ?bar WHERE {
+        ${ex.this} ${ex.path} ?bar .
       }`)
     })
 
@@ -175,14 +184,20 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       // given
       const shape: NodeShape = {
         buildPatterns: () => <any>{},
-        buildConstraints: ({ focusNode, valueNode }) => sparql`${focusNode} path ${valueNode} .`,
+        buildConstraints: ({ focusNode, valueNode }) => [{
+          type: 'bgp',
+          triples: [$rdf.quad<Quad>(focusNode, ex.path, valueNode)],
+        }],
         properties: [],
       }
-      const nodes = fakeExpression(({ subject, object }) => sparql`${subject} nodes ${object} .`)
+      const nodes = fakeExpression(({ subject, object }) => [{
+        type: 'bgp',
+        triples: [$rdf.quad<Quad>(subject, ex.nodes, object)],
+      }])
       const expr = new FilterShapeExpression($rdf.blankNode(), shape, nodes)
 
       // when
-      const subject = $rdf.namedNode('this')
+      const subject = ex.this
       const object = $rdf.variable('value')
       const result = expr.build({
         subject,
@@ -192,9 +207,9 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       }, new PatternBuilder())
 
       // then
-      expect(combinedNRE(result)).to.equalPatterns(`SELECT ?x WHERE {
-        <this> nodes ?x .
-        ?x path ?obj .
+      expect(combinedNRE(result)).to.be.query(sparql`SELECT ?x WHERE {
+        ${ex.this} ${ex.nodes} ?x .
+        ?x ${ex.path} ?obj .
       }`)
     })
   })

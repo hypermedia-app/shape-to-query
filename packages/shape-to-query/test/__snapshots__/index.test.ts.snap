@@ -1,11 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`@hydrofoil/shape-to-query shapeToQuery construct shacl advanced features rules filter shape is applied correctly in SPO Rule 1`] = `
-"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-PREFIX schema: <http://schema.org/>
-CONSTRUCT {
+"CONSTRUCT {
   ?q1 rdf:type <http://example.org/Object>.
   ?q1 ?q2 ?q3.
 }

@@ -9,7 +9,7 @@ WHERE {
   {
     SELECT ?resource1 ?resource2 WHERE {
       ?resource1 rdf:type schema:Organization;
-        schema:produces ?resource2, ?resource2.
+        schema:produces ?resource2.
       {
         ?resource2 schema:name ?resource3.
         FILTER((LANG(?resource3)) = "en")
@@ -22,7 +22,6 @@ WHERE {
       ?resource1 rdf:type schema:Organization;
         schema:produces ?resource2.
       ?resource2 schema:name ?resource3.
-      ?resource1 schema:produces ?resource2.
       {
         ?resource2 schema:name ?resource3.
         FILTER((LANG(?resource3)) = "en")

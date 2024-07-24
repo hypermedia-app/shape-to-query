@@ -1,5 +1,5 @@
-PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 CONSTRUCT {
   ?resource1 hydra:member ?resource2.
   ?resource1 hydra:totalItems ?resource7.

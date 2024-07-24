@@ -1,10 +1,10 @@
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import { sparql } from '@tpluscode/rdf-string'
-import { schema } from '@tpluscode/rdf-ns-builders'
-import { SELECT } from '@tpluscode/sparql-builder'
+import { rdf, schema } from '@tpluscode/rdf-ns-builders'
+import { SELECT, sparql } from '@tpluscode/sparql-builder'
 import $rdf from '@zazuko/env/web.js'
+import type { Quad } from '@rdfjs/types'
 import { OffsetExpression } from '../../../model/nodeExpression/OffsetExpression.js'
 import { blankNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
@@ -108,7 +108,10 @@ describe('model/nodeExpression/OffsetExpression', () => {
     it('creates a subselect with offset', () => {
       // given
       const offset = 10
-      const nodes = fakeExpression(({ object }) => sparql`${object} a ${schema.Article} .`)
+      const nodes = fakeExpression(({ object }) => [{
+        type: 'bgp',
+        triples: [$rdf.quad<Quad>(object, rdf.type, schema.Article)],
+      }])
       const expr = new OffsetExpression($rdf.blankNode(), offset, nodes)
 
       // when
@@ -116,12 +119,12 @@ describe('model/nodeExpression/OffsetExpression', () => {
         subject: variable(),
         object: variable(),
         variable,
-        rootPatterns: sparql``,
+        rootPatterns: [],
       }, new PatternBuilder())
 
       // then
-      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
-        ?foo a schema:Article .
+      expect(patterns[0]).to.be.query(sparql`SELECT ?root ?foo WHERE {
+        ?foo a ${schema.Article} .
       }
       OFFSET 10`)
     })
@@ -137,12 +140,12 @@ describe('model/nodeExpression/OffsetExpression', () => {
         subject: variable(),
         object: variable(),
         variable,
-        rootPatterns: sparql``,
+        rootPatterns: [],
       }, new PatternBuilder())
 
       // then
-      expect((patterns as any)._getTemplateResult()).to.equalPatterns(`SELECT ?root ?foo WHERE {
-        ?foo a schema:Article .
+      expect(patterns[0]).to.be.query(sparql`SELECT ?root ?foo WHERE {
+        ?foo a ${schema.Article} .
       }
       OFFSET 10`)
     })

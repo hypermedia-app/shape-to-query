@@ -16,8 +16,10 @@ import { blankNode } from '../../nodeFactory.js'
 import vocabulary from '../../../vocabulary.js'
 import { ex } from '../../namespace.js'
 import { variable } from '../../variable.js'
-import { NodeExpression, PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
+import type { NodeExpression } from '../../../model/nodeExpression/NodeExpression.js'
+import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
 import ModelFactory from '../../../model/ModelFactory.js'
+import { BIND } from '../../pattern.js'
 import { combinedNRE, fakeExpression } from './helper.js'
 
 describe('model/nodeExpression/FunctionExpression', () => {
@@ -296,11 +298,11 @@ describe('model/nodeExpression/FunctionExpression', () => {
         const result = expr.build({
           variable,
           subject: variable(),
-          rootPatterns: sparql``,
+          rootPatterns: [],
         }, new PatternBuilder())
 
         // then
-        expect(combinedNRE(result)).to.equalPatterns('SELECT ?foo WHERE { BIND(uuid() as ?foo) }')
+        expect(combinedNRE(result)).to.be.query(sparql`SELECT ?foo WHERE { BIND(uuid() as ?foo) }`)
       })
 
       it('builds patterns with custom function "call"', () => {
@@ -311,11 +313,11 @@ describe('model/nodeExpression/FunctionExpression', () => {
         const result = expr.build({
           variable,
           subject: variable(),
-          rootPatterns: sparql``,
+          rootPatterns: [],
         }, new PatternBuilder())
 
         // then
-        expect(combinedNRE(result)).to.equalPatterns(sparql`SELECT ?foo WHERE { BIND(${ex.search}() as ?foo) }`)
+        expect(combinedNRE(result)).to.be.query(sparql`SELECT ?foo WHERE { BIND(${ex.search}() as ?foo) }`)
       })
     })
   })
@@ -325,9 +327,9 @@ describe('model/nodeExpression/FunctionExpression', () => {
       it('generates IN expression', () => {
         // given
         const exprList = [
-          fakeExpression(undefined, () => ({ inline: sparql`A`, patterns: sparql`` })),
-          fakeExpression(undefined, () => ({ inline: sparql`B`, patterns: sparql`` })),
-          fakeExpression(undefined, () => ({ inline: sparql`C`, patterns: sparql`` })),
+          fakeExpression(undefined, () => ({ inline: $rdf.literal('A'), patterns: [] })),
+          fakeExpression(undefined, () => ({ inline: $rdf.literal('B'), patterns: [] })),
+          fakeExpression(undefined, () => ({ inline: $rdf.literal('C'), patterns: [] })),
         ]
         const expr = new InExpression(dashSparql.in, exprList)
 
@@ -335,19 +337,19 @@ describe('model/nodeExpression/FunctionExpression', () => {
         const result = expr.build({
           variable,
           subject: $rdf.variable('foo'),
-          rootPatterns: sparql``,
+          rootPatterns: [],
         }, new PatternBuilder())
 
         // then
-        expect(combinedNRE(result)).to.equalPatterns(sparql`SELECT ?bar WHERE { BIND(?foo IN ( A, B, C ) as ?bar) }`)
+        expect(combinedNRE(result)).to.be.query(sparql`SELECT ?bar WHERE { BIND(?foo IN ( 'A', 'B', 'C' ) as ?bar) }`)
       })
 
       it('generates NOT IN expression', () => {
         // given
         const exprList = [
-          fakeExpression(undefined, () => ({ inline: sparql`A`, patterns: sparql`` })),
-          fakeExpression(undefined, () => ({ inline: sparql`B`, patterns: sparql`` })),
-          fakeExpression(undefined, () => ({ inline: sparql`C`, patterns: sparql`` })),
+          fakeExpression(undefined, () => ({ inline: $rdf.literal('A'), patterns: [] })),
+          fakeExpression(undefined, () => ({ inline: $rdf.literal('B'), patterns: [] })),
+          fakeExpression(undefined, () => ({ inline: $rdf.literal('C'), patterns: [] })),
         ]
         const expr = new InExpression(dashSparql.notin, exprList)
 
@@ -355,11 +357,11 @@ describe('model/nodeExpression/FunctionExpression', () => {
         const result = expr.build({
           variable,
           subject: $rdf.variable('foo'),
-          rootPatterns: sparql``,
+          rootPatterns: [],
         }, new PatternBuilder())
 
         // then
-        expect(combinedNRE(result)).to.equalPatterns(sparql`SELECT ?bar WHERE { BIND(?foo NOT IN ( A, B, C ) as ?bar) }`)
+        expect(combinedNRE(result)).to.be.query(sparql`SELECT ?bar WHERE { BIND(?foo NOT IN ( 'A', 'B', 'C' ) as ?bar) }`)
       })
     })
   })
@@ -369,9 +371,9 @@ describe('model/nodeExpression/FunctionExpression', () => {
       it('combines any number of arguments', () => {
         // given
         const expressions: NodeExpression[] = [
-          fakeExpression(({ object }) => sparql`BIND('A' as ${object})`),
-          fakeExpression(({ object }) => sparql`BIND('B' as ${object})`),
-          fakeExpression(({ object }) => sparql`BIND('C' as ${object})`),
+          fakeExpression(({ object }) => [BIND('A').as(object)]),
+          fakeExpression(({ object }) => [BIND('B').as(object)]),
+          fakeExpression(({ object }) => [BIND('C').as(object)]),
         ]
         const expr = new AdditiveExpression(dashSparql.and, '+', undefined, expressions)
 
@@ -380,11 +382,11 @@ describe('model/nodeExpression/FunctionExpression', () => {
           variable,
           subject: variable(),
           object: $rdf.variable('foo'),
-          rootPatterns: sparql``,
+          rootPatterns: [],
         }, new PatternBuilder())
 
         // then
-        expect(combinedNRE(result)).to.equalPatterns(`SELECT ?d WHERE {
+        expect(combinedNRE(result)).to.be.query(`SELECT ?d WHERE {
           BIND('A' as ?a)
           BIND('B' as ?b)
           BIND('C' as ?c)
@@ -398,8 +400,8 @@ describe('model/nodeExpression/FunctionExpression', () => {
     it('generates an operator pattern for its arguments', () => {
       // given
       const args = [
-        fakeExpression(({ object }) => sparql`BIND('A' as ${object})`),
-        fakeExpression(({ object }) => sparql`BIND('B' as ${object})`),
+        fakeExpression(({ object }) => [BIND('A').as(object)]),
+        fakeExpression(({ object }) => [BIND('B').as(object)]),
       ]
       const expr = new RelationalExpression(dashSparql.eq, '*', [{ optional: false }, { optional: false }], args)
 
@@ -408,37 +410,15 @@ describe('model/nodeExpression/FunctionExpression', () => {
         variable,
         subject: variable(),
         object: $rdf.variable('foo'),
-        rootPatterns: sparql``,
+        rootPatterns: [],
       }, new PatternBuilder())
 
       // then
-      expect(combinedNRE(result)).to.equalPatterns(`SELECT ?foo WHERE {
+      expect(combinedNRE(result)).to.be.query(`SELECT ?foo WHERE {
         BIND('A' as ?a)
         BIND('B' as ?b)
         BIND(?a * ?b as ?foo)
       }`)
-    })
-  })
-
-  describe('buildInlineExpression', () => {
-    it('wraps bound expression in parens', () => {
-      // given
-      class TestFunction extends FunctionExpression {
-        protected boundExpression() {
-          return sparql`A = B`
-        }
-      }
-
-      // when
-      const result = new TestFunction(ex.fun).buildInlineExpression({
-        variable,
-        subject: variable(),
-        object: $rdf.variable('foo'),
-        rootPatterns: sparql``,
-      }, new PatternBuilder())
-
-      // then
-      expect(result.inline).to.equalPatterns('(A = B)')
     })
   })
 })

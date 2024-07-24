@@ -6,7 +6,6 @@ import * as shapeTo from '@hydrofoil/shape-to-query/index.js'
 import { nodeExpressions } from '@hydrofoil/shape-to-query/nodeExpressions.js'
 import $rdf from '@zazuko/env-node'
 import { rdf, sh } from '@tpluscode/rdf-ns-builders'
-import sparql from 'sparqljs'
 import { globby } from 'globby'
 import { HydraCollectionMemberExpression } from './expressions/HydraCollectionMembers.js'
 import { ShorthandSubselectExpression } from './expressions/ShorthandSubselect.js'
@@ -15,9 +14,6 @@ import './public/how-tos/example/palindrome/index.js'
 
 const cwd = url.fileURLToPath(new URL('.', import.meta.url))
 const toAbsolutePath = (arg) => path.resolve(cwd, arg)
-
-const parser = new sparql.Parser()
-const generator = new sparql.Generator()
 
 nodeExpressions.push(
   HydraCollectionMemberExpression,
@@ -28,18 +24,17 @@ nodeExpressions.push(
   const shapeGraphs = await globby(process.argv[2] || '**/example/**/*.ttl', { cwd })
 
   await Promise.all(shapeGraphs.map(toAbsolutePath).map(async shapeGraphPath => {
-    let generated
+    let query
     try {
       const dataset = await $rdf.dataset().import($rdf.fromFile(shapeGraphPath))
       const shapePointer = $rdf.clownface({ dataset })
         .has(rdf.type, sh.NodeShape)
         .toArray().shift()
-      generated = shapeTo.constructQuery(shapePointer).build()
-      const query = parser.parse(generated)
+      query = shapeTo.constructQuery(shapePointer)
 
-      await writeFile(`${shapeGraphPath}.rq`, generator.stringify(query))
+      await writeFile(`${shapeGraphPath}.rq`, query)
     } catch (e) {
-      await writeFile(`${shapeGraphPath}.rq`, `${generated}
+      await writeFile(`${shapeGraphPath}.rq`, `${query}
 
 ${e.message}
 at
