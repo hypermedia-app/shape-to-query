@@ -1,5 +1,11 @@
 # @hydrofoil/sparql-processor
 
+## 0.1.1
+
+### Patch Changes
+
+- df20a71: Proper packaging of built JS
+
 ## 0.1.0
 
 ### Minor Changes
