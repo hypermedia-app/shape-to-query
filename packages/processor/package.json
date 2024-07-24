@@ -3,6 +3,15 @@
   "version": "0.1.0",
   "type": "module",
   "main": "index.js",
+  "scripts": {
+    "prepack": "tsc"
+  },
+  "files": [
+    "*.js",
+    "*.d.ts",
+    "util/*.js",
+    "util/*.d.ts"
+  ],
   "dependencies": {
     "@types/sparqljs": "^3.1.11",
     "@zazuko/prefixes": "^2.1.0",
