@@ -198,6 +198,26 @@ Note: SHACL spec: [[shacl#ClassConstraintComponent]]
 
 Note: Similar can be achieved using `sh:targetClass` but it is more natural to use `sh:class` when nesting shapes with `sh:node`
 
+#### sh:datatype #### {#shacl-datatype}
+
+Note: SHACL spec: [[shacl#DatatypeConstraintComponent]]
+
+<div class="example">
+  Restrict objects of a property to a specific datatype
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/constraint/datatype.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/constraint/datatype.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+
 #### sh:nodeKind #### {#shacl-node-kind-constraint}
 
 <div class="example">
@@ -210,6 +230,27 @@ Note: Similar can be achieved using `sh:targetClass` but it is more natural to u
     </pre>
     <pre class="include-code" slot="query">
     path: example/constraint/node-kind.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+### Value Range Constraint Components ### {#shacl-range-constraints}
+
+#### sh:minInclusive #### {#shacl-minInclusive}
+
+Note: SHACL spec: [[shacl#MinInclusiveConstraintComponent]]
+
+<div class="example">
+  Restrict objects of a property to a specific range 
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/constraint/minInclusive.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/constraint/minInclusive.ttl.rq
     highlight: sparql
     </pre>
   </s2q-snippet>

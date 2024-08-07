@@ -1,0 +1,14 @@
+PREFIX ch: <https://schema.ld.admin.ch/>
+PREFIX schema: <http://schema.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+[
+  a sh:NodeShape ;
+  sh:targetClass ch:Municipality ;
+  sh:property
+    [
+      sh:path schema:name ;
+      sh:datatype xsd:string ;
+    ] ;
+] .
