@@ -14,6 +14,8 @@ import { ExpressionConstraintComponent } from './expression.js'
 import { ClassConstraintComponent } from './class.js'
 import { NodeKindConstraintComponent } from './nodeKind.js'
 import { LanguageInConstraintComponent } from './languageIn.js'
+import { DatatypeConstraintComponent } from './datatype.js'
+import { MinInclusiveConstraintComponent } from './minInclusive.js'
 
 interface ConstraintComponentStatic {
   fromShape(shape: PropertyShape, factory: ModelFactory): ConstraintComponent[] | Generator<ConstraintComponent>
@@ -31,4 +33,6 @@ export const constraintComponents = $rdf.termMap<Term, ConstraintComponentStatic
   [sh.ClassConstraintComponent, ClassConstraintComponent],
   [sh.NodeKindConstraintComponent, NodeKindConstraintComponent],
   [sh.LanguageInConstraintComponent, LanguageInConstraintComponent],
+  [sh.DatatypeConstraintComponent, DatatypeConstraintComponent],
+  [sh.MinInclusiveConstraintComponent, MinInclusiveConstraintComponent],
 ])
