@@ -1,0 +1,11 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource1 rdf:type <https://schema.ld.admin.ch/Municipality>.
+  ?resource1 schema:identifier ?resource2.
+}
+WHERE {
+  ?resource1 rdf:type <https://schema.ld.admin.ch/Municipality>;
+    schema:identifier ?resource2.
+  FILTER(?resource2 <= 250 )
+}
