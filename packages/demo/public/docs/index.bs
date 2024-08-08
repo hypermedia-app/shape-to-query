@@ -237,6 +237,25 @@ Note: SHACL spec: [[shacl#DatatypeConstraintComponent]]
 
 ### Value Range Constraint Components ### {#shacl-range-constraints}
 
+#### sh:minExclusive #### {#shacl-minExclusive}
+
+Note: SHACL spec: [[shacl#MinExclusiveConstraintComponent]]
+
+<div class="example">
+  Restrict objects of a property to a specific range 
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/constraint/minExclusive.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/constraint/minExclusive.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
 #### sh:minInclusive #### {#shacl-minInclusive}
 
 Note: SHACL spec: [[shacl#MinInclusiveConstraintComponent]]
@@ -251,6 +270,46 @@ Note: SHACL spec: [[shacl#MinInclusiveConstraintComponent]]
     </pre>
     <pre class="include-code" slot="query">
     path: example/constraint/minInclusive.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+#### sh:maxExclusive #### {#shacl-maxExclusive}
+
+Note: SHACL spec: [[shacl#MaxExclusiveConstraintComponent]]
+
+<div class="example">
+  Restrict objects of a property to a specific range 
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/constraint/maxExclusive.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/constraint/maxExclusive.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+
+
+#### sh:maxInclusive #### {#shacl-maxInclusive}
+
+Note: SHACL spec: [[shacl#MaxInclusiveConstraintComponent]]
+
+<div class="example">
+  Restrict objects of a property to a specific range 
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/constraint/maxInclusive.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/constraint/maxInclusive.ttl.rq
     highlight: sparql
     </pre>
   </s2q-snippet>

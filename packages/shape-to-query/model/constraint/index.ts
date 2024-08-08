@@ -16,6 +16,9 @@ import { NodeKindConstraintComponent } from './nodeKind.js'
 import { LanguageInConstraintComponent } from './languageIn.js'
 import { DatatypeConstraintComponent } from './datatype.js'
 import { MinInclusiveConstraintComponent } from './minInclusive.js'
+import { MaxInclusiveConstraintComponent } from './maxInclusive.js'
+import { MinExclusiveConstraintComponent } from './minExclusive.js'
+import { MaxExclusiveConstraintComponent } from './maxExclusive.js'
 
 interface ConstraintComponentStatic {
   fromShape(shape: PropertyShape, factory: ModelFactory): ConstraintComponent[] | Generator<ConstraintComponent>
@@ -35,4 +38,8 @@ export const constraintComponents = $rdf.termMap<Term, ConstraintComponentStatic
   [sh.LanguageInConstraintComponent, LanguageInConstraintComponent],
   [sh.DatatypeConstraintComponent, DatatypeConstraintComponent],
   [sh.MinInclusiveConstraintComponent, MinInclusiveConstraintComponent],
+  [sh.MaxInclusiveConstraintComponent, MaxInclusiveConstraintComponent],
+  [sh.MinExclusiveConstraintComponent, MinExclusiveConstraintComponent],
+  [sh.MaxExclusiveConstraintComponent, MaxExclusiveConstraintComponent],
+
 ])
