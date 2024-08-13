@@ -1,7 +1,7 @@
 import * as path from 'node:path'
 import * as url from 'node:url'
 import StreamClient from 'sparql-http-client'
-import * as compose from 'docker-compose'
+import * as compose from 'docker-compose/dist/v2.js'
 import waitOn from 'wait-on'
 import $rdf from '@zazuko/env'
 import { sh, schema } from '@tpluscode/rdf-ns-builders'
