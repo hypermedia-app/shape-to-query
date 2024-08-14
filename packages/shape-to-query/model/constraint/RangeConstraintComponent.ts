@@ -12,18 +12,31 @@ const operators = $rdf.termMap<NamedNode, string>([
   [sh.MaxInclusiveConstraintComponent, '<='],
 ])
 
-export abstract class RangeConstraintComponent extends ConstraintComponent {
-  public static * parameterValues(shape: PropertyShape, parameter: NamedNode) {
-    const values = shape.get(parameter)
-
-    if (values) {
-      for (const value of values) {
-        if (!('pointer' in value)) {
-          continue
-        }
-
-        yield value.pointer.term as Literal
+export class RangeConstraintComponent extends ConstraintComponent {
+  static * fromShape(shape: PropertyShape) {
+    for (const constraint of shape.get(sh.minExclusive) ?? []) {
+      if (!('pointer' in constraint)) {
+        continue
       }
+      yield new RangeConstraintComponent(sh.MinExclusiveConstraintComponent, constraint.pointer.term as Literal)
+    }
+    for (const constraint of shape.get(sh.minInclusive) ?? []) {
+      if (!('pointer' in constraint)) {
+        continue
+      }
+      yield new RangeConstraintComponent(sh.MinInclusiveConstraintComponent, constraint.pointer.term as Literal)
+    }
+    for (const constraint of shape.get(sh.maxExclusive) ?? []) {
+      if (!('pointer' in constraint)) {
+        continue
+      }
+      yield new RangeConstraintComponent(sh.MaxExclusiveConstraintComponent, constraint.pointer.term as Literal)
+    }
+    for (const constraint of shape.get(sh.maxInclusive) ?? []) {
+      if (!('pointer' in constraint)) {
+        continue
+      }
+      yield new RangeConstraintComponent(sh.MaxInclusiveConstraintComponent, constraint.pointer.term as Literal)
     }
   }
 

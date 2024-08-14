@@ -1,45 +1,34 @@
 import { expect } from 'chai'
-import { xsd } from '@tpluscode/rdf-ns-builders'
+import { xsd, sh } from '@tpluscode/rdf-ns-builders'
 import $rdf from '@zazuko/env/web.js'
 import { variable } from '../../variable.js'
-import { MinInclusiveConstraintComponent } from '../../../model/constraint/minInclusive.js'
-import { MaxInclusiveConstraintComponent } from '../../../model/constraint/maxInclusive.js'
-import { MinExclusiveConstraintComponent } from '../../../model/constraint/minExclusive.js'
-import { MaxExclusiveConstraintComponent } from '../../../model/constraint/maxExclusive.js'
+import { RangeConstraintComponent } from '../../../model/constraint/RangeConstraintComponent.js'
 import { ex } from '../../namespace.js'
 
 describe('model/constraint/ranges', () => {
   before(() => import('../../sparql.js'))
 
   describe('fromShape', () => {
-    const components = [
-      MinInclusiveConstraintComponent,
-      MaxInclusiveConstraintComponent,
-      MinExclusiveConstraintComponent,
-      MaxExclusiveConstraintComponent,
-    ]
-    for (const component of components) {
-      it(`does not create a constraint when there is no ${component.name}`, () => {
-        // given
-        const shape = $rdf.termMap()
+    it('does not create a constraint when there is no range', () => {
+      // given
+      const shape = $rdf.termMap()
 
-        // when
-        const constrains = [...component.fromShape(shape)]
+      // when
+      const constrains = [...RangeConstraintComponent.fromShape(shape)]
 
-        // then
-        expect(constrains).to.be.empty
-      })
-    }
+      // then
+      expect(constrains).to.be.empty
+    })
   })
 
   describe('buildPatterns', () => {
     context('node shape', () => {
       const five = $rdf.literal('5', xsd.integer)
       const components = [
-        { constraint: new MinInclusiveConstraintComponent(five), operator: '>=' },
-        { constraint: new MaxInclusiveConstraintComponent(five), operator: '<=' },
-        { constraint: new MinExclusiveConstraintComponent(five), operator: '>' },
-        { constraint: new MaxExclusiveConstraintComponent(five), operator: '<' },
+        { constraint: new RangeConstraintComponent(sh.MinInclusiveConstraintComponent, five), operator: '>=' },
+        { constraint: new RangeConstraintComponent(sh.MaxInclusiveConstraintComponent, five), operator: '<=' },
+        { constraint: new RangeConstraintComponent(sh.MinExclusiveConstraintComponent, five), operator: '>' },
+        { constraint: new RangeConstraintComponent(sh.MaxExclusiveConstraintComponent, five), operator: '<' },
       ]
       for (const { constraint, operator } of components) {
         it(`creates correct pattern for ${operator}`, () => {
@@ -75,10 +64,10 @@ describe('model/constraint/ranges', () => {
     context('property shape', () => {
       const five = $rdf.literal('5', xsd.integer)
       const components = [
-        { constraint: new MinInclusiveConstraintComponent(five), operator: '>=' },
-        { constraint: new MaxInclusiveConstraintComponent(five), operator: '<=' },
-        { constraint: new MinExclusiveConstraintComponent(five), operator: '>' },
-        { constraint: new MaxExclusiveConstraintComponent(five), operator: '<' },
+        { constraint: new RangeConstraintComponent(sh.MinInclusiveConstraintComponent, five), operator: '>=' },
+        { constraint: new RangeConstraintComponent(sh.MaxInclusiveConstraintComponent, five), operator: '<=' },
+        { constraint: new RangeConstraintComponent(sh.MinExclusiveConstraintComponent, five), operator: '>' },
+        { constraint: new RangeConstraintComponent(sh.MaxExclusiveConstraintComponent, five), operator: '<' },
       ]
       for (const { constraint, operator } of components) {
         it(`creates correct pattern for ${operator}`, () => {
