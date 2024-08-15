@@ -9,7 +9,8 @@ import { constraintComponents } from './index.js'
 export default function (shape: GraphPointer, factory: ModelFactory): Array<ConstraintComponent> {
   const shapeModel = buildParameterModel(shape)
 
-  return [...constraintComponents].flatMap(([, component]) => {
+  const components = new Set([...constraintComponents.values()])
+  return [...components].flatMap((component) => {
     return [...component.fromShape(shapeModel, factory)]
   })
 }
