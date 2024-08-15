@@ -1,5 +1,12 @@
 # @hydrofoil/shape-to-query
 
+## 0.13.2
+
+### Patch Changes
+
+- 6f86062: Added range constraints (`sh:minInclusive`, `sh:minExclusive`, `sh:maxInclusive` and `sh:maxExclusive`) (closes #49)
+- 6f86062: Added `sh:datatype` (closes #46)
+
 ## 0.13.1
 
 ### Patch Changes
