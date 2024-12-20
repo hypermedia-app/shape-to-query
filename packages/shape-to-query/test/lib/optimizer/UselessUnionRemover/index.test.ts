@@ -1,6 +1,6 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import chai, { expect } from 'chai'
+import { use, expect } from 'chai'
 import $rdf from '@zazuko/env'
 import { jestSnapshotPlugin } from 'mocha-chai-jest-snapshot'
 import sparqljs from 'sparqljs'
@@ -10,7 +10,7 @@ import { UnionRepeatedPatternsRemover } from '../../../../lib/optimizer/UnionRep
 const __dirname = path.dirname(new URL(import.meta.url).pathname)
 
 describe('UselessUnionRemover', () => {
-  chai.use(jestSnapshotPlugin())
+  use(jestSnapshotPlugin())
 
   const parser = new sparqljs.Parser()
   const generator = new sparqljs.Generator()

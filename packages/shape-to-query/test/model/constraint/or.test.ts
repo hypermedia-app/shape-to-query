@@ -1,4 +1,4 @@
-import chai, { expect } from 'chai'
+import { use, expect } from 'chai'
 import $rdf from '@zazuko/env'
 import { jestSnapshotPlugin } from 'mocha-chai-jest-snapshot'
 import { OrConstraintComponent } from '../../../model/constraint/or.js'
@@ -6,7 +6,7 @@ import type { NodeShape } from '../../../model/NodeShape.js'
 import { emptyPatterns } from '../../../lib/shapePatterns.js'
 
 describe('model/constraint/or', () => {
-  chai.use(jestSnapshotPlugin())
+  use(jestSnapshotPlugin())
   before(() => import('../../sparql.js'))
 
   it('combines all inner constraints where in UNION', () => {

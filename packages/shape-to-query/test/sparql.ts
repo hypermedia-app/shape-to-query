@@ -1,5 +1,6 @@
 import type { Variable } from '@rdfjs/types'
-import { Assertion, AssertionError } from 'chai'
+import { Assertion } from 'chai'
+import { AssertionError } from 'assertion-error'
 import type { SparqlQuery } from 'sparqljs'
 import sparqljs from 'sparqljs'
 import type { SparqlTemplateResult } from '@tpluscode/rdf-string'

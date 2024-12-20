@@ -1,6 +1,6 @@
 import { foaf, rdf, rdfs, schema } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
-import chai, { expect } from 'chai'
+import { use, expect } from 'chai'
 import { sparql } from '@tpluscode/rdf-string'
 import type { GraphPointer } from 'clownface'
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -12,7 +12,7 @@ import { SELECT } from './pattern.js'
 import './sparql.js'
 
 describe('@hydrofoil/shape-to-query', () => {
-  chai.use(jestSnapshotPlugin())
+  use(jestSnapshotPlugin())
 
   describe('shapeToPatterns', () => {
     context('targets', () => {

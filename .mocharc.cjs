@@ -1,7 +1,4 @@
 module.exports = {
-  'watch-files': [
-    './**/*.ts'
-  ],
-  require: require.resolve('./mocha-setup.cjs'),
+  require: require.resolve('./mocha-setup.js'),
   loader: 'ts-node/esm/transpile-only'
 }
