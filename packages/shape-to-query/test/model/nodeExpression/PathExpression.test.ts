@@ -29,6 +29,16 @@ describe('model/nodeExpression/PathExpression', () => {
       expect(PathExpression.match(expr)).to.be.true
     })
 
+    it('returns true when sh:deactivated fales', () => {
+      // given
+      const expr = blankNode()
+        .addOut(sh.path, schema.knows)
+        .addOut(sh.deactivated, false)
+
+      // then
+      expect(PathExpression.match(expr)).to.be.true
+    })
+
     it('returns false when node has no sh:path', () => {
       // given
       const expr = blankNode()

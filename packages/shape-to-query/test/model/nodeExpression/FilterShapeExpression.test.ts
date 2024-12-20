@@ -33,6 +33,16 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       expect(FilterShapeExpression.match(expr)).to.be.true
     })
 
+    it('returns true when sh:deactivated false', () => {
+      // given
+      const expr = blankNode()
+        .addOut(sh.filterShape, schema.knows)
+        .addOut(sh.deactivated, false)
+
+      // then
+      expect(FilterShapeExpression.match(expr)).to.be.true
+    })
+
     it('returns false when node has multiple sh:filterShape', () => {
       // given
       const expr = blankNode()

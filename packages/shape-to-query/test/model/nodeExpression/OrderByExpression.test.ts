@@ -48,6 +48,17 @@ describe('model/nodeExpression/OrderByExpression', () => {
       // then
       expect(OrderByExpression.match(pointer)).to.be.true
     })
+
+    it('returns true when sh:deactivated false', () => {
+      // given
+      const pointer = blankNode()
+        .addOut(sh.orderBy, blankNode())
+        .addOut(sh.nodes, blankNode())
+        .addOut(sh.deactivated, false)
+
+      // then
+      expect(OrderByExpression.match(pointer)).to.be.true
+    })
   })
 
   describe('fromPointer', () => {

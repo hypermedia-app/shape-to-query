@@ -59,6 +59,17 @@ describe('model/nodeExpression/OffsetExpression', () => {
       // then
       expect(OffsetExpression.match(pointer)).to.be.true
     })
+
+    it('returns true when sh:deactivated false', () => {
+      // given
+      const pointer = blankNode()
+        .addOut(sh.offset, 5)
+        .addOut(sh.nodes, blankNode())
+        .addOut(sh.deactivated, false)
+
+      // then
+      expect(OffsetExpression.match(pointer)).to.be.true
+    })
   })
 
   describe('fromPointer', () => {

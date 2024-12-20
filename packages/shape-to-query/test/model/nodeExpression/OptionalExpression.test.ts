@@ -1,4 +1,4 @@
-import { rdf, schema } from '@tpluscode/rdf-ns-builders'
+import { rdf, schema, sh } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import $rdf from '@zazuko/env/web.js'
@@ -24,6 +24,16 @@ describe('model/nodeExpression/OptionalExpression', () => {
       // given
       const pointer = blankNode()
         .addOut(s2q.optional, blankNode())
+
+      // then
+      expect(OptionalExpression.match(pointer)).to.be.true
+    })
+
+    it('returns true when sh:deactivated false', () => {
+      // given
+      const pointer = blankNode()
+        .addOut(s2q.optional, blankNode())
+        .addOut(sh.deactivated, false)
 
       // then
       expect(OptionalExpression.match(pointer)).to.be.true

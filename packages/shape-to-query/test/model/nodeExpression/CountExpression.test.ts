@@ -47,6 +47,16 @@ describe('model/nodeExpression/CountExpression', () => {
       // then
       expect(CountExpression.match(pointer)).to.be.true
     })
+
+    it('returns true when sh:deactivated false', () => {
+      // given
+      const pointer = blankNode()
+        .addOut(sh.count, blankNode())
+        .addOut(sh.deactivated, false)
+
+      // then
+      expect(CountExpression.match(pointer)).to.be.true
+    })
   })
 
   describe('fromPointer', () => {
