@@ -1,0 +1,13 @@
+PREFIX schema: <http://schema.org/>
+
+SELECT *
+WHERE {
+  OPTIONAL {
+    ?resource1 (schema:address/schema:addressRegion) ?resource5 .
+    FILTER (?resource5 = "ZH")
+  }
+  OPTIONAL {
+    ?resource1 (schema:address/schema:addressRegion) ?resource5 .
+    FILTER (?resource5 = "ZH")
+  }
+}
