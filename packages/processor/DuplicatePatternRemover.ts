@@ -63,7 +63,63 @@ export class DuplicatePatternRemover extends Processor<E> {
         .otherwise(p => cleaned.push(p))
     }
 
-    return super.processPatterns(mergeConsecutiveBGPs(cleaned))
+    return super.processPatterns(
+      removeDuplicateOptional(
+        mergeConsecutiveBGPs(cleaned),
+      ),
+    )
+  }
+}
+
+function removeDuplicateOptional(patterns: sparqljs.Pattern[]) {
+  const cleaned: sparqljs.Pattern[] = []
+
+  for (const pattern of patterns) {
+    if (pattern.type === 'optional') {
+      const seen = cleaned.some(optionalEqualsOther(pattern))
+
+      if (!seen) {
+        cleaned.push(pattern)
+      }
+    } else {
+      cleaned.push(pattern)
+    }
+  }
+
+  return cleaned
+}
+
+function optionalEqualsOther(a: sparqljs.OptionalPattern) {
+  return (b: sparqljs.Pattern) => {
+    if (b.type !== 'optional') {
+      return false
+    }
+
+    return b.patterns.every(optionalHasPattern(a))
+  }
+}
+
+function optionalHasPattern(a: sparqljs.OptionalPattern) {
+  return (pattern: sparqljs.Pattern) => {
+    return a.patterns.some(patternEquals(pattern))
+  }
+}
+
+function patternEquals(a: sparqljs.Pattern) {
+  return (b: sparqljs.Pattern) => {
+    if (a.type !== b.type) {
+      return false
+    }
+
+    return match(a)
+      .with({ type: 'bgp' }, bgp => {
+        if (b.type !== 'bgp') {
+          return false
+        }
+
+        return bgp.triples.every(triple => b.triples.some(tripleEquals(triple)))
+      })
+      .otherwise(() => false)
   }
 }
 

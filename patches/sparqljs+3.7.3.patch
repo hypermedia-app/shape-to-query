@@ -1,8 +1,8 @@
 diff --git a/node_modules/sparqljs/lib/SparqlGenerator.js b/node_modules/sparqljs/lib/SparqlGenerator.js
-index 527f0e9..ca03f98 100644
+index 92d933e..39a7de4 100644
 --- a/node_modules/sparqljs/lib/SparqlGenerator.js
 +++ b/node_modules/sparqljs/lib/SparqlGenerator.js
-@@ -110,6 +110,10 @@ Generator.prototype.bgp = function (bgp) {
+@@ -118,6 +118,10 @@ Generator.prototype.bgp = function (bgp) {
    return this.encodeTriples(bgp.triples);
  };
  
