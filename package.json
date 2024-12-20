@@ -1,6 +1,7 @@
 {
   "name": "shape-to-query",
   "private": "true",
+  "type": "module",
   "scripts": {
     "prepare": "husky",
     "postinstall": "patch-package",

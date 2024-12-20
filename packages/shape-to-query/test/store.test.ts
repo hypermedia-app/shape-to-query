@@ -1,6 +1,6 @@
 import module from 'module'
 import oxigraph from 'oxigraph'
-import chai, { expect } from 'chai'
+import { use, expect } from 'chai'
 import $rdf from '@zazuko/env-node'
 import { hydra, rdf, schema, dashSparql } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
@@ -20,7 +20,7 @@ const parser = new sparql.Parser()
 const generator = new sparql.Generator()
 
 describe('@hydrofoil/shape-to-query', () => {
-  chai.use(jestSnapshotPlugin())
+  use(jestSnapshotPlugin())
 
   let store: oxigraph.Store
 
