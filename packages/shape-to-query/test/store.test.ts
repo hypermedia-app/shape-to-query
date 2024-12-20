@@ -6,6 +6,7 @@ import { hydra, rdf, schema, dashSparql } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { jestSnapshotPlugin } from 'mocha-chai-jest-snapshot'
 import sparql from 'sparqljs'
+import type { Quad } from '@rdfjs/types'
 import { constructQuery } from '../lib/shapeToQuery.js'
 import { s2q } from '../index.js'
 import { parse, raw } from './nodeFactory.js'
@@ -36,7 +37,7 @@ describe('@hydrofoil/shape-to-query', () => {
     expect(generator.stringify(parser.parse(query))).toMatchSnapshot()
     return $rdf.dataset(store.query(query, {
       use_default_graph_as_union: true,
-    }))
+    }) as Quad[])
   }
 
   context('executing queries', () => {
