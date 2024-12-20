@@ -8,6 +8,5 @@ WHERE {
   UNION
   { ?resource1 schema:familyName ?resource3. }
   OPTIONAL { ?resource1 (schema:address/schema:addressRegion) ?resource5. }
-  OPTIONAL { ?resource1 (schema:address/schema:addressRegion) ?resource5. }
   FILTER((!(BOUND(?resource5))) || (?resource5 = "TX"))
 }

@@ -4,7 +4,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "prepack": "tsc"
+    "prepack": "tsc",
+    "test": "mocha --recursive \"test/**/*.test.ts\""
   },
   "files": [
     "*.js",
@@ -20,6 +21,12 @@
   "devDependencies": {
     "@types/rdfjs__environment": "^1.0.0",
     "@types/rdfjs__data-model": "^2.0.8",
-    "@types/rdfjs__term-set": "^2.0.0"
+    "@types/rdfjs__term-set": "^2.0.0",
+    "@zazuko/env": "^2",
+    "chai": "^5.1.2",
+    "sparqljs": "^3.7.3"
+  },
+  "mocha": {
+    "config": "../../.mocharc.cjs"
   }
 }
