@@ -31,6 +31,16 @@ describe('model/nodeExpression/DistinctExpression', () => {
       expect(DistinctExpression.match(pointer)).to.be.true
     })
 
+    it('returns true when sh:deactivated false', () => {
+      // given
+      const pointer = blankNode()
+        .addOut(sh.distinct, blankNode())
+        .addOut(sh.deactivated, false)
+
+      // then
+      expect(DistinctExpression.match(pointer)).to.be.true
+    })
+
     it('returns false when there are multiple sh:distinct', () => {
       // given
       const pointer = blankNode()

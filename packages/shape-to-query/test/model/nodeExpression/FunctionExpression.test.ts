@@ -56,31 +56,44 @@ describe('model/nodeExpression/FunctionExpression', () => {
       expect(FunctionExpression.match(pointer)).to.be.false
     })
 
-    it('returns true when expression has a single predicate of known sh:Function', () => {
-      // given
-      const pointer = blankNode()
-        .addList(dashSparql.and, blankNode())
+    ;[true, false, undefined].forEach(deactivated => {
+      describe(`with sh:deactivated ${deactivated}`, () => {
+        it('returns true when expression has a single predicate of known sh:Function', () => {
+          // given
+          const pointer = blankNode()
+            .addList(dashSparql.and, blankNode())
+          if (deactivated !== undefined) {
+            pointer.addOut(sh.deactivated, deactivated)
+          }
 
-      // when
-      expect(FunctionExpression.match(pointer)).to.be.true
-    })
+          // when
+          expect(FunctionExpression.match(pointer)).to.be.true
+        })
 
-    it('returns true when expression has a single predicate of an arbitrary predicate', () => {
-      // given
-      const pointer = blankNode()
-        .addList(xsd.int, blankNode())
+        it('returns true when expression has a single predicate of an arbitrary predicate', () => {
+          // given
+          const pointer = blankNode()
+            .addList(xsd.int, blankNode())
+          if (deactivated !== undefined) {
+            pointer.addOut(sh.deactivated, deactivated)
+          }
 
-      // when
-      expect(FunctionExpression.match(pointer)).to.be.true
-    })
+          // when
+          expect(FunctionExpression.match(pointer)).to.be.true
+        })
 
-    it('returns false when expression has a single predicate of known sh:Function but not a list', () => {
-      // given
-      const pointer = blankNode()
-        .addOut(dashSparql.and, blankNode())
+        it('returns false when expression has a single predicate of known sh:Function but not a list', () => {
+          // given
+          const pointer = blankNode()
+            .addOut(dashSparql.and, blankNode())
+          if (deactivated !== undefined) {
+            pointer.addOut(sh.deactivated, deactivated)
+          }
 
-      // when
-      expect(FunctionExpression.match(pointer)).to.be.false
+          // when
+          expect(FunctionExpression.match(pointer)).to.be.false
+        })
+      })
     })
   })
 

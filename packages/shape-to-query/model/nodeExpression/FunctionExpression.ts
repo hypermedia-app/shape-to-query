@@ -26,6 +26,7 @@ interface Parameter {
 export abstract class FunctionExpression extends NodeExpressionBase {
   static match(pointer: GraphPointer) {
     const [first, ...rest] = [...pointer.dataset.match(pointer.term)]
+      .filter(quad => !quad.predicate.equals(sh.deactivated))
     const isSingleSubject = first && rest.length === 0
     if (!isSingleSubject) {
       return false
@@ -36,6 +37,7 @@ export abstract class FunctionExpression extends NodeExpressionBase {
 
   static fromPointer(pointer: GraphPointer, createExpr: ModelFactory): FunctionExpression {
     const [first] = [...pointer.dataset.match(pointer.term)]
+      .filter(quad => !quad.predicate.equals(sh.deactivated))
     const functionPtr = vocabulary.node(first.predicate)
     const argumentList = pointer.out(functionPtr).list()
     if (!argumentList) {

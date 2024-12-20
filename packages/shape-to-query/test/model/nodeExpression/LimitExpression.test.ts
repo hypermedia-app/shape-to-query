@@ -58,6 +58,17 @@ describe('model/nodeExpression/LimitExpression', () => {
       // then
       expect(LimitExpression.match(pointer)).to.be.true
     })
+
+    it('returns true when sh:deactivated false', () => {
+      // given
+      const pointer = blankNode()
+        .addOut(sh.limit, 10)
+        .addOut(sh.nodes, blankNode())
+        .addOut(sh.deactivated, false)
+
+      // then
+      expect(LimitExpression.match(pointer)).to.be.true
+    })
   })
 
   describe('fromPointer', () => {
