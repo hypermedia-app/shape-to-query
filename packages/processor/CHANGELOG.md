@@ -1,5 +1,11 @@
 # @hydrofoil/sparql-processor
 
+## 0.1.2
+
+### Patch Changes
+
+- 69ef993: `DuplicatePatternRemover` not removes exactly equal `OPTIONAL` patterns (but only comparing BGPs)
+
 ## 0.1.1
 
 ### Patch Changes
