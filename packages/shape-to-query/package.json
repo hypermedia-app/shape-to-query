@@ -63,7 +63,7 @@
     "sparql-http-client": "^3.0.0",
     "string-to-stream": "^3.0.1",
     "tbbt-ld": "^1.1.0",
-    "wait-on": "^7.2.0"
+    "wait-on": "^8.0.1"
   },
   "mocha": {
     "config": "../../.mocharc.cjs"
