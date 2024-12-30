@@ -17,7 +17,7 @@
     "release": "changeset publish"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.27.7",
+    "@changesets/cli": "^2.27.11",
     "@rdfjs/types": "^1.1.0",
     "@tpluscode/eslint-config": "0.5.0",
     "@types/mocha": "^10.0.9",
