@@ -13,15 +13,17 @@ jobs:
       - run: npm ci
       - run: yarn test
       - name: Codecov (unit tests)
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           files: coverage/unit/lcov.info
           flags: unit-tests
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Codecov (query tests)
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           files: coverage/query/lcov.info
           flags: sparql-tests
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   build:
     runs-on: ubuntu-latest
