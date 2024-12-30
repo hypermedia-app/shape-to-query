@@ -1,10 +1,8 @@
 import { sh } from '@tpluscode/rdf-ns-builders'
 import type { GraphPointer } from 'clownface'
-import type sparqljs from 'sparqljs'
-import type { InlineExpressionResult, Parameters } from './NodeExpression.js'
-import NodeExpression from './NodeExpression.js'
+import type { InlineExpressionResult, NodeExpressionResult, Parameters, NodeExpression } from './NodeExpression.js'
 
-export class FocusNodeExpression extends NodeExpression {
+export class FocusNodeExpression implements NodeExpression {
   public readonly term = sh.this
 
   static match({ term }: GraphPointer) {
@@ -23,11 +21,24 @@ export class FocusNodeExpression extends NodeExpression {
     return true
   }
 
-  _buildPatterns({ subject, object }: Omit<Parameters, 'rootPatterns'>): sparqljs.BindPattern {
+  build({ subject, variable, object = variable() }: Parameters): NodeExpressionResult {
+    const inlineSubjectNode = this.rootIsFocusNode && subject.termType === 'Variable'
+    if (inlineSubjectNode) {
+      return {
+        patterns: [],
+        object: subject,
+        requiresFullContext: this.requiresFullContext,
+      }
+    }
+
     return {
-      type: 'bind',
-      expression: subject,
-      variable: object,
+      patterns: [{
+        type: 'bind',
+        expression: subject,
+        variable: object,
+      }],
+      object,
+      requiresFullContext: this.requiresFullContext,
     }
   }
 

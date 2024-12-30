@@ -10,6 +10,7 @@ import { blankNode, namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
 import ModelFactory from '../../../model/ModelFactory.js'
 import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
+import { DistinctExpression } from '../../../model/nodeExpression/DistinctExpression.js'
 import { fakeExpression } from './helper.js'
 
 describe('model/nodeExpression/CountExpression', () => {
@@ -118,6 +119,30 @@ describe('model/nodeExpression/CountExpression', () => {
 
       // then
       expect(patterns[0]).to.be.query(sparql`SELECT (COUNT(?inner) as ?count) WHERE {
+        ?inner a ${schema.Article} .
+      }`)
+    })
+
+    it('inlines inner distinct expression', () => {
+      // given
+      const inner = fakeExpression(({ object }) => [{
+        type: 'bgp',
+        triples: [$rdf.quad<Quad>(object, rdf.type, schema.Article)],
+      }])
+      const distinct = new DistinctExpression($rdf.blankNode(), inner)
+      const expr = new CountExpression($rdf.blankNode(), distinct)
+
+      // when
+      const subject = variable()
+      const { patterns } = expr.build({
+        subject,
+        object: variable(),
+        variable,
+        rootPatterns: [],
+      }, new PatternBuilder())
+
+      // then
+      expect(patterns[0]).to.be.query(sparql`SELECT (COUNT(DISTINCT ?inner) as ?count) WHERE {
         ?inner a ${schema.Article} .
       }`)
     })

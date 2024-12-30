@@ -1,8 +1,7 @@
 PREFIX schema: <http://schema.org/>
-CONSTRUCT { ?resource1 schema:knows ?resource2. }
+CONSTRUCT { ?resource1 schema:knows ?resource1. }
 WHERE {
   VALUES ?resource1 {
     <https://tbbt.tv/sheldon-cooper>
   }
-  BIND(?resource1 AS ?resource2)
 }

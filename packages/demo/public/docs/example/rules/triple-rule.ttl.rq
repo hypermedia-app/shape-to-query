@@ -2,8 +2,8 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX schema: <http://schema.org/>
 CONSTRUCT {
   ?resource1 rdf:type schema:Person.
-  ?resource2 ?resource3 ?resource4.
-  ?resource5 ?resource6 ?resource7.
+  ?resource2 ?resource3 ?resource1.
+  ?resource1 ?resource6 ?resource7.
 }
 WHERE {
   ?resource1 rdf:type schema:Person.
@@ -11,12 +11,9 @@ WHERE {
     ?resource1 rdf:type schema:Person;
       (schema:spouse|schema:children|schema:parent) ?resource2.
     BIND(schema:relatedTo AS ?resource3)
-    BIND(?resource1 AS ?resource4)
   }
   UNION
   {
-    ?resource1 rdf:type schema:Person.
-    BIND(?resource1 AS ?resource5)
     BIND(schema:relatedTo AS ?resource6)
     ?resource1 (schema:spouse|schema:children|schema:parent) ?resource7.
   }

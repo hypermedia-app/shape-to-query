@@ -23,9 +23,8 @@ export default class implements PropertyValueRule {
   }
 
   buildPatterns({ focusNode, objectNode, variable, rootPatterns, builder }: Parameters): ShapePatterns {
-    const { patterns, requiresFullContext } = builder.build(this.nodeExpression, { subject: focusNode, object: objectNode, variable, rootPatterns })
+    const { patterns, object, requiresFullContext } = builder.build(this.nodeExpression, { subject: focusNode, object: objectNode, variable, rootPatterns })
     let whereClause: sparqljs.Pattern[]
-    let unionPatterns: sparqljs.Pattern[] | undefined
     if (patterns[0]?.type === 'query') {
       whereClause = [{
         type: 'group',
@@ -45,8 +44,8 @@ export default class implements PropertyValueRule {
     }
 
     const constructClause = !this.options.inverse
-      ? [$rdf.quad(focusNode, this.path, objectNode)]
-      : [$rdf.quad(objectNode, this.path, focusNode)]
+      ? [$rdf.quad(focusNode, this.path, object)]
+      : [$rdf.quad(object, this.path, focusNode)]
 
     return {
       constructClause,

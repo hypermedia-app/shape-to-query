@@ -1,5 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`@hydrofoil/shape-to-query shape with count rule generates correct query 1`] = `
+"CONSTRUCT { ?q1 ?q2 ?q3. }
+WHERE {
+  BIND(<http://example.org/collection> AS ?q1)
+  BIND(<http://example.org/numberOfArticles> AS ?q2)
+  {
+    SELECT (COUNT(DISTINCT ?q3) AS ?q4) WHERE {
+      ?q3 schema:name ?q5.
+      FILTER(REGEX(?q5, \\"Tech\\", \\"i\\"))
+      ?q3 rdf:type ?q6.
+      FILTER(EXISTS { ?q3 rdf:type schema:DefinedTermSet, <https://cube.link/meta/SharedDimension>. })
+    }
+  }
+}"
+`;
+
 exports[`@hydrofoil/shape-to-query shapeToQuery construct shacl advanced features rules filter shape is applied correctly in SPO Rule 1`] = `
 "CONSTRUCT {
   ?q1 rdf:type <http://example.org/Object>.

@@ -1,0 +1,39 @@
+PREFIX ex: <http://example.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX sparql: <http://datashapes.org/sparql#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix meta: <https://cube.link/meta/>
+PREFIX s2q: <https://hypermedia.app/shape-to-query#>
+
+<>
+  a sh:NodeShape ;
+  sh:rule
+    [
+      sh:predicate ex:numberOfArticles ;
+      sh:subject ex:collection ;
+      sh:object
+        [
+          sh:count
+            [
+              sh:distinct
+                [
+                  sh:filterShape
+                    [
+                      sh:property
+                        [
+                          sh:path schema:name ;
+                          sh:pattern "Tech" ;
+                          sh:flags "i" ;
+                        ] ;
+                      sh:property
+                        [
+                          sh:path rdf:type ;
+                          sh:hasValue schema:DefinedTermSet, meta:SharedDimension ;
+                        ] ;
+                    ] ;
+                ]
+            ] ;
+        ] ;
+    ] ;
+.
