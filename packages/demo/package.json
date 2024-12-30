@@ -14,7 +14,7 @@
   "homepage": "https://shape-to-query.hypermedia.app/docs",
   "dependencies": {
     "@hydrofoil/shape-to-query": "^0.13.0",
-    "@rdfjs-elements/rdf-editor": "^0.5.8",
+    "@rdfjs-elements/rdf-editor": "^0.5.10",
     "@rdfjs-elements/sparql-editor": "^0.2.2",
     "@shoelace-style/shoelace": "^2.19.1",
     "@tpluscode/rdf-ns-builders": "^4",
