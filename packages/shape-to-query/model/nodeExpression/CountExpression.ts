@@ -4,7 +4,7 @@ import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isBlankNode, isGraphPointer } from 'is-graph-pointer'
 import type sparqljs from 'sparqljs'
 import type { ModelFactory } from '../ModelFactory.js'
-import type { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
+import type { NodeExpression, NodeExpressionResult, Parameters, PatternBuilder } from './NodeExpression.js'
 import NodeExpressionImpl from './NodeExpression.js'
 import { getOne, getOneOrZero } from './util.js'
 import { DistinctExpression } from './DistinctExpression.js'
@@ -28,6 +28,15 @@ export class CountExpression extends NodeExpressionImpl {
 
   constructor(public readonly term: Term, public expression: NodeExpression) {
     super()
+  }
+
+  build({ variable, object = variable(), ...arg }: Parameters, builder: PatternBuilder): NodeExpressionResult {
+    const result = super.build({ ...arg, variable, object }, builder)
+
+    return {
+      ...result,
+      object,
+    }
   }
 
   _buildPatterns({ subject, variable, object, rootPatterns }: Parameters, builder: PatternBuilder): sparqljs.SelectQuery {

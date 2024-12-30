@@ -6,11 +6,11 @@ WHERE {
   BIND(<http://example.org/collection> AS ?q1)
   BIND(<http://example.org/numberOfArticles> AS ?q2)
   {
-    SELECT (COUNT(DISTINCT ?q3) AS ?q4) WHERE {
-      ?q3 schema:name ?q5.
+    SELECT (COUNT(DISTINCT ?q4) AS ?q3) WHERE {
+      ?q4 schema:name ?q5.
       FILTER(REGEX(?q5, \\"Tech\\", \\"i\\"))
-      ?q3 rdf:type ?q6.
-      FILTER(EXISTS { ?q3 rdf:type schema:DefinedTermSet, <https://cube.link/meta/SharedDimension>. })
+      ?q4 rdf:type ?q6.
+      FILTER(EXISTS { ?q4 rdf:type schema:DefinedTermSet, <https://cube.link/meta/SharedDimension>. })
     }
   }
 }"
