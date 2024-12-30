@@ -4,7 +4,6 @@ import type TermMap from '@rdfjs/term-map'
 import type sparqljs from 'sparqljs'
 import type { FocusNode } from '../../lib/FocusNode.js'
 import type { VariableSequence } from '../../lib/variableSequence.js'
-import { FocusNodeExpression } from './FocusNodeExpression.js'
 
 export interface Parameters {
   subject: FocusNode
@@ -61,11 +60,8 @@ export default abstract class implements NodeExpression {
   term: Term
 
   build({ subject, rootPatterns, variable, object = variable() }: Parameters, builder: PatternBuilder): NodeExpressionResult {
-    let patterns = this._buildPatterns({ subject, rootPatterns, variable, object }, builder)
+    const patterns = this._buildPatterns({ subject, rootPatterns, variable, object }, builder)
     const inlineFocusNode = this.rootIsFocusNode && subject.termType === 'Variable'
-    if (inlineFocusNode && this instanceof FocusNodeExpression) {
-      patterns = []
-    }
 
     return {
       patterns: Array.isArray(patterns) ? patterns : [patterns],
