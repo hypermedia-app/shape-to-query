@@ -1,5 +1,14 @@
 # @hydrofoil/shape-to-query
 
+## 0.13.3
+
+### Patch Changes
+
+- cf95df3: No unnecessary `BIND` when object is focus node (variable)
+- 33dde9d: Some patterns would not be removed from `UNION`
+- cf95df3: `sh:count` combined with `sh:disctinct` now produces `COUNT( DISTINCT )` instead of nested subselects
+- cf95df3: Subquery in TripleRule was not wrapped in a group pattern, generating invalid SPARQL syntax
+
 ## 0.13.2
 
 ### Patch Changes
