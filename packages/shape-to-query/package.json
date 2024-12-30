@@ -31,7 +31,7 @@
     "@vocabulary/dash": "^1.0.4",
     "@vocabulary/dash-sparql": "^1.0.4",
     "@vocabulary/sh": "^1.1.5",
-    "@zazuko/env": "^2.2.0",
+    "@zazuko/env": "^2.4.2",
     "@zazuko/prefixes": ">=2",
     "clownface-shacl-path": "^2.2",
     "is-graph-pointer": "^2.0.0",
