@@ -96,14 +96,10 @@ export class UnionRepeatedPatternsRemover extends Processor {
 
   processBgp(bgp: BgpPattern): BgpPattern {
     if (this.union) {
-      const allTriplesInUpperScope = bgp.triples.every(triple => {
-        return this.patterns.some(triples => triples.some(tripleEquals(triple)) && !this.rowOrTripleUsedInBind(triple))
+      // remove repeated triples from the bgp
+      bgp.triples = bgp.triples.filter(triple => {
+        return !this.patterns.some(triples => triples.some(tripleEquals(triple)) && !this.rowOrTripleUsedInBind(triple))
       })
-
-      if (allTriplesInUpperScope) {
-        // remove all triples from the bgp
-        bgp.triples = []
-      }
     }
 
     return super.processBgp(bgp)
