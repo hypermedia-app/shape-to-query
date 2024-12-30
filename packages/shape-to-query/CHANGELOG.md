@@ -1,5 +1,11 @@
 # @hydrofoil/shape-to-query
 
+## 0.13.4
+
+### Patch Changes
+
+- 9e3d57a: Count expression must always use aggregated value as object
+
 ## 0.13.3
 
 ### Patch Changes
