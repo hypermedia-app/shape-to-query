@@ -61,9 +61,11 @@ export default abstract class implements NodeExpression {
 
   build({ subject, rootPatterns, variable, object = variable() }: Parameters, builder: PatternBuilder): NodeExpressionResult {
     const patterns = this._buildPatterns({ subject, rootPatterns, variable, object }, builder)
+    const inlineFocusNode = this.rootIsFocusNode && subject.termType === 'Variable'
+
     return {
       patterns: Array.isArray(patterns) ? patterns : [patterns],
-      object,
+      object: inlineFocusNode ? subject : object,
       requiresFullContext: this.requiresFullContext,
     }
   }

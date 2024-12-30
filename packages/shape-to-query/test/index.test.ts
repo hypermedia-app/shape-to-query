@@ -491,6 +491,19 @@ describe('@hydrofoil/shape-to-query', () => {
     })
   })
 
+  context('shape with count rule', () => {
+    it('generates correct query', async () => {
+      // given
+      const shape = await parse.file('top-level-count.ttl')
+
+      // when
+      const query = constructQuery(shape)
+
+      // then
+      expect(query).to.be.query()
+    })
+  })
+
   context('shape with deep sh:node', () => {
     let shape: GraphPointer
 

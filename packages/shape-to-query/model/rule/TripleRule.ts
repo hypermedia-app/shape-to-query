@@ -2,6 +2,7 @@ import $rdf from '@zazuko/env/web.js'
 import type { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { isGraphPointer } from 'is-graph-pointer'
+import type { Pattern } from 'sparqljs'
 import type { NodeExpression } from '../nodeExpression/NodeExpression.js'
 import { PatternBuilder } from '../nodeExpression/NodeExpression.js'
 import type { ShapePatterns } from '../../lib/shapePatterns.js'
@@ -37,14 +38,25 @@ export default class TripleRule implements Rule {
     const predicate = builder.build(this.predicate, { subject: focusNode, variable, rootPatterns })
     const object = builder.build(this.object, { subject: focusNode, variable, rootPatterns })
 
+    const whereClause: Pattern[] = [
+      ...rootPatterns,
+      ...subject.patterns,
+      ...predicate.patterns,
+      ...object.patterns,
+    ].map(pattern => {
+      if (pattern.type === 'query') {
+        return {
+          type: 'group',
+          patterns: [pattern],
+        }
+      }
+
+      return pattern
+    })
+
     return {
       constructClause: [$rdf.quad(subject.object, predicate.object, object.object)],
-      whereClause: [
-        ...rootPatterns,
-        ...subject.patterns,
-        ...predicate.patterns,
-        ...object.patterns,
-      ],
+      whereClause,
     }
   }
 }

@@ -7,6 +7,7 @@ import type { ModelFactory } from '../ModelFactory.js'
 import type { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
 import NodeExpressionImpl from './NodeExpression.js'
 import { getOne, getOneOrZero } from './util.js'
+import { DistinctExpression } from './DistinctExpression.js'
 
 export class CountExpression extends NodeExpressionImpl {
   static match(pointer: GraphPointer) {
@@ -30,11 +31,21 @@ export class CountExpression extends NodeExpressionImpl {
   }
 
   _buildPatterns({ subject, variable, object, rootPatterns }: Parameters, builder: PatternBuilder): sparqljs.SelectQuery {
-    const where = builder.build(this.expression, {
+    let distinct = false
+    let where = builder.build(this.expression, {
       subject,
       variable,
       rootPatterns,
     })
+
+    if (this.expression instanceof DistinctExpression) {
+      distinct = true
+      const query = where.patterns[0] as sparqljs.SelectQuery
+      where = {
+        ...where,
+        patterns: query.where,
+      }
+    }
 
     return {
       type: 'query',
@@ -46,6 +57,7 @@ export class CountExpression extends NodeExpressionImpl {
           type: 'aggregate',
           aggregation: 'count',
           expression: where.object,
+          distinct,
         },
       }],
       where: where.patterns,

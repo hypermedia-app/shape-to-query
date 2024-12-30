@@ -4,7 +4,6 @@ import $rdf from '@zazuko/env/web.js'
 import { FocusNodeExpression } from '../../../model/nodeExpression/FocusNodeExpression.js'
 import { namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
-import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
 import { BIND } from '../../pattern.js'
 
 describe('model/nodeExpression/FocusNodeExpression', () => {
@@ -17,7 +16,24 @@ describe('model/nodeExpression/FocusNodeExpression', () => {
   })
 
   describe('buildPatterns', () => {
-    it('binds const as subject', () => {
+    it('binds named node as subject', () => {
+      // given
+      const expr = new FocusNodeExpression()
+
+      // when
+      const result = expr.build({
+        subject: $rdf.namedNode('foo'),
+        object: $rdf.variable('bar'),
+        variable,
+        rootPatterns: undefined,
+      })
+
+      // then
+      const bar = result.object
+      expect(result.patterns).to.deep.equal([BIND($rdf.namedNode('foo')).as(bar)])
+    })
+
+    it('reuses subject as object', () => {
       // given
       const expr = new FocusNodeExpression()
 
@@ -27,11 +43,11 @@ describe('model/nodeExpression/FocusNodeExpression', () => {
         object: $rdf.variable('bar'),
         variable,
         rootPatterns: undefined,
-      }, new PatternBuilder())
+      })
 
       // then
-      const bar = result.object
-      expect(result.patterns).to.deep.equal([BIND($rdf.variable('foo')).as(bar)])
+      expect(result.object).to.deep.equal($rdf.variable('foo'))
+      expect(result.patterns).to.be.empty
     })
   })
 })
