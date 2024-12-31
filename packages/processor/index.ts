@@ -194,11 +194,13 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
       .with({ type: 'minus' }, minus => this.processMinus(minus))
       .with({ type: 'filter' }, filter => this.processFilter(filter))
       .with({ type: 'bind' }, bind => this.processBind(bind))
-      .with({ type: 'query', queryType: 'SELECT' }, query => {
-        // clones this instance to provide a separate context for the subquery
-        return this.clone().processQuery(query)
-      })
+      .with({ type: 'query', queryType: 'SELECT' }, query => this.processSubquery(query))
       .otherwise(p => p)
+  }
+
+  processSubquery(query: sparqljs.SelectQuery): sparqljs.SelectQuery {
+    // clones this instance to provide a separate context for the subquery
+    return this.clone().processQuery(query)
   }
 
   processBind(bind: sparqljs.BindPattern): sparqljs.Pattern {

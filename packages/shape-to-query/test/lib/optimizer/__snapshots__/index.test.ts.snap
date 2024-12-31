@@ -1,6 +1,137 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`UselessUnionRemover multiple-patterns.rq 1`] = `
+exports[`Optimizers BlankNodeScopeFixer fulltext-lists.rq 1`] = `
+"PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+CONSTRUCT {
+  ?resource1 schema:hasDefinedTerm ?resource2.
+  ?resource2 rdf:type ?resource4.
+  ?resource2 schema:name ?resource7.
+}
+WHERE {
+  {
+    SELECT ?resource1 ?resource2 WHERE {
+      {
+        SELECT DISTINCT ?resource1 ?resource2 WHERE {
+          ?resource1 ^schema:inDefinedTermSet ?resource2.
+          ?resource2 rdf:type ?resource4.
+          VALUES ?resource4 {
+            schema:DefinedTerm
+          }
+          OPTIONAL { ?resource2 ^schema:inDefinedTermSet ?resource5. }
+          OPTIONAL { ?resource2 schema:name ?resource6. }
+        }
+        ORDER BY (?resource5) (?resource6)
+        LIMIT 10
+      }
+      ?resource1 schema:hasDefinedTerm ?resource10.
+      {
+        ?resource10 schema:name ?resource12.
+        {
+          ?resource10 <http://jena.apache.org/text#query> _:e_b261;
+            schema:name ?resource12.
+          _:e_b261 rdf:first schema:name;
+            rdf:rest _:e_b262.
+          _:e_b262 rdf:first \\"foo*\\";
+            rdf:rest rdf:nil.
+          FILTER(REGEX(?resource12, \\"^foo\\", \\"i\\"))
+        }
+      }
+    }
+  }
+  UNION
+  {
+    SELECT ?resource2 ?resource4 ?resource7 WHERE {
+      {
+        SELECT DISTINCT ?resource1 ?resource2 WHERE {
+          ?resource1 ^schema:inDefinedTermSet ?resource2.
+          ?resource2 rdf:type ?resource4.
+          VALUES ?resource4 {
+            schema:DefinedTerm
+          }
+          OPTIONAL { ?resource2 ^schema:inDefinedTermSet ?resource5. }
+          OPTIONAL { ?resource2 schema:name ?resource6. }
+        }
+        ORDER BY (?resource5) (?resource6)
+        LIMIT 10
+      }
+      { ?resource2 rdf:type ?resource4. }
+      UNION
+      { ?resource2 schema:name ?resource7. }
+      ?resource1 schema:hasDefinedTerm ?resource10.
+      {
+        ?resource10 schema:name ?resource12.
+        {
+          ?resource10 <http://jena.apache.org/text#query> _:s7_e_b261;
+            schema:name ?resource12.
+          _:s7_e_b261 rdf:first schema:name;
+            rdf:rest _:s7_e_b262.
+          _:s7_e_b262 rdf:first \\"foo*\\";
+            rdf:rest rdf:nil.
+          FILTER(REGEX(?resource12, \\"^foo\\", \\"i\\"))
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`Optimizers BlankNodeScopeFixer multiple-levels.rq 1`] = `
+"PREFIX ex: <http://example.org/>
+ASK WHERE {
+  _:e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Foo.
+  {
+    _:s1_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Bar.
+    {
+      _:s2_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Baz.
+      { _:s3_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Qux. }
+    }
+  }
+}"
+`;
+
+exports[`Optimizers BlankNodeScopeFixer sub-query.rq 1`] = `
+"PREFIX ex: <http://example.org/>
+ASK WHERE {
+  { SELECT * WHERE { _:e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Foo. } }
+  UNION
+  { SELECT * WHERE { _:s2_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Bar. } }
+}"
+`;
+
+exports[`Optimizers BlankNodeScopeFixer union.rq 1`] = `
+"PREFIX ex: <http://example.org/>
+ASK WHERE {
+  { _:e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Bar. }
+  UNION
+  { _:s2_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Foo. }
+  UNION
+  { _:s3_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Baz. }
+}"
+`;
+
+exports[`Optimizers BlankNodeScopeFixer used-twice.rq 1`] = `
+"PREFIX ex: <http://example.org/>
+ASK WHERE {
+  _:e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Foo.
+  { _:s1_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Bar. }
+}"
+`;
+
+exports[`Optimizers BlankNodeScopeFixer used-twice-in-scope.rq 1`] = `
+"PREFIX ex: <http://example.org/>
+ASK WHERE {
+  _:e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Foo.
+  { _:s1_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Bar, ex:Baz. }
+}"
+`;
+
+exports[`Optimizers BlankNodeScopeFixer used-twice-top-scope.rq 1`] = `
+"PREFIX ex: <http://example.org/>
+ASK WHERE { _:e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Foo, ex:Bar. }"
+`;
+
+exports[`Optimizers UnionRepeatedPatternsRemover multiple-patterns.rq 1`] = `
 "PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 CONSTRUCT {
@@ -33,7 +164,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover partial-match.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover partial-match.rq 1`] = `
 "PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -69,7 +200,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover remove-useless-union.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover remove-useless-union.rq 1`] = `
 "PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 CONSTRUCT {
@@ -92,7 +223,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover single-pattern.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover single-pattern.rq 1`] = `
 "PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 CONSTRUCT {
@@ -125,7 +256,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover subquery.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover subquery.rq 1`] = `
 "PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 CONSTRUCT {
@@ -164,7 +295,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover type-in-union.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover type-in-union.rq 1`] = `
 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX schema: <http://schema.org/>
 CONSTRUCT {
@@ -186,7 +317,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover union-becomes-optional.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover union-becomes-optional.rq 1`] = `
 "PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 CONSTRUCT {
@@ -207,7 +338,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover values.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover values.rq 1`] = `
 "PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT * WHERE {
@@ -231,7 +362,7 @@ SELECT * WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover values-in-subquery.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover values-in-subquery.rq 1`] = `
 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 CONSTRUCT {
@@ -269,7 +400,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover values-unique.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover values-unique.rq 1`] = `
 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX schema: <http://schema.org/>
 CONSTRUCT {

@@ -8,12 +8,14 @@ import type { Processor } from '@hydrofoil/sparql-processor'
 import type { Options } from './shapeToPatterns.js'
 import { shapeToPatterns } from './shapeToPatterns.js'
 import { UnionRepeatedPatternsRemover } from './optimizer/UnionRepeatedPatternsRemover.js'
+import { BlankNodeScopeFixer } from './optimizer/BlankNodeScopeFixer.js'
 
 const generator = new sparqljs.Generator()
 
 const defaultOptimizers = (): Processor[] => [
   new DuplicatePatternRemover(rdf),
   new UnionRepeatedPatternsRemover(rdf),
+  new BlankNodeScopeFixer(rdf),
   new PrefixExtractor(rdf),
 ]
 

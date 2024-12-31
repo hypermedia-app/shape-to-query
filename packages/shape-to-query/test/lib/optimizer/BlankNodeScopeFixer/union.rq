@@ -1,0 +1,15 @@
+PREFIX ex: <http://example.org/>
+
+ASK {
+    {
+        _:foo a ex:Bar .
+    }
+    UNION
+    {
+        _:foo a ex:Foo .
+    }
+    UNION
+    {
+        _:foo a ex:Baz .
+    }
+}
