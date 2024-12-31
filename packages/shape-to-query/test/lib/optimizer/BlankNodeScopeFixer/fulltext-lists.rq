@@ -1,0 +1,73 @@
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+CONSTRUCT {
+  ?resource1 schema:hasDefinedTerm ?resource2.
+  ?resource2 rdf:type ?resource4.
+  ?resource2 schema:name ?resource7.
+}
+WHERE {
+  {
+    SELECT ?resource1 ?resource2 WHERE {
+      {
+        SELECT DISTINCT ?resource1 ?resource2 WHERE {
+          ?resource1 ^schema:inDefinedTermSet ?resource2.
+          ?resource2 rdf:type ?resource4.
+          VALUES ?resource4 {
+            schema:DefinedTerm
+          }
+          OPTIONAL { ?resource2 ^schema:inDefinedTermSet ?resource5. }
+          OPTIONAL { ?resource2 schema:name ?resource6. }
+        }
+        ORDER BY (?resource5) (?resource6)
+        LIMIT 10
+      }
+      ?resource1 schema:hasDefinedTerm ?resource10.
+      {
+        ?resource10 schema:name ?resource12.
+        {
+          ?resource10 <http://jena.apache.org/text#query> _:b261;
+            schema:name ?resource12.
+          _:b261 rdf:first schema:name;
+            rdf:rest _:b262.
+          _:b262 rdf:first "foo*";
+            rdf:rest rdf:nil.
+          FILTER(REGEX(?resource12, "^foo", "i"))
+        }
+      }
+    }
+  }
+  UNION
+  {
+    SELECT ?resource2 ?resource4 ?resource7 WHERE {
+      {
+        SELECT DISTINCT ?resource1 ?resource2 WHERE {
+          ?resource1 ^schema:inDefinedTermSet ?resource2.
+          ?resource2 rdf:type ?resource4.
+          VALUES ?resource4 {
+            schema:DefinedTerm
+          }
+          OPTIONAL { ?resource2 ^schema:inDefinedTermSet ?resource5. }
+          OPTIONAL { ?resource2 schema:name ?resource6. }
+        }
+        ORDER BY (?resource5) (?resource6)
+        LIMIT 10
+      }
+      { ?resource2 rdf:type ?resource4. }
+      UNION
+      { ?resource2 schema:name ?resource7. }
+      ?resource1 schema:hasDefinedTerm ?resource10.
+      {
+        ?resource10 schema:name ?resource12.
+        {
+          ?resource10 <http://jena.apache.org/text#query> _:b261;
+            schema:name ?resource12.
+          _:b261 rdf:first schema:name;
+            rdf:rest _:b262.
+          _:b262 rdf:first "foo*";
+            rdf:rest rdf:nil.
+          FILTER(REGEX(?resource12, "^foo", "i"))
+        }
+      }
+    }
+  }
+}

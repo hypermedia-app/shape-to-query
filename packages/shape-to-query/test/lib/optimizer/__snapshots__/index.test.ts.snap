@@ -1,6 +1,61 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`UselessUnionRemover multiple-patterns.rq 1`] = `
+exports[`Optimizers BlankNodeScopeFixer multiple-levels.rq 1`] = `
+"PREFIX ex: <http://example.org/>
+ASK WHERE {
+  _:e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Foo.
+  {
+    _:s1_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Bar.
+    {
+      _:s2_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Baz.
+      { _:s3_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Qux. }
+    }
+  }
+}"
+`;
+
+exports[`Optimizers BlankNodeScopeFixer sub-query.rq 1`] = `
+"PREFIX ex: <http://example.org/>
+ASK WHERE {
+  { SELECT * WHERE { _:e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Foo. } }
+  UNION
+  { SELECT * WHERE { _:s2_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Bar. } }
+}"
+`;
+
+exports[`Optimizers BlankNodeScopeFixer union.rq 1`] = `
+"PREFIX ex: <http://example.org/>
+ASK WHERE {
+  { _:e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Bar. }
+  UNION
+  { _:s2_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Foo. }
+  UNION
+  { _:s3_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Baz. }
+}"
+`;
+
+exports[`Optimizers BlankNodeScopeFixer used-twice.rq 1`] = `
+"PREFIX ex: <http://example.org/>
+ASK WHERE {
+  _:e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Foo.
+  { _:s1_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Bar. }
+}"
+`;
+
+exports[`Optimizers BlankNodeScopeFixer used-twice-in-scope.rq 1`] = `
+"PREFIX ex: <http://example.org/>
+ASK WHERE {
+  _:e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Foo.
+  { _:s1_e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Bar, ex:Baz. }
+}"
+`;
+
+exports[`Optimizers BlankNodeScopeFixer used-twice-top-scope.rq 1`] = `
+"PREFIX ex: <http://example.org/>
+ASK WHERE { _:e_foo <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ex:Foo, ex:Bar. }"
+`;
+
+exports[`Optimizers UnionRepeatedPatternsRemover multiple-patterns.rq 1`] = `
 "PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 CONSTRUCT {
@@ -33,7 +88,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover partial-match.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover partial-match.rq 1`] = `
 "PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -69,7 +124,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover remove-useless-union.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover remove-useless-union.rq 1`] = `
 "PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 CONSTRUCT {
@@ -92,7 +147,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover single-pattern.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover single-pattern.rq 1`] = `
 "PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 CONSTRUCT {
@@ -125,7 +180,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover subquery.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover subquery.rq 1`] = `
 "PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 CONSTRUCT {
@@ -164,7 +219,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover type-in-union.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover type-in-union.rq 1`] = `
 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX schema: <http://schema.org/>
 CONSTRUCT {
@@ -186,7 +241,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover union-becomes-optional.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover union-becomes-optional.rq 1`] = `
 "PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 CONSTRUCT {
@@ -207,7 +262,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover values.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover values.rq 1`] = `
 "PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT * WHERE {
@@ -231,7 +286,7 @@ SELECT * WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover values-in-subquery.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover values-in-subquery.rq 1`] = `
 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 CONSTRUCT {
@@ -269,7 +324,7 @@ WHERE {
 }"
 `;
 
-exports[`UselessUnionRemover values-unique.rq 1`] = `
+exports[`Optimizers UnionRepeatedPatternsRemover values-unique.rq 1`] = `
 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX schema: <http://schema.org/>
 CONSTRUCT {

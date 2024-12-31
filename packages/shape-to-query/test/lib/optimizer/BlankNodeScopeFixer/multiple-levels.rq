@@ -1,0 +1,14 @@
+PREFIX ex: <http://example.org/>
+
+ASK {
+    _:foo a ex:Foo .
+    {
+        _:foo a ex:Bar .
+        {
+            _:foo a ex:Baz .
+            {
+                _:foo a ex:Qux .
+            }
+        }
+    }
+}
