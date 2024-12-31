@@ -26,19 +26,7 @@ export default abstract class {
   protected constructor(public readonly type: NamedNode) {
   }
 
-  buildPatterns(arg: Parameters): sparqljs.Pattern[] {
-    if (arg.propertyPath) {
-      return this.buildPropertyShapePatterns(arg)
-    }
-
-    return this.buildNodeShapePatterns(arg)
-  }
-
-  buildNodeShapePatterns(arg: Parameters): sparqljs.Pattern[] {
-    return this.buildPropertyShapePatterns(arg)
-  }
-
-  abstract buildPropertyShapePatterns(arg: Parameters): sparqljs.Pattern[]
+  abstract buildPatterns(arg: Parameters): sparqljs.Pattern[]
 }
 
 export function assertList(arg: ListOrPointer): asserts arg is List {

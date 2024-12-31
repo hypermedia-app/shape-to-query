@@ -19,7 +19,7 @@ export class OrConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPropertyShapePatterns(arg: Parameters): [sparqljs.UnionPattern] {
+  buildPatterns(arg: Parameters): [sparqljs.UnionPattern] {
     let propExpr: sparqljs.BgpPattern | undefined
     if (arg.propertyPath) {
       propExpr = {

@@ -18,7 +18,7 @@ export class PropertyConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPropertyShapePatterns(arg: Parameters): sparqljs.Pattern[] {
+  buildPatterns(arg: Parameters): sparqljs.Pattern[] {
     return this.shape.buildConstraints(arg)
   }
 }

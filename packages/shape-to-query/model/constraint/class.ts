@@ -26,7 +26,7 @@ export class ClassConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPropertyShapePatterns({ valueNode }: Parameters): [sparqljs.BgpPattern] {
+  buildPatterns({ valueNode }: Parameters): [sparqljs.BgpPattern] {
     return [{
       type: 'bgp',
       triples: [{

@@ -32,7 +32,7 @@ export class LanguageInConstraintComponent extends ConstraintComponent {
     return [this.filter(focusNode)]
   }
 
-  buildPropertyShapePatterns({ valueNode }: Parameters) {
+  buildPatterns({ valueNode }: Parameters) {
     return [this.filter(valueNode)]
   }
 

@@ -38,7 +38,7 @@ export class PatternConstraintComponent extends ConstraintComponent {
     this.args = flags ? [pattern, flags] : [pattern]
   }
 
-  buildPropertyShapePatterns({ valueNode }: Parameters): [sparqljs.FilterPattern] {
+  buildPatterns({ valueNode }: Parameters): [sparqljs.FilterPattern] {
     return [{
       type: 'filter',
       expression: {

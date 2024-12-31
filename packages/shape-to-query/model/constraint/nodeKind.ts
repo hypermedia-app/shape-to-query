@@ -63,7 +63,7 @@ export class NodeKindConstraintComponent extends ConstraintComponent {
     return [this.__buildFilter(focusNode)]
   }
 
-  buildPropertyShapePatterns({ valueNode }: Parameters): [sparqljs.Pattern] {
+  buildPatterns({ valueNode }: Parameters): [sparqljs.Pattern] {
     return [this.__buildFilter(valueNode)]
   }
 

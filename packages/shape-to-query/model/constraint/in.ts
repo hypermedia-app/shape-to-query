@@ -27,7 +27,7 @@ export class InConstraintComponent extends ConstraintComponent {
     return []
   }
 
-  buildPropertyShapePatterns({ valueNode }: Parameters): [sparqljs.FilterPattern] {
+  buildPatterns({ valueNode }: Parameters): [sparqljs.FilterPattern] {
     return [{
       type: 'filter',
       expression: {

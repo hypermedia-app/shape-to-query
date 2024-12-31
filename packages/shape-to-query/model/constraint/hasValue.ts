@@ -22,7 +22,7 @@ export class HasValueConstraintComponent extends ConstraintComponent {
     return []
   }
 
-  buildPropertyShapePatterns({ focusNode, propertyPath, valueNode }: Omit<Parameters, 'rootPatterns'>): [sparqljs.ValuesPattern | sparqljs.FilterPattern] {
+  buildPatterns({ focusNode, propertyPath, valueNode }: Omit<Parameters, 'rootPatterns'>): [sparqljs.ValuesPattern | sparqljs.FilterPattern] {
     if (this.terms.length === 1) {
       return [{
         type: 'values',

@@ -53,7 +53,7 @@ export class RangeConstraintComponent extends ConstraintComponent {
     return [this.filter(focusNode)]
   }
 
-  buildPropertyShapePatterns({ valueNode }: Parameters): [sparqljs.Pattern] {
+  buildPatterns({ valueNode }: Parameters): [sparqljs.Pattern] {
     return [this.filter(valueNode)]
   }
 

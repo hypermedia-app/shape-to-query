@@ -14,7 +14,6 @@ describe('model/constraint/hasValue', () => {
       focusNode: $rdf.namedNode('foo'),
       valueNode: variable(),
       variable,
-      rootPatterns: undefined,
     })
 
     // then
@@ -32,7 +31,6 @@ describe('model/constraint/hasValue', () => {
       valueNode,
       variable,
       propertyPath: ex.path,
-      rootPatterns: undefined,
     })
 
     // then
@@ -56,7 +54,6 @@ describe('model/constraint/hasValue', () => {
       valueNode: variable(),
       variable,
       propertyPath: ex.path,
-      rootPatterns: undefined,
     })
 
     // then
