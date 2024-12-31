@@ -1,5 +1,11 @@
 # @hydrofoil/sparql-processor
 
+## 0.1.3
+
+### Patch Changes
+
+- 6b83456: Added overridable method `processSubquery`
+
 ## 0.1.2
 
 ### Patch Changes
