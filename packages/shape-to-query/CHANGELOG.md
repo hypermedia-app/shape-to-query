@@ -1,5 +1,13 @@
 # @hydrofoil/shape-to-query
 
+## 0.13.5
+
+### Patch Changes
+
+- 6b83456: When SPARQL constraints generated blank nodes, the exact same blank nodes could be used in the query multiple times, causing invalid SPARQL queries. This change ensures that blank nodes are unique within the query, preventing such issues.
+- Updated dependencies [6b83456]
+  - @hydrofoil/sparql-processor@0.1.3
+
 ## 0.13.4
 
 ### Patch Changes
