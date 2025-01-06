@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "@types/sparqljs": "^3.1.11",
-    "@zazuko/prefixes": "^2.1.0",
+    "@zazuko/prefixes": "^2.2.0",
     "ts-pattern": "^5.2.0"
   },
   "devDependencies": {
