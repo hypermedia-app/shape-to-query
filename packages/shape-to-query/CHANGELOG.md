@@ -1,5 +1,12 @@
 # @hydrofoil/shape-to-query
 
+## 0.13.6
+
+### Patch Changes
+
+- f4fc608: Node Expressions which only produce a constructed terms are inlined into the `CONSTRUCT` clause
+- abf4a0a: build(deps): bump @tpluscode/rdf-string from 1.3.3 to 1.3.4
+
 ## 0.13.5
 
 ### Patch Changes
