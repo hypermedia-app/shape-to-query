@@ -380,8 +380,8 @@ describe('@hydrofoil/shape-to-query', () => {
               WHERE {
                 { 
                   SELECT ?q1 ?q2 WHERE {
-                    VALUES ?q1 {
-                      <https://new.wikibus.org/page/brands>
+                    VALUES (?q1) {
+                      (<https://new.wikibus.org/page/brands>)
                     }
                     ?q1 schema:mainEntity ?q2.
                   } 
@@ -389,7 +389,7 @@ describe('@hydrofoil/shape-to-query', () => {
                 UNION
                 {
                     SELECT ?q3 ?q4 WHERE {
-                      VALUES ?q1 {
+                      VALUES (?q1) {
                         (<https://new.wikibus.org/page/brands>)
                       }
                       ?q1 schema:mainEntity ?q2.
