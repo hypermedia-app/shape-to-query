@@ -483,8 +483,8 @@ exports[`@hydrofoil/shape-to-query executing queries union of triple rules 1`] =
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 CONSTRUCT {
   ?resource1 rdf:type ?resource2.
-  ?resource1 ?resource4 ?resource5.
-  ?resource6 ?resource7 ?resource8.
+  ?resource1 hydra:view ?resource3.
+  ?resource4 rdf:type <http://example.org/AlphabeticallyPagedView>.
 }
 WHERE {
   VALUES ?resource1 {
@@ -497,17 +497,14 @@ WHERE {
       VALUES ?resource1 {
         <http://example.org/people>
       }
-      BIND(hydra:view AS ?resource4)
-      BIND(IRI(CONCAT(STR(?resource1), \\"#index\\")) AS ?resource5)
+      BIND(IRI(CONCAT(STR(?resource1), \\"#index\\")) AS ?resource3)
     }
     UNION
     {
       VALUES ?resource1 {
         <http://example.org/people>
       }
-      BIND(IRI(CONCAT(STR(?resource1), \\"#index\\")) AS ?resource6)
-      BIND(rdf:type AS ?resource7)
-      BIND(<http://example.org/AlphabeticallyPagedView> AS ?resource8)
+      BIND(IRI(CONCAT(STR(?resource1), \\"#index\\")) AS ?resource4)
     }
   }
 }"

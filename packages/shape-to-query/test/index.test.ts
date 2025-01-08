@@ -374,34 +374,35 @@ describe('@hydrofoil/shape-to-query', () => {
               PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
               PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
               CONSTRUCT {
-                ?resource1 schema:mainEntity ?resource2.
-                ?resource3 ?resource4 ?resource5.
+                ?q1 schema:mainEntity ?q2.
+                ?q3 rdfs:label ?q4.
               }
               WHERE {
                 { 
-                  SELECT ?resource1 ?resource2 {
-                    VALUES (?resource1) {
-                      (<https://new.wikibus.org/page/brands>)
+                  SELECT ?q1 ?q2 WHERE {
+                    VALUES ?q1 {
+                      <https://new.wikibus.org/page/brands>
                     }
-                    ?resource1 schema:mainEntity ?resource2 .
+                    ?q1 schema:mainEntity ?q2.
                   } 
                 }
                 UNION
                 {
-                    SELECT ?resource3 ?resource4 ?resource5 {
-                      VALUES (?resource1) {
+                    SELECT ?q3 ?q4 WHERE {
+                      VALUES ?q1 {
                         (<https://new.wikibus.org/page/brands>)
                       }
-                      ?resource1 schema:mainEntity ?resource2.
-                      ?resource2 rdf:type*/hydra:memberAssertion ?resource9.
-                      ?resource9 hydra:property ?resource11.
-                      VALUES ?resource11 { rdf:type }
-                      ?resource9 hydra:object ?resource8.
-                      ?resource8 ^rdf:type ?resource7.
-                      ?resource7 skos:prefLabel ?resource6.
-                      BIND(IRI((CONCAT((str(?resource2)), "?i=", (ENCODE_FOR_URI((LCASE((SUBSTR(?resource6, 1, 1))))))))) as ?resource3)
-                      BIND(rdfs:label as ?resource4)
-                      BIND(UCASE((SUBSTR(?resource6, 1 , 1 ))) as ?resource5)
+                      ?q1 schema:mainEntity ?q2.
+                      ?q2 ((rdf:type*)/hydra:memberAssertion) ?q5.
+                      ?q5 hydra:property ?q6.
+                      VALUES ?q6 {
+                        rdf:type
+                      }
+                      ?q5 hydra:object ?q7.
+                      ?q7 ^rdf:type ?q8.
+                      ?q8 skos:prefLabel ?q9.
+                      BIND(IRI(CONCAT(STR(?q2), "?q10=", ENCODE_FOR_URI(LCASE(SUBSTR(?q9, 1 , 1 ))))) AS ?q3)
+                      BIND(UCASE(SUBSTR(?q9, 1 , 1 )) AS ?q4)
                     }
                 }
               }`)
