@@ -5,11 +5,15 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [ 20, "lts/*" ]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 18.17
+          node-version: ${{ matrix.node }}
       - run: npm ci
       - run: yarn test
       - name: Codecov (unit tests)
