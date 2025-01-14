@@ -1,5 +1,14 @@
 # @hydrofoil/shape-to-query
 
+## 0.13.7
+
+### Patch Changes
+
+- afe19e7: build(deps): bump ts-pattern from 5.2.0 to 5.6.0
+- 108f96f: In some cases Triple Rules could produce empty groups in `UNION`
+- Updated dependencies [afe19e7]
+  - @hydrofoil/sparql-processor@0.1.4
+
 ## 0.13.6
 
 ### Patch Changes
