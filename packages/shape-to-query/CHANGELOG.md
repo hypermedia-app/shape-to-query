@@ -1,5 +1,11 @@
 # @hydrofoil/shape-to-query
 
+## 0.13.8
+
+### Patch Changes
+
+- 1629a49: In case of small shapes, a double (nested) `OPTIONAL` would be generated
+
 ## 0.13.7
 
 ### Patch Changes
