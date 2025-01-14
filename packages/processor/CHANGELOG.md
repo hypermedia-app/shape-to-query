@@ -1,5 +1,11 @@
 # @hydrofoil/sparql-processor
 
+## 0.1.4
+
+### Patch Changes
+
+- afe19e7: build(deps): bump ts-pattern from 5.2.0 to 5.6.0
+
 ## 0.1.3
 
 ### Patch Changes
