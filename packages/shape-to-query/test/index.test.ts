@@ -429,6 +429,17 @@ describe('@hydrofoil/shape-to-query', () => {
             // then
             expect(result).to.be.query()
           })
+
+          it('does not produce nested optionals', async () => {
+            // given
+            const shape = await parse.file('no-double-optionals.ttl')
+
+            // when
+            const result = constructQuery(shape)
+
+            // then
+            expect(result).to.be.query()
+          })
         })
       })
     })

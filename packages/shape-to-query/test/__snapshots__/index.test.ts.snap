@@ -29,6 +29,21 @@ WHERE {
 }"
 `;
 
+exports[`@hydrofoil/shape-to-query shapeToQuery construct shacl advanced features rules does not produce nested optionals 1`] = `
+"CONSTRUCT {
+  ?q1 rdf:type schema:Country.
+  ?q1 schema:identifier ?q2.
+  ?q1 schema:name ?q3.
+  <http://localhost:1429/countries> hydra:member ?q1.
+}
+WHERE {
+  ?q1 rdf:type schema:Country.
+  OPTIONAL { ?q1 schema:identifier ?q2. }
+  ?q1 schema:name ?q3.
+  FILTER(LANG(?q3) IN(\\"en\\", \\"de\\"))
+}"
+`;
+
 exports[`@hydrofoil/shape-to-query shapeToQuery construct shacl advanced features rules filter shape is applied correctly in SPO Rule 1`] = `
 "CONSTRUCT {
   ?q1 rdf:type <http://example.org/Object>.

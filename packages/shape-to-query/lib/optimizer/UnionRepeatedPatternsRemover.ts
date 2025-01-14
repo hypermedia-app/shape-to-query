@@ -69,6 +69,10 @@ export class UnionRepeatedPatternsRemover extends Processor {
         return processed.patterns[0]
       }
 
+      if (processed.patterns.length === 1 && processed.patterns[0].type === 'optional') {
+        return processed.patterns[0]
+      }
+
       return {
         type: 'optional',
         patterns: processed.patterns,

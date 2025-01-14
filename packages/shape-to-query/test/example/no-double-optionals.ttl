@@ -1,0 +1,34 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <http://schema.org/> .
+
+<> a sh:NodeShape ;
+  sh:and
+    (
+      [
+        sh:property
+          [
+            sh:path schema:identifier ;
+          ],
+          [
+            sh:path schema:name ;
+            sh:languageIn ( "en" "de" )
+          ] ;
+        sh:rule
+          [
+            rdf:type sh:TripleRule ;
+            sh:object sh:this ;
+            sh:predicate hydra:member ;
+            sh:subject <http://localhost:1429/countries> ;
+          ],
+          [
+            rdf:type sh:TripleRule ;
+            sh:object schema:Country ;
+            sh:predicate rdf:type ;
+            sh:subject sh:this ;
+          ] ;
+      ]
+    ) ;
+  sh:targetClass schema:Country ;
+.
