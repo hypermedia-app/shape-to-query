@@ -23,11 +23,9 @@ exports[`@hydrofoil/shape-to-query shapeToQuery construct shacl advanced feature
 }
 WHERE {
   ?q1 rdf:type schema:Country.
-  OPTIONAL {
-    { ?q1 schema:name ?q2. }
-    UNION
-    { ?q1 schema:identifier ?q3. }
-  }
+  { ?q1 schema:name ?q2. }
+  UNION
+  { ?q1 schema:identifier ?q3. }
 }"
 `;
 
