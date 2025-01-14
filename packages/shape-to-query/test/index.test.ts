@@ -418,6 +418,17 @@ describe('@hydrofoil/shape-to-query', () => {
             // then
             expect(result).to.be.query()
           })
+
+          it('does not produce empty union groups', async () => {
+            // given
+            const shape = await parse.file('inline-triple-rule.ttl')
+
+            // when
+            const result = constructQuery(shape)
+
+            // then
+            expect(result).to.be.query()
+          })
         })
       })
     })

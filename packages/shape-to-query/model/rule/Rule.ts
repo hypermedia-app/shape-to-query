@@ -24,9 +24,9 @@ export interface RuleStatic {
 export function union(arg: Parameters) {
   return function (acc: ShapePatterns, rule: Rule | PropertyShape, index: number, arr: readonly Rule[]): ShapePatterns {
     const result = rule.buildPatterns(arg)
-    let whereClause: sparqljs.Pattern[]
+    let groupOrUnion: sparqljs.Pattern
     if (index === 0 && arr.length === 1) {
-      whereClause = [groupPatterns(result.whereClause)]
+      groupOrUnion = groupPatterns(result.whereClause)
     } else {
       const group = groupPatterns(result.whereClause)
       let union: sparqljs.UnionPattern
@@ -40,8 +40,15 @@ export function union(arg: Parameters) {
         }
       }
 
-      union.patterns.push(group)
-      whereClause = [union]
+      if (group.patterns.length) {
+        union.patterns.push(group)
+      }
+      groupOrUnion = union
+    }
+
+    let whereClause = [groupOrUnion]
+    if (groupOrUnion.type === 'union' && groupOrUnion.patterns.length === 0) {
+      whereClause = []
     }
 
     return {
