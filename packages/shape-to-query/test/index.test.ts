@@ -169,6 +169,28 @@ describe('@hydrofoil/shape-to-query', () => {
         }`)
       })
 
+      it('generates a query without prefixes', async () => {
+        // given
+        const shape = parse`
+          <>
+            a ${sh.NodeShape} ;
+            ${sh.property}
+            [
+              ${sh.path} ${foaf.name} ;
+            ],
+            [
+              ${sh.path} ${foaf.lastName} ;
+            ] ; 
+          .
+        `
+
+        // when
+        const query = constructQuery(shape, { subjectVariable: 'person', extractPrefixes: false })
+
+        // then
+        expect(query).toMatchSnapshot()
+      })
+
       it('generates a query for IRI node', async () => {
         // given
         const shape = parse`
@@ -475,6 +497,28 @@ describe('@hydrofoil/shape-to-query', () => {
             { ?resource ${foaf.lastName} ?resource_1 . }
           }
         `)
+      })
+
+      it('can be generated without prefixes', async () => {
+        // given
+        const shape = parse`
+          <>
+            a ${sh.NodeShape} ;
+            ${sh.property}
+            [
+              ${sh.path} ${foaf.name} ;
+            ],
+            [
+              ${sh.path} ${foaf.lastName} ;
+            ] ; 
+          .
+        `
+
+        // when
+        const query = deleteQuery(shape, { extractPrefixes: false })
+
+        // then
+        expect(query).toMatchSnapshot()
       })
 
       it('adds a WITH clause when graph is passed', async () => {

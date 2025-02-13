@@ -12,14 +12,18 @@ import { BlankNodeScopeFixer } from './optimizer/BlankNodeScopeFixer.js'
 
 const generator = new sparqljs.Generator()
 
-const defaultOptimizers = (): Processor[] => [
-  new DuplicatePatternRemover(rdf),
-  new UnionRepeatedPatternsRemover(rdf),
-  new BlankNodeScopeFixer(rdf),
-  new PrefixExtractor(rdf),
+const defaultOptimizers = (env = rdf): Processor[] => [
+  new DuplicatePatternRemover(env),
+  new UnionRepeatedPatternsRemover(env),
+  new BlankNodeScopeFixer(env),
 ]
 
-export function constructQuery(shape: GraphPointer, { optimizers = [], ...options }: Options = { }) {
+const optimizersWithPrefixes = (env = rdf) => [
+  ...defaultOptimizers(env),
+  new PrefixExtractor(env),
+]
+
+export function constructQuery(shape: GraphPointer, { optimizers = [], extractPrefixes, ...options }: Options = { }) {
   const patterns = shapeToPatterns(shape, options)
 
   return optimizeAndStringify({
@@ -28,14 +32,16 @@ export function constructQuery(shape: GraphPointer, { optimizers = [], ...option
     where: patterns.whereClause,
     prefixes: {},
     template: patterns.constructClause as sparqljs.Triple[],
-  }, optimizers)
+  }, optimizers, {
+    extractPrefixes,
+  })
 }
 
 interface DeleteOptions extends Options {
   graph?: NamedNode | string
 }
 
-export function deleteQuery(shape: GraphPointer, { optimizers = [], ...options }: DeleteOptions = { }) {
+export function deleteQuery(shape: GraphPointer, { optimizers = [], extractPrefixes, ...options }: DeleteOptions = { }) {
   const patterns = shapeToPatterns(shape, options)
 
   let graph: NamedNode | undefined
@@ -60,10 +66,17 @@ export function deleteQuery(shape: GraphPointer, { optimizers = [], ...options }
       graph,
     }],
     prefixes: {},
-  }, optimizers)
+  }, optimizers, {
+    extractPrefixes,
+  })
 }
 
-function optimizeAndStringify(query: sparqljs.SparqlQuery, optimizers: Processor[]) {
-  return generator.stringify([...optimizers, ...defaultOptimizers()]
+function optimizeAndStringify(query: sparqljs.SparqlQuery, optimizers: Processor[], { extractPrefixes = true }) {
+  const allOptimisers: Processor[] = [
+    ...optimizers,
+    ...(extractPrefixes ? optimizersWithPrefixes() : defaultOptimizers()),
+  ]
+
+  return generator.stringify(allOptimisers
     .reduce((query, optimizer) => optimizer.process(query), query))
 }
