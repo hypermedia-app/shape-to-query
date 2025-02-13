@@ -17,6 +17,7 @@ export interface Options extends ModelFactoryOptions {
   subjectVariable?: string
   objectVariablePrefix?: string
   optimizers?: Processor[]
+  extractPrefixes?: boolean
 }
 
 export function shapeToPatterns(shape: GraphPointer, options: Options = {}): ShapePatterns {
