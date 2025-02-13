@@ -1,5 +1,11 @@
 # @hydrofoil/shape-to-query
 
+## 0.13.9
+
+### Patch Changes
+
+- 200b1f3: Added switch to generate query without prefixes
+
 ## 0.13.8
 
 ### Patch Changes
