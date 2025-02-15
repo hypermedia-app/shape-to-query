@@ -556,6 +556,52 @@ The objects of `sh:values` become directly asserted as the objects of the proper
   </s2q-snippet>
 </div>
 
+### Exists Expression ### {#shacl-exists-expression}
+
+Note: SHACL-AF spec: [[shacl-af#node-expressions-exists]]
+
+Binds the result of an `EXISTS` filter operator to the value node.
+
+The expression requires the presence of exactly one value of `sh:exists` property, 
+value of which must be a SHACL Shape. Its objects can be both Property Shapes and Node Shapes.
+
+<div class="example">
+  Uses a Property Shape to bind an `ex:isMarriedProperty` when 
+  a `schema:spouse` triple exists for the Focus Node .
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/exists-property-shape.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/exists-property-shape.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+<div class="example">
+  Uses a Node Shape to create a more complex `EXISTS` filter spanning multiple properties
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/exists-node-shape.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/exists-node-shape.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
 ### Filter Shape Expressions ### {#shacl-filter-shape-expression}
 
 Note: SHACL-AF spec: [[shacl-af#node-expressions-filter-shape]]

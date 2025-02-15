@@ -389,6 +389,9 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
   }
 }
 
+type PatternType = sparqljs.Pattern['type']
+const patternTypes: PatternType[] = ['bgp', 'graph', 'optional', 'union', 'group', 'service', 'minus', 'filter', 'bind', 'values']
+
 function isPattern(arg: sparqljs.Expression | sparqljs.Pattern): arg is sparqljs.Pattern {
-  return 'type' in arg && arg.type === 'bgp'
+  return 'type' in arg && patternTypes.some(patternType => arg.type === patternType)
 }

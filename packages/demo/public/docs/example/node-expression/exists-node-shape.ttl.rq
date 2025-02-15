@@ -1,0 +1,18 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+CONSTRUCT {
+  ?resource1 rdf:type schema:Person.
+  ?resource1 <http://example.org/isJohnOrJaneDoe> ?resource2.
+}
+WHERE {
+  ?resource1 rdf:type schema:Person.
+  BIND(EXISTS {
+    
+    ?resource1 schema:givenName ?resource3.
+    FILTER(?resource3 IN("John", "Jane"))
+    ?resource1 schema:familyName ?resource4.
+    VALUES ?resource4 {
+      "Doe"
+    }
+  } AS ?resource2)
+}
