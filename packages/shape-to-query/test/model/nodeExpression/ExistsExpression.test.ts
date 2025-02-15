@@ -7,15 +7,17 @@ import type { BindPattern, OperationExpression } from 'sparqljs'
 import ModelFactory from '../../../model/ModelFactory.js'
 import { blankNode } from '../../nodeFactory.js'
 import { ExistsExpression } from '../../../model/nodeExpression/ExistsExpression.js'
+import type { ShapePatterns } from '../../../index.js'
 import { NodeShape, PropertyShape } from '../../../index.js'
 import { variable } from '../../variable.js'
 import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
+import type { BuildParameters } from '../../../model/Shape.js'
 
 describe('model/nodeExpression/ExistsExpression', () => {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
 
-  const nodeShape = {}
-  const propertyShape = {}
+  const nodeShape = 'ns'
+  const propertyShape = 'ps'
 
   before(() => import('../../sparql.js'))
   beforeEach(() => {
@@ -84,7 +86,7 @@ describe('model/nodeExpression/ExistsExpression', () => {
     it('returns an instance of ExistsExpression with inner node property shape', () => {
       // given
       const pointer = blankNode()
-        .addOut(sh.exists, blankNode().addOut(sh.path, schema.name))
+        .addOut(sh.exists, shape => shape.addOut(sh.path, schema.name))
 
       // when
       const expr = ExistsExpression.fromPointer(pointer, factory)
@@ -122,13 +124,16 @@ describe('model/nodeExpression/ExistsExpression', () => {
             type: 'operation',
             operator: 'exists',
             args: [{
-              type: 'bgp',
-              triples: [{
-                subject,
-                predicate: schema.name,
-                object: {
-                  termType: 'Variable',
-                },
+              type: 'group',
+              patterns: [{
+                type: 'bgp',
+                triples: [{
+                  subject,
+                  predicate: schema.name,
+                  object: {
+                    termType: 'Variable',
+                  },
+                }],
               }],
             }],
           },
@@ -139,12 +144,22 @@ describe('model/nodeExpression/ExistsExpression', () => {
     context('with node shape', () => {
       it('binds an exists clause', () => {
         // given
-        const shape = new NodeShape(
-          [],
-          [],
-          [],
-          [],
-        )
+        const shape = sinon.createStubInstance(NodeShape, {
+          buildPatterns: <any>sinon.stub().callsFake(({ focusNode }: BuildParameters): ShapePatterns => {
+            return {
+              constructClause: [],
+              whereClause: [{
+                type: 'bgp',
+                triples: [{
+                  subject: focusNode,
+                  predicate: schema.name,
+                  object: variable(),
+                }],
+              }],
+            }
+          }),
+        })
+
         const expression = new ExistsExpression(shape)
         const subject = rdf.variable('subject')
         const object = rdf.variable('value')
@@ -165,13 +180,16 @@ describe('model/nodeExpression/ExistsExpression', () => {
             type: 'operation',
             operator: 'exists',
             args: [{
-              type: 'bgp',
-              triples: [{
-                subject,
-                predicate: schema.name,
-                object: {
-                  termType: 'Variable',
-                },
+              type: 'group',
+              patterns: [{
+                type: 'bgp',
+                triples: [{
+                  subject,
+                  predicate: schema.name,
+                  object: {
+                    termType: 'Variable',
+                  },
+                }],
               }],
             }],
           },
