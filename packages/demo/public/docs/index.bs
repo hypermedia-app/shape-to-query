@@ -602,6 +602,10 @@ value of which must be a SHACL Shape. Its objects can be both Property Shapes an
   </s2q-snippet>
 </div>
 
+### If Expression ### {#shacl-if-expression}
+
+Note: SHACL-AF spec: [[shacl-af#node-expressions-if]]
+
 ### Filter Shape Expressions ### {#shacl-filter-shape-expression}
 
 Note: SHACL-AF spec: [[shacl-af#node-expressions-filter-shape]]
