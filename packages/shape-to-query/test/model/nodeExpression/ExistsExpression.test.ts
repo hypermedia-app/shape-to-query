@@ -158,6 +158,7 @@ describe('model/nodeExpression/ExistsExpression', () => {
               }],
             }
           }),
+          buildConstraints: [],
         })
 
         const expression = new ExistsExpression(shape)
