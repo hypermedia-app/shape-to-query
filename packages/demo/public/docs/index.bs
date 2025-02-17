@@ -556,6 +556,100 @@ The objects of `sh:values` become directly asserted as the objects of the proper
   </s2q-snippet>
 </div>
 
+### Exists Expression ### {#shacl-exists-expression}
+
+Note: SHACL-AF spec: [[shacl-af#node-expressions-exists]]
+
+Binds the result of an `EXISTS` filter operator to the value node.
+
+The expression requires the presence of exactly one value of `sh:exists` property, 
+value of which must be a SHACL Shape. Its objects can be both Property Shapes and Node Shapes.
+
+<div class="example">
+  Uses a Property Shape to bind an `ex:isMarriedProperty` when 
+  a `schema:spouse` triple exists for the Focus Node .
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/exists-property-shape.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/exists-property-shape.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+<div class="example">
+  A Property Shape can also be constrained
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/if-exists-with-constraints.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/if-exists-with-constraints.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+<div class="example">
+  Uses a Node Shape to create a more complex `EXISTS` filter spanning multiple properties
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/exists-node-shape.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/exists-node-shape.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+### If Expression ### {#shacl-if-expression}
+
+Note: SHACL-AF spec: [[shacl-af#node-expressions-if]]
+
+An expression is used to conditionally bind the value of the property.
+
+An If Expression requires the presence of exactly one value of `sh:if`, `sh:then` and `sh:else` properties,
+value of which must be Node Expressions.
+
+Advisement: In the draft of SHACL-AF, an If Expression only requires `sh:if`. 
+Here, the `sh:then` and `sh:else` are also required.
+
+<div class="example">
+  The arguments to `IF` are inlined when supported by the used Node Expressions 
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/if-exists.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/if-exists.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
 ### Filter Shape Expressions ### {#shacl-filter-shape-expression}
 
 Note: SHACL-AF spec: [[shacl-af#node-expressions-filter-shape]]
