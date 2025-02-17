@@ -606,6 +606,32 @@ value of which must be a SHACL Shape. Its objects can be both Property Shapes an
 
 Note: SHACL-AF spec: [[shacl-af#node-expressions-if]]
 
+An expression is used to conditionally bind the value of the property.
+
+An If Expression requires the presence of exactly one value of `sh:if`, `sh:then` and `sh:else` properties,
+value of which must be Node Expressions.
+
+Advisement: In the draft of SHACL-AF, an If Expression only requires `sh:if`. 
+Here, the `sh:then` and `sh:else` are also required.
+
+<div class="example">
+  The arguments to `IF` are inlined when supported by the used Node Expressions 
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/if-exists.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/if-exists.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
 ### Filter Shape Expressions ### {#shacl-filter-shape-expression}
 
 Note: SHACL-AF spec: [[shacl-af#node-expressions-filter-shape]]
