@@ -57,14 +57,12 @@ export class ExistsExpression extends NodeExpressionBase {
       rootPatterns,
     })
 
-    if ('properties' in this.shape) {
-      constraints = this.shape.buildConstraints({
-        focusNode: subject,
-        variable,
-        rootPatterns,
-        valueNode: object,
-      })
-    }
+    constraints = this.shape.buildConstraints({
+      focusNode: subject,
+      variable,
+      rootPatterns,
+      valueNode: object,
+    })
 
     return {
       type: 'operation',

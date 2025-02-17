@@ -585,6 +585,24 @@ value of which must be a SHACL Shape. Its objects can be both Property Shapes an
 </div>
 
 <div class="example">
+  A Property Shape can also be constrained
+
+  <s2q-snippet>
+
+  <pre class="include-code" slot="shape">
+  path: example/node-expression/if-exists-with-constraints.ttl
+  highlight: turtle
+  </pre>
+
+  <pre class="include-code" slot="query">
+  path: example/node-expression/if-exists-with-constraints.ttl.rq
+  highlight: sparql
+  </pre>
+
+  </s2q-snippet>
+</div>
+
+<div class="example">
   Uses a Node Shape to create a more complex `EXISTS` filter spanning multiple properties
 
   <s2q-snippet>

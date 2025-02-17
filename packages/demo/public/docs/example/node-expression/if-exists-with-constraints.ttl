@@ -1,0 +1,18 @@
+PREFIX ex: <http://example.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+[
+  a sh:NodeShape ;
+  sh:targetClass schema:Person ;
+  sh:property
+    [
+      sh:path ex:knowsJohn ;
+      sh:values
+        [
+          sh:if [ sh:exists [ sh:path schema:knows ; sh:hasValue ex:John ] ] ;
+          sh:then "yes" ;
+          sh:else "no" ;
+        ] ;
+    ] ;
+] .
