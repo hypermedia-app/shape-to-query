@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/shape-to-query",
-  "version": "0.13.9",
+  "version": "0.13.10",
   "type": "module",
   "scripts": {
     "prepack": "tsc",

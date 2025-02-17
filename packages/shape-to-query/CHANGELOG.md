@@ -1,5 +1,12 @@
 # @hydrofoil/shape-to-query
 
+## 0.13.10
+
+### Patch Changes
+
+- 83f0b91: Exists Expression (fixes #23)
+- da2092c: If Expression (fixes #24)
+
 ## 0.13.9
 
 ### Patch Changes
