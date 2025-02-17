@@ -29,8 +29,8 @@ export class IfExpression extends NodeExpressionBase {
 
   public get requiresFullContext(): boolean {
     return this.ifExpr.requiresFullContext ||
-      (this.thenExpr?.requiresFullContext ?? false) ||
-      (this.elseExpr?.requiresFullContext ?? false)
+      this.thenExpr.requiresFullContext ||
+      this.elseExpr.requiresFullContext
   }
 
   public get rootIsFocusNode(): boolean {
