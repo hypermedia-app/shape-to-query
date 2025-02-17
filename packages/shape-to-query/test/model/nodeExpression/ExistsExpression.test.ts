@@ -197,4 +197,43 @@ describe('model/nodeExpression/ExistsExpression', () => {
       })
     })
   })
+
+  describe('buildInlineExpression', () => {
+    it('binds an exists clause', () => {
+      // given
+      const shape = new PropertyShape(
+        rdf.clownface().namedNode(schema.name),
+      )
+      const expression = new ExistsExpression(shape)
+      const subject = rdf.variable('subject')
+      const object = rdf.variable('value')
+
+      // when
+      const { inline } = expression.buildInlineExpression({
+        variable,
+        object,
+        rootPatterns: [],
+        subject,
+      })
+
+      // then
+      expect(inline).to.containSubset(<OperationExpression>{
+        type: 'operation',
+        operator: 'exists',
+        args: [{
+          type: 'group',
+          patterns: [{
+            type: 'bgp',
+            triples: [{
+              subject,
+              predicate: schema.name,
+              object: {
+                termType: 'Variable',
+              },
+            }],
+          }],
+        }],
+      })
+    })
+  })
 })
