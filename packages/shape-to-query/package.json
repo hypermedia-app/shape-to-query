@@ -59,7 +59,7 @@
     "mocha-chai-jest-snapshot": "^1.1.6",
     "n3": "^1.16.3",
     "oxigraph": "^0.4.4",
-    "sinon": "^18.0.0",
+    "sinon": "^19.0.2",
     "sparql-http-client": "^3.0.1",
     "string-to-stream": "^3.0.1",
     "tbbt-ld": "^1.1.0",
