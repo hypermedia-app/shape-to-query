@@ -10,6 +10,7 @@ type ListOrPointer = Pointer | List
 export type PropertyShape = Map<Term, Array<ListOrPointer>>
 
 export interface Parameters {
+  parentNode?: FocusNode
   focusNode: FocusNode
   valueNode: Variable
   variable: VariableSequence

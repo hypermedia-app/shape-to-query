@@ -14,6 +14,72 @@ WHERE {
 }"
 `;
 
+exports[`@hydrofoil/shape-to-query shape with sh:node+sh:or produces correct query 1`] = `
+"CONSTRUCT {
+  ?q1 schema:hasPart ?q2.
+  ?q2 schema:name ?q3.
+  ?q2 schema:description ?q4.
+}
+WHERE {
+  {
+    SELECT ?q1 ?q2 WHERE {
+      ?q1 schema:hasPart ?q2.
+      {
+        {
+          ?q2 schema:name ?q3.
+          FILTER(REGEX(?q3, \\"foo\\"))
+        }
+        UNION
+        {
+          ?q2 schema:description ?q4.
+          FILTER(REGEX(?q4, \\"bar\\"))
+        }
+      }
+    }
+  }
+  UNION
+  {
+    SELECT ?q2 ?q3 ?q4 WHERE {
+      ?q1 schema:hasPart ?q2.
+      { ?q2 schema:name ?q3. }
+      UNION
+      { ?q2 schema:description ?q4. }
+      {
+        {
+          ?q2 schema:name ?q3.
+          FILTER(REGEX(?q3, \\"foo\\"))
+        }
+        UNION
+        {
+          ?q2 schema:description ?q4.
+          FILTER(REGEX(?q4, \\"bar\\"))
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`@hydrofoil/shape-to-query shape with sh:node+sh:or with no property constraints produces correct query 1`] = `
+"CONSTRUCT {
+  ?q1 schema:hasPart ?q2.
+  ?q2 schema:name ?q3.
+  ?q2 schema:description ?q4.
+}
+WHERE {
+  { SELECT ?q1 ?q2 WHERE { ?q1 schema:hasPart ?q2. } }
+  UNION
+  {
+    SELECT ?q2 ?q3 ?q4 WHERE {
+      ?q1 schema:hasPart ?q2.
+      { ?q2 schema:name ?q3. }
+      UNION
+      { ?q2 schema:description ?q4. }
+    }
+  }
+}"
+`;
+
 exports[`@hydrofoil/shape-to-query shapeToQuery construct generates a query without prefixes 1`] = `
 "CONSTRUCT {
   ?resource1 <http://xmlns.com/foaf/0.1/name> ?resource2.

@@ -2,6 +2,7 @@ import type { Variable } from '@rdfjs/types'
 import type sparqljs from 'sparqljs'
 import type { ShapePatterns } from '../lib/shapePatterns.js'
 import { emptyPatterns, flatten, union } from '../lib/shapePatterns.js'
+import type { FocusNode } from '../lib/FocusNode.js'
 import type { PropertyShape } from './PropertyShape.js'
 import type { Target } from './target/index.js'
 import type { ConstraintComponent } from './constraint/ConstraintComponent.js'
@@ -12,7 +13,7 @@ import * as Rule from './rule/Rule.js'
 export interface NodeShape {
   properties: ReadonlyArray<PropertyShape>
   buildPatterns(arg: BuildParameters): ShapePatterns
-  buildConstraints(arg: BuildParameters & { valueNode: Variable }): sparqljs.Pattern[]
+  buildConstraints(arg: BuildParameters & { valueNode: Variable; parentNode?: FocusNode }): sparqljs.Pattern[]
 }
 
 export default class extends Shape implements NodeShape {

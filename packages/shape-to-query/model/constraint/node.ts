@@ -18,10 +18,11 @@ export class NodeConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPropertyShapePatterns({ valueNode, variable, ...arg }: Parameters): [sparqljs.GroupPattern] | sparqljs.Pattern[] {
+  buildPropertyShapePatterns({ focusNode, valueNode, variable, ...arg }: Parameters): [sparqljs.GroupPattern] | sparqljs.Pattern[] {
     const patterns = this.shape.buildConstraints({
       ...arg,
       variable,
+      parentNode: focusNode,
       focusNode: valueNode,
       valueNode: variable(),
     })
