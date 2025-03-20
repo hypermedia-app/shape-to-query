@@ -54,7 +54,7 @@
     "chai": "^5.2.0",
     "chai-string": "^1.5.0",
     "debug": "^4.4.0",
-    "docker-compose": "^1.1.0",
+    "docker-compose": "^1.2.0",
     "glob": "^11.0.1",
     "mocha-chai-jest-snapshot": "^1.1.6",
     "mocha-chai-rdf": "^0.1.6",
