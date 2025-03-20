@@ -57,6 +57,7 @@
     "docker-compose": "^1.1.0",
     "glob": "^11.0.1",
     "mocha-chai-jest-snapshot": "^1.1.6",
+    "mocha-chai-rdf": "^0.1.6",
     "n3": "^1.16.3",
     "oxigraph": "^0.4.4",
     "sinon": "^19.0.2",

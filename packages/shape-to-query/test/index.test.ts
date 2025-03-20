@@ -5,6 +5,8 @@ import { sparql } from '@tpluscode/rdf-string'
 import type { GraphPointer } from 'clownface'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { jestSnapshotPlugin } from 'mocha-chai-jest-snapshot'
+import { createStore } from 'mocha-chai-rdf/store.js'
+import type { BlankNode } from '@rdfjs/types'
 import { constructQuery, deleteQuery, shapeToPatterns } from '../index.js'
 import { ex } from './namespace.js'
 import { parse } from './nodeFactory.js'
@@ -13,6 +15,10 @@ import './sparql.js'
 
 describe('@hydrofoil/shape-to-query', () => {
   use(jestSnapshotPlugin())
+
+  beforeEach(createStore(import.meta.url, {
+    format: 'trig',
+  }))
 
   describe('shapeToPatterns', () => {
     context('targets', () => {
@@ -882,6 +888,32 @@ describe('@hydrofoil/shape-to-query', () => {
             }
           }
         `)
+      })
+    })
+  })
+
+  context('shape with sh:node+sh:or', () => {
+    it('produces correct query', function () {
+      // given
+      const shape = this.rdf.graph.has(rdf.type, sh.NodeShape) as unknown as GraphPointer<BlankNode>
+
+      // when
+      const query = constructQuery(shape)
+
+      // then
+      expect(query).to.be.query()
+    })
+
+    context('with no property constraints', () => {
+      it('produces correct query', function () {
+        // given
+        const shape = this.rdf.graph.has(rdf.type, sh.NodeShape) as unknown as GraphPointer<BlankNode>
+
+        // when
+        const query = constructQuery(shape)
+
+        // then
+        expect(query).to.be.query()
       })
     })
   })

@@ -1,0 +1,55 @@
+PREFIX ex: <http://example.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+GRAPH <shape-with-sh:node+sh:or> {
+  ex:HasName
+    sh:property
+      [
+        sh:path schema:name ;
+        sh:pattern "foo" ;
+      ]
+  .
+
+  ex:HasDescription
+    sh:property
+      [
+        sh:path schema:description ;
+        sh:pattern "bar" ;
+      ]
+  .
+
+  [
+    a sh:NodeShape ;
+    sh:property
+      [
+        sh:path schema:hasPart ;
+        sh:node [ sh:or ( ex:HasName ex:HasDescription ) ] ;
+      ]
+  ] .
+}
+
+GRAPH <shape-with-sh:node+sh:or/with-no-property-constraints> {
+  ex:HasName
+    sh:property
+      [
+        sh:path schema:name ;
+      ]
+  .
+
+  ex:HasDescription
+    sh:property
+      [
+        sh:path schema:description ;
+      ]
+  .
+
+  [
+    a sh:NodeShape ;
+    sh:property
+      [
+        sh:path schema:hasPart ;
+        sh:node [ sh:or ( ex:HasName ex:HasDescription ) ] ;
+      ]
+  ] .
+}

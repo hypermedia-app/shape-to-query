@@ -19,15 +19,15 @@ export class OrConstraintComponent extends ConstraintComponent {
     }
   }
 
-  buildPropertyShapePatterns(arg: Parameters): [sparqljs.UnionPattern] {
+  buildPropertyShapePatterns(arg: Parameters): [sparqljs.UnionPattern] | [] {
     let propExpr: sparqljs.BgpPattern | undefined
-    if (arg.propertyPath) {
+    if (arg.propertyPath && arg.parentNode) {
       propExpr = {
         type: 'bgp',
         triples: [{
-          subject: arg.focusNode,
+          subject: arg.parentNode,
           predicate: arg.propertyPath,
-          object: arg.valueNode,
+          object: arg.focusNode,
         }],
       }
     }
@@ -37,10 +37,14 @@ export class OrConstraintComponent extends ConstraintComponent {
         const patterns = i.buildConstraints(arg)
         return {
           type: 'group',
-          patterns: propExpr ? [propExpr, ...patterns] : patterns,
+          patterns: propExpr && patterns.length ? [propExpr, ...patterns] : patterns,
         }
       })
       .filter(gr => gr.patterns.length > 0)
+
+    if (!inner.length) {
+      return []
+    }
 
     return [{
       type: 'union',
