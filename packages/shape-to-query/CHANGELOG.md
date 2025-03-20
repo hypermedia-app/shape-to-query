@@ -1,5 +1,12 @@
 # @hydrofoil/shape-to-query
 
+## 0.13.11
+
+### Patch Changes
+
+- 7be9ec6: Using `sh:or` with `sh:node` to constrain a property generated wrong patterns
+- 7be9ec6: When using `sh:node` to constrain a property, properties without any additional constraints should not generate query patterns
+
 ## 0.13.10
 
 ### Patch Changes
