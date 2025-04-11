@@ -1,5 +1,15 @@
 # @hydrofoil/shape-to-query
 
+## 0.14.0
+
+### Minor Changes
+
+- fbc9768: The class abstract `NodeExpression` now requires the expression term as argument
+
+### Patch Changes
+
+- fbc9768: Function expressions were incorrectly cached and reused, causing incorrect, or even invalid SPARQL
+
 ## 0.13.11
 
 ### Patch Changes
