@@ -917,4 +917,17 @@ describe('@hydrofoil/shape-to-query', () => {
       })
     })
   })
+
+  context('sparql:concat with multiple sh:if', () => {
+    it('produces correct query', function () {
+      // given
+      const shape = this.rdf.graph.has(rdf.type, sh.NodeShape) as unknown as GraphPointer<BlankNode>
+
+      // when
+      const query = constructQuery(shape)
+
+      // then
+      expect(query).to.be.query()
+    })
+  })
 })

@@ -104,7 +104,7 @@ describe('model/nodeExpression/ExistsExpression', () => {
         const shape = new PropertyShape(
           rdf.clownface().namedNode(schema.name),
         )
-        const expression = new ExistsExpression(shape)
+        const expression = new ExistsExpression(rdf.blankNode(), shape)
         const subject = rdf.variable('subject')
         const object = rdf.variable('value')
 
@@ -161,7 +161,7 @@ describe('model/nodeExpression/ExistsExpression', () => {
           buildConstraints: [],
         })
 
-        const expression = new ExistsExpression(shape)
+        const expression = new ExistsExpression(rdf.blankNode(), shape)
         const subject = rdf.variable('subject')
         const object = rdf.variable('value')
 
@@ -205,7 +205,7 @@ describe('model/nodeExpression/ExistsExpression', () => {
       const shape = new PropertyShape(
         rdf.clownface().namedNode(schema.name),
       )
-      const expression = new ExistsExpression(shape)
+      const expression = new ExistsExpression(rdf.blankNode(), shape)
       const subject = rdf.variable('subject')
       const object = rdf.variable('value')
 

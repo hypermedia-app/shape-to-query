@@ -2,14 +2,15 @@ import { isBlankNode, isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import type { GraphPointer } from 'clownface'
 import type { Pattern } from 'sparqljs'
+import type { Term } from '@rdfjs/types'
 import type { ModelFactory } from '../ModelFactory.js'
 import NodeExpressionBase from './NodeExpression.js'
 import type { NodeExpression, Parameters, PatternBuilder } from './NodeExpression.js'
 import { getOne, getOneOrZero } from './util.js'
 
 export class IfExpression extends NodeExpressionBase {
-  constructor(private readonly ifExpr: NodeExpression, private readonly thenExpr: NodeExpression, private readonly elseExpr: NodeExpression) {
-    super()
+  constructor(term: Term, private readonly ifExpr: NodeExpression, private readonly thenExpr: NodeExpression, private readonly elseExpr: NodeExpression) {
+    super(term)
   }
 
   static match(pointer: GraphPointer) {
@@ -24,7 +25,7 @@ export class IfExpression extends NodeExpressionBase {
     const thenExpr = factory.nodeExpression(getOne(pointer, sh.then))
     const elseExpr = factory.nodeExpression(getOne(pointer, sh.else))
 
-    return new IfExpression(ifExpr, thenExpr, elseExpr)
+    return new IfExpression(pointer.term, ifExpr, thenExpr, elseExpr)
   }
 
   public get requiresFullContext(): boolean {

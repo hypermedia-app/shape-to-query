@@ -26,8 +26,8 @@ export class OptionalExpression extends NodeExpressionBase {
     return this.inner.rootIsFocusNode
   }
 
-  constructor(public readonly term: Term, public readonly inner: NodeExpression) {
-    super()
+  constructor(term: Term, public readonly inner: NodeExpression) {
+    super(term)
   }
 
   protected _buildPatterns(arg: Required<Parameters>, builder: PatternBuilder): sparqljs.OptionalPattern {

@@ -1,4 +1,3 @@
-import type { Term } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import { SELECT } from '@tpluscode/sparql-builder'
 import rdf from '@zazuko/env/web.js'
@@ -23,10 +22,6 @@ export class HydraCollectionMemberExpression extends NodeExpressionBase {
 
   get rootIsFocusNode(): boolean {
     return false
-  }
-
-  constructor(public readonly term: Term) {
-    super()
   }
 
   _buildPatterns({ subject, variable, object }: Parameters): sparqljs.Pattern[] {

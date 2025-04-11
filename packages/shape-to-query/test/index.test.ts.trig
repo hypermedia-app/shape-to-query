@@ -1,3 +1,5 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix sparql: <http://datashapes.org/sparql#>
 PREFIX ex: <http://example.org/>
 PREFIX schema: <http://schema.org/>
 PREFIX sh: <http://www.w3.org/ns/shacl#>
@@ -52,4 +54,29 @@ GRAPH <shape-with-sh:node+sh:or/with-no-property-constraints> {
         sh:node [ sh:or ( ex:HasName ex:HasDescription ) ] ;
       ]
   ] .
+}
+
+GRAPH <sparql:concat-with-multiple-sh:if> {
+[
+  a sh:NodeShape ;
+  sh:property [
+    sh:path schema:identifier ;
+    sh:values [
+      sparql:concat  (
+          "/data/"
+          [
+            sh:if [ sh:exists [ sh:path rdf:type ; sh:hasValue ex:File ] ] ;
+            sh:then "file/" ;
+            sh:else ""
+          ]
+          [
+            sh:if [ sh:exists [ sh:path rdf:type ; sh:hasValue ex:SparqlGraph ] ] ;
+            sh:then "sparql-graph/" ;
+            sh:else ""
+          ]
+          [ sparql:struuid () ]
+        )
+      ]
+  ] ;
+] .
 }

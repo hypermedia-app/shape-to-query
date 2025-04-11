@@ -12,8 +12,8 @@ export abstract class SubselectExpression extends NodeExpressionBase {
     return this.nodes.rootIsFocusNode
   }
 
-  protected constructor(public readonly term: Term, private readonly nodes: NodeExpression) {
-    super()
+  protected constructor(term: Term, private readonly nodes: NodeExpression) {
+    super(term)
   }
 
   _buildPatterns(arg: Parameters, builder: PatternBuilder): sparqljs.SelectQuery {

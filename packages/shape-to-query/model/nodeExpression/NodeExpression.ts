@@ -38,8 +38,8 @@ export class PatternBuilder {
   }
 }
 
-export interface NodeExpression {
-  readonly term: Term
+export interface NodeExpression<T extends Term = Term> {
+  readonly term: T
 
   build(params: Parameters, builder: PatternBuilder): NodeExpressionResult
 
@@ -56,8 +56,12 @@ export interface NodeExpression {
   get rootIsFocusNode(): boolean
 }
 
-export default abstract class implements NodeExpression {
-  term: Term
+export default abstract class <T extends Term = Term> implements NodeExpression<T> {
+  term: T
+
+  constructor(term: T) {
+    this.term = term
+  }
 
   build({ subject, rootPatterns, variable, object = variable() }: Parameters, builder: PatternBuilder): NodeExpressionResult {
     const patterns = this._buildPatterns({ subject, rootPatterns, variable, object }, builder)

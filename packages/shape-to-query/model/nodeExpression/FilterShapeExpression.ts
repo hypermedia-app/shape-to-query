@@ -19,8 +19,8 @@ export class FilterShapeExpression extends NodeExpressionBase {
     return this.nodes.rootIsFocusNode
   }
 
-  constructor(public readonly term: Term, public readonly shape: NodeShape, public readonly nodes: NodeExpression = new FocusNodeExpression()) {
-    super()
+  constructor(term: Term, public readonly shape: NodeShape, public readonly nodes: NodeExpression = new FocusNodeExpression()) {
+    super(term)
   }
 
   static match(pointer: GraphPointer) {

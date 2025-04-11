@@ -186,7 +186,7 @@ describe('model/nodeExpression/IfExpression', () => {
         variable: args.object,
         expression: rdf.literal('baz'),
       }])
-      const expression = new IfExpression(ifExpr, thenExpr, elseExpr)
+      const expression = new IfExpression(rdf.blankNode(), ifExpr, thenExpr, elseExpr)
 
       // when
       const { patterns, object } = expression.build({
@@ -226,7 +226,7 @@ describe('model/nodeExpression/IfExpression', () => {
       const elseExpr = fakeExpression(undefined, () => (<InlineExpressionResult>{
         inline: rdf.literal('baz'),
       }))
-      const expression = new IfExpression(ifExpr, thenExpr, elseExpr)
+      const expression = new IfExpression(rdf.blankNode(), ifExpr, thenExpr, elseExpr)
 
       // when
       const { patterns, object } = expression.build({
