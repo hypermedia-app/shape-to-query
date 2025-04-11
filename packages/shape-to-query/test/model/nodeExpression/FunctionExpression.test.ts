@@ -295,7 +295,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
     describe('constructor', () => {
       it('throws when number of arguments does not match', () => {
         expect(() =>
-          new FunctionCallExpression(ex.function, [], {
+          new FunctionCallExpression($rdf.blankNode(), ex.function, [], {
             parameters: [{ optional: false }, { optional: false }],
           }),
         ).to.throw()
@@ -305,7 +305,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
     describe('build', () => {
       it('builds patterns with built-in function "call"', () => {
         // given
-        const expr = new FunctionCallExpression(ex.function, [], { symbol: $rdf.literal('uuid'), returnType: xsd.string })
+        const expr = new FunctionCallExpression($rdf.blankNode(), ex.function, [], { symbol: $rdf.literal('uuid'), returnType: xsd.string })
 
         // when
         const result = expr.build({
@@ -320,7 +320,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
 
       it('builds patterns with custom function "call"', () => {
         // given
-        const expr = new FunctionCallExpression(ex.search, [], { returnType: xsd.string })
+        const expr = new FunctionCallExpression($rdf.blankNode(), ex.search, [], { returnType: xsd.string })
 
         // when
         const result = expr.build({
@@ -344,7 +344,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
           fakeExpression(undefined, () => ({ inline: $rdf.literal('B'), patterns: [] })),
           fakeExpression(undefined, () => ({ inline: $rdf.literal('C'), patterns: [] })),
         ]
-        const expr = new InExpression(dashSparql.in, exprList)
+        const expr = new InExpression($rdf.blankNode(), dashSparql.in, exprList)
 
         // when
         const result = expr.build({
@@ -364,7 +364,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
           fakeExpression(undefined, () => ({ inline: $rdf.literal('B'), patterns: [] })),
           fakeExpression(undefined, () => ({ inline: $rdf.literal('C'), patterns: [] })),
         ]
-        const expr = new InExpression(dashSparql.notin, exprList)
+        const expr = new InExpression($rdf.blankNode(), dashSparql.notin, exprList)
 
         // when
         const result = expr.build({
@@ -388,7 +388,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
           fakeExpression(({ object }) => [BIND('B').as(object)]),
           fakeExpression(({ object }) => [BIND('C').as(object)]),
         ]
-        const expr = new AdditiveExpression(dashSparql.and, '+', undefined, expressions)
+        const expr = new AdditiveExpression($rdf.blankNode(), dashSparql.and, '+', undefined, expressions)
 
         // when
         const result = expr.build({
@@ -416,7 +416,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
         fakeExpression(({ object }) => [BIND('A').as(object)]),
         fakeExpression(({ object }) => [BIND('B').as(object)]),
       ]
-      const expr = new RelationalExpression(dashSparql.eq, '*', [{ optional: false }, { optional: false }], args)
+      const expr = new RelationalExpression($rdf.blankNode(), dashSparql.eq, '*', [{ optional: false }, { optional: false }], args)
 
       // when
       const result = expr.build({
