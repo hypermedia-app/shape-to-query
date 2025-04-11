@@ -33,8 +33,8 @@ export class PathExpression extends NodeExpressionBase {
     return false
   }
 
-  constructor(public readonly term: Term, public readonly path: sparqljs.PropertyPath | NamedNode, public readonly nodes?: NodeExpression) {
-    super()
+  constructor(term: Term, public readonly path: sparqljs.PropertyPath | NamedNode, public readonly nodes?: NodeExpression) {
+    super(term)
   }
 
   _buildPatterns({ subject, object, variable, rootPatterns }: Parameters, builder: PatternBuilder): sparqljs.Pattern[] | sparqljs.BgpPattern {

@@ -152,3 +152,22 @@ WHERE {
   { ?resource1 <http://xmlns.com/foaf/0.1/lastName> ?resource3. }
 }"
 `;
+
+exports[`@hydrofoil/shape-to-query sparql:concat with multiple sh:if produces correct query 1`] = `
+"CONSTRUCT { ?q1 schema:identifier ?q2. }
+WHERE {
+  BIND(IF(EXISTS {
+    ?q1 rdf:type ?q3.
+    VALUES ?q3 {
+      <http://example.org/File>
+    }
+  }, \\"file/\\", \\"\\") AS ?q4)
+  BIND(IF(EXISTS {
+    ?q1 rdf:type ?q3.
+    VALUES ?q3 {
+      <http://example.org/SparqlGraph>
+    }
+  }, \\"sparql-graph/\\", \\"\\") AS ?q5)
+  BIND(CONCAT(\\"/data/\\", ?q4, ?q5, STRUUID()) AS ?q2)
+}"
+`;

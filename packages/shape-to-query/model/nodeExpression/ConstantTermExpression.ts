@@ -6,17 +6,13 @@ import type sparqljs from 'sparqljs'
 import type { InlineExpressionResult, Parameters } from './NodeExpression.js'
 import NodeExpression from './NodeExpression.js'
 
-export class ConstantTermExpression extends NodeExpression {
+export class ConstantTermExpression extends NodeExpression<NamedNode | Literal> {
   public get requiresFullContext(): boolean {
     return false
   }
 
   public get rootIsFocusNode() {
     return false
-  }
-
-  constructor(public readonly term: NamedNode | Literal) {
-    super()
   }
 
   static fromPointer(pointer: GraphPointer) {

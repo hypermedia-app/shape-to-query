@@ -26,8 +26,8 @@ export class CountExpression extends NodeExpressionImpl {
     return this.expression.rootIsFocusNode
   }
 
-  constructor(public readonly term: Term, public expression: NodeExpression) {
-    super()
+  constructor(term: Term, public expression: NodeExpression) {
+    super(term)
   }
 
   build({ variable, object = variable(), ...arg }: Parameters, builder: PatternBuilder): NodeExpressionResult {

@@ -2,6 +2,7 @@ import type { GraphPointer } from 'clownface'
 import { isBlankNode, isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import type { BindPattern, OperationExpression, Pattern } from 'sparqljs'
+import type { Term } from '@rdfjs/types'
 import type { ModelFactory } from '../ModelFactory.js'
 import type { NodeShape } from '../NodeShape.js'
 import type { PropertyShape } from '../PropertyShape.js'
@@ -17,14 +18,14 @@ export class ExistsExpression extends NodeExpressionBase {
   static fromPointer(pointer: GraphPointer, factory: ModelFactory): ExistsExpression {
     const shapePointer = getOne(pointer, sh.exists)
     if (isGraphPointer(shapePointer.out(sh.path))) {
-      return new ExistsExpression(factory.propertyShape(shapePointer))
+      return new ExistsExpression(pointer.term, factory.propertyShape(shapePointer))
     }
 
-    return new ExistsExpression(factory.nodeShape(shapePointer))
+    return new ExistsExpression(pointer.term, factory.nodeShape(shapePointer))
   }
 
-  constructor(private readonly shape: NodeShape | PropertyShape) {
-    super()
+  constructor(term: Term, private readonly shape: NodeShape | PropertyShape) {
+    super(term)
   }
 
   public get requiresFullContext(): boolean {

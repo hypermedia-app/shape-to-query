@@ -51,17 +51,17 @@ export abstract class FunctionExpression extends NodeExpressionBase {
 
     const expressionList = [...argumentList].map(arg => createExpr.nodeExpression(arg))
     if (isGraphPointer(functionPtr.has(rdf.type, dashSparql.AdditiveExpression))) {
-      return new AdditiveExpression(functionPtr.term, symbol.value, returnType, expressionList)
+      return new AdditiveExpression(pointer.term, functionPtr.term, symbol.value, returnType, expressionList)
     }
     if (isGraphPointer(functionPtr.has(rdf.type, dashSparql.RelationalExpression))) {
-      return new RelationalExpression(functionPtr.term, symbol.value, getParameters(functionPtr.term), expressionList)
+      return new RelationalExpression(pointer.term, functionPtr.term, symbol.value, getParameters(functionPtr.term), expressionList)
     }
     if (functionPtr.term.equals(dashSparql.in) || functionPtr.term.equals(dashSparql.notin)) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return new InExpression(<any>functionPtr.term, expressionList)
+      return new InExpression(pointer.term, <any>functionPtr.term, expressionList)
     }
 
-    return new FunctionCallExpression(functionPtr.term, expressionList, {
+    return new FunctionCallExpression(pointer.term, functionPtr.term, expressionList, {
       symbol,
       parameters: getParameters(functionPtr.term),
       returnType,
@@ -75,13 +75,12 @@ export abstract class FunctionExpression extends NodeExpressionBase {
 
   public readonly symbol: NamedNode | Literal
 
-  public readonly term = $rdf.blankNode()
-
   public constructor(
+    expressionTerm: Term,
     public readonly functionTerm: Term,
     public readonly args: ReadonlyArray<NodeExpression> = [],
     { symbol = functionTerm, returnType, parameters = [], unlimitedParameters = false }: { symbol?: Term; parameters?: ReadonlyArray<Parameter>; returnType?: Term; unlimitedParameters?: boolean } = {}) {
-    super()
+    super(expressionTerm)
 
     if (symbol.termType !== 'Literal' && symbol.termType !== 'NamedNode') {
       throw new Error(`Function must be a NamedNode or a Literal. Got ${symbol.termType}`)
@@ -147,8 +146,8 @@ export abstract class FunctionExpression extends NodeExpressionBase {
 }
 
 export class AdditiveExpression extends FunctionExpression {
-  constructor(term: Term, symbol: string, returnType: Term | undefined, args: NodeExpression[]) {
-    super(term, args, { symbol: $rdf.literal(symbol), returnType })
+  constructor(exprTerm: Term, funcTerm: Term, symbol: string, returnType: Term | undefined, args: NodeExpression[]) {
+    super(exprTerm, funcTerm, args, { symbol: $rdf.literal(symbol), returnType })
   }
 
   protected boundExpression(subject: Term, args: (sparqljs.Expression | sparqljs.Pattern)[]): sparqljs.OperationExpression {
@@ -166,8 +165,8 @@ export class AdditiveExpression extends FunctionExpression {
 }
 
 export class RelationalExpression extends FunctionExpression {
-  constructor(term: Term, symbol: string, parameters: ReadonlyArray<Parameter>, args: NodeExpression[]) {
-    super(term, args, { symbol: $rdf.literal(symbol), parameters, returnType: xsd.boolean })
+  constructor(exprTerm: Term, funcTerm: Term, symbol: string, parameters: ReadonlyArray<Parameter>, args: NodeExpression[]) {
+    super(exprTerm, funcTerm, args, { symbol: $rdf.literal(symbol), parameters, returnType: xsd.boolean })
   }
 
   protected boundExpression(subject: Term, [left, right]: (sparqljs.Expression | sparqljs.Pattern)[]): sparqljs.OperationExpression {
@@ -182,14 +181,14 @@ export class RelationalExpression extends FunctionExpression {
 export class InExpression extends FunctionExpression {
   public readonly negated: boolean
 
-  constructor(term: typeof dashSparql.in | typeof dashSparql.notin, args: NodeExpression[]) {
-    super(term, args, {
+  constructor(exprTerm: Term, funcTerm: typeof dashSparql.in | typeof dashSparql.notin, args: NodeExpression[]) {
+    super(exprTerm, funcTerm, args, {
       symbol: $rdf.literal('IN'),
-      parameters: getParameters(term),
+      parameters: getParameters(funcTerm),
       returnType: xsd.boolean,
       unlimitedParameters: true,
     })
-    this.negated = term.equals(dashSparql.notin)
+    this.negated = funcTerm.equals(dashSparql.notin)
   }
 
   protected boundExpression(subject: NamedNode | Variable, args: (sparqljs.Expression | sparqljs.Tuple)[]): sparqljs.OperationExpression {
