@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@tpluscode/sparql-builder": "^2.0.3",
-    "@types/chai": "^5.0.1",
+    "@types/chai": "^5.2.1",
     "@types/chai-string": "^1.4.5",
     "@types/debug": "^4.1.12",
     "@types/n3": "^1.24.2",
