@@ -1,5 +1,11 @@
 # @hydrofoil/sparql-processor
 
+## 0.1.5
+
+### Patch Changes
+
+- 145b6d8: Handle undefined `graph` property of INSERT/DELTE statement
+
 ## 0.1.4
 
 ### Patch Changes
