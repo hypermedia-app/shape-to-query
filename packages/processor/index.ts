@@ -36,7 +36,7 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
         default: query.from.default.map(term => this.processIriTerm(term)),
         named: query.from.named.map(term => this.processIriTerm(term)),
       },
-      where: this.processPatterns(query.where),
+      where: query.where && this.processPatterns(query.where),
       values: query.values?.map(row => this.processValuesRow(row)),
     }
   }
@@ -100,12 +100,12 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
     return match(operation)
       .with({ updateType: 'insert' }, ({ updateType, ...insert }) => ({
         updateType,
-        graph: this.processGraphOrDefault(insert.graph),
+        graph: insert.graph && this.processGraphOrDefault(insert.graph),
         insert: insert.insert.map(q => this.processQuads(q)),
       }))
       .with({ updateType: 'delete' }, ({ updateType, ...del }) => ({
         updateType,
-        graph: this.processGraphOrDefault(del.graph),
+        graph: del.graph && this.processGraphOrDefault(del.graph),
         delete: del.delete.map(q => this.processQuads(q)),
       }))
       .with({ updateType: 'insertdelete' }, ({ updateType, ...insertDel }) => ({
@@ -124,7 +124,7 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
       }))
       .with({ updateType: 'deletewhere' }, ({ updateType, ...delWhere }) => ({
         updateType,
-        graph: this.processGraphOrDefault(delWhere.graph),
+        graph: delWhere.graph && this.processGraphOrDefault(delWhere.graph),
         delete: delWhere.delete.map(q => this.processQuads(q)),
       }))
       .exhaustive()
@@ -251,7 +251,7 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
 
   processValuesRow(row: sparqljs.ValuePatternRow): sparqljs.ValuePatternRow {
     const entries = Object.entries(row)
-    return Object.fromEntries(entries.map(([key, value]) => [key, this.processTerm(value)]))
+    return Object.fromEntries(entries.map(([key, value]) => [key, value && this.processTerm(value)]))
   }
 
   processTerm<T extends Term>(term: T | sparqljs.Wildcard): T {
