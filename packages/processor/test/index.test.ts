@@ -26,7 +26,7 @@ describe('@hydrofoil/sparql-processor', function () {
       })
     })
 
-    context('replacing triples with other patterns', () => {
+    context('replacing triples with other patterns', function () {
       class FullTextSearchProcessor extends QueryProcessor {
         override processTriple(triple: Triple) {
           if ('termType' in triple.predicate && triple.predicate.value === 'http://example.org/fullTextSearch') {
@@ -46,7 +46,7 @@ describe('@hydrofoil/sparql-processor', function () {
         }
       }
 
-      it('replaces triples with fullTextSearch predicate', () => {
+      it('replaces triples with fullTextSearch predicate', function () {
         const processor = new FullTextSearchProcessor(rdf)
 
         const query = loadQuery('triple-patterns/magic-property.rq')
