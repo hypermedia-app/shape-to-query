@@ -146,6 +146,10 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
     }
   }
 
+  visitNegatedPropertySet({ paths }: Path.NegatedPropertySet, { pathStart, pathEnd = this.variable() }: Context): ShapePatterns {
+    throw new Error('NegatedPropertySet is not yet supported')
+  }
+
   private greedyPath({ path }: Path.ZeroOrMorePath | Path.OneOrMorePath, { pathStart, pathEnd = this.variable() }: Context): ShapePatterns {
     if (!(path instanceof Path.PredicatePath)) {
       throw new Error('Only Predicate Path is supported as child of *OrMorePaths')
