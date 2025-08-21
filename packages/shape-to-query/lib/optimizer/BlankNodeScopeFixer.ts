@@ -26,7 +26,7 @@ export class BlankNodeScopeFixer extends Processor<Environment<TermMapFactory | 
   }
 
   processUnion(union: UnionPattern): Pattern {
-    const patterns = union.patterns.map(pattern => {
+    const patterns = union.patterns.flatMap(pattern => {
       this.incrementScope()
       return this.processPattern(pattern)
     })

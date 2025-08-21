@@ -102,7 +102,7 @@ export class UnionRepeatedPatternsRemover extends Processor {
     return processed
   }
 
-  processBgp(bgp: BgpPattern): BgpPattern {
+  processBgp(bgp: BgpPattern) {
     if (this.union) {
       // remove repeated triples from the bgp
       bgp.triples = bgp.triples.filter(triple => {
