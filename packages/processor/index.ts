@@ -2,7 +2,13 @@ import type sparqljs from 'sparqljs'
 import { match, P } from 'ts-pattern'
 import type { DataFactory, DefaultGraph, Quad_Predicate } from '@rdfjs/types' // eslint-disable-line camelcase
 
-type Term = sparqljs.IriTerm | sparqljs.BlankTerm | sparqljs.LiteralTerm | sparqljs.Variable | sparqljs.QuadTerm | DefaultGraph
+type Term =
+  sparqljs.IriTerm
+  | sparqljs.BlankTerm
+  | sparqljs.LiteralTerm
+  | sparqljs.Variable
+  | sparqljs.QuadTerm
+  | DefaultGraph
 
 export interface Processor {
   process<Q extends sparqljs.SparqlQuery>(query: Q): Q
@@ -136,11 +142,17 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
 
   processQuads(quads: sparqljs.Quads): sparqljs.Quads {
     return match(quads)
-      .with({ type: 'bgp' }, bgp => this.processBgp(bgp))
+      .with({ type: 'bgp' }, bgp => {
+        const processed = this.processBgp(bgp)
+        if (Array.isArray(processed) || processed.type !== 'bgp') {
+          throw new Error('Quads must be transformed to a single bgp pattern')
+        }
+        return processed
+      })
       .with({ type: 'graph' }, (graph): sparqljs.GraphQuads => ({
         type: 'graph',
         name: this.processTerm(graph.name),
-        triples: graph.triples.map(triple => this.processTriple(triple)),
+        triples: graph.triples.map<sparqljs.Triple>(triple => this.processTripleStrict(triple)),
       }))
       .exhaustive()
   }
@@ -174,15 +186,15 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
     return {
       queryType: 'CONSTRUCT',
       ...this.processBaseQuery(query),
-      template: query.template?.map(triple => this.processTriple(triple)),
+      template: query.template?.map(triple => this.processTripleStrict(triple)),
     }
   }
 
   processPatterns(where: sparqljs.Pattern[]): sparqljs.Pattern[] {
-    return where.map((pattern) => this.processPattern(pattern)).filter(Boolean)
+    return where.flatMap((pattern) => this.processPattern(pattern)).filter(Boolean)
   }
 
-  processPattern(pattern: sparqljs.Pattern): sparqljs.Pattern {
+  processPattern(pattern: sparqljs.Pattern): sparqljs.Pattern | sparqljs.Pattern[] {
     return match(pattern)
       .with({ type: 'bgp' }, (bgp) => this.processBgp(bgp))
       .with({ type: 'values' }, values => this.processValues(values))
@@ -291,14 +303,31 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
     return this.factory.literal(literal.value, langOrDt)
   }
 
-  processBgp(bgp: sparqljs.BgpPattern): sparqljs.BgpPattern {
-    return {
-      ...bgp,
-      triples: bgp.triples.map(triple => this.processTriple(triple)),
-    }
+  processBgp({ triples }: sparqljs.BgpPattern): sparqljs.Pattern | sparqljs.Pattern[] {
+    let currentBgp: sparqljs.BgpPattern | undefined
+
+    return triples.reduce((patterns: sparqljs.Pattern[], triple) => {
+      const processedTriple = this.processTriple(triple)
+      if ('subject' in processedTriple) {
+        if (!currentBgp) {
+          currentBgp = { type: 'bgp', triples: [processedTriple] }
+          return [...patterns, currentBgp]
+        }
+
+        currentBgp.triples.push(processedTriple)
+        return patterns
+      }
+
+      currentBgp = undefined
+      if (Array.isArray(processedTriple)) {
+        return [...patterns, ...processedTriple]
+      }
+
+      return [...patterns, processedTriple]
+    }, [])
   }
 
-  processTriple(triple: sparqljs.Triple): sparqljs.Triple {
+  processTriple(triple: sparqljs.Triple): sparqljs.Triple | sparqljs.Pattern | sparqljs.Pattern[] {
     return {
       subject: this.processTerm(triple.subject),
       predicate: match(triple.predicate)
@@ -306,6 +335,14 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
         .otherwise(() => this.processTerm(triple.predicate as Quad_Predicate)), // eslint-disable-line camelcase
       object: this.processTerm(triple.object),
     }
+  }
+
+  private processTripleStrict(triple: sparqljs.Triple): sparqljs.Triple {
+    const processed = this.processTriple(triple)
+    if (!('subject' in processed)) {
+      throw new Error('Triple must be transformed to another triple')
+    }
+    return processed
   }
 
   processPropertyPath(path: sparqljs.PropertyPath): sparqljs.PropertyPath {
@@ -318,7 +355,7 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
     }
   }
 
-  processGroup(group: sparqljs.GroupPattern) : sparqljs.Pattern {
+  processGroup(group: sparqljs.GroupPattern): sparqljs.Pattern {
     return {
       ...group,
       patterns: this.processPatterns(group.patterns),
@@ -354,7 +391,7 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
       .with({ type: 'functionCall' }, functionCall => this.processFunctionCall(functionCall))
       .with({ type: 'aggregate' }, aggregate => aggregate)
       .when(Array.isArray, (tuple: sparqljs.Expression[]) => tuple.map(expression => this.processExpression(expression)))
-      .with({ equals: P.instanceOf(Function) }, term => this.processTerm(term))
+      .with({ termType: P.string }, term => this.processTerm(term))
       .exhaustive()
   }
 
@@ -373,7 +410,13 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
       ...operation,
       args: operation.args.map(arg =>
         match(arg)
-          .when(isPattern, operation => this.processPattern(operation))
+          .when(isPattern, operation => {
+            const processed = this.processPattern(operation)
+            if (Array.isArray(processed)) {
+              throw new Error('Operation argument cannot be transformed to an array')
+            }
+            return processed
+          })
           .otherwise(() => this.processExpression(arg as sparqljs.Expression)),
       ),
     }
