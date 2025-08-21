@@ -5,12 +5,12 @@ import { sparql } from '@tpluscode/sparql-builder'
 import { createVariableSequence } from '../../../lib/variableSequence.js'
 import { TargetObjectsOf } from '../../../model/target/index.js'
 
-describe('model/TargetSubjectsOf', () => {
-  before(() => import('../../sparql.js'))
+describe('model/TargetSubjectsOf', function () {
+  before(function () { return import('../../sparql.js') })
 
   const variable = createVariableSequence('t')
 
-  it('matches single target using pattern', () => {
+  it('matches single target using pattern', function () {
     // given
     const props = $rdf.clownface({ dataset: $rdf.dataset() }).node(
       [schema.children],
@@ -27,7 +27,7 @@ describe('model/TargetSubjectsOf', () => {
     expect(constructClause[0].object).to.equal(focusNode)
   })
 
-  it('matches multiple targets using VALUES', () => {
+  it('matches multiple targets using VALUES', function () {
     // given
     const props = $rdf.clownface({ dataset: $rdf.dataset() }).node(
       [schema.children, schema.parent],

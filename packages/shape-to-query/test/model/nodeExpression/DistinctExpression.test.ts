@@ -12,17 +12,18 @@ import ModelFactory from '../../../model/ModelFactory.js'
 import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
 import { fakeExpression } from './helper.js'
 
-describe('model/nodeExpression/DistinctExpression', () => {
+describe('model/nodeExpression/DistinctExpression', function () {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
 
-  before(() => import('../../sparql.js'))
-  beforeEach(() => {
+  before(function () { return import('../../sparql.js') })
+
+  beforeEach(function () {
     factory = sinon.createStubInstance(ModelFactory)
     factory.nodeExpression.returns(<any>{})
   })
 
-  describe('match', () => {
-    it('returns true when there is a single sh:distinct', () => {
+  describe('match', function () {
+    it('returns true when there is a single sh:distinct', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.distinct, blankNode())
@@ -31,7 +32,7 @@ describe('model/nodeExpression/DistinctExpression', () => {
       expect(DistinctExpression.match(pointer)).to.be.true
     })
 
-    it('returns true when sh:deactivated false', () => {
+    it('returns true when sh:deactivated false', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.distinct, blankNode())
@@ -41,7 +42,7 @@ describe('model/nodeExpression/DistinctExpression', () => {
       expect(DistinctExpression.match(pointer)).to.be.true
     })
 
-    it('returns false when there are multiple sh:distinct', () => {
+    it('returns false when there are multiple sh:distinct', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.distinct, blankNode())
@@ -51,7 +52,7 @@ describe('model/nodeExpression/DistinctExpression', () => {
       expect(DistinctExpression.match(pointer)).to.be.false
     })
 
-    it('returns false when there is no sh:distinct', () => {
+    it('returns false when there is no sh:distinct', function () {
       // given
       const pointer = blankNode()
 
@@ -60,8 +61,8 @@ describe('model/nodeExpression/DistinctExpression', () => {
     })
   })
 
-  describe('fromPointer', () => {
-    it('return an instance of DistinctExpression', () => {
+  describe('fromPointer', function () {
+    it('return an instance of DistinctExpression', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.distinct, blankNode())
@@ -75,8 +76,8 @@ describe('model/nodeExpression/DistinctExpression', () => {
     })
   })
 
-  describe('build', () => {
-    it('creates a DISTINCT subselect', () => {
+  describe('build', function () {
+    it('creates a DISTINCT subselect', function () {
       // given
       const nodes = fakeExpression(({ object }) => [{
         type: 'bgp',
@@ -98,7 +99,7 @@ describe('model/nodeExpression/DistinctExpression', () => {
       }`)
     })
 
-    it('sets DISTINCT on inner subselect', () => {
+    it('sets DISTINCT on inner subselect', function () {
       // given
       const nodes = fakeExpression(({ subject, object }) => SELECT`${subject} ${object}`.WHERE`${object} a ${schema.Article} .`)
       const expr = new DistinctExpression($rdf.blankNode(), nodes)

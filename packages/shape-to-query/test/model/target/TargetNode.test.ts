@@ -5,12 +5,12 @@ import { sparql } from '@tpluscode/sparql-builder'
 import { TargetNode } from '../../../model/target/index.js'
 import { createVariableSequence } from '../../../lib/variableSequence.js'
 
-describe('model/TargetNode', () => {
-  before(() => import('../../sparql.js'))
+describe('model/TargetNode', function () {
+  before(function () { return import('../../sparql.js') })
 
   const variable = createVariableSequence('t')
 
-  it('matches focus node variable with VALUES', () => {
+  it('matches focus node variable with VALUES', function () {
     // given
     const nodes = $rdf.clownface({ dataset: $rdf.dataset() }).node(
       [schema.Person, foaf.Person],

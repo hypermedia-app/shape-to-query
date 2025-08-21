@@ -5,12 +5,12 @@ import { variable } from '../../variable.js'
 import { ClassConstraintComponent } from '../../../model/constraint/class.js'
 import { ex } from '../../namespace.js'
 
-describe('model/constraint/class', () => {
-  before(() => import('../../sparql.js'))
+describe('model/constraint/class', function () {
+  before(function () { return import('../../sparql.js') })
 
-  describe('buildPatterns', () => {
-    context('node shape', () => {
-      it('creates correct pattern', () => {
+  describe('buildPatterns', function () {
+    context('node shape', function () {
+      it('creates correct pattern', function () {
         // given
         const constraint = new ClassConstraintComponent(schema.DefinedTerm)
 
@@ -38,8 +38,8 @@ describe('model/constraint/class', () => {
       })
     })
 
-    context('property shape', () => {
-      it('creates correct pattern', () => {
+    context('property shape', function () {
+      it('creates correct pattern', function () {
         // given
         const constraint = new ClassConstraintComponent(schema.DefinedTerm)
         const valueNode = variable()

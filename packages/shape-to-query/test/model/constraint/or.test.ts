@@ -5,11 +5,12 @@ import { OrConstraintComponent } from '../../../model/constraint/or.js'
 import type { NodeShape } from '../../../model/NodeShape.js'
 import { emptyPatterns } from '../../../lib/shapePatterns.js'
 
-describe('model/constraint/or', () => {
+describe('model/constraint/or', function () {
   use(jestSnapshotPlugin())
-  before(() => import('../../sparql.js'))
 
-  it('combines all inner constraints where in UNION', () => {
+  before(function () { return import('../../sparql.js') })
+
+  it('combines all inner constraints where in UNION', function () {
     // given
     const foo: NodeShape = {
       buildConstraints: () => [{
@@ -56,7 +57,7 @@ describe('model/constraint/or', () => {
     expect(whereClause).toMatchSnapshot()
   })
 
-  it('skips constraints which returned empty', () => {
+  it('skips constraints which returned empty', function () {
     // given
     const foo: NodeShape = {
       buildConstraints: () => [{

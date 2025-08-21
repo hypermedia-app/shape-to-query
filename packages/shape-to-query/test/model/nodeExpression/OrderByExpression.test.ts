@@ -12,16 +12,17 @@ import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
 import { ex } from '../../namespace.js'
 import { fakeExpression } from './helper.js'
 
-describe('model/nodeExpression/OrderByExpression', () => {
+describe('model/nodeExpression/OrderByExpression', function () {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
 
-  before(() => import('../../sparql.js'))
-  beforeEach(() => {
+  before(function () { return import('../../sparql.js') })
+
+  beforeEach(function () {
     factory = sinon.createStubInstance(ModelFactory)
   })
 
-  describe('match', () => {
-    it('returns false when sh:orderBy is missing', () => {
+  describe('match', function () {
+    it('returns false when sh:orderBy is missing', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.nodes, blankNode())
@@ -30,7 +31,7 @@ describe('model/nodeExpression/OrderByExpression', () => {
       expect(OrderByExpression.match(pointer)).to.be.false
     })
 
-    it('returns false when sh:nodes is missing', () => {
+    it('returns false when sh:nodes is missing', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.orderBy, blankNode())
@@ -39,7 +40,7 @@ describe('model/nodeExpression/OrderByExpression', () => {
       expect(OrderByExpression.match(pointer)).to.be.false
     })
 
-    it('returns true when sh:nodes and sh:orderBy are given', () => {
+    it('returns true when sh:nodes and sh:orderBy are given', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.orderBy, blankNode())
@@ -49,7 +50,7 @@ describe('model/nodeExpression/OrderByExpression', () => {
       expect(OrderByExpression.match(pointer)).to.be.true
     })
 
-    it('returns true when sh:deactivated false', () => {
+    it('returns true when sh:deactivated false', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.orderBy, blankNode())
@@ -61,8 +62,8 @@ describe('model/nodeExpression/OrderByExpression', () => {
     })
   })
 
-  describe('fromPointer', () => {
-    it('throws when there is no sh:nodes', () => {
+  describe('fromPointer', function () {
+    it('throws when there is no sh:nodes', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.orderBy, blankNode())
@@ -74,7 +75,7 @@ describe('model/nodeExpression/OrderByExpression', () => {
       }).to.throw
     })
 
-    it('throws when there is no sh:orderBy', () => {
+    it('throws when there is no sh:orderBy', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.nodes, blankNode())
@@ -86,7 +87,7 @@ describe('model/nodeExpression/OrderByExpression', () => {
       }).to.throw
     })
 
-    it('calls factory to construct sh:nodes and sh:orderBy', () => {
+    it('calls factory to construct sh:nodes and sh:orderBy', function () {
       // given
       const nodes = blankNode('nodes')
       const orderBy = blankNode('orderBy')
@@ -102,7 +103,7 @@ describe('model/nodeExpression/OrderByExpression', () => {
       expect(factory.nodeExpression).to.have.been.calledWith(sinon.match(actual => actual.term.equals(orderBy.term)))
     })
 
-    it('sets descending when sh:desc === true', () => {
+    it('sets descending when sh:desc === true', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.nodes, null)
@@ -116,7 +117,7 @@ describe('model/nodeExpression/OrderByExpression', () => {
       expect(expr.descending).to.be.true
     })
 
-    it('sets descending when sh:desc is not defined', () => {
+    it('sets descending when sh:desc is not defined', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.nodes, null)
@@ -130,8 +131,8 @@ describe('model/nodeExpression/OrderByExpression', () => {
     })
   })
 
-  describe('build', () => {
-    it('creates an ordered subquery', () => {
+  describe('build', function () {
+    it('creates an ordered subquery', function () {
       // given
       const orderBy = fakeExpression(({ subject, object }) => [{
         type: 'bgp',
@@ -167,7 +168,7 @@ describe('model/nodeExpression/OrderByExpression', () => {
       ORDER BY ?bar`)
     })
 
-    it('creates an ordered subquery with a root focus node', () => {
+    it('creates an ordered subquery with a root focus node', function () {
       // given
       const orderBy = fakeExpression(({ subject, object }) => [{
         type: 'bgp',
@@ -204,7 +205,7 @@ describe('model/nodeExpression/OrderByExpression', () => {
       ORDER BY ?bar`)
     })
 
-    it('creates descending order', () => {
+    it('creates descending order', function () {
       // given
       const orderBy = fakeExpression(({ subject, object }) => [{
         type: 'bgp',
@@ -240,7 +241,7 @@ describe('model/nodeExpression/OrderByExpression', () => {
       ORDER BY desc(?bar)`)
     })
 
-    it('appends order to a root subquery expression', () => {
+    it('appends order to a root subquery expression', function () {
       // given
       const orderBy = fakeExpression(({ subject, object }) => [{
         type: 'bgp',

@@ -20,7 +20,7 @@ const tbbt = $rdf.namespace('http://localhost:8080/data/person/')
 const parser = new sparql.Parser()
 const generator = new sparql.Generator()
 
-describe('@hydrofoil/shape-to-query', () => {
+describe('@hydrofoil/shape-to-query', function () {
   use(jestSnapshotPlugin())
 
   let store: oxigraph.Store
@@ -40,8 +40,8 @@ describe('@hydrofoil/shape-to-query', () => {
     }) as Quad[])
   }
 
-  context('executing queries', () => {
-    it('sh:zeroOrMorePath includes self node', async () => {
+  context('executing queries', function () {
+    it('sh:zeroOrMorePath includes self node', async function () {
       // given
       const shape = parse`<>
         ${sh.property} [
@@ -66,7 +66,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('sh:oneOrMore returns "second level" properties', async () => {
+    it('sh:oneOrMore returns "second level" properties', async function () {
       // given
       const shape = parse`<>
         ${sh.property} [
@@ -90,7 +90,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('sh:zeroOrOne returns self and child properties', async () => {
+    it('sh:zeroOrOne returns self and child properties', async function () {
       // given
       const shape = parse`<>
         ${sh.property} [
@@ -115,7 +115,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('sh:alternativePath chained last in a sequence', async () => {
+    it('sh:alternativePath chained last in a sequence', async function () {
       // given
       const shape = parse`<>
         ${sh.property} [
@@ -152,7 +152,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('sh:hasValues', async () => {
+    it('sh:hasValues', async function () {
       // given
       const shape = parse`<>
         ${sh.property} [
@@ -171,7 +171,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(subjects[0].value).to.eq(tbbt('leonard-hofstadter').value)
     })
 
-    it('sh:alternativePath chained first in a sequence', async () => {
+    it('sh:alternativePath chained first in a sequence', async function () {
       // given
       const shape = parse`<> 
         ${sh.property} [
@@ -204,7 +204,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('two sh:alternativePath in a sequence', async () => {
+    it('two sh:alternativePath in a sequence', async function () {
       // given
       const shape = parse`<> 
         ${sh.property} [
@@ -240,7 +240,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('mix of sh:target', async () => {
+    it('mix of sh:target', async function () {
       // given
       const shape = parse`
         <>
@@ -274,7 +274,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result.toCanonical()).to.eq($rdf.dataset.toCanonical(expected))
     })
 
-    it('sh:or merges multiple reused shapes in logical sum', async () => {
+    it('sh:or merges multiple reused shapes in logical sum', async function () {
       // given
       const shape = parse`
         <> 
@@ -304,7 +304,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('sh:or nested in sh:node', async () => {
+    it('sh:or nested in sh:node', async function () {
       // given
       const shape = parse`
         <> 
@@ -333,7 +333,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('sh:hasValue filters entire focus nodes', async () => { // given
+    it('sh:hasValue filters entire focus nodes', async function () { // given
       const shape = parse`
         <> 
           ${sh.property} [ 
@@ -357,7 +357,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('filtering property by sh:in', async () => {
+    it('filtering property by sh:in', async function () {
       const shape = parse`
         <> 
           ${sh.property} [ 
@@ -383,7 +383,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('filtering deep inside sh:node', async () => {
+    it('filtering deep inside sh:node', async function () {
       const shape = parse`
         <> 
           ${sh.targetClass} ${schema.Person} ;
@@ -425,7 +425,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(filtered).to.equalDataset(expected)
     })
 
-    it('chaining properties from a subquery with sh:node', async () => {
+    it('chaining properties from a subquery with sh:node', async function () {
       // given
       const shape = parse`
         <> 
@@ -466,7 +466,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('complex sparql functions', async () => {
+    it('complex sparql functions', async function () {
       // given
       const shape = parse`
         <> 
@@ -529,7 +529,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('union of triple rules', async () => {
+    it('union of triple rules', async function () {
       // given
       const shape = parse`
         <> 
@@ -567,7 +567,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('union of property value rules', async () => {
+    it('union of property value rules', async function () {
       // given
       const shape = parse`
         <> 
@@ -611,7 +611,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('ensure VALUES when sh:this is inside UNION', async () => {
+    it('ensure VALUES when sh:this is inside UNION', async function () {
       // given
       const shape = parse`
         <> 
@@ -643,7 +643,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(result).to.equalDataset(expected)
     })
 
-    it('node expression target subquery', () => {
+    it('node expression target subquery', function () {
       // given
       const shape = parse`
         <> 

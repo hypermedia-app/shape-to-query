@@ -4,12 +4,12 @@ import { expect } from 'chai'
 import { TargetClass } from '../../../model/target/index.js'
 import { createVariableSequence } from '../../../lib/variableSequence.js'
 
-describe('model/TargetClass', () => {
-  before(() => import('../../sparql.js'))
+describe('model/TargetClass', function () {
+  before(function () { return import('../../sparql.js') })
 
   const variable = createVariableSequence('c')
 
-  it("matches focus node's single rdf:type using pattern", () => {
+  it("matches focus node's single rdf:type using pattern", function () {
     // given
     const classes = $rdf.clownface({ dataset: $rdf.dataset() }).node(
       [schema.Person],
@@ -31,7 +31,7 @@ describe('model/TargetClass', () => {
     expect(constructClause).to.deep.equal([$rdf.quad(focusNode, rdf.type, schema.Person)])
   })
 
-  it("matches focus node's single rdf:type using VALUES", () => {
+  it("matches focus node's single rdf:type using VALUES", function () {
     // given
     const classes = $rdf.clownface({ dataset: $rdf.dataset() }).node(
       [schema.Person, foaf.Person],

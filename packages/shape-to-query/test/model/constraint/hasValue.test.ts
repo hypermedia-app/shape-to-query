@@ -4,8 +4,8 @@ import { ex } from '../../namespace.js'
 import { HasValueConstraintComponent } from '../../../model/constraint/hasValue.js'
 import { variable } from '../../variable.js'
 
-describe('model/constraint/hasValue', () => {
-  it('returns empty patterns when used in the root shape', () => {
+describe('model/constraint/hasValue', function () {
+  it('returns empty patterns when used in the root shape', function () {
     // given
     const constraint = new HasValueConstraintComponent([ex.foo, ex.bar])
 
@@ -21,7 +21,7 @@ describe('model/constraint/hasValue', () => {
     expect(whereClause).to.be.empty
   })
 
-  it('generates equality filter for single term', () => {
+  it('generates equality filter for single term', function () {
     // given
     const constraint = new HasValueConstraintComponent([ex.foo])
     const valueNode = variable()
@@ -46,7 +46,7 @@ describe('model/constraint/hasValue', () => {
       }])
   })
 
-  it('generates EXISTS filter for multiple terms', () => {
+  it('generates EXISTS filter for multiple terms', function () {
     // given
     const constraint = new HasValueConstraintComponent([ex.bar, ex.baz])
 

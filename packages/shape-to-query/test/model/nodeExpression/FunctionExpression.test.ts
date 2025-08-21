@@ -22,14 +22,16 @@ import ModelFactory from '../../../model/ModelFactory.js'
 import { BIND } from '../../pattern.js'
 import { combinedNRE, fakeExpression } from './helper.js'
 
-describe('model/nodeExpression/FunctionExpression', () => {
+describe('model/nodeExpression/FunctionExpression', function () {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
 
-  before(() => import('../../sparql.js'))
-  beforeEach(() => {
+  before(function () { return import('../../sparql.js') })
+
+  beforeEach(function () {
     factory = sinon.createStubInstance(ModelFactory)
   })
-  before(() => {
+
+  before(function () {
     vocabulary.node(ex.function)
       .addOut(rdf.type, sh.Function)
 
@@ -45,8 +47,8 @@ describe('model/nodeExpression/FunctionExpression', () => {
       })
   })
 
-  describe('match', () => {
-    it('returns false when expression has multiple predicates', () => {
+  describe('match', function () {
+    it('returns false when expression has multiple predicates', function () {
       // given
       const pointer = blankNode()
         .addOut(dashSparql.and, blankNode())
@@ -57,8 +59,8 @@ describe('model/nodeExpression/FunctionExpression', () => {
     })
 
     ;[true, false, undefined].forEach(deactivated => {
-      describe(`with sh:deactivated ${deactivated}`, () => {
-        it('returns true when expression has a single predicate of known sh:Function', () => {
+      describe(`with sh:deactivated ${deactivated}`, function () {
+        it('returns true when expression has a single predicate of known sh:Function', function () {
           // given
           const pointer = blankNode()
             .addList(dashSparql.and, blankNode())
@@ -70,7 +72,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
           expect(FunctionExpression.match(pointer)).to.be.true
         })
 
-        it('returns true when expression has a single predicate of an arbitrary predicate', () => {
+        it('returns true when expression has a single predicate of an arbitrary predicate', function () {
           // given
           const pointer = blankNode()
             .addList(xsd.int, blankNode())
@@ -82,7 +84,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
           expect(FunctionExpression.match(pointer)).to.be.true
         })
 
-        it('returns false when expression has a single predicate of known sh:Function but not a list', () => {
+        it('returns false when expression has a single predicate of known sh:Function but not a list', function () {
           // given
           const pointer = blankNode()
             .addOut(dashSparql.and, blankNode())
@@ -97,8 +99,8 @@ describe('model/nodeExpression/FunctionExpression', () => {
     })
   })
 
-  describe('fromPointer', () => {
-    context('throws when arguments are', () => {
+  describe('fromPointer', function () {
+    context('throws when arguments are', function () {
       const cases: Array<[string, GraphPointer]> = [
         ['non-list blank node', blankNode().addOut(ex.function, null)],
         ['a literal', blankNode().addOut(ex.function, 10)],
@@ -106,13 +108,13 @@ describe('model/nodeExpression/FunctionExpression', () => {
       ]
 
       for (const [name, pointer] of cases) {
-        it(name, () => {
+        it(name, function () {
           expect(() => FunctionExpression.fromPointer(pointer, factory)).to.throw()
         })
       }
     })
 
-    it('returns new function with URI symbol', () => {
+    it('returns new function with URI symbol', function () {
       // given
       const pointer = blankNode()
         .addList(ex.function, ['A', 'B'])
@@ -125,7 +127,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
       expect(expr.args).to.have.length(2)
     })
 
-    it('returns new function with built-in symbol', () => {
+    it('returns new function with built-in symbol', function () {
       // given
       const pointer = blankNode()
         .addList(dashSparql.substr, ['A', 'B', 'C'])
@@ -138,7 +140,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
       expect(expr.args).to.have.length(3)
     })
 
-    it('returns new function with return type', () => {
+    it('returns new function with return type', function () {
       // given
       const pointer = blankNode()
         .addList(dashSparql.struuid, [])
@@ -150,7 +152,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
       expect(expr.returnType).to.deep.eq(xsd.string)
     })
 
-    it('returns new function from arbitrary IRI', () => {
+    it('returns new function from arbitrary IRI', function () {
       // given
       const pointer = blankNode()
         .addList(xsd.int, [])
@@ -171,7 +173,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
     ]
 
     for (const func of additiveExpressions) {
-      it(`returns additive expression for ${func.value}`, () => {
+      it(`returns additive expression for ${func.value}`, function () {
         // given
         const pointer = blankNode()
           .addList(func, [])
@@ -194,7 +196,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
     ]
 
     for (const func of relationalExpressions) {
-      it(`returns relational expression for ${func.value}`, () => {
+      it(`returns relational expression for ${func.value}`, function () {
         // given
         const pointer = blankNode()
           .addList(func, ['A', 'B'])
@@ -207,7 +209,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
       })
     }
 
-    it('throws when InExpression has no arguments', () => {
+    it('throws when InExpression has no arguments', function () {
       // given
       const pointer = blankNode()
         .addList(dashSparql.in, [])
@@ -216,7 +218,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
       expect(() => FunctionExpression.fromPointer(pointer, factory)).to.throw()
     })
 
-    it('returns a InExpression', () => {
+    it('returns a InExpression', function () {
       // given
       const pointer = blankNode()
         .addList(dashSparql.in, ['A'])
@@ -228,8 +230,8 @@ describe('model/nodeExpression/FunctionExpression', () => {
       expect(expr).to.be.instanceof(InExpression)
     })
 
-    context('optional arguments', () => {
-      it('throws when there are too few arguments', () => {
+    context('optional arguments', function () {
+      it('throws when there are too few arguments', function () {
         // given
         const pointer = blankNode()
           .addList(ex.functionWithOptionalArgs, ['A'])
@@ -238,7 +240,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
         expect(() => FunctionExpression.fromPointer(pointer, factory)).to.throw()
       })
 
-      it('throws when there are too many arguments', () => {
+      it('throws when there are too many arguments', function () {
         // given
         const pointer = blankNode()
           .addList(ex.functionWithOptionalArgs, ['A', 'B', 'C', 'D', 'E'])
@@ -247,7 +249,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
         expect(() => FunctionExpression.fromPointer(pointer, factory)).to.throw()
       })
 
-      it('creates an instance with optional argument', () => {
+      it('creates an instance with optional argument', function () {
         // given
         const pointer = blankNode()
           .addList(ex.functionWithOptionalArgs, ['A', 'B', 'C'])
@@ -259,7 +261,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
         expect(expr.args).to.have.length(3)
       })
 
-      it('creates an instance without optional argument', () => {
+      it('creates an instance without optional argument', function () {
         // given
         const pointer = blankNode()
           .addList(ex.functionWithOptionalArgs, ['A', 'B'])
@@ -271,7 +273,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
         expect(expr.args).to.have.length(2)
       })
 
-      it('of BNODE', () => {
+      it('of BNODE', function () {
         const pointer = blankNode()
           .addList(dashSparql.bnode, [])
 
@@ -280,7 +282,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
         }).not.to.throw()
       })
 
-      it('of REPLACE', () => {
+      it('of REPLACE', function () {
         const pointer = blankNode()
           .addList(dashSparql.replace, ['arg', 'pattern', 'replacement'])
 
@@ -291,9 +293,9 @@ describe('model/nodeExpression/FunctionExpression', () => {
     })
   })
 
-  describe('FunctionCallExpression', () => {
-    describe('constructor', () => {
-      it('throws when number of arguments does not match', () => {
+  describe('FunctionCallExpression', function () {
+    describe('constructor', function () {
+      it('throws when number of arguments does not match', function () {
         expect(() =>
           new FunctionCallExpression($rdf.blankNode(), ex.function, [], {
             parameters: [{ optional: false }, { optional: false }],
@@ -302,8 +304,8 @@ describe('model/nodeExpression/FunctionExpression', () => {
       })
     })
 
-    describe('build', () => {
-      it('builds patterns with built-in function "call"', () => {
+    describe('build', function () {
+      it('builds patterns with built-in function "call"', function () {
         // given
         const expr = new FunctionCallExpression($rdf.blankNode(), ex.function, [], { symbol: $rdf.literal('uuid'), returnType: xsd.string })
 
@@ -318,7 +320,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
         expect(combinedNRE(result)).to.be.query(sparql`SELECT ?foo WHERE { BIND(uuid() as ?foo) }`)
       })
 
-      it('builds patterns with custom function "call"', () => {
+      it('builds patterns with custom function "call"', function () {
         // given
         const expr = new FunctionCallExpression($rdf.blankNode(), ex.search, [], { returnType: xsd.string })
 
@@ -335,9 +337,9 @@ describe('model/nodeExpression/FunctionExpression', () => {
     })
   })
 
-  describe('InExpression', () => {
-    describe('build', () => {
-      it('generates IN expression', () => {
+  describe('InExpression', function () {
+    describe('build', function () {
+      it('generates IN expression', function () {
         // given
         const exprList = [
           fakeExpression(undefined, () => ({ inline: $rdf.literal('A'), patterns: [] })),
@@ -357,7 +359,7 @@ describe('model/nodeExpression/FunctionExpression', () => {
         expect(combinedNRE(result)).to.be.query(sparql`SELECT ?bar WHERE { BIND(?foo IN ( 'A', 'B', 'C' ) as ?bar) }`)
       })
 
-      it('generates NOT IN expression', () => {
+      it('generates NOT IN expression', function () {
         // given
         const exprList = [
           fakeExpression(undefined, () => ({ inline: $rdf.literal('A'), patterns: [] })),
@@ -379,9 +381,9 @@ describe('model/nodeExpression/FunctionExpression', () => {
     })
   })
 
-  describe('AdditiveExpression', () => {
-    describe('build', () => {
-      it('combines any number of arguments', () => {
+  describe('AdditiveExpression', function () {
+    describe('build', function () {
+      it('combines any number of arguments', function () {
         // given
         const expressions: NodeExpression[] = [
           fakeExpression(({ object }) => [BIND('A').as(object)]),
@@ -409,8 +411,8 @@ describe('model/nodeExpression/FunctionExpression', () => {
     })
   })
 
-  describe('RelationalExpression', () => {
-    it('generates an operator pattern for its arguments', () => {
+  describe('RelationalExpression', function () {
+    it('generates an operator pattern for its arguments', function () {
       // given
       const args = [
         fakeExpression(({ object }) => [BIND('A').as(object)]),

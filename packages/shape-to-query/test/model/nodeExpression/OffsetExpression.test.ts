@@ -12,17 +12,18 @@ import ModelFactory from '../../../model/ModelFactory.js'
 import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
 import { fakeExpression } from './helper.js'
 
-describe('model/nodeExpression/OffsetExpression', () => {
+describe('model/nodeExpression/OffsetExpression', function () {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
 
-  before(() => import('../../sparql.js'))
-  beforeEach(() => {
+  before(function () { return import('../../sparql.js') })
+
+  beforeEach(function () {
     factory = sinon.createStubInstance(ModelFactory)
     factory.nodeExpression.returns(<any>{})
   })
 
-  describe('match', () => {
-    it('returns false when sh:offset is missing', () => {
+  describe('match', function () {
+    it('returns false when sh:offset is missing', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.nodes, blankNode())
@@ -31,7 +32,7 @@ describe('model/nodeExpression/OffsetExpression', () => {
       expect(OffsetExpression.match(pointer)).to.be.false
     })
 
-    it('returns false when sh:nodes is missing', () => {
+    it('returns false when sh:nodes is missing', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.offset, 5)
@@ -40,7 +41,7 @@ describe('model/nodeExpression/OffsetExpression', () => {
       expect(OffsetExpression.match(pointer)).to.be.false
     })
 
-    it('returns false when sh:offset is not a number', () => {
+    it('returns false when sh:offset is not a number', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.offset, '5')
@@ -50,7 +51,7 @@ describe('model/nodeExpression/OffsetExpression', () => {
       expect(OffsetExpression.match(pointer)).to.be.false
     })
 
-    it('returns true when sh:nodes and sh:offset are given', () => {
+    it('returns true when sh:nodes and sh:offset are given', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.offset, 5)
@@ -60,7 +61,7 @@ describe('model/nodeExpression/OffsetExpression', () => {
       expect(OffsetExpression.match(pointer)).to.be.true
     })
 
-    it('returns true when sh:deactivated false', () => {
+    it('returns true when sh:deactivated false', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.offset, 5)
@@ -72,8 +73,8 @@ describe('model/nodeExpression/OffsetExpression', () => {
     })
   })
 
-  describe('fromPointer', () => {
-    it('throws when offset is not a number', () => {
+  describe('fromPointer', function () {
+    it('throws when offset is not a number', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.offset, '5')
@@ -86,7 +87,7 @@ describe('model/nodeExpression/OffsetExpression', () => {
       }).to.throw()
     })
 
-    it('throws when offset is not a literal', () => {
+    it('throws when offset is not a literal', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.offset, blankNode())
@@ -99,7 +100,7 @@ describe('model/nodeExpression/OffsetExpression', () => {
       }).to.throw()
     })
 
-    it('return an instance of OffsetExpression', () => {
+    it('return an instance of OffsetExpression', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.offset, 5)
@@ -115,8 +116,8 @@ describe('model/nodeExpression/OffsetExpression', () => {
     })
   })
 
-  describe('build', () => {
-    it('creates a subselect with offset', () => {
+  describe('build', function () {
+    it('creates a subselect with offset', function () {
       // given
       const offset = 10
       const nodes = fakeExpression(({ object }) => [{
@@ -140,7 +141,7 @@ describe('model/nodeExpression/OffsetExpression', () => {
       OFFSET 10`)
     })
 
-    it('sets offset on inner subselect', () => {
+    it('sets offset on inner subselect', function () {
       // given
       const offset = 10
       const nodes = fakeExpression(({ subject, object }) => SELECT`${subject} ${object}`.WHERE`${object} a ${schema.Article} .`)

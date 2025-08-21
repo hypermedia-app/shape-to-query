@@ -11,13 +11,13 @@ import { ex } from '../namespace.js'
 import type { Rule } from '../../model/rule/Rule.js'
 import type { Target } from '../../model/target/index.js'
 
-describe('model/NodeShape', () => {
+describe('model/NodeShape', function () {
   const rootPatterns = []
 
-  before(() => import('../sparql.js'))
+  before(function () { return import('../sparql.js') })
 
-  describe('targets', () => {
-    it('unions all targets in where clause', () => {
+  describe('targets', function () {
+    it('unions all targets in where clause', function () {
       // given
       const focusNode = $rdf.variable('s')
       const targets: Target[] = [1, 2, 3].map(i => ({
@@ -54,7 +54,7 @@ describe('model/NodeShape', () => {
       }])
     })
 
-    it('combines targets constructs', () => {
+    it('combines targets constructs', function () {
       // given
       const targets = [{
         buildPatterns: ({ focusNode }) => ({
@@ -80,7 +80,7 @@ describe('model/NodeShape', () => {
       ])
     })
 
-    it('ignores targets when focus node is named node', () => {
+    it('ignores targets when focus node is named node', function () {
       // given
       const targets = [{
         buildPatterns: ({ focusNode }) => ({
@@ -105,8 +105,8 @@ describe('model/NodeShape', () => {
     })
   })
 
-  describe('properties', () => {
-    it('unions all where properties', () => {
+  describe('properties', function () {
+    it('unions all where properties', function () {
       // given
       const properties: PropertyShape[] = [{
         buildConstraints: () => [],
@@ -146,9 +146,9 @@ describe('model/NodeShape', () => {
     })
   })
 
-  describe('constraints', () => {
-    describe('sh:or', () => {
-      it('skips alternatives with no properties', () => {
+  describe('constraints', function () {
+    describe('sh:or', function () {
+      it('skips alternatives with no properties', function () {
         // given
         const or = new OrConstraintComponent([
           new NodeShape([], [], [], []),
@@ -166,8 +166,8 @@ describe('model/NodeShape', () => {
     })
   })
 
-  describe('rules', () => {
-    it('unions them', () => {
+  describe('rules', function () {
+    it('unions them', function () {
       const rules: Rule[] = [{
         buildPatterns: () => ({ constructClause: [], whereClause: [{ type: 'comment', text: 'A' }] }),
       }, {

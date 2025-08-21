@@ -15,16 +15,17 @@ import { emptyPatterns } from '../../../lib/shapePatterns.js'
 import { ex } from '../../namespace.js'
 import { combinedNRE, fakeExpression } from './helper.js'
 
-describe('model/nodeExpression/FilterShapeExpression', () => {
+describe('model/nodeExpression/FilterShapeExpression', function () {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
 
-  before(() => import('../../sparql.js'))
-  beforeEach(() => {
+  before(function () { return import('../../sparql.js') })
+
+  beforeEach(function () {
     factory = sinon.createStubInstance(ModelFactory)
   })
 
-  describe('match', () => {
-    it('returns true when node has one sh:filterShape', () => {
+  describe('match', function () {
+    it('returns true when node has one sh:filterShape', function () {
       // given
       const expr = blankNode()
         .addOut(sh.filterShape, schema.knows)
@@ -33,7 +34,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       expect(FilterShapeExpression.match(expr)).to.be.true
     })
 
-    it('returns true when sh:deactivated false', () => {
+    it('returns true when sh:deactivated false', function () {
       // given
       const expr = blankNode()
         .addOut(sh.filterShape, schema.knows)
@@ -43,7 +44,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       expect(FilterShapeExpression.match(expr)).to.be.true
     })
 
-    it('returns false when node has multiple sh:filterShape', () => {
+    it('returns false when node has multiple sh:filterShape', function () {
       // given
       const expr = blankNode()
         .addOut(sh.filterShape)
@@ -53,7 +54,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       expect(FilterShapeExpression.match(expr)).to.be.false
     })
 
-    it('returns false when node has zero sh:filterShape', () => {
+    it('returns false when node has zero sh:filterShape', function () {
       // given
       const expr = blankNode()
 
@@ -62,8 +63,8 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
     })
   })
 
-  describe('filterShape', () => {
-    it('constructs without sh:nodes', () => {
+  describe('filterShape', function () {
+    it('constructs without sh:nodes', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.filterShape)
@@ -75,7 +76,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       expect(expr.nodes).to.be.instanceof(FocusNodeExpression)
     })
 
-    it('constructs with sh:nodes', () => {
+    it('constructs with sh:nodes', function () {
       // given
       const nodeShape = {}
       factory.nodeExpression.returns(<any>nodeShape)
@@ -93,7 +94,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       expect(expr.nodes).to.be.eq(nodeShape)
     })
 
-    it('throws when sh:nodes has multiple values', () => {
+    it('throws when sh:nodes has multiple values', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.filterShape, blankNode())
@@ -107,7 +108,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       }).to.throw()
     })
 
-    it('throws when sh:filterShape has multiple values', () => {
+    it('throws when sh:filterShape has multiple values', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.filterShape, blankNode())
@@ -120,7 +121,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       }).to.throw()
     })
 
-    it('throws when sh:path is missing', () => {
+    it('throws when sh:path is missing', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.nodes, blankNode())
@@ -133,8 +134,8 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
     })
   })
 
-  describe('buildPatterns', () => {
-    it('creates constraints for focus node subject', () => {
+  describe('buildPatterns', function () {
+    it('creates constraints for focus node subject', function () {
       // given
       const shape: NodeShape = {
         buildPatterns: () => emptyPatterns,
@@ -161,7 +162,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       }`)
     })
 
-    it('creates constraints for properties of focus node', () => {
+    it('creates constraints for properties of focus node', function () {
       // given
       const shape: NodeShape = {
         buildPatterns: () => ({
@@ -190,7 +191,7 @@ describe('model/nodeExpression/FilterShapeExpression', () => {
       }`)
     })
 
-    it('creates constraints for values selected by sh:nodes subject', () => {
+    it('creates constraints for values selected by sh:nodes subject', function () {
       // given
       const shape: NodeShape = {
         buildPatterns: () => <any>{},

@@ -5,11 +5,11 @@ import { variable } from '../../variable.js'
 import { RangeConstraintComponent } from '../../../model/constraint/RangeConstraintComponent.js'
 import { ex } from '../../namespace.js'
 
-describe('model/constraint/ranges', () => {
-  before(() => import('../../sparql.js'))
+describe('model/constraint/ranges', function () {
+  before(function () { return import('../../sparql.js') })
 
-  describe('fromShape', () => {
-    it('does not create a constraint when there is no range', () => {
+  describe('fromShape', function () {
+    it('does not create a constraint when there is no range', function () {
       // given
       const shape = $rdf.termMap()
 
@@ -21,8 +21,8 @@ describe('model/constraint/ranges', () => {
     })
   })
 
-  describe('buildPatterns', () => {
-    context('node shape', () => {
+  describe('buildPatterns', function () {
+    context('node shape', function () {
       const five = $rdf.literal('5', xsd.integer)
       const components = [
         { constraint: new RangeConstraintComponent(sh.MinInclusiveConstraintComponent, five), operator: '>=' },
@@ -31,7 +31,7 @@ describe('model/constraint/ranges', () => {
         { constraint: new RangeConstraintComponent(sh.MaxExclusiveConstraintComponent, five), operator: '<' },
       ]
       for (const { constraint, operator } of components) {
-        it(`creates correct pattern for ${operator}`, () => {
+        it(`creates correct pattern for ${operator}`, function () {
           // given
           const focusNode = variable()
           const valueNode = focusNode
@@ -61,7 +61,7 @@ describe('model/constraint/ranges', () => {
       }
     })
 
-    context('property shape', () => {
+    context('property shape', function () {
       const five = $rdf.literal('5', xsd.integer)
       const components = [
         { constraint: new RangeConstraintComponent(sh.MinInclusiveConstraintComponent, five), operator: '>=' },
@@ -70,7 +70,7 @@ describe('model/constraint/ranges', () => {
         { constraint: new RangeConstraintComponent(sh.MaxExclusiveConstraintComponent, five), operator: '<' },
       ]
       for (const { constraint, operator } of components) {
-        it(`creates correct pattern for ${operator}`, () => {
+        it(`creates correct pattern for ${operator}`, function () {
           // given
           const valueNode = variable()
 

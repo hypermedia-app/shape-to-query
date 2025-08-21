@@ -10,11 +10,11 @@ import type { PropertyValueRule } from '../../model/rule/PropertyValueRule.js'
 import { ex } from '../namespace.js'
 import { BIND } from '../pattern.js'
 
-describe('model/PropertyShape', () => {
-  before(() => import('../sparql.js'))
+describe('model/PropertyShape', function () {
+  before(function () { return import('../sparql.js') })
 
-  describe('buildPatterns', () => {
-    it('creates path patterns', () => {
+  describe('buildPatterns', function () {
+    it('creates path patterns', function () {
       // given
       const path = namedNode(schema.knows)
       const shape = new PropertyShape(path)
@@ -39,7 +39,7 @@ describe('model/PropertyShape', () => {
       expect(constructClause).to.deep.equal([$rdf.quad(focusNode, schema.knows, objectNode)])
     })
 
-    it('binds rule patterns, unioned', () => {
+    it('binds rule patterns, unioned', function () {
       // given
       const path = namedNode(schema.knows)
       const rules: PropertyValueRule[] = [{
@@ -87,8 +87,8 @@ describe('model/PropertyShape', () => {
     })
   })
 
-  describe('buildConstraints', () => {
-    it('returns empty string when property has no constraints', () => {
+  describe('buildConstraints', function () {
+    it('returns empty string when property has no constraints', function () {
       // given
       const path = namedNode(schema.knows)
       const shape = new PropertyShape(path)

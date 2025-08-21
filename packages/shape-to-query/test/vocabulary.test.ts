@@ -3,7 +3,7 @@ import { dashSparql } from '@tpluscode/rdf-ns-builders/loose'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import vocabulary from '../vocabulary.js'
 
-describe('vocabulary', () => {
+describe('vocabulary', function () {
   const additiveExpressions = [
     dashSparql.and,
     dashSparql.or,
@@ -14,7 +14,7 @@ describe('vocabulary', () => {
   ]
 
   for (const func of additiveExpressions) {
-    it(`${func.value} is an additive expression`, () => {
+    it(`${func.value} is an additive expression`, function () {
       expect(vocabulary.node(func).has(rdf.type, dashSparql.AdditiveExpression).term)
         .to.deep.eq(func)
     })
@@ -30,7 +30,7 @@ describe('vocabulary', () => {
   ]
 
   for (const func of relationalExpressions) {
-    it(`${func.value} is an relational expression`, () => {
+    it(`${func.value} is an relational expression`, function () {
       expect(vocabulary.node(func).has(rdf.type, dashSparql.RelationalExpression).term)
         .to.deep.eq(func)
     })

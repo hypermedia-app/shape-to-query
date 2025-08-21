@@ -4,8 +4,8 @@ import { InConstraintComponent } from '../../../model/constraint/in.js'
 import { ex } from '../../namespace.js'
 import { variable } from '../../variable.js'
 
-describe('model/constraint/in', () => {
-  it('returns empty patterns when used in the root shape', () => {
+describe('model/constraint/in', function () {
+  it('returns empty patterns when used in the root shape', function () {
     // given
     const constraint = new InConstraintComponent([ex.foo, ex.bar])
 

@@ -12,11 +12,11 @@ import ModelFactory from '../../../model/ModelFactory.js'
 import { blankNode } from '../../nodeFactory.js'
 import { ex } from '../../namespace.js'
 
-describe('model/constraint/expression', () => {
-  before(() => import('../../sparql.js'))
+describe('model/constraint/expression', function () {
+  before(function () { return import('../../sparql.js') })
 
-  describe('buildPatterns', () => {
-    it('returns filter with inline expression', () => {
+  describe('buildPatterns', function () {
+    it('returns filter with inline expression', function () {
     // given
       const expr = fakeExpression(undefined, ({ subject, object }) => ({
         inline: [$rdf.quad<Quad>(object, rdfs.subClassOf, schema.Person)],
@@ -51,7 +51,7 @@ describe('model/constraint/expression', () => {
       )
     })
 
-    it('returns filter on result variable', () => {
+    it('returns filter on result variable', function () {
       const expr = fakeExpression(args => SELECT`${args.object}`.WHERE`${args.variable()} a ${ex.Bar}`)
       const constraint = new ExpressionConstraintComponent(expr)
       const valueNode = variable()
@@ -73,14 +73,14 @@ describe('model/constraint/expression', () => {
     })
   })
 
-  describe('fromShape', () => {
+  describe('fromShape', function () {
     let factory: sinon.SinonStubbedInstance<ModelFactory>
 
-    beforeEach(() => {
+    beforeEach(function () {
       factory = sinon.createStubInstance(ModelFactory)
     })
 
-    it('returns constraints for objects of sh:expression', () => {
+    it('returns constraints for objects of sh:expression', function () {
       // given
       const shape = $rdf.termMap([
         [sh.expression, [

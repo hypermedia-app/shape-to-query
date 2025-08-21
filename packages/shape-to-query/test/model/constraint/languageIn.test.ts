@@ -6,11 +6,11 @@ import { variable } from '../../variable.js'
 import type { PropertyShape } from '../../../model/constraint/ConstraintComponent.js'
 import { ex } from '../../namespace.js'
 
-describe('model/constraint/languageIn', () => {
-  before(() => import('../../sparql.js'))
+describe('model/constraint/languageIn', function () {
+  before(function () { return import('../../sparql.js') })
 
-  describe('fromShape', () => {
-    it('creates instance', () => {
+  describe('fromShape', function () {
+    it('creates instance', function () {
       // given
       const shape: PropertyShape = $rdf.termMap([
         [sh.languageIn, [{
@@ -28,7 +28,7 @@ describe('model/constraint/languageIn', () => {
       expect(constraint.languages).to.deep.contain.all.members([$rdf.literal('de'), $rdf.literal('en')])
     })
 
-    it('skips shape without sh:languageIn', () => {
+    it('skips shape without sh:languageIn', function () {
       // given
       const shape: PropertyShape = $rdf.termMap()
 
@@ -39,7 +39,7 @@ describe('model/constraint/languageIn', () => {
       expect(constraint).to.be.undefined
     })
 
-    it('throws when values are not literal', () => {
+    it('throws when values are not literal', function () {
       // given
       const shape: PropertyShape = $rdf.termMap([
         [sh.languageIn, [{
@@ -57,8 +57,8 @@ describe('model/constraint/languageIn', () => {
     })
   })
 
-  describe('buildPatterns', () => {
-    it('returns exact filter when single language', () => {
+  describe('buildPatterns', function () {
+    it('returns exact filter when single language', function () {
       // given
       const constraint = new LanguageInConstraintComponent([$rdf.literal('de')])
       const valueNode = $rdf.variable('x')
@@ -93,7 +93,7 @@ describe('model/constraint/languageIn', () => {
       )
     })
 
-    it('returns IN filter when multiple languages', () => {
+    it('returns IN filter when multiple languages', function () {
       // given
       const constraint = new LanguageInConstraintComponent([$rdf.literal('de'), $rdf.literal('en')])
       const valueNode = $rdf.variable('x')
@@ -128,7 +128,7 @@ describe('model/constraint/languageIn', () => {
       )
     })
 
-    it('returns nothing when shape is node shape focus node is IRI', () => {
+    it('returns nothing when shape is node shape focus node is IRI', function () {
       // given
       const constraint = new LanguageInConstraintComponent([$rdf.literal('de'), $rdf.literal('en')])
       const valueNode = $rdf.variable('x')
@@ -145,7 +145,7 @@ describe('model/constraint/languageIn', () => {
       expect(whereClause.toString()).to.be.empty
     })
 
-    it('returns filter when shape is node shape focus node is variable', () => {
+    it('returns filter when shape is node shape focus node is variable', function () {
       // given
       const constraint = new LanguageInConstraintComponent([$rdf.literal('de'), $rdf.literal('en')])
       const valueNode = $rdf.variable('x')

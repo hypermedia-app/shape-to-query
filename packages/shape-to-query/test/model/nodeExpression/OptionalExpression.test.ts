@@ -10,17 +10,18 @@ import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
 import { s2q } from '../../../index.js'
 import { fakeExpression } from './helper.js'
 
-describe('model/nodeExpression/OptionalExpression', () => {
+describe('model/nodeExpression/OptionalExpression', function () {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
 
-  before(() => import('../../sparql.js'))
-  beforeEach(() => {
+  before(function () { return import('../../sparql.js') })
+
+  beforeEach(function () {
     factory = sinon.createStubInstance(ModelFactory)
     factory.nodeExpression.returns(<any>{})
   })
 
-  describe('match', () => {
-    it('returns true when expression has optional', () => {
+  describe('match', function () {
+    it('returns true when expression has optional', function () {
       // given
       const pointer = blankNode()
         .addOut(s2q.optional, blankNode())
@@ -29,7 +30,7 @@ describe('model/nodeExpression/OptionalExpression', () => {
       expect(OptionalExpression.match(pointer)).to.be.true
     })
 
-    it('returns true when sh:deactivated false', () => {
+    it('returns true when sh:deactivated false', function () {
       // given
       const pointer = blankNode()
         .addOut(s2q.optional, blankNode())
@@ -40,8 +41,8 @@ describe('model/nodeExpression/OptionalExpression', () => {
     })
   })
 
-  describe('fromPointer', () => {
-    it('creates an instance with inner expression', () => {
+  describe('fromPointer', function () {
+    it('creates an instance with inner expression', function () {
       // given
       const inner = blankNode()
       const pointer = blankNode()
@@ -57,8 +58,8 @@ describe('model/nodeExpression/OptionalExpression', () => {
     })
   })
 
-  describe('build', () => {
-    it('wraps inner patterns in OPTIONAL', () => {
+  describe('build', function () {
+    it('wraps inner patterns in OPTIONAL', function () {
       // given
       const inner = fakeExpression(({ object }) => [{
         type: 'bgp',

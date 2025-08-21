@@ -6,17 +6,17 @@ import { namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
 import { BIND } from '../../pattern.js'
 
-describe('model/nodeExpression/FocusNodeExpression', () => {
-  before(() => import('../../sparql.js'))
+describe('model/nodeExpression/FocusNodeExpression', function () {
+  before(function () { return import('../../sparql.js') })
 
-  describe('match', () => {
-    it('return true when value is sh:this', () => {
+  describe('match', function () {
+    it('return true when value is sh:this', function () {
       expect(FocusNodeExpression.match(namedNode(sh.this))).to.be.true
     })
   })
 
-  describe('buildPatterns', () => {
-    it('binds named node as subject', () => {
+  describe('buildPatterns', function () {
+    it('binds named node as subject', function () {
       // given
       const expr = new FocusNodeExpression()
 
@@ -33,7 +33,7 @@ describe('model/nodeExpression/FocusNodeExpression', () => {
       expect(result.patterns).to.deep.equal([BIND($rdf.namedNode('foo')).as(bar)])
     })
 
-    it('reuses subject as object', () => {
+    it('reuses subject as object', function () {
       // given
       const expr = new FocusNodeExpression()
 

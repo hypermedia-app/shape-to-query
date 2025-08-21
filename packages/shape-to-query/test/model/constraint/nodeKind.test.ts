@@ -10,10 +10,10 @@ import { NodeKindConstraintComponent } from '../../../model/constraint/nodeKind.
 import { namedNode } from '../../nodeFactory.js'
 import { ex } from '../../namespace.js'
 
-describe('model/constraint/nodeKind', () => {
-  before(() => import('../../sparql.js'))
+describe('model/constraint/nodeKind', function () {
+  before(function () { return import('../../sparql.js') })
 
-  describe('fromShape', () => {
+  describe('fromShape', function () {
     const nodeKinds: Array<[NodeKind, (valueNode: Variable) => sparqljs.Expression]> = [
       [sh.IRI, valueNode => ({ type: 'operation', operator: 'isiri', args: [valueNode] })],
       [sh.IRIOrLiteral, valueNode => ({
@@ -45,7 +45,7 @@ describe('model/constraint/nodeKind', () => {
     ]
 
     for (const [nodeKind, filter] of nodeKinds) {
-      it(`returns correct pattern for ${shrink(nodeKind.value)}`, () => {
+      it(`returns correct pattern for ${shrink(nodeKind.value)}`, function () {
         // given
         const shape = $rdf.termMap([
           [sh.nodeKind, [{ pointer: namedNode(nodeKind) }]],
@@ -69,7 +69,7 @@ describe('model/constraint/nodeKind', () => {
       })
     }
 
-    it('does not create a constraint when there is no sh:nodeKind', () => {
+    it('does not create a constraint when there is no sh:nodeKind', function () {
       // given
       const shape = $rdf.termMap()
 
@@ -80,7 +80,7 @@ describe('model/constraint/nodeKind', () => {
       expect(constrains).to.be.empty
     })
 
-    it('does not create a constraint when sh:nodeKind is a list', () => {
+    it('does not create a constraint when sh:nodeKind is a list', function () {
       // given
       const shape = $rdf.termMap([
         [sh.nodeKind, [{ list: [] }]],
@@ -94,9 +94,9 @@ describe('model/constraint/nodeKind', () => {
     })
   })
 
-  describe('buildPatterns', () => {
-    context('node shape', () => {
-      it('restricts focus node', () => {
+  describe('buildPatterns', function () {
+    context('node shape', function () {
+      it('restricts focus node', function () {
         // given
         const constraint = new NodeKindConstraintComponent(valueNode => [{
           type: 'functionCall',
@@ -127,8 +127,8 @@ describe('model/constraint/nodeKind', () => {
       })
     })
 
-    context('property shape', () => {
-      it('restricts focus node', () => {
+    context('property shape', function () {
+      it('restricts focus node', function () {
         // given
         const constraint = new NodeKindConstraintComponent(valueNode => [{
           type: 'functionCall',

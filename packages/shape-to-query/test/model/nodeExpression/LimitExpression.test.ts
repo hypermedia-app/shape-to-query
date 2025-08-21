@@ -11,17 +11,18 @@ import ModelFactory from '../../../model/ModelFactory.js'
 import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
 import { fakeExpression } from './helper.js'
 
-describe('model/nodeExpression/LimitExpression', () => {
+describe('model/nodeExpression/LimitExpression', function () {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
 
-  before(() => import('../../sparql.js'))
-  beforeEach(() => {
+  before(function () { return import('../../sparql.js') })
+
+  beforeEach(function () {
     factory = sinon.createStubInstance(ModelFactory)
     factory.nodeExpression.returns(<any>{})
   })
 
-  describe('match', () => {
-    it('returns false when sh:limit is missing', () => {
+  describe('match', function () {
+    it('returns false when sh:limit is missing', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.nodes, blankNode())
@@ -30,7 +31,7 @@ describe('model/nodeExpression/LimitExpression', () => {
       expect(LimitExpression.match(pointer)).to.be.false
     })
 
-    it('returns false when sh:nodes is missing', () => {
+    it('returns false when sh:nodes is missing', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.limit, 10)
@@ -39,7 +40,7 @@ describe('model/nodeExpression/LimitExpression', () => {
       expect(LimitExpression.match(pointer)).to.be.false
     })
 
-    it('returns false when sh:limit is not an integer', () => {
+    it('returns false when sh:limit is not an integer', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.limit, '10')
@@ -49,7 +50,7 @@ describe('model/nodeExpression/LimitExpression', () => {
       expect(LimitExpression.match(pointer)).to.be.false
     })
 
-    it('returns true when sh:nodes and sh:limit are given', () => {
+    it('returns true when sh:nodes and sh:limit are given', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.limit, 10)
@@ -59,7 +60,7 @@ describe('model/nodeExpression/LimitExpression', () => {
       expect(LimitExpression.match(pointer)).to.be.true
     })
 
-    it('returns true when sh:deactivated false', () => {
+    it('returns true when sh:deactivated false', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.limit, 10)
@@ -71,8 +72,8 @@ describe('model/nodeExpression/LimitExpression', () => {
     })
   })
 
-  describe('fromPointer', () => {
-    it('throws when limit is not a number', () => {
+  describe('fromPointer', function () {
+    it('throws when limit is not a number', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.limit, '5')
@@ -85,7 +86,7 @@ describe('model/nodeExpression/LimitExpression', () => {
       }).to.throw()
     })
 
-    it('throws when limit is not a literal', () => {
+    it('throws when limit is not a literal', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.limit, blankNode())
@@ -98,7 +99,7 @@ describe('model/nodeExpression/LimitExpression', () => {
       }).to.throw()
     })
 
-    it('return an instance of LimitExpression', () => {
+    it('return an instance of LimitExpression', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.limit, 15)
@@ -114,8 +115,8 @@ describe('model/nodeExpression/LimitExpression', () => {
     })
   })
 
-  describe('buil', () => {
-    it('creates a limited subselect', () => {
+  describe('buil', function () {
+    it('creates a limited subselect', function () {
       // given
       const limit = 10
       const nodes = fakeExpression(({ object }) => [{
@@ -139,7 +140,7 @@ describe('model/nodeExpression/LimitExpression', () => {
       LIMIT 10`)
     })
 
-    it('sets limit on inner subselect', () => {
+    it('sets limit on inner subselect', function () {
       // given
       const limit = 10
       const nodes = fakeExpression(({ subject, object }) => SELECT`${subject} ${object}`.WHERE`${object} a ${schema.Article} .`)

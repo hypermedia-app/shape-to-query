@@ -12,17 +12,18 @@ import type { InlineExpressionResult } from '../../../model/nodeExpression/NodeE
 import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
 import { fakeExpression } from './helper.js'
 
-describe('model/nodeExpression/IfExpression', () => {
+describe('model/nodeExpression/IfExpression', function () {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
 
-  before(() => import('../../sparql.js'))
-  beforeEach(() => {
+  before(function () { return import('../../sparql.js') })
+
+  beforeEach(function () {
     factory = sinon.createStubInstance(ModelFactory)
     factory.nodeExpression.callsFake((pointer) => <any>({ term: pointer.term }))
   })
 
-  describe('match', () => {
-    it('returns false when sh:if is missing', () => {
+  describe('match', function () {
+    it('returns false when sh:if is missing', function () {
       // given
       const pointer = blankNode()
 
@@ -30,7 +31,7 @@ describe('model/nodeExpression/IfExpression', () => {
       expect(IfExpression.match(pointer)).to.be.false
     })
 
-    it('returns false when sh:then is missing', () => {
+    it('returns false when sh:then is missing', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.if, blankNode())
@@ -39,7 +40,7 @@ describe('model/nodeExpression/IfExpression', () => {
       expect(IfExpression.match(pointer)).to.be.false
     })
 
-    it('returns false when sh:else is missing', () => {
+    it('returns false when sh:else is missing', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.if, blankNode())
@@ -49,7 +50,7 @@ describe('model/nodeExpression/IfExpression', () => {
       expect(IfExpression.match(pointer)).to.be.false
     })
 
-    it('returns true when has all of if/then/else properties', () => {
+    it('returns true when has all of if/then/else properties', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.if, blankNode())
@@ -61,8 +62,8 @@ describe('model/nodeExpression/IfExpression', () => {
     })
   })
 
-  describe('fromPointer', () => {
-    it('throws when sh:if is missing', () => {
+  describe('fromPointer', function () {
+    it('throws when sh:if is missing', function () {
       // given
       const pointer = blankNode()
 
@@ -73,7 +74,7 @@ describe('model/nodeExpression/IfExpression', () => {
       }).to.throw()
     })
 
-    it('throws when sh:then is missing', () => {
+    it('throws when sh:then is missing', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.if, blankNode())
@@ -85,7 +86,7 @@ describe('model/nodeExpression/IfExpression', () => {
       }).to.throw()
     })
 
-    it('throws when sh:else is missing', () => {
+    it('throws when sh:else is missing', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.if, blankNode())
@@ -98,26 +99,11 @@ describe('model/nodeExpression/IfExpression', () => {
       }).to.throw()
     })
 
-    it('throws when sh:if has multiple values', () => {
+    it('throws when sh:if has multiple values', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.if, blankNode())
         .addOut(sh.if, blankNode())
-        .addOut(sh.then, blankNode())
-        .addOut(sh.else, blankNode())
-
-      // then
-      expect(() => {
-        // when
-        IfExpression.fromPointer(pointer, factory)
-      }).to.throw()
-    })
-
-    it('throws when sh:then has multiple values', () => {
-      // given
-      const pointer = blankNode()
-        .addOut(sh.if, blankNode())
-        .addOut(sh.then, blankNode())
         .addOut(sh.then, blankNode())
         .addOut(sh.else, blankNode())
 
@@ -128,7 +114,22 @@ describe('model/nodeExpression/IfExpression', () => {
       }).to.throw()
     })
 
-    it('throws when sh:else has multiple values', () => {
+    it('throws when sh:then has multiple values', function () {
+      // given
+      const pointer = blankNode()
+        .addOut(sh.if, blankNode())
+        .addOut(sh.then, blankNode())
+        .addOut(sh.then, blankNode())
+        .addOut(sh.else, blankNode())
+
+      // then
+      expect(() => {
+        // when
+        IfExpression.fromPointer(pointer, factory)
+      }).to.throw()
+    })
+
+    it('throws when sh:else has multiple values', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.if, blankNode())
@@ -143,7 +144,7 @@ describe('model/nodeExpression/IfExpression', () => {
       }).to.throw()
     })
 
-    it('returns an instance of IfExpression with child expressions', () => {
+    it('returns an instance of IfExpression with child expressions', function () {
       // given
       const ifPointer = blankNode()
       const thenPointer = blankNode()
@@ -164,8 +165,8 @@ describe('model/nodeExpression/IfExpression', () => {
     })
   })
 
-  describe('build', () => {
-    it('binds an if function call with result of expressions', () => {
+  describe('build', function () {
+    it('binds an if function call with result of expressions', function () {
       // given
       const ifExpr = fakeExpression(args => [<BindPattern>{
         type: 'bind',
@@ -211,7 +212,7 @@ describe('model/nodeExpression/IfExpression', () => {
       }`)
     })
 
-    it('binds an if function call with inline expressions', () => {
+    it('binds an if function call with inline expressions', function () {
       // given
       const ifExpr = fakeExpression(undefined, args => (<InlineExpressionResult>{
         inline: {
