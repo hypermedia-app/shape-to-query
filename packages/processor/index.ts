@@ -308,27 +308,27 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
     let currentBgp: sparqljs.BgpPattern | undefined
 
     return triples.reduce((patterns: sparqljs.Pattern[], triple) => {
-      const processedTriple = this.processTriple(triple)
-      if ('subject' in processedTriple) {
-        if (!currentBgp) {
-          currentBgp = { type: 'bgp', triples: [processedTriple] }
-          return [...patterns, currentBgp]
+      const result = this.processTriple(triple)
+      const processedTriples = Array.isArray(result) ? result : [result]
+
+      return processedTriples.reduce((patterns: sparqljs.Pattern[], processedTriple) => {
+        if ('subject' in processedTriple) {
+          if (!currentBgp) {
+            currentBgp = { type: 'bgp', triples: [processedTriple] }
+            return [...patterns, currentBgp]
+          }
+
+          currentBgp.triples.push(processedTriple)
+          return patterns
         }
 
-        currentBgp.triples.push(processedTriple)
-        return patterns
-      }
-
-      currentBgp = undefined
-      if (Array.isArray(processedTriple)) {
-        return [...patterns, ...processedTriple]
-      }
-
-      return [...patterns, processedTriple]
+        currentBgp = undefined
+        return [...patterns, processedTriple]
+      }, patterns)
     }, [])
   }
 
-  processTriple(triple: sparqljs.Triple): sparqljs.Triple | sparqljs.Pattern | sparqljs.Pattern[] {
+  processTriple(triple: sparqljs.Triple): sparqljs.Triple | sparqljs.Triple[] | sparqljs.Pattern | sparqljs.Pattern[] {
     return {
       subject: this.processTerm(triple.subject),
       predicate: match(triple.predicate)

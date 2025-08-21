@@ -1,0 +1,9 @@
+PREFIX ex: <http://example.org/>
+PREFIX schema: <http://schema.org/>
+
+SELECT * {
+    ?s a schema:Person .
+    ?s schema:knows ?v0 .
+    ?v0 schema:knows ?friend  .
+    ?s schema:name ?name .
+}
