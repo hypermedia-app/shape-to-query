@@ -1,5 +1,18 @@
 # @hydrofoil/shape-to-query
 
+## 0.15.0
+
+### Minor Changes
+
+- 5a07b3d: The query processor methods now allow returning arrays, which may break extending classes
+
+### Patch Changes
+
+- 49fe2af: Update RDF/JS-related packages
+- Updated dependencies [5a07b3d]
+- Updated dependencies [9f043d4]
+  - @hydrofoil/sparql-processor@0.2.0
+
 ## 0.14.0
 
 ### Minor Changes

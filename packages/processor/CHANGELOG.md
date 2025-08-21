@@ -1,5 +1,15 @@
 # @hydrofoil/sparql-processor
 
+## 0.2.0
+
+### Minor Changes
+
+- 5a07b3d: The query processor methods now allow returning arrays, which may break extending classes
+
+### Patch Changes
+
+- 9f043d4: Allow transforming triple to another type of pattern
+
 ## 0.1.5
 
 ### Patch Changes
