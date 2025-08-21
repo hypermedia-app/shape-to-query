@@ -1,0 +1,5 @@
+PREFIX schema: <http://schema.org/>
+SELECT *
+WHERE {
+  ?resource1 (^schema:address|^schema:addressRegion) ?resource5.
+}
