@@ -144,10 +144,11 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
     return match(quads)
       .with({ type: 'bgp' }, bgp => {
         const processed = this.processBgp(bgp)
-        if (Array.isArray(processed) || processed.type !== 'bgp') {
+        const maybeBgp = Array.isArray(processed) ? processed[0] : processed
+        if (maybeBgp.type !== 'bgp') {
           throw new Error('Quads must be transformed to a single bgp pattern')
         }
-        return processed
+        return maybeBgp
       })
       .with({ type: 'graph' }, (graph): sparqljs.GraphQuads => ({
         type: 'graph',
@@ -413,7 +414,10 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
           .when(isPattern, operation => {
             const processed = this.processPattern(operation)
             if (Array.isArray(processed)) {
-              throw new Error('Operation argument cannot be transformed to an array')
+              if (processed.length > 1) {
+                throw new Error('Operation argument cannot be transformed to an array')
+              }
+              return processed[0]
             }
             return processed
           })
