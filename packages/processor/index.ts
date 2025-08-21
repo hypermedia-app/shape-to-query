@@ -347,12 +347,31 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
   }
 
   processPropertyPath(path: sparqljs.PropertyPath): sparqljs.PropertyPath {
+    if (path.pathType === '!') {
+      return this.processNegatedPropertySet(path)
+    }
+
     return {
       ...path,
       items: path.items.map(item => match(item)
         .with({ type: 'path' }, path => this.processPropertyPath(path))
         .with({ termType: P.any }, term => this.processIriTerm(term))
         .exhaustive()),
+    }
+  }
+
+  private processNegatedPropertySet(path: sparqljs.NegatedPropertySet): sparqljs.NegatedPropertySet {
+    return {
+      ...path,
+      items: path.items.map(item => match(item)
+        .with({ type: 'path', pathType: '^' }, ({ items: [term], ...path }) => {
+          return {
+            ...path,
+            items: [this.processIriTerm(term)] as [sparqljs.IriTerm],
+          }
+        })
+        .with({ termType: 'NamedNode' }, iri => this.processIriTerm(iri))
+        .otherwise(() => item)), // other cases are not supported
     }
   }
 
