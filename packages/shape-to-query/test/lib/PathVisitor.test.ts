@@ -10,16 +10,16 @@ import type { VariableSequence } from '../../lib/variableSequence.js'
 import { createVariableSequence } from '../../lib/variableSequence.js'
 import '../sparql.js'
 
-describe('lib/PathVisitor', () => {
+describe('lib/PathVisitor', function () {
   let variable: VariableSequence
   let visitor: PathVisitor
 
-  beforeEach(() => {
+  beforeEach(function () {
     variable = createVariableSequence('n')
     visitor = new PathVisitor(variable)
   })
 
-  describe('predicate path', () => {
+  describe('predicate path', function () {
     iit('simple case', {
       shape: parse`
         <>
@@ -30,7 +30,7 @@ describe('lib/PathVisitor', () => {
     })
   })
 
-  describe('sequence path', () => {
+  describe('sequence path', function () {
     iit('two predicates', {
       shape: parse`
         <>
@@ -41,7 +41,7 @@ describe('lib/PathVisitor', () => {
     })
   })
 
-  describe('inverse path', () => {
+  describe('inverse path', function () {
     iit('of predicate path', {
       shape: parse`
         <> ${sh.path} [ ${sh.inversePath} ${foaf.knows} ] .
@@ -50,7 +50,7 @@ describe('lib/PathVisitor', () => {
     })
   })
 
-  describe('zero-or-one path', () => {
+  describe('zero-or-one path', function () {
     iit('of predicate path', {
       shape: parse`
         <> ${sh.path} [ ${sh.zeroOrOnePath} ${foaf.knows} ] .
@@ -67,7 +67,7 @@ describe('lib/PathVisitor', () => {
     })
   })
 
-  describe('alternative path', () => {
+  describe('alternative path', function () {
     iit('of two predicates', {
       shape: parse`
         <> ${sh.path} [ ${sh.alternativePath} ( ${foaf.knows} ${schema.knows} ) ] .
@@ -85,7 +85,7 @@ describe('lib/PathVisitor', () => {
     })
   })
 
-  describe('one-or-more path', () => {
+  describe('one-or-more path', function () {
     iit('of predicate path', {
       shape: parse`
         <> ${sh.path} [ ${sh.oneOrMorePath} ${foaf.knows} ] .
@@ -98,7 +98,7 @@ describe('lib/PathVisitor', () => {
     })
   })
 
-  describe('zero-or-more path', () => {
+  describe('zero-or-more path', function () {
     iit('of predicate path', {
       shape: parse`
         <> ${sh.path} [ ${sh.zeroOrMorePath} ${foaf.knows} ] .
@@ -122,8 +122,8 @@ describe('lib/PathVisitor', () => {
   }
 
   function iit(name: string, { shape, expectedWherePatterns, expectedConstructPatterns }: Iit) {
-    context(name, () => {
-      it('creates correct patterns', async () => {
+    context(name, function () {
+      it('creates correct patterns', async function () {
         // given
         const shapePtr = await shape
 

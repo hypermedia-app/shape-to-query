@@ -14,15 +14,15 @@ import type NodeShape from '../../model/NodeShape.js'
 import type PropertyShape from '../../model/PropertyShape.js'
 import s2q from '../../ns.js'
 
-describe('model/ModelFactory', () => {
+describe('model/ModelFactory', function () {
   let modelFactory: ModelFactory
 
-  before(() => {
+  before(function () {
     modelFactory = new ModelFactory()
   })
 
-  describe('nodeShape', () => {
-    it('creates one TargetNode for all values', async () => {
+  describe('nodeShape', function () {
+    it('creates one TargetNode for all values', async function () {
       // given
       const pointer = parse`
         <> ${sh.targetNode} ${ex.Foo}, ${ex.Bar} .
@@ -40,7 +40,7 @@ describe('model/ModelFactory', () => {
       expect(more).to.be.empty
     })
 
-    it('ignores deactivated rules', () => {
+    it('ignores deactivated rules', function () {
       // given
       const pointer = parse`
         <> ${sh.rule}
@@ -65,7 +65,7 @@ describe('model/ModelFactory', () => {
       expect(shape.rules).to.be.empty
     })
 
-    it('ignores deactivated shapes in logical constraints', () => {
+    it('ignores deactivated shapes in logical constraints', function () {
       // given
       const pointer = parse`
         <> ${sh.and} ([ ${sh.deactivated} true ] [ ${sh.deactivated} true ]) .
@@ -82,7 +82,7 @@ describe('model/ModelFactory', () => {
       }
     })
 
-    it('creates with rules', () => {
+    it('creates with rules', function () {
       // given
       const pointer = parse`
         <> ${sh.rule}
@@ -106,8 +106,8 @@ describe('model/ModelFactory', () => {
     })
   })
 
-  describe('propertyShape', () => {
-    it('throws when property has no path', async () => {
+  describe('propertyShape', function () {
+    it('throws when property has no path', async function () {
       // given
       const pointer = await parse`
         <> a ${sh.PropertyShape} .
@@ -120,7 +120,7 @@ describe('model/ModelFactory', () => {
       }).to.throw()
     })
 
-    it('throws when property has multiple paths', async () => {
+    it('throws when property has multiple paths', async function () {
       // given
       const pointer = await parse`
         <> ${sh.path} [], [] .
@@ -133,7 +133,7 @@ describe('model/ModelFactory', () => {
       }).to.throw()
     })
 
-    it('throws when property has rule and non-iri path', async () => {
+    it('throws when property has rule and non-iri path', async function () {
       // given
       const pointer = await parse`
         <> ${sh.path} [] ; ${sh.values} ${sh.this}.
@@ -146,7 +146,7 @@ describe('model/ModelFactory', () => {
       }).to.throw()
     })
 
-    it('creates with value rules', () => {
+    it('creates with value rules', function () {
       // given
       const pointer = parse`
         <> 
@@ -162,7 +162,7 @@ describe('model/ModelFactory', () => {
       expect(shape.rules).to.have.length(1)
     })
 
-    it('creates for inverse path', () => {
+    it('creates for inverse path', function () {
       // given
       const pointer = parse`
         <> 
@@ -179,15 +179,15 @@ describe('model/ModelFactory', () => {
     })
   })
 
-  describe('nodeExpression', () => {
-    it('throws when expression is unrecognized', () => {
+  describe('nodeExpression', function () {
+    it('throws when expression is unrecognized', function () {
       expect(() => modelFactory.nodeExpression(blankNode())).to.throw(/Unsupported node expression/)
     })
   })
 
-  describe('targets', () => {
-    context('finds built-in target', () => {
-      it('sh:targetNode', async () => {
+  describe('targets', function () {
+    context('finds built-in target', function () {
+      it('sh:targetNode', async function () {
         // given
         const shape = parse`<>
           ${sh.targetNode} ${ex.Foo} .
@@ -200,7 +200,7 @@ describe('model/ModelFactory', () => {
         expect(target).to.be.instanceof(TargetNode)
       })
 
-      it('sh:targetClass', async () => {
+      it('sh:targetClass', async function () {
         // given
         const shape = parse`<>
           ${sh.targetClass} ${ex.Foo} .
@@ -213,7 +213,7 @@ describe('model/ModelFactory', () => {
         expect(target).to.be.instanceof(TargetClass)
       })
 
-      it('sh:targetSubjectsOf', async () => {
+      it('sh:targetSubjectsOf', async function () {
         // given
         const shape = parse`<>
           ${sh.targetSubjectsOf} ${ex.foo} .
@@ -226,7 +226,7 @@ describe('model/ModelFactory', () => {
         expect(target).to.be.instanceof(TargetSubjectsOf)
       })
 
-      it('sh:targetObjectsOf', async () => {
+      it('sh:targetObjectsOf', async function () {
         // given
         const shape = parse`<>
           ${sh.targetObjectsOf} ${ex.foo} .
@@ -240,7 +240,7 @@ describe('model/ModelFactory', () => {
       })
     })
 
-    it('finds custom target', () => {
+    it('finds custom target', function () {
       // given
       const shape = parse`<>
         ${sh.target} [
@@ -256,7 +256,7 @@ describe('model/ModelFactory', () => {
       expect(target).to.be.instanceof(NodeExpressionTarget)
     })
 
-    it('ignores unrecognized custom targets', () => {
+    it('ignores unrecognized custom targets', function () {
       // given
       const shape = parse`<>
         ${sh.target} [

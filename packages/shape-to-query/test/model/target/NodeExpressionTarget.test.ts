@@ -9,12 +9,12 @@ import { s2q } from '../../../index.js'
 import { createVariableSequence } from '../../../lib/variableSequence.js'
 import ModelFactory from '../../../model/ModelFactory.js'
 
-describe('model/NodeExpressionTarget', () => {
-  before(() => import('../../sparql.js'))
+describe('model/NodeExpressionTarget', function () {
+  before(function () { return import('../../sparql.js') })
   const variable = createVariableSequence('t')
 
-  describe('buildPatterns', () => {
-    it('evaluates a simple expression', () => {
+  describe('buildPatterns', function () {
+    it('evaluates a simple expression', function () {
       // given
       const listItemTarget = parse.any`
         [] 

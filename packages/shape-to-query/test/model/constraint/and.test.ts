@@ -7,10 +7,10 @@ import type { NodeShape } from '../../../model/NodeShape.js'
 import { emptyPatterns } from '../../../lib/shapePatterns.js'
 import { ex } from '../../namespace.js'
 
-describe('model/constraint/and', () => {
-  before(() => import('../../sparql.js'))
+describe('model/constraint/and', function () {
+  before(function () { return import('../../sparql.js') })
 
-  it('combines all inner constraints where', () => {
+  it('combines all inner constraints where', function () {
     // given
     const fooPattern: sparqljs.BgpPattern =
       {

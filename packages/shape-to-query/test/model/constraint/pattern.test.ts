@@ -6,11 +6,11 @@ import { PatternConstraintComponent } from '../../../model/constraint/pattern.js
 import { literal } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
 
-describe('model/constraint/pattern', () => {
-  before(() => import('../../sparql.js'))
+describe('model/constraint/pattern', function () {
+  before(function () { return import('../../sparql.js') })
 
-  describe('fromShape', () => {
-    it('returns nothing if property has no sh:pattern', () => {
+  describe('fromShape', function () {
+    it('returns nothing if property has no sh:pattern', function () {
       // given
       const shape = $rdf.termMap([
         [sh.flags, [{ pointer: literal('i') }]],
@@ -23,7 +23,7 @@ describe('model/constraint/pattern', () => {
       expect(result).to.be.empty
     })
 
-    it('returns pattern without flags', () => {
+    it('returns pattern without flags', function () {
       // given
       const shape = $rdf.termMap([
         [sh.pattern, [{ pointer: literal('^foo') }]],
@@ -37,7 +37,7 @@ describe('model/constraint/pattern', () => {
       expect(result.flags).to.be.undefined
     })
 
-    it('returns pattern with flags', () => {
+    it('returns pattern with flags', function () {
       // given
       const shape = $rdf.termMap<NamedNode>([
         [sh.pattern, [{ pointer: literal('^foo') }]],
@@ -52,7 +52,7 @@ describe('model/constraint/pattern', () => {
       expect(result.flags).to.deep.eq($rdf.literal('i'))
     })
 
-    it('returns patterns as cartesian', () => {
+    it('returns patterns as cartesian', function () {
       // given
       const shape = $rdf.termMap<NamedNode>([
         [sh.pattern, [{ pointer: literal('^foo') }, { pointer: literal('bar$') }]],
@@ -67,10 +67,10 @@ describe('model/constraint/pattern', () => {
     })
   })
 
-  describe('buildPatterns', () => {
+  describe('buildPatterns', function () {
     const focusNode = $rdf.variable('this')
 
-    it('pattern only', () => {
+    it('pattern only', function () {
       // given
       const pattern = new PatternConstraintComponent($rdf.literal('^(foo|bar)'))
 
@@ -101,7 +101,7 @@ describe('model/constraint/pattern', () => {
       )
     })
 
-    it('pattern and flags', () => {
+    it('pattern and flags', function () {
       // given
       const pattern = new PatternConstraintComponent($rdf.literal('^(foo|bar)'), $rdf.literal('i'))
 

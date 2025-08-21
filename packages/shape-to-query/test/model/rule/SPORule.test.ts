@@ -6,11 +6,11 @@ import { variable } from '../../variable.js'
 import { fakeExpression } from '../nodeExpression/helper.js'
 import { ex } from '../../namespace.js'
 
-describe('model/rule/SPORule', () => {
-  before(() => import('../../sparql.js'))
+describe('model/rule/SPORule', function () {
+  before(function () { return import('../../sparql.js') })
 
-  describe('buildPatterns', () => {
-    it('works without filters', () => {
+  describe('buildPatterns', function () {
+    it('works without filters', function () {
       // given
       const filter1 = fakeExpression(args => [{
         type: 'filter',
@@ -52,7 +52,7 @@ describe('model/rule/SPORule', () => {
       `)
     })
 
-    it('applies multiple filters', () => {
+    it('applies multiple filters', function () {
       // given
       const rule = new SPORule({})
 

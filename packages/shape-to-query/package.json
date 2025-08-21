@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@tpluscode/sparql-builder": "^2.0.3",
-    "@types/chai": "^5.0.1",
+    "@types/chai": "^5.2.2",
     "@types/chai-string": "^1.4.5",
     "@types/debug": "^4.1.12",
     "@types/n3": "^1.24.2",
@@ -56,7 +56,7 @@
     "debug": "^4.4.0",
     "docker-compose": "^1.2.0",
     "glob": "^11.0.1",
-    "mocha-chai-jest-snapshot": "^1.1.6",
+    "mocha-chai-jest-snapshot": "^1.1.7",
     "mocha-chai-rdf": "^0.1.6",
     "n3": "^1.25.1",
     "oxigraph": "^0.4.9",

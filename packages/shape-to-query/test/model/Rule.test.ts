@@ -9,11 +9,11 @@ import { PatternBuilder } from '../../model/nodeExpression/NodeExpression.js'
 import { BIND } from '../pattern.js'
 import { fakeExpression } from './nodeExpression/helper.js'
 
-describe('model/Rule', () => {
-  before(() => import('../sparql.js'))
+describe('model/Rule', function () {
+  before(function () { return import('../sparql.js') })
 
-  describe('PropertyValueRule', () => {
-    it('bind path to construct', () => {
+  describe('PropertyValueRule', function () {
+    it('bind path to construct', function () {
       // given
       const expr = fakeExpression(() => [])
       const rule = new PropertyValueRule(schema.knows, expr)
@@ -31,7 +31,7 @@ describe('model/Rule', () => {
       expect(sparql`${constructClause}`).to.equalPatterns(sparql`<foo> ${schema.knows} ?bar .`)
     })
 
-    it('constructs inverse property path', () => {
+    it('constructs inverse property path', function () {
       // given
       const expr = fakeExpression(() => [])
       const rule = new PropertyValueRule(schema.knows, expr, {
@@ -52,9 +52,9 @@ describe('model/Rule', () => {
     })
   })
 
-  describe('TripleRule', () => {
-    describe('buildPatterns', () => {
-      it('constructs the result of subject/predicate/object', () => {
+  describe('TripleRule', function () {
+    describe('buildPatterns', function () {
+      it('constructs the result of subject/predicate/object', function () {
         // given
         const subject = fakeExpression(({ object }) => [BIND('S').as(object)])
         const predicate = fakeExpression(({ object }) => [BIND('P').as(object)])

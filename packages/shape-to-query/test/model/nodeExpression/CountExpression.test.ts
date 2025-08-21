@@ -13,17 +13,18 @@ import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
 import { DistinctExpression } from '../../../model/nodeExpression/DistinctExpression.js'
 import { fakeExpression } from './helper.js'
 
-describe('model/nodeExpression/CountExpression', () => {
+describe('model/nodeExpression/CountExpression', function () {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
 
-  before(() => import('../../sparql.js'))
-  beforeEach(() => {
+  before(function () { return import('../../sparql.js') })
+
+  beforeEach(function () {
     factory = sinon.createStubInstance(ModelFactory)
     factory.nodeExpression.returns(<any>{})
   })
 
-  describe('match', () => {
-    it('returns false when sh:count is missing', () => {
+  describe('match', function () {
+    it('returns false when sh:count is missing', function () {
       // given
       const pointer = blankNode()
 
@@ -31,7 +32,7 @@ describe('model/nodeExpression/CountExpression', () => {
       expect(CountExpression.match(pointer)).to.be.false
     })
 
-    it('returns false it is not a blank node', () => {
+    it('returns false it is not a blank node', function () {
       // given
       const pointer = namedNode('foo')
         .addOut(sh.count, blankNode())
@@ -40,7 +41,7 @@ describe('model/nodeExpression/CountExpression', () => {
       expect(CountExpression.match(pointer)).to.be.false
     })
 
-    it('returns true when sh:count is a blank node', () => {
+    it('returns true when sh:count is a blank node', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.count, blankNode())
@@ -49,7 +50,7 @@ describe('model/nodeExpression/CountExpression', () => {
       expect(CountExpression.match(pointer)).to.be.true
     })
 
-    it('returns true when sh:deactivated false', () => {
+    it('returns true when sh:deactivated false', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.count, blankNode())
@@ -60,8 +61,8 @@ describe('model/nodeExpression/CountExpression', () => {
     })
   })
 
-  describe('fromPointer', () => {
-    it('throws when sh:count is missing', () => {
+  describe('fromPointer', function () {
+    it('throws when sh:count is missing', function () {
       // given
       const pointer = blankNode()
 
@@ -72,7 +73,7 @@ describe('model/nodeExpression/CountExpression', () => {
       }).to.throw()
     })
 
-    it('throws when sh:count has multiple values', () => {
+    it('throws when sh:count has multiple values', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.count, blankNode())
@@ -85,7 +86,7 @@ describe('model/nodeExpression/CountExpression', () => {
       }).to.throw()
     })
 
-    it('return an instance of CountExpression', () => {
+    it('return an instance of CountExpression', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.count, blankNode())
@@ -99,8 +100,8 @@ describe('model/nodeExpression/CountExpression', () => {
     })
   })
 
-  describe('buildPatterns', () => {
-    it('creates a subselect which wraps inner', () => {
+  describe('buildPatterns', function () {
+    it('creates a subselect which wraps inner', function () {
       // given
       const inner = fakeExpression(({ object }) => [{
         type: 'bgp',
@@ -123,7 +124,7 @@ describe('model/nodeExpression/CountExpression', () => {
       }`)
     })
 
-    it('inlines inner distinct expression', () => {
+    it('inlines inner distinct expression', function () {
       // given
       const inner = fakeExpression(({ object }) => [{
         type: 'bgp',

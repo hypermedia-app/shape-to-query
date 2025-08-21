@@ -7,37 +7,37 @@ import { blankNode, literal, namedNode } from '../../nodeFactory.js'
 import { variable } from '../../variable.js'
 import { BIND } from '../../pattern.js'
 
-describe('model/nodeExpression/ConstantTermExpression', () => {
-  before(() => import('../../sparql.js'))
+describe('model/nodeExpression/ConstantTermExpression', function () {
+  before(function () { return import('../../sparql.js') })
 
-  describe('match', () => {
-    it('return true when value is literal', () => {
+  describe('match', function () {
+    it('return true when value is literal', function () {
       expect(ConstantTermExpression.match(literal('10'))).to.be.true
     })
 
-    it('return true when value is named node', () => {
+    it('return true when value is named node', function () {
       expect(ConstantTermExpression.match(namedNode('foo'))).to.be.true
     })
 
-    it('return false when value is sh:this', () => {
+    it('return false when value is sh:this', function () {
       expect(ConstantTermExpression.match(namedNode(sh.this))).to.be.false
     })
 
-    it('return false when value is blank node', () => {
+    it('return false when value is blank node', function () {
       expect(ConstantTermExpression.match(blankNode())).to.be.false
     })
   })
 
-  describe('fromPointer', () => {
-    it('throws when pointer is blank node', () => {
+  describe('fromPointer', function () {
+    it('throws when pointer is blank node', function () {
       expect(() => ConstantTermExpression.fromPointer(blankNode())).to.throw()
     })
   })
 
-  describe('buildPatterns', () => {
+  describe('buildPatterns', function () {
     const builder = <any>{}
 
-    it('binds const as subject', () => {
+    it('binds const as subject', function () {
       // given
       const expr = new ConstantTermExpression(schema.Person)
 
@@ -52,7 +52,7 @@ describe('model/nodeExpression/ConstantTermExpression', () => {
       expect(result.patterns).to.deep.equal([BIND(schema.Person).as(result.object)])
     })
 
-    it('reuses object', () => {
+    it('reuses object', function () {
       // given
       const expr = new ConstantTermExpression(schema.Person)
 
@@ -70,8 +70,8 @@ describe('model/nodeExpression/ConstantTermExpression', () => {
     })
   })
 
-  describe('buildInlineExpression', () => {
-    it('returns subject', () => {
+  describe('buildInlineExpression', function () {
+    it('returns subject', function () {
       // given
       const expr = new ConstantTermExpression(schema.Person)
 

@@ -13,11 +13,11 @@ const implementations = [
   BlankNodeScopeFixer,
 ]
 
-describe('Optimizers', () => {
+describe('Optimizers', function () {
   for (const Processor of implementations) {
     const __dirname = new URL(Processor.name, import.meta.url).pathname
 
-    context(Processor.name, () => {
+    context(Processor.name, function () {
       use(jestSnapshotPlugin())
 
       const parser = new sparqljs.Parser()
@@ -30,7 +30,7 @@ describe('Optimizers', () => {
       function testCase(filePath: string) {
         const fileName = path.basename(filePath)
 
-        it(fileName, () => {
+        it(fileName, function () {
           const query = parseQuery(filePath)
           const result = new Processor($rdf).process(query)
           expect(generator.stringify(result)).toMatchSnapshot()

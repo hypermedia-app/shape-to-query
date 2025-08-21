@@ -13,21 +13,22 @@ import { variable } from '../../variable.js'
 import { PatternBuilder } from '../../../model/nodeExpression/NodeExpression.js'
 import type { BuildParameters } from '../../../model/Shape.js'
 
-describe('model/nodeExpression/ExistsExpression', () => {
+describe('model/nodeExpression/ExistsExpression', function () {
   let factory: sinon.SinonStubbedInstance<ModelFactory>
 
   const nodeShape = 'ns'
   const propertyShape = 'ps'
 
-  before(() => import('../../sparql.js'))
-  beforeEach(() => {
+  before(function () { return import('../../sparql.js') })
+
+  beforeEach(function () {
     factory = sinon.createStubInstance(ModelFactory)
     factory.nodeShape.returns(<any>nodeShape)
     factory.propertyShape.returns(<any>propertyShape)
   })
 
-  describe('match', () => {
-    it('returns false when sh:exists is missing', () => {
+  describe('match', function () {
+    it('returns false when sh:exists is missing', function () {
       // given
       const pointer = blankNode()
 
@@ -35,7 +36,7 @@ describe('model/nodeExpression/ExistsExpression', () => {
       expect(ExistsExpression.match(pointer)).to.be.false
     })
 
-    it('returns true when has sh:exists', () => {
+    it('returns true when has sh:exists', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.exists, blankNode())
@@ -45,8 +46,8 @@ describe('model/nodeExpression/ExistsExpression', () => {
     })
   })
 
-  describe('fromPointer', () => {
-    it('throws when sh:exists is missing', () => {
+  describe('fromPointer', function () {
+    it('throws when sh:exists is missing', function () {
       // given
       const pointer = blankNode()
 
@@ -57,7 +58,7 @@ describe('model/nodeExpression/ExistsExpression', () => {
       }).to.throw()
     })
 
-    it('throws when sh:count has multiple values', () => {
+    it('throws when sh:count has multiple values', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.exists, blankNode())
@@ -70,7 +71,7 @@ describe('model/nodeExpression/ExistsExpression', () => {
       }).to.throw()
     })
 
-    it('returns an instance of ExistsExpression with inner node shape', () => {
+    it('returns an instance of ExistsExpression with inner node shape', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.exists, blankNode())
@@ -83,7 +84,7 @@ describe('model/nodeExpression/ExistsExpression', () => {
       expect(expr).to.have.property('shape').to.eq(nodeShape)
     })
 
-    it('returns an instance of ExistsExpression with inner node property shape', () => {
+    it('returns an instance of ExistsExpression with inner node property shape', function () {
       // given
       const pointer = blankNode()
         .addOut(sh.exists, shape => shape.addOut(sh.path, schema.name))
@@ -97,9 +98,9 @@ describe('model/nodeExpression/ExistsExpression', () => {
     })
   })
 
-  describe('build', () => {
-    context('with property shape', () => {
-      it('binds an exists clause', () => {
+  describe('build', function () {
+    context('with property shape', function () {
+      it('binds an exists clause', function () {
         // given
         const shape = new PropertyShape(
           rdf.clownface().namedNode(schema.name),
@@ -141,8 +142,8 @@ describe('model/nodeExpression/ExistsExpression', () => {
       })
     })
 
-    context('with node shape', () => {
-      it('binds an exists clause', () => {
+    context('with node shape', function () {
+      it('binds an exists clause', function () {
         // given
         const shape = sinon.createStubInstance(NodeShape, {
           buildPatterns: <any>sinon.stub().callsFake(({ focusNode }: BuildParameters): ShapePatterns => {
@@ -199,8 +200,8 @@ describe('model/nodeExpression/ExistsExpression', () => {
     })
   })
 
-  describe('buildInlineExpression', () => {
-    it('binds an exists clause', () => {
+  describe('buildInlineExpression', function () {
+    it('binds an exists clause', function () {
       // given
       const shape = new PropertyShape(
         rdf.clownface().namedNode(schema.name),

@@ -13,17 +13,17 @@ import { parse } from './nodeFactory.js'
 import { SELECT } from './pattern.js'
 import './sparql.js'
 
-describe('@hydrofoil/shape-to-query', () => {
+describe('@hydrofoil/shape-to-query', function () {
   use(jestSnapshotPlugin())
 
   beforeEach(createStore(import.meta.url, {
     format: 'trig',
   }))
 
-  describe('shapeToPatterns', () => {
-    context('targets', () => {
-      context('class target', () => {
-        it('creates an rdf:type pattern', async () => {
+  describe('shapeToPatterns', function () {
+    context('targets', function () {
+      context('class target', function () {
+        it('creates an rdf:type pattern', async function () {
           // given
           const shape = parse`
             <>
@@ -41,7 +41,7 @@ describe('@hydrofoil/shape-to-query', () => {
           }`)
         })
 
-        it('creates an rdf:type pattern for multiple targets', async () => {
+        it('creates an rdf:type pattern for multiple targets', async function () {
           // given
           const shape = parse`
             <>
@@ -62,8 +62,8 @@ describe('@hydrofoil/shape-to-query', () => {
       })
     })
 
-    context('property constraints', () => {
-      it('creates a simple pattern for predicate path', async () => {
+    context('property constraints', function () {
+      it('creates a simple pattern for predicate path', async function () {
         // given
         const shape = parse`
           <>
@@ -85,7 +85,7 @@ describe('@hydrofoil/shape-to-query', () => {
         }`)
       })
 
-      it('creates patterns for multiple properties', async () => {
+      it('creates patterns for multiple properties', async function () {
         // given
         const shape = parse`
           <>
@@ -116,7 +116,7 @@ describe('@hydrofoil/shape-to-query', () => {
         }`)
       })
 
-      it('skips deactivated properties', async () => {
+      it('skips deactivated properties', async function () {
         // given
         const shape = parse`
           <>
@@ -144,9 +144,9 @@ describe('@hydrofoil/shape-to-query', () => {
     })
   })
 
-  describe('shapeToQuery', () => {
-    describe('construct', () => {
-      it('generates a query for variable', async () => {
+  describe('shapeToQuery', function () {
+    describe('construct', function () {
+      it('generates a query for variable', async function () {
         // given
         const shape = parse`
           <>
@@ -175,7 +175,7 @@ describe('@hydrofoil/shape-to-query', () => {
         }`)
       })
 
-      it('generates a query without prefixes', async () => {
+      it('generates a query without prefixes', async function () {
         // given
         const shape = parse`
           <>
@@ -197,7 +197,7 @@ describe('@hydrofoil/shape-to-query', () => {
         expect(query).toMatchSnapshot()
       })
 
-      it('generates a query for IRI node', async () => {
+      it('generates a query for IRI node', async function () {
         // given
         const shape = parse`
           <>
@@ -227,7 +227,7 @@ describe('@hydrofoil/shape-to-query', () => {
         }`)
       })
 
-      it('generates a query with multiple target types', async () => {
+      it('generates a query with multiple target types', async function () {
         // given
         const shape = parse`
           <>
@@ -254,7 +254,7 @@ describe('@hydrofoil/shape-to-query', () => {
         }`)
       })
 
-      it('generates a query with multiple targets', async () => {
+      it('generates a query with multiple targets', async function () {
         // given
         const shape = parse`
           <>
@@ -293,7 +293,7 @@ describe('@hydrofoil/shape-to-query', () => {
         }`)
       })
 
-      it('avoids duplicating variable for same path between constraints', async () => {
+      it('avoids duplicating variable for same path between constraints', async function () {
         // given
         const shape = parse`
           <>
@@ -355,9 +355,9 @@ describe('@hydrofoil/shape-to-query', () => {
         }`)
       })
 
-      context('shacl advanced features', () => {
-        context('constant term expression', () => {
-          it('binds the constant values', async () => {
+      context('shacl advanced features', function () {
+        context('constant term expression', function () {
+          it('binds the constant values', async function () {
             // given
             const shape = parse`
               <>
@@ -386,8 +386,8 @@ describe('@hydrofoil/shape-to-query', () => {
           })
         })
 
-        context('rules', () => {
-          it('reuses exact same root patterns for multiple rules', async () => {
+        context('rules', function () {
+          it('reuses exact same root patterns for multiple rules', async function () {
             // given
             const shape = await parse.file('rules-root-patterns.ttl')
 
@@ -436,7 +436,7 @@ describe('@hydrofoil/shape-to-query', () => {
               }`)
           })
 
-          it('filter shape is applied correctly in SPO Rule', async () => {
+          it('filter shape is applied correctly in SPO Rule', async function () {
             // given
             const shape = await parse.file('spo-rule-filter-shapes.ttl')
 
@@ -447,7 +447,7 @@ describe('@hydrofoil/shape-to-query', () => {
             expect(result).to.be.query()
           })
 
-          it('does not produce empty union groups', async () => {
+          it('does not produce empty union groups', async function () {
             // given
             const shape = await parse.file('inline-triple-rule.ttl')
 
@@ -458,7 +458,7 @@ describe('@hydrofoil/shape-to-query', () => {
             expect(result).to.be.query()
           })
 
-          it('does not produce nested optionals', async () => {
+          it('does not produce nested optionals', async function () {
             // given
             const shape = await parse.file('no-double-optionals.ttl')
 
@@ -472,8 +472,8 @@ describe('@hydrofoil/shape-to-query', () => {
       })
     })
 
-    describe('delete', () => {
-      it('deletes from default graph', async () => {
+    describe('delete', function () {
+      it('deletes from default graph', async function () {
         // given
         const shape = parse`
           <>
@@ -505,7 +505,7 @@ describe('@hydrofoil/shape-to-query', () => {
         `)
       })
 
-      it('can be generated without prefixes', async () => {
+      it('can be generated without prefixes', async function () {
         // given
         const shape = parse`
           <>
@@ -527,7 +527,7 @@ describe('@hydrofoil/shape-to-query', () => {
         expect(query).toMatchSnapshot()
       })
 
-      it('adds a WITH clause when graph is passed', async () => {
+      it('adds a WITH clause when graph is passed', async function () {
         // given
         const shape = parse`
           <>
@@ -564,8 +564,8 @@ describe('@hydrofoil/shape-to-query', () => {
     })
   })
 
-  context('shape with count rule', () => {
-    it('generates correct query', async () => {
+  context('shape with count rule', function () {
+    it('generates correct query', async function () {
       // given
       const shape = await parse.file('top-level-count.ttl')
 
@@ -577,10 +577,10 @@ describe('@hydrofoil/shape-to-query', () => {
     })
   })
 
-  context('shape with deep sh:node', () => {
+  context('shape with deep sh:node', function () {
     let shape: GraphPointer
 
-    before(async () => {
+    before(async function () {
       shape = parse`
         <>
           a ${sh.NodeShape} ;
@@ -610,8 +610,8 @@ describe('@hydrofoil/shape-to-query', () => {
       `
     })
 
-    context('shapeToPatterns', () => {
-      it.skip('generates union of deep paths', () => {
+    context('shapeToPatterns', function () {
+      it.skip('generates union of deep paths', function () {
         // when
         const patterns = shapeToPatterns(shape, {
           subjectVariable: 'node',
@@ -656,8 +656,8 @@ describe('@hydrofoil/shape-to-query', () => {
       })
     })
 
-    context('construct', () => {
-      it.skip('does not produce duplicate patterns in CONSTRUCT clause', () => {
+    context('construct', function () {
+      it.skip('does not produce duplicate patterns in CONSTRUCT clause', function () {
         // when
         const query = constructQuery(shape, {
           subjectVariable: 'node',
@@ -709,9 +709,9 @@ describe('@hydrofoil/shape-to-query', () => {
     })
   })
 
-  context('shapes with complex paths and sh:node', () => {
-    context('sh:zeroOrMorePath', () => {
-      it('generates a deep pattern', async () => {
+  context('shapes with complex paths and sh:node', function () {
+    context('sh:zeroOrMorePath', function () {
+      it('generates a deep pattern', async function () {
         // given
         const shape = parse`
           <>
@@ -763,7 +763,7 @@ describe('@hydrofoil/shape-to-query', () => {
         `)
       })
 
-      it.skip('produces correct CONSTRUCT clause', async () => {
+      it.skip('produces correct CONSTRUCT clause', async function () {
         // given
         const shape = parse`
         <>
@@ -845,8 +845,8 @@ describe('@hydrofoil/shape-to-query', () => {
       })
     })
 
-    context('sh:oneOrMorePath', () => {
-      it('generates a deep pattern', async () => {
+    context('sh:oneOrMorePath', function () {
+      it('generates a deep pattern', async function () {
         // given
         const shape = parse`
           <>
@@ -892,7 +892,7 @@ describe('@hydrofoil/shape-to-query', () => {
     })
   })
 
-  context('shape with sh:node+sh:or', () => {
+  context('shape with sh:node+sh:or', function () {
     it('produces correct query', function () {
       // given
       const shape = this.rdf.graph.has(rdf.type, sh.NodeShape) as unknown as GraphPointer<BlankNode>
@@ -904,7 +904,7 @@ describe('@hydrofoil/shape-to-query', () => {
       expect(query).to.be.query()
     })
 
-    context('with no property constraints', () => {
+    context('with no property constraints', function () {
       it('produces correct query', function () {
         // given
         const shape = this.rdf.graph.has(rdf.type, sh.NodeShape) as unknown as GraphPointer<BlankNode>
@@ -918,7 +918,7 @@ describe('@hydrofoil/shape-to-query', () => {
     })
   })
 
-  context('sparql:concat with multiple sh:if', () => {
+  context('sparql:concat with multiple sh:if', function () {
     it('produces correct query', function () {
       // given
       const shape = this.rdf.graph.has(rdf.type, sh.NodeShape) as unknown as GraphPointer<BlankNode>

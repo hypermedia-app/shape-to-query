@@ -3,8 +3,8 @@ import { expect } from 'chai'
 import { DuplicatePatternRemover } from '../DuplicatePatternRemover.js'
 import { loadQuery, stringifyQuery } from './lib/query.js'
 
-describe('DuplicatePatternRemover', () => {
-  it('removes equal consecutive OPTIONAL graph patterns', () => {
+describe('DuplicatePatternRemover', function () {
+  it('removes equal consecutive OPTIONAL graph patterns', function () {
     // given
     const processor = new DuplicatePatternRemover(rdf)
 
@@ -16,7 +16,7 @@ describe('DuplicatePatternRemover', () => {
       .to.deep.equal(stringifyQuery(loadQuery('duplicate-optional.expected.rq')))
   })
 
-  it('removes equal non-consecutive OPTIONAL graph patterns', () => {
+  it('removes equal non-consecutive OPTIONAL graph patterns', function () {
     // given
     const processor = new DuplicatePatternRemover(rdf)
 
@@ -28,7 +28,7 @@ describe('DuplicatePatternRemover', () => {
       .to.deep.equal(stringifyQuery(loadQuery('duplicate-optional.not-adjacent.expected.rq')))
   })
 
-  it('preserves OPTIONAL graph patterns if they are not exactly the same', () => {
+  it('preserves OPTIONAL graph patterns if they are not exactly the same', function () {
     // given
     const processor = new DuplicatePatternRemover(rdf)
 
@@ -40,7 +40,7 @@ describe('DuplicatePatternRemover', () => {
       .to.deep.equal(stringifyQuery(loadQuery('similar-optional.rq')))
   })
 
-  it('preserves OPTIONAL graph patterns if they contain non-BGP patterns', () => {
+  it('preserves OPTIONAL graph patterns if they contain non-BGP patterns', function () {
     // given
     const processor = new DuplicatePatternRemover(rdf)
 

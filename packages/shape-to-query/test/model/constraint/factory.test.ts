@@ -4,8 +4,8 @@ import createConstraints from '../../../model/constraint/factory.js'
 import { parse } from '../../nodeFactory.js'
 import ModelFactory from '../../../model/ModelFactory.js'
 
-describe('model/constraint/factory', () => {
-  it('skips deactivated constraints', async () => {
+describe('model/constraint/factory', function () {
+  it('skips deactivated constraints', async function () {
     // given
     const shape = await parse`
       <>
@@ -21,7 +21,7 @@ describe('model/constraint/factory', () => {
     expect(constraints).to.be.empty
   })
 
-  it('throws when a "fromList" constraint would be initialised from a non-list', async () => {
+  it('throws when a "fromList" constraint would be initialised from a non-list', async function () {
     // given
     const shape = await parse`
       <>

@@ -36,8 +36,8 @@ before(async function () {
   await client.store.post($rdf.fromFile(require.resolve('tbbt-ld/dist/tbbt.nt')))
 })
 
-describe('@hydrofoil/shape-to-query', () => {
-  it('works with sparql-http-client', async () => {
+describe('@hydrofoil/shape-to-query', function () {
+  it('works with sparql-http-client', async function () {
     // given
     const shape = parse`<>
         ${sh.targetClass} ${schema.Person} ;
@@ -56,8 +56,8 @@ describe('@hydrofoil/shape-to-query', () => {
     expect(result).to.be.ok
   })
 
-  context('constraint generates blank nodes', () => {
-    before(() => {
+  context('constraint generates blank nodes', function () {
+    before(function () {
       constraintComponents.set(ex.FreeTextSearchConstraintComponent, class TextSearch extends ConstraintComponent {
         static match(pointer: GraphPointer) {
           return isGraphPointer(pointer.out(hydra.freetextQuery))
@@ -111,7 +111,7 @@ describe('@hydrofoil/shape-to-query', () => {
       })
     })
 
-    it('do not cause blank node scoping issue', async () => {
+    it('do not cause blank node scoping issue', async function () {
       // given
       const shape = await parse.file('full-text-search.ttl')
 

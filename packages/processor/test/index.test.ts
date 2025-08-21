@@ -9,13 +9,13 @@ import { loadQuery, stringifyQuery } from './lib/query.js'
 
 const cwd = url.fileURLToPath(new URL('.', import.meta.url))
 
-describe('@hydrofoil/sparql-processor', () => {
-  describe('QueryProcessor', () => {
-    context('no-op processing', () => {
+describe('@hydrofoil/sparql-processor', function () {
+  describe('QueryProcessor', function () {
+    context('no-op processing', function () {
       glob.sync('queries/*.{rq,ru}', { cwd }).forEach((file) => {
         const name = path.basename(file)
 
-        it(`does not modify the query (${name})`, () => {
+        it(`does not modify the query (${name})`, function () {
           const processor = new (class extends QueryProcessor {})(rdf)
 
           const processed = processor.process(loadQuery(name))
