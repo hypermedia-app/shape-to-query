@@ -60,7 +60,7 @@
     "mocha-chai-rdf": "^0.1.10",
     "n3": "^1.25.1",
     "oxigraph": "^0.4.9",
-    "sinon": "^19.0.2",
+    "sinon": "^21.0.0",
     "sparql-http-client": "^3.0.1",
     "string-to-stream": "^3.0.1",
     "tbbt-ld": "^1.1.0",
