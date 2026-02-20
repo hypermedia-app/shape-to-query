@@ -24,7 +24,7 @@
     "@types/rdfjs__term-set": "^2.0.9",
     "@zazuko/env": "^3",
     "chai": "^5.2.0",
-    "glob": "^11.0.2",
+    "glob": "^13",
     "sparqljs": "^3.7.3"
   },
   "mocha": {
