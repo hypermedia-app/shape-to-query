@@ -1,5 +1,11 @@
 # @hydrofoil/sparql-processor
 
+## 0.2.1
+
+### Patch Changes
+
+- b28cc8c: Relax the return type of `ProcessorImpl#processFunctionCall`
+
 ## 0.2.0
 
 ### Minor Changes
