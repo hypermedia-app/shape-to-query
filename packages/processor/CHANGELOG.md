@@ -1,5 +1,12 @@
 # @hydrofoil/sparql-processor
 
+## 0.2.2
+
+### Patch Changes
+
+- 6c72915: Update package `files` meta
+- 6c72915: Update package `repository` meta
+
 ## 0.2.1
 
 ### Patch Changes

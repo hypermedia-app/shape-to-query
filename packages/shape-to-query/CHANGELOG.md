@@ -1,5 +1,14 @@
 # @hydrofoil/shape-to-query
 
+## 0.15.1
+
+### Patch Changes
+
+- 6c72915: Update package `repository` meta
+- Updated dependencies [6c72915]
+- Updated dependencies [6c72915]
+  - @hydrofoil/sparql-processor@0.2.2
+
 ## 0.15.0
 
 ### Minor Changes
