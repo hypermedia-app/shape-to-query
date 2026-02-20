@@ -415,7 +415,7 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
       .exhaustive()
   }
 
-  processFunctionCall(functionCall: sparqljs.FunctionCallExpression): sparqljs.FunctionCallExpression {
+  processFunctionCall(functionCall: sparqljs.FunctionCallExpression): sparqljs.Expression {
     return {
       ...functionCall,
       function: match(functionCall.function)
