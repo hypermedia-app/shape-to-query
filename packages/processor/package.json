@@ -8,11 +8,17 @@
     "test": "mocha --recursive \"test/**/*.test.ts\""
   },
   "files": [
+    "CHANGELOG.md",
     "*.js",
     "*.d.ts",
     "util/*.js",
     "util/*.d.ts"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hypermedia-app/shape-to-query",
+    "directory": "packages/processor"
+  },
   "dependencies": {
     "@types/sparqljs": "^3.1.11",
     "@zazuko/prefixes": "^2.4.0",

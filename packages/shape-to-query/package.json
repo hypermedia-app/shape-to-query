@@ -20,7 +20,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/hypermedia-app/shape-to-query"
+    "url": "https://github.com/hypermedia-app/shape-to-query",
+    "directory": "packages/shape-to-query"
   },
   "homepage": "https://shape-to-query.hypermedia.app/docs",
   "dependencies": {
