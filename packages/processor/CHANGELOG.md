@@ -1,5 +1,11 @@
 # @hydrofoil/sparql-processor
 
+## 0.2.2
+
+### Patch Changes
+
+- 10ef3aa: Variable of `BIND` pattern was not processed
+
 ## 0.2.1
 
 ### Patch Changes
