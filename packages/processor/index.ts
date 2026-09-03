@@ -217,9 +217,10 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
   }
 
   processBind(bind: sparqljs.BindPattern): sparqljs.Pattern {
-    return {
+    return <sparqljs.BindPattern>{
       ...bind,
       expression: this.processExpression(bind.expression),
+      variable: this.processVariable(bind.variable),
     }
   }
 
