@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { defineConfig } from 'vite'
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
 import rollupNodePolyFill from 'rollup-plugin-node-polyfills'
 
 export default defineConfig({
@@ -18,17 +17,14 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    esbuildOptions: {
+    rolldownOptions: {
       plugins: [
-        <any>NodeGlobalsPolyfillPlugin({
-          process: true,
-          buffer: true,
-        }),
+        (<any>rollupNodePolyFill)(),
       ],
     },
   },
   build: {
-    rollupOptions: {
+    rolldownOptions: {
       plugins: [
         (<any>rollupNodePolyFill)(),
       ],
