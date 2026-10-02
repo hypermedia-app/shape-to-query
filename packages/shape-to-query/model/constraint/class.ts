@@ -10,7 +10,7 @@ export class ClassConstraintComponent extends ConstraintComponent {
     super(sh.ClassConstraintComponent)
   }
 
-  static * fromShape(shape: PropertyShape) {
+  static* fromShape(shape: PropertyShape) {
     const values = shape.get(sh.class)
 
     if (values) {

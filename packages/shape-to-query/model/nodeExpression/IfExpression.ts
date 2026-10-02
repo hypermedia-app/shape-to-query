@@ -14,10 +14,10 @@ export class IfExpression extends NodeExpressionBase {
   }
 
   static match(pointer: GraphPointer) {
-    return isBlankNode(pointer) &&
-      isGraphPointer(getOneOrZero(pointer, sh.if)) &&
-      isGraphPointer(getOneOrZero(pointer, sh.then)) &&
-      isGraphPointer(getOneOrZero(pointer, sh.else))
+    return isBlankNode(pointer)
+      && isGraphPointer(getOneOrZero(pointer, sh.if))
+      && isGraphPointer(getOneOrZero(pointer, sh.then))
+      && isGraphPointer(getOneOrZero(pointer, sh.else))
   }
 
   static fromPointer(pointer: GraphPointer, factory: ModelFactory) {
@@ -29,9 +29,9 @@ export class IfExpression extends NodeExpressionBase {
   }
 
   public get requiresFullContext(): boolean {
-    return this.ifExpr.requiresFullContext ||
-      this.thenExpr.requiresFullContext ||
-      this.elseExpr.requiresFullContext
+    return this.ifExpr.requiresFullContext
+      || this.thenExpr.requiresFullContext
+      || this.elseExpr.requiresFullContext
   }
 
   public get rootIsFocusNode(): boolean {
@@ -47,7 +47,8 @@ export class IfExpression extends NodeExpressionBase {
         const { inline, patterns = [] } = expr.buildInlineExpression(args, builder)
         ifArgs.push(inline)
         patterns.push(...patterns)
-      } else {
+      }
+      else {
         const result = expr.build(args, builder)
         ifArgs.push(result.object)
         patterns.push(...result.patterns)

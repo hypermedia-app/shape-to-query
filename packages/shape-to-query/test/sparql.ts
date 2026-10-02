@@ -8,7 +8,7 @@ import { sparql } from '@tpluscode/rdf-string'
 import $rdf from '@zazuko/env'
 import { createVariableSequence } from '../lib/variableSequence.js'
 import { SELECT } from './pattern.js'
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import 'mocha-chai-jest-snapshot'
 
 const sparqlParser = new sparqljs.Parser()
@@ -33,7 +33,8 @@ Assertion.addMethod('query', function (this: Chai.AssertionStatic, expected?: st
     if (expected) {
       expectedQuery = sparqlParser.parse(expected.toString())
     }
-  } catch (e: any) {
+  }
+  catch (e: any) {
     throw new AssertionError(`Failed to parse expected query.
 ${e.message}.
 Query was:
@@ -44,12 +45,14 @@ ${expected}`)
     let actualQueryString: string
     if (typeof this._obj === 'string') {
       actualQueryString = this._obj
-    } else {
+    }
+    else {
       this._obj.prefixes = expectedQuery.prefixes
       actualQueryString = generator.stringify(this._obj)
     }
     actualQuery = stringifyAndNormalize(sparqlParser.parse(actualQueryString))
-  } catch (e: any) {
+  }
+  catch (e: any) {
     throw new AssertionError(`Failed to parse actual query.
 ${e.message}.
 Query was:
@@ -58,7 +61,8 @@ ${this._obj.toString()}`)
 
   if (expectedQuery) {
     new Assertion(actualQuery).deep.eq(stringifyAndNormalize(expectedQuery))
-  } else {
+  }
+  else {
     new Assertion(actualQuery).toMatchSnapshot()
   }
 })

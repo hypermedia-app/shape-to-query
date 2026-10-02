@@ -10,7 +10,7 @@ export class NodeConstraintComponent extends ConstraintComponent {
     super(sh.NodeConstraintComponent)
   }
 
-  static * fromShape(shape: PropertyShape, factory: ModelFactory) {
+  static* fromShape(shape: PropertyShape, factory: ModelFactory) {
     const nodes = shape.get(sh.node) || []
     for (const node of nodes) {
       assertTerm(node)

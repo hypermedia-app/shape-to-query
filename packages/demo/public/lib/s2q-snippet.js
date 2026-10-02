@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies,import/no-unresolved */
 import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.1.0/dist/components/tab/tab.js'
 import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.1.0/dist/components/tab-group/tab-group.js'
 import 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.1.0/dist/components/tab-panel/tab-panel.js'

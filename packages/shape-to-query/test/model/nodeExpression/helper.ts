@@ -35,7 +35,8 @@ export function fakeExpression(patterns: Select | sparqljs.Pattern[] | FakePatte
       object,
       patterns: queryToPatterns(patterns({ object, variable, ...args }, builder)),
     }))
-  } else {
+  }
+  else {
     build.returns(queryToPatterns(patterns))
   }
 

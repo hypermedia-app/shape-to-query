@@ -50,7 +50,7 @@ export default class implements ModelFactory {
     this.PropertyShape = PropertyShape
     this.NodeShape = NodeShape
     this.PropertyValueRule = PropertyValueRule
-    this.targetLookups = [...targets].map((Target) => (ptr) => {
+    this.targetLookups = [...targets].map(Target => (ptr) => {
       if ('property' in Target) {
         const nodes = ptr.out(Target.property)
 
@@ -64,7 +64,7 @@ export default class implements ModelFactory {
       return ptr
         .out(sh.target)
         .has(rdf.type, Target.type)
-        .map((x) => new Target(x, this))
+        .map(x => new Target(x, this))
     })
   }
 
@@ -103,12 +103,13 @@ export default class implements ModelFactory {
   }
 
   propertyRule(expression: GraphPointer, path: GraphPointer) {
-    let pathTerm : NamedNode | undefined
+    let pathTerm: NamedNode | undefined
     let inverse = false
 
     if (isNamedNode(path)) {
       pathTerm = path.term
-    } else {
+    }
+    else {
       const inversePath = path.out(sh.inversePath)
       if (isNamedNode(inversePath)) {
         pathTerm = inversePath.term

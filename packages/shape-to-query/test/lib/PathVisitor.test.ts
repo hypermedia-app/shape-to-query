@@ -137,7 +137,8 @@ describe('lib/PathVisitor', function () {
         expect(whereClause).to.equalPatterns(expectedWherePatterns)
         if (expectedConstructPatterns) {
           expect(sparql`${constructClause}`).to.equalPatterns(expectedConstructPatterns)
-        } else {
+        }
+        else {
           expect(sparql`${constructClause}`).to.equalPatterns(whereClause)
         }
       })

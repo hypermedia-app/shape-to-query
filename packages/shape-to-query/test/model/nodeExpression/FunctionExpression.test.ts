@@ -39,10 +39,10 @@ describe('model/nodeExpression/FunctionExpression', function () {
       .addOut(rdf.type, sh.Function)
       .addOut(sh.parameter, null)
       .addOut(sh.parameter, null)
-      .addOut(sh.parameter, third => {
+      .addOut(sh.parameter, (third) => {
         third.addOut(sh.optional, true)
       })
-      .addOut(sh.parameter, fourth => {
+      .addOut(sh.parameter, (fourth) => {
         fourth.addOut(sh.optional, true)
       })
   })
@@ -58,7 +58,7 @@ describe('model/nodeExpression/FunctionExpression', function () {
       expect(FunctionExpression.match(pointer)).to.be.false
     })
 
-    ;[true, false, undefined].forEach(deactivated => {
+    ;[true, false, undefined].forEach((deactivated) => {
       describe(`with sh:deactivated ${deactivated}`, function () {
         it('returns true when expression has a single predicate of known sh:Function', function () {
           // given

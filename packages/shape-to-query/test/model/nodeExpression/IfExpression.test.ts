@@ -19,7 +19,7 @@ describe('model/nodeExpression/IfExpression', function () {
 
   beforeEach(function () {
     factory = sinon.createStubInstance(ModelFactory)
-    factory.nodeExpression.callsFake((pointer) => <any>({ term: pointer.term }))
+    factory.nodeExpression.callsFake(pointer => <any>({ term: pointer.term }))
   })
 
   describe('match', function () {

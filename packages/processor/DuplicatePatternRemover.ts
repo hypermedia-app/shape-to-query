@@ -26,7 +26,7 @@ export class DuplicatePatternRemover extends Processor<E> {
 
     for (const pattern of patterns) {
       match(pattern)
-        .with({ type: 'bgp' }, bgp => {
+        .with({ type: 'bgp' }, (bgp) => {
           const triples: sparqljs.Triple[] = []
 
           for (const triple of bgp.triples) {
@@ -43,7 +43,7 @@ export class DuplicatePatternRemover extends Processor<E> {
             })
           }
         })
-        .with({ type: 'values' }, values => {
+        .with({ type: 'values' }, (values) => {
           const rows: sparqljs.ValuePatternRow[] = []
 
           for (const row of values.values) {
@@ -81,7 +81,8 @@ function removeDuplicateOptional(patterns: sparqljs.Pattern[]) {
       if (!seen) {
         cleaned.push(pattern)
       }
-    } else {
+    }
+    else {
       cleaned.push(pattern)
     }
   }
@@ -112,7 +113,7 @@ function patternEquals(a: sparqljs.Pattern) {
     }
 
     return match(a)
-      .with({ type: 'bgp' }, bgp => {
+      .with({ type: 'bgp' }, (bgp) => {
         if (b.type !== 'bgp') {
           return false
         }
@@ -135,10 +136,12 @@ function mergeConsecutiveBGPs(patterns: sparqljs.Pattern[]) {
           type: 'bgp',
           triples: last.triples.concat(pattern.triples),
         }
-      } else {
+      }
+      else {
         merged.push(pattern)
       }
-    } else {
+    }
+    else {
       merged.push(pattern)
     }
   }

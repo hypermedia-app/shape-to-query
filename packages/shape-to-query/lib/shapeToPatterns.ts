@@ -37,18 +37,18 @@ export function shapeToPatterns(shape: GraphPointer, options: Options = {}): Sha
   return patterns
 }
 
-function * flattenChildPatterns(patterns: ShapePatterns) {
+function* flattenChildPatterns(patterns: ShapePatterns) {
   for (const child of patterns.childPatterns) {
     yield child
 
     if (child.childPatterns && child.childPatterns.length) {
-      yield * flattenChildPatterns(child)
+      yield* flattenChildPatterns(child)
     }
   }
 }
 
 function toSubquery(constraints: sparqljs.Pattern[] = []) {
-  return (patterns: ShapePatterns) : ShapePatterns => {
+  return (patterns: ShapePatterns): ShapePatterns => {
     const variables = rdf.termSet(patterns.constructClause
       .flatMap(quad => [quad.subject, quad.predicate, quad.object])
       .filter((term): term is Variable => term.termType === 'Variable'))
@@ -72,7 +72,7 @@ function toSubquery(constraints: sparqljs.Pattern[] = []) {
   }
 }
 
-function buildNodeShape({ nodeShape, variable, focusNode }: { nodeShape: NodeShape; variable: VariableSequence ; focusNode: FocusNode }) {
+function buildNodeShape({ nodeShape, variable, focusNode }: { nodeShape: NodeShape, variable: VariableSequence, focusNode: FocusNode }) {
   const properties = nodeShape.buildPatterns({
     focusNode,
     variable,

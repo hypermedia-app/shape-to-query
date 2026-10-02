@@ -5,7 +5,7 @@ import type { Parameters, PropertyShape } from './ConstraintComponent.js'
 import ConstraintComponent from './ConstraintComponent.js'
 
 export class DatatypeConstraintComponent extends ConstraintComponent {
-  static * fromShape(shape: PropertyShape) {
+  static* fromShape(shape: PropertyShape) {
     const datatypes = shape.get(sh.datatype)
 
     if (datatypes) {

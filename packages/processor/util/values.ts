@@ -5,7 +5,7 @@ export function valuesHasRow(row: ValuePatternRow) {
 
   return (pattern: Pattern) => {
     if (pattern.type === 'values') {
-      return pattern.values.some(other => {
+      return pattern.values.some((other) => {
         return entries.every(([key, value]) => {
           return other[key]?.equals(value)
         })

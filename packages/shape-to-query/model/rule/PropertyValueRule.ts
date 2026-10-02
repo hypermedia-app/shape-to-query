@@ -36,7 +36,8 @@ export default class implements PropertyValueRule {
           ],
         }],
       }]
-    } else {
+    }
+    else {
       whereClause = patterns
       if (requiresFullContext) {
         whereClause = [...rootPatterns, ...patterns]

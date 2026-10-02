@@ -5,7 +5,7 @@ import type { Parameters, PropertyShape } from './ConstraintComponent.js'
 import ConstraintComponent, { assertList } from './ConstraintComponent.js'
 
 export class InConstraintComponent extends ConstraintComponent {
-  static * fromShape(shape: PropertyShape) {
+  static* fromShape(shape: PropertyShape) {
     const ins = shape.get(sh.in) || []
     for (const inn of ins) {
       assertList(inn)

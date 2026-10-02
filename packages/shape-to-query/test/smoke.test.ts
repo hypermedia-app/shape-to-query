@@ -1,6 +1,6 @@
 import * as path from 'node:path'
 import * as url from 'node:url'
-import module from 'module'
+import module from 'node:module'
 import StreamClient from 'sparql-http-client'
 import * as compose from 'docker-compose'
 import waitOn from 'wait-on'
@@ -63,7 +63,7 @@ describe('@hydrofoil/shape-to-query', function () {
           return isGraphPointer(pointer.out(hydra.freetextQuery))
         }
 
-        static * fromShape(shape: PropertyShape) {
+        static* fromShape(shape: PropertyShape) {
           const pattern = shape.get(hydra.freetextQuery) || []
 
           for (const patternElement of pattern) {

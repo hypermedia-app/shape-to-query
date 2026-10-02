@@ -34,7 +34,7 @@ export class UnionRepeatedPatternsRemover extends Processor {
       return processed.filter(removeEmpty)
     }
 
-    this.patterns.push(patterns.flatMap(pattern => {
+    this.patterns.push(patterns.flatMap((pattern) => {
       return 'triples' in pattern ? pattern.triples : []
     }))
     this.values.push(patterns.filter((p): p is ValuesPattern => p.type === 'values'))
@@ -86,7 +86,7 @@ export class UnionRepeatedPatternsRemover extends Processor {
     if (this.union) {
       values = {
         type: 'values',
-        values: values.values.filter(row => {
+        values: values.values.filter((row) => {
           return !this.values.some(values => values.some(valuesHasRow(row)) && !this.rowOrTripleUsedInBind(row))
         }),
       }
@@ -105,7 +105,7 @@ export class UnionRepeatedPatternsRemover extends Processor {
   processBgp(bgp: BgpPattern) {
     if (this.union) {
       // remove repeated triples from the bgp
-      bgp.triples = bgp.triples.filter(triple => {
+      bgp.triples = bgp.triples.filter((triple) => {
         return !this.patterns.some(triples => triples.some(tripleEquals(triple)) && !this.rowOrTripleUsedInBind(triple))
       })
     }
@@ -121,7 +121,7 @@ export class UnionRepeatedPatternsRemover extends Processor {
     const rowValues = Object.values(row)
     const _valuesUsedInExpression = valuesUsedInExpression(row)
 
-    return this.group.patterns.some(pattern => {
+    return this.group.patterns.some((pattern) => {
       if (pattern.type !== 'bind') {
         return false
       }
@@ -144,10 +144,11 @@ export class UnionRepeatedPatternsRemover extends Processor {
 function valuesUsedInExpression(row: ValuePatternRow | Triple) {
   let variableIsUsed: (variable: Variable) => boolean
   if ('subject' in row) {
-    variableIsUsed = variable => variable.equals(row.subject) ||
-      ('termType' in row.predicate && variable.equals(row.predicate)) ||
-      variable.equals(row.object)
-  } else {
+    variableIsUsed = variable => variable.equals(row.subject)
+      || ('termType' in row.predicate && variable.equals(row.predicate))
+      || variable.equals(row.object)
+  }
+  else {
     variableIsUsed = variable => row[`?${variable.value}`] !== undefined
   }
 
@@ -162,7 +163,7 @@ function valuesUsedInExpression(row: ValuePatternRow | Triple) {
       .with({ type: 'aggregate' }, ({ expression }) => {
         return !('termType' in expression) && matcher(expression)
       })
-      .with(P.array(), (tuple) => tuple.some(matcher))
+      .with(P.array(), tuple => tuple.some(matcher))
       .with({ termType: 'Variable' }, variableIsUsed)
       .with({ termType: P.any }, () => false)
       .exhaustive()

@@ -10,7 +10,7 @@ export class AndConstraintComponent extends ConstraintComponent {
     super(sh.AndConstraintComponent)
   }
 
-  static * fromShape(shape: PropertyShape, factory: ModelFactory) {
+  static* fromShape(shape: PropertyShape, factory: ModelFactory) {
     const ands = shape.get(sh.and) || []
 
     for (const and of ands) {

@@ -1,7 +1,7 @@
 import type { GraphPointer } from 'clownface'
 import { isBlankNode, isGraphPointer } from 'is-graph-pointer'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
-import type { BindPattern, OperationExpression, Pattern } from 'sparqljs'
+import type { BindPattern, OperationExpression } from 'sparqljs'
 import type { Term } from '@rdfjs/types'
 import type { ModelFactory } from '../ModelFactory.js'
 import type { NodeShape } from '../NodeShape.js'
@@ -51,14 +51,13 @@ export class ExistsExpression extends NodeExpressionBase {
   }
 
   buildExistsOperation({ subject, variable, object, rootPatterns }: Parameters): OperationExpression {
-    let constraints: Pattern[] = []
     const patterns = this.shape.buildPatterns({
       focusNode: subject,
       variable,
       rootPatterns,
     })
 
-    constraints = this.shape.buildConstraints({
+    const constraints = this.shape.buildConstraints({
       focusNode: subject,
       variable,
       rootPatterns,
