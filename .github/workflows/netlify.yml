@@ -9,6 +9,10 @@ on:
 jobs:
   Deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
     env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
     steps:
@@ -32,6 +36,7 @@ jobs:
           NETLIFY_DEPLOY_TO_PROD: ${{ env.BRANCH_NAME == 'master' }}
 
       - uses: exercism/pr-commenter-action@v1.4.0
+        if: ${{ github.event_name == 'pull_request' && env.NETLIFY_AUTH_TOKEN }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           template-variables: |
