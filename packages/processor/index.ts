@@ -238,7 +238,7 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
     }
   }
 
-  processService(service: sparqljs.ServicePattern): sparqljs.Pattern {
+  processService(service: sparqljs.ServicePattern): sparqljs.Pattern | sparqljs.Pattern[] {
     return {
       ...service,
       name: this.processTerm(service.name),
