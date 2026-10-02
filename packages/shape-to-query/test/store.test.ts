@@ -30,7 +30,7 @@ describe('@hydrofoil/shape-to-query', function () {
     await dataset.import($rdf.fromFile(require.resolve('tbbt-ld/dist/tbbt.nq')))
     await dataset.import($rdf.fromFile(require.resolve('./store-data.trig')))
 
-    store = new oxigraph.Store([...dataset])
+    store = new oxigraph.Store([...dataset] as unknown as oxigraph.Quad[])
   })
 
   function runQuery(query: string) {
