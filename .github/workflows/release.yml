@@ -3,7 +3,7 @@ name: Publish
 on:
   push:
     branches:
-      - main
+      - master
 
 # recommended: reset permissions and explicitly specify for each job
 permissions: {}
