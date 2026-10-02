@@ -1,5 +1,12 @@
 # @hydrofoil/sparql-processor
 
+## 0.2.3
+
+### Patch Changes
+
+- 933ac30: Variable of `BIND` pattern was not processed
+- 305a753: Relax `processService` so that it can return multiple patterns
+
 ## 0.2.2
 
 ### Patch Changes
