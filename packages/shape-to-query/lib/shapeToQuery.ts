@@ -48,7 +48,8 @@ export function deleteQuery(shape: GraphPointer, { optimizers = [], extractPrefi
   if (options.graph) {
     if (typeof options.graph === 'string') {
       graph = rdf.namedNode(options.graph)
-    } else {
+    }
+    else {
       graph = options.graph
     }
   }

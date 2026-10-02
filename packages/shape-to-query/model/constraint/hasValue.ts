@@ -9,7 +9,7 @@ export class HasValueConstraintComponent extends ConstraintComponent {
     super(sh.HasValueConstraintComponent)
   }
 
-  static * fromShape(shape: PropertyShape) {
+  static* fromShape(shape: PropertyShape) {
     const values = shape.get(sh.hasValue)
 
     if (values) {

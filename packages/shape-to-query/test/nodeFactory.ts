@@ -1,4 +1,4 @@
-import module from 'module'
+import module from 'node:module'
 import type { NamedNode } from '@rdfjs/types'
 import $rdf from '@zazuko/env-node'
 import type { Dataset } from '@zazuko/env/lib/Dataset.js'

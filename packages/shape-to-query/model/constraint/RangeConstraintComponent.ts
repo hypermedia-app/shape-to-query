@@ -13,7 +13,7 @@ const operators = $rdf.termMap<NamedNode, string>([
 ])
 
 export class RangeConstraintComponent extends ConstraintComponent {
-  static * fromShape(shape: PropertyShape) {
+  static* fromShape(shape: PropertyShape) {
     for (const constraint of shape.get(sh.minExclusive) ?? []) {
       if (!('pointer' in constraint)) {
         continue

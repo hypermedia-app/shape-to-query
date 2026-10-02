@@ -45,7 +45,8 @@ export class FilterShapeExpression extends NodeExpressionBase {
 
     if (this.nodes instanceof FocusNodeExpression) {
       valueNode = object
-    } else {
+    }
+    else {
       ({ patterns, object: focusNode } = builder.build(this.nodes, { subject, object, variable, rootPatterns }))
       valueNode = variable()
     }

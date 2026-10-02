@@ -20,7 +20,7 @@ export class NodeKindConstraintComponent extends ConstraintComponent {
     super(sh.NodeKindConstraintComponent)
   }
 
-  static * fromShape(shape: PropertyShape) {
+  static* fromShape(shape: PropertyShape) {
     const values = shape.get(sh.nodeKind)
 
     if (values) {

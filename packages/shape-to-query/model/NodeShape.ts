@@ -13,7 +13,7 @@ import * as Rule from './rule/Rule.js'
 export interface NodeShape {
   properties: ReadonlyArray<PropertyShape>
   buildPatterns(arg: BuildParameters): ShapePatterns
-  buildConstraints(arg: BuildParameters & { valueNode: Variable; parentNode?: FocusNode }): sparqljs.Pattern[]
+  buildConstraints(arg: BuildParameters & { valueNode: Variable, parentNode?: FocusNode }): sparqljs.Pattern[]
 }
 
 export default class extends Shape implements NodeShape {

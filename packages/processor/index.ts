@@ -1,14 +1,14 @@
 import type sparqljs from 'sparqljs'
 import { match, P } from 'ts-pattern'
-import type { DataFactory, DefaultGraph, Quad_Predicate } from '@rdfjs/types' // eslint-disable-line camelcase
+import type { DataFactory, DefaultGraph, Quad_Predicate } from '@rdfjs/types'
 
-type Term =
-  sparqljs.IriTerm
-  | sparqljs.BlankTerm
-  | sparqljs.LiteralTerm
-  | sparqljs.Variable
-  | sparqljs.QuadTerm
-  | DefaultGraph
+type Term
+  = sparqljs.IriTerm
+    | sparqljs.BlankTerm
+    | sparqljs.LiteralTerm
+    | sparqljs.Variable
+    | sparqljs.QuadTerm
+    | DefaultGraph
 
 export interface Processor {
   process<Q extends sparqljs.SparqlQuery>(query: Q): Q
@@ -21,16 +21,16 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
   process<Q extends sparqljs.SparqlQuery>(query: Q): Q {
     return match(query as unknown as sparqljs.SparqlQuery)
       .with({ type: 'query' }, query => this.processQuery(query))
-      .with({ type: 'update' }, (update) => this.processUpdate(update))
+      .with({ type: 'update' }, update => this.processUpdate(update))
       .exhaustive() as Q
   }
 
   processQuery<Q extends sparqljs.SparqlQuery>(query: Q): Q {
     return match(query as unknown as sparqljs.SparqlQuery)
       .with({ queryType: 'SELECT' }, select => this.processSelectQuery(select))
-      .with({ queryType: 'CONSTRUCT' }, (construct) => this.processConstructQuery(construct))
-      .with({ queryType: 'ASK' }, (ask) => this.processBaseQuery(ask))
-      .with({ queryType: 'DESCRIBE' }, (describe) => this.processDescribe(describe))
+      .with({ queryType: 'CONSTRUCT' }, construct => this.processConstructQuery(construct))
+      .with({ queryType: 'ASK' }, ask => this.processBaseQuery(ask))
+      .with({ queryType: 'DESCRIBE' }, describe => this.processDescribe(describe))
       .with({ type: 'update' }, update => this.processUpdate(update))
       .exhaustive() as Q
   }
@@ -142,7 +142,7 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
 
   processQuads(quads: sparqljs.Quads): sparqljs.Quads {
     return match(quads)
-      .with({ type: 'bgp' }, bgp => {
+      .with({ type: 'bgp' }, (bgp) => {
         const processed = this.processBgp(bgp)
         const maybeBgp = Array.isArray(processed) ? processed[0] : processed
         if (maybeBgp.type !== 'bgp') {
@@ -192,12 +192,12 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
   }
 
   processPatterns(where: sparqljs.Pattern[]): sparqljs.Pattern[] {
-    return where.flatMap((pattern) => this.processPattern(pattern)).filter(Boolean)
+    return where.flatMap(pattern => this.processPattern(pattern)).filter(Boolean)
   }
 
   processPattern(pattern: sparqljs.Pattern): sparqljs.Pattern | sparqljs.Pattern[] {
     return match(pattern)
-      .with({ type: 'bgp' }, (bgp) => this.processBgp(bgp))
+      .with({ type: 'bgp' }, bgp => this.processBgp(bgp))
       .with({ type: 'values' }, values => this.processValues(values))
       .with({ type: 'group' }, group => this.processGroup(group))
       .with({ type: 'union' }, union => this.processUnion(union))
@@ -255,7 +255,7 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
 
   processValues(valuesPattern: sparqljs.ValuesPattern): sparqljs.Pattern {
     const values = valuesPattern.values
-      .map((row) => this.processValuesRow(row))
+      .map(row => this.processValuesRow(row))
 
     return {
       type: 'values',
@@ -334,7 +334,7 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
       subject: this.processTerm(triple.subject),
       predicate: match(triple.predicate)
         .with({ type: 'path' }, path => this.processPropertyPath(path))
-        .otherwise(() => this.processTerm(triple.predicate as Quad_Predicate)), // eslint-disable-line camelcase
+        .otherwise(() => this.processTerm(triple.predicate as Quad_Predicate)),
       object: this.processTerm(triple.object),
     }
   }
@@ -431,7 +431,7 @@ export default abstract class ProcessorImpl<F extends DataFactory = DataFactory>
       ...operation,
       args: operation.args.map(arg =>
         match(arg)
-          .when(isPattern, operation => {
+          .when(isPattern, (operation) => {
             const processed = this.processPattern(operation)
             if (Array.isArray(processed)) {
               if (processed.length > 1) {

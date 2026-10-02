@@ -1,4 +1,4 @@
-import module from 'module'
+import module from 'node:module'
 import oxigraph from 'oxigraph'
 import { use, expect } from 'chai'
 import $rdf from '@zazuko/env-node'

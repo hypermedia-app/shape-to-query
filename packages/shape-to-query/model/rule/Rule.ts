@@ -27,13 +27,15 @@ export function union(arg: Parameters) {
     let groupOrUnion: sparqljs.Pattern
     if (index === 0 && arr.length === 1) {
       groupOrUnion = groupPatterns(result.whereClause)
-    } else {
+    }
+    else {
       const group = groupPatterns(result.whereClause)
       let union: sparqljs.UnionPattern
 
       if (acc.whereClause.length === 1 && acc.whereClause[0].type === 'union') {
         union = acc.whereClause[0] as sparqljs.UnionPattern
-      } else {
+      }
+      else {
         union = {
           type: 'union',
           patterns: [],

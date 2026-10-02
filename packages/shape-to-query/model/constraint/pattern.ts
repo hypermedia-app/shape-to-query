@@ -8,7 +8,7 @@ import ConstraintComponent, { assertTerm } from './ConstraintComponent.js'
 export class PatternConstraintComponent extends ConstraintComponent {
   private readonly args: ReadonlyArray<Literal>
 
-  static * fromShape(shape: PropertyShape) {
+  static* fromShape(shape: PropertyShape) {
     const patterns = shape.get(sh.pattern) || []
     const flags = shape.get(sh.flags)
 
@@ -26,7 +26,8 @@ export class PatternConstraintComponent extends ConstraintComponent {
 
           yield new PatternConstraintComponent(pattern.pointer.term, flag.pointer.term)
         }
-      } else {
+      }
+      else {
         yield new PatternConstraintComponent(pattern.pointer.term)
       }
     }

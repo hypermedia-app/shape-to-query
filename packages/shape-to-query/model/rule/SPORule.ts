@@ -12,7 +12,7 @@ export class SPORule implements Rule {
   private objectFilters: ExpressionConstraintComponent[]
   private predicateFilters: ExpressionConstraintComponent[]
 
-  constructor(param: { objectFilters?: NodeExpression[]; predicateFilters?: NodeExpression[] }) {
+  constructor(param: { objectFilters?: NodeExpression[], predicateFilters?: NodeExpression[] }) {
     this.objectFilters = (param.objectFilters || []).map(wrapExpression)
     this.predicateFilters = (param.predicateFilters || []).map(wrapExpression)
   }

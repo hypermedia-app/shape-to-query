@@ -79,7 +79,7 @@ export abstract class FunctionExpression extends NodeExpressionBase {
     expressionTerm: Term,
     public readonly functionTerm: Term,
     public readonly args: ReadonlyArray<NodeExpression> = [],
-    { symbol = functionTerm, returnType, parameters = [], unlimitedParameters = false }: { symbol?: Term; parameters?: ReadonlyArray<Parameter>; returnType?: Term; unlimitedParameters?: boolean } = {}) {
+    { symbol = functionTerm, returnType, parameters = [], unlimitedParameters = false }: { symbol?: Term, parameters?: ReadonlyArray<Parameter>, returnType?: Term, unlimitedParameters?: boolean } = {}) {
     super(expressionTerm)
 
     if (symbol.termType !== 'Literal' && symbol.termType !== 'NamedNode') {
@@ -123,7 +123,7 @@ export abstract class FunctionExpression extends NodeExpressionBase {
 
   protected abstract boundExpression(subject: Term, args: (sparqljs.Expression | sparqljs.Pattern)[]): sparqljs.Expression
 
-  private evaluateArguments({ subject, variable, rootPatterns }: Parameters, builder: PatternBuilder): { expressions: sparqljs.Expression[]; patterns: sparqljs.Pattern[] } {
+  private evaluateArguments({ subject, variable, rootPatterns }: Parameters, builder: PatternBuilder): { expressions: sparqljs.Expression[], patterns: sparqljs.Pattern[] } {
     return this.args.reduce((result, expr) => {
       if ('buildInlineExpression' in expr) {
         const { inline, patterns = [] } = expr.buildInlineExpression({ subject, variable, rootPatterns }, builder)
@@ -231,7 +231,8 @@ function assertFunctionArguments(func: FunctionExpression, args: ReadonlyArray<N
   }
   if (minArguments === maxArguments) {
     throw new Error(`Function ${shrink(func.functionTerm.value)} requires ${func.parameters.length} arguments`)
-  } else {
+  }
+  else {
     throw new Error(`Function ${shrink(func.functionTerm.value)} requires between ${minArguments} and ${maxArguments} arguments`)
   }
 
@@ -239,7 +240,7 @@ function assertFunctionArguments(func: FunctionExpression, args: ReadonlyArray<N
 }
 
 function getParameters(functionId: Term) {
-  return vocabulary.node(functionId).out(sh.parameter).map(parameter => {
+  return vocabulary.node(functionId).out(sh.parameter).map((parameter) => {
     const order = parameter.out(sh.order)
     return {
       order: isLiteral(order) ? fromRdf(order.term) : 0,

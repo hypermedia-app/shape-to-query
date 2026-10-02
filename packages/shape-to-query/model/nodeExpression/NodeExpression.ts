@@ -29,7 +29,6 @@ export interface InlineExpressionResult {
 export class PatternBuilder {
   private readonly results: TermMap<Term, NodeExpressionResult> = $rdf.termMap()
 
-  // eslint-disable-next-line no-use-before-define
   build(expr: NodeExpression, args: Parameters): NodeExpressionResult {
     const result = this.results.get(expr.term) || expr.build(args, this)
     this.results.set(expr.term, result)
@@ -56,7 +55,7 @@ export interface NodeExpression<T extends Term = Term> {
   get rootIsFocusNode(): boolean
 }
 
-export default abstract class <T extends Term = Term> implements NodeExpression<T> {
+export default abstract class<T extends Term = Term> implements NodeExpression<T> {
   term: T
 
   constructor(term: T) {

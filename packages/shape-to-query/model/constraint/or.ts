@@ -10,7 +10,7 @@ export class OrConstraintComponent extends ConstraintComponent {
     super(sh.OrConstraintComponent)
   }
 
-  static * fromShape(shape: PropertyShape, factory: ModelFactory) {
+  static* fromShape(shape: PropertyShape, factory: ModelFactory) {
     const ors = shape.get(sh.or) || []
 
     for (const or of ors) {

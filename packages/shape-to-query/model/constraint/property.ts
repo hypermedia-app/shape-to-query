@@ -10,7 +10,7 @@ export class PropertyConstraintComponent extends ConstraintComponent {
     super(sh.PropertyConstraintComponent)
   }
 
-  static * fromShape(shape: PS, factory: ModelFactory) {
+  static* fromShape(shape: PS, factory: ModelFactory) {
     const properties = shape.get(sh.property) || []
     for (const property of properties) {
       assertTerm(property)

@@ -1,7 +1,6 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import { writeFile } from 'fs/promises'
-import * as url from 'url'
-import * as path from 'path'
+import { writeFile } from 'node:fs/promises'
+import * as url from 'node:url'
+import * as path from 'node:path'
 import * as shapeTo from '@hydrofoil/shape-to-query/index.js'
 import { nodeExpressions } from '@hydrofoil/shape-to-query/nodeExpressions.js'
 import $rdf from '@zazuko/env-node'
@@ -13,7 +12,7 @@ import { ShorthandSubselectExpression } from './expressions/ShorthandSubselect.j
 import './public/how-tos/example/palindrome/index.js'
 
 const cwd = url.fileURLToPath(new URL('.', import.meta.url))
-const toAbsolutePath = (arg) => path.resolve(cwd, arg)
+const toAbsolutePath = arg => path.resolve(cwd, arg)
 
 nodeExpressions.push(
   HydraCollectionMemberExpression,
@@ -23,7 +22,7 @@ nodeExpressions.push(
 ;(async function () {
   const shapeGraphs = await globby(process.argv[2] || '**/example/**/*.ttl', { cwd })
 
-  await Promise.all(shapeGraphs.map(toAbsolutePath).map(async shapeGraphPath => {
+  await Promise.all(shapeGraphs.map(toAbsolutePath).map(async (shapeGraphPath) => {
     let query
     try {
       const dataset = await $rdf.dataset().import($rdf.fromFile(shapeGraphPath))
@@ -33,7 +32,8 @@ nodeExpressions.push(
       query = shapeTo.constructQuery(shapePointer)
 
       await writeFile(`${shapeGraphPath}.rq`, query)
-    } catch (e) {
+    }
+    catch (e) {
       await writeFile(`${shapeGraphPath}.rq`, `${query}
 
 ${e.message}

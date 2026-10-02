@@ -8,14 +8,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [ 20, "lts/*" ]
+        node: [ 20, "lts/-2", "lts/-1", "lts/*" ]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
       - run: npm ci
-      - run: yarn test
+      - run: npm test
       - name: Codecov (unit tests)
         uses: codecov/codecov-action@v5
         with:
@@ -32,30 +32,30 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: 18
+          node-version: lts/*
       - run: npm ci
-      - run: yarn tsc --noEmit
+      - run: npx tsc --noEmit
 
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: 18
+          node-version: lts/*
       - run: npm ci
-      - run: yarn lint
+      - run: npm run lint
 
   no-circular:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: 18
+          node-version: lts/*
       - run: npm ci
-      - run: yarn tsc
+      - run: npx tsc
       - run: npx madge --circular packages/shape-to-query/index.js

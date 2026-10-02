@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import $rdf from '@zazuko/env/web.js'
 import type { GraphPointer } from 'clownface'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
@@ -16,9 +15,9 @@ export default class TripleRule implements Rule {
   }
 
   static matches(pointer: GraphPointer) {
-    return isGraphPointer(pointer.out(sh.subject)) &&
-    isGraphPointer(pointer.out(sh.predicate)) &&
-    isGraphPointer(pointer.out(sh.object))
+    return isGraphPointer(pointer.out(sh.subject))
+      && isGraphPointer(pointer.out(sh.predicate))
+      && isGraphPointer(pointer.out(sh.object))
   }
 
   static fromPointer(pointer: GraphPointer, factory: ModelFactory) {
@@ -58,7 +57,7 @@ export default class TripleRule implements Rule {
 
     return {
       constructClause: [$rdf.quad(constructSubject, constructPredicate, constructObject)],
-      whereClause: whereClause.map(pattern => {
+      whereClause: whereClause.map((pattern) => {
         if (pattern.type === 'query') {
           return {
             type: 'group',

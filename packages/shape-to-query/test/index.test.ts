@@ -3,7 +3,7 @@ import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { use, expect } from 'chai'
 import { sparql } from '@tpluscode/rdf-string'
 import type { GraphPointer } from 'clownface'
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import { jestSnapshotPlugin } from 'mocha-chai-jest-snapshot'
 import { createStore } from 'mocha-chai-rdf/store.js'
 import type { BlankNode } from '@rdfjs/types'

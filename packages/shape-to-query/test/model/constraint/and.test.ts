@@ -12,8 +12,8 @@ describe('model/constraint/and', function () {
 
   it('combines all inner constraints where', function () {
     // given
-    const fooPattern: sparqljs.BgpPattern =
-      {
+    const fooPattern: sparqljs.BgpPattern
+      = {
         type: 'bgp',
         triples: [rdf.quad<Quad>(ex.foo, ex.foo, ex.foo)],
       }

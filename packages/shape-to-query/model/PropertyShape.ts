@@ -49,7 +49,8 @@ export default class extends Shape implements PropertyShape {
         builder: new PatternBuilder(),
       }))
       patterns = union(...rulePatterns)
-    } else {
+    }
+    else {
       pathEnd = variable.for(focusNode, this._path)
       patterns = visitor.visit(this.path, {
         pathStart: focusNode,

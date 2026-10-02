@@ -25,9 +25,9 @@ export function tripleEquals(triple: sparqljs.Triple) {
 }
 
 function pathsEqual(left: sparqljs.PropertyPath, right: sparqljs.PropertyPath) {
-  return left.pathType === right.pathType &&
-    left.items.length === right.items.length &&
-    left.items.every((item, index) => {
+  return left.pathType === right.pathType
+    && left.items.length === right.items.length
+    && left.items.every((item, index) => {
       const rightItem = right.items[index]
       if ('termType' in item && 'termType' in rightItem) {
         return item.equals(rightItem)

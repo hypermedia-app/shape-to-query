@@ -36,14 +36,16 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
           whereClause,
           constructClause: inner.constructClause,
         }
-      } else if (result.whereClause.length === 1 && result.whereClause[0].type === 'union') {
+      }
+      else if (result.whereClause.length === 1 && result.whereClause[0].type === 'union') {
         const union = result.whereClause[0]
         union.patterns.push({
           type: 'group',
           patterns: whereClause,
         })
         result.constructClause.push(...inner.constructClause)
-      } else {
+      }
+      else {
         result = {
           whereClause: [{
             type: 'union',
@@ -146,7 +148,8 @@ export default class extends Path.PathVisitor<ShapePatterns, Context> {
     }
   }
 
-  visitNegatedPropertySet({ paths }: Path.NegatedPropertySet, { pathStart, pathEnd = this.variable() }: Context): ShapePatterns {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visitNegatedPropertySet(_: Path.NegatedPropertySet, __: Context): ShapePatterns {
     throw new Error('NegatedPropertySet is not yet supported')
   }
 

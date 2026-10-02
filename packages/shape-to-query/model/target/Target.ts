@@ -13,7 +13,6 @@ export interface Target {
   buildPatterns(arg: Parameters): ShapePatterns
 }
 
-export type TargetConstructor =
-  ((new (nodes: MultiPointer, factory: ModelFactory) => Target) & { property: NamedNode })
-  |
-  ((new (nodes: GraphPointer, factory: ModelFactory) => Target) & { type: NamedNode })
+export type TargetConstructor
+  = ((new (nodes: MultiPointer, factory: ModelFactory) => Target) & { property: NamedNode })
+    | ((new (nodes: GraphPointer, factory: ModelFactory) => Target) & { type: NamedNode })

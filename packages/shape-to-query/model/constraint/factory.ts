@@ -18,20 +18,20 @@ export default function (shape: GraphPointer, factory: ModelFactory): Array<Cons
 function buildParameterModel(shape: GraphPointer) {
   return [...shape.dataset.match(shape.term)]
     .reduce<PropertyShape>((previousValue, { predicate }) => {
-    const values = shape.out(predicate).toArray()
-      .reduce((previous, pointer) => {
-        if (pointer.isList()) {
-          return [...previous, { list: [...pointer.list()].filter(isActive) }]
-        }
-        if (isActive(pointer)) {
-          return [...previous, { pointer }]
-        }
+      const values = shape.out(predicate).toArray()
+        .reduce((previous, pointer) => {
+          if (pointer.isList()) {
+            return [...previous, { list: [...pointer.list()].filter(isActive) }]
+          }
+          if (isActive(pointer)) {
+            return [...previous, { pointer }]
+          }
 
-        return previous
-      }, [])
+          return previous
+        }, [])
 
-    return previousValue.set(predicate, values)
-  }, $rdf.termMap())
+      return previousValue.set(predicate, values)
+    }, $rdf.termMap())
 }
 
 function isActive(ptr: GraphPointer) {

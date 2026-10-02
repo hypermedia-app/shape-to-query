@@ -7,7 +7,7 @@ import type { Parameters, PropertyShape } from './ConstraintComponent.js'
 import ConstraintComponent, { assertTerm } from './ConstraintComponent.js'
 
 export class ExpressionConstraintComponent extends ConstraintComponent {
-  static * fromShape(shape: PropertyShape, factory: ModelFactory) {
+  static* fromShape(shape: PropertyShape, factory: ModelFactory) {
     const constraints = shape.get(sh.expression) || []
 
     for (const expression of constraints) {

@@ -40,7 +40,8 @@ export class NodeExpressionTarget implements Target {
         ...pattern,
         variables: [...variables, aliasReturnVar],
       }
-    } else {
+    }
+    else {
       select = {
         type: 'query',
         queryType: 'SELECT',

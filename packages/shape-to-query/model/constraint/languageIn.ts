@@ -6,7 +6,7 @@ import type { Parameters, PropertyShape } from './ConstraintComponent.js'
 import ConstraintComponent, { assertList } from './ConstraintComponent.js'
 
 export class LanguageInConstraintComponent extends ConstraintComponent {
-  static * fromShape(shape: PropertyShape) {
+  static* fromShape(shape: PropertyShape) {
     const languagesIns = shape.get(sh.languageIn) || []
     for (const languagesIn of languagesIns) {
       assertList(languagesIn)
