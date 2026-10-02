@@ -37,7 +37,7 @@ jobs:
         with:
           node-version: lts/*
       - run: npm ci
-      - run: npm run tsc -- --noEmit
+      - run: npx tsc -- --noEmit
 
   lint:
     runs-on: ubuntu-latest
@@ -57,5 +57,5 @@ jobs:
         with:
           node-version: lts/*
       - run: npm ci
-      - run: npm run tsc -- --noEmit
+      - run: npx tsc -- --noEmit
       - run: npx madge --circular packages/shape-to-query/index.js
