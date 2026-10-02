@@ -8,7 +8,7 @@ WHERE {
       ?q2 schema:name ?q3.
       FILTER(REGEX(?q3, \\"Tech\\", \\"i\\"))
       ?q2 rdf:type ?q4.
-      FILTER(EXISTS { ?q2 rdf:type schema:DefinedTermSet, <https://cube.link/meta/SharedDimension>. })
+      FILTER(EXISTS { ?q2 rdf:type schema:DefinedTermSet, meta:SharedDimension. })
     }
   }
 }"
