@@ -2,6 +2,7 @@ ignore:
   - "mocha-setup.cjs"
   - "packages/demo"
   - "packages/shape-to-query/lib/types.ts"
+  - "eslint.config.js"
 flag_management:
   default_rules:
     carryforward: true
