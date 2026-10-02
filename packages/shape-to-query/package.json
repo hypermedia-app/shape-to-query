@@ -47,7 +47,7 @@
     "@types/debug": "^4.1.12",
     "@types/n3": "^1.26.1",
     "@types/sinon": "^22.0.0",
-    "@types/sparql-http-client": "^3.0.5",
+    "@types/sparql-http-client": "^3.1.0",
     "@types/sparqljs": "^3.1.12",
     "@types/wait-on": "^5.3.4",
     "@zazuko/env-node": "^3",
@@ -62,7 +62,7 @@
     "n3": "^2.0.1",
     "oxigraph": "^0.4.9",
     "sinon": "^22.1.0",
-    "sparql-http-client": "^3.0.1",
+    "sparql-http-client": "^3.1.0",
     "string-to-stream": "^3.0.1",
     "tbbt-ld": "^1.1.0",
     "wait-on": "^8.0.3"
