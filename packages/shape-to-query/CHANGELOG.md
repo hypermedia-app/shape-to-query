@@ -1,5 +1,13 @@
 # @hydrofoil/shape-to-query
 
+## 0.15.1
+
+### Patch Changes
+
+- 2908477: Updated `@vocabulary/sh` and moved some dependencies to peer
+- Updated dependencies [0251a1a]
+  - @hydrofoil/sparql-processor@0.2.4
+
 ## 0.15.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @hydrofoil/sparql-processor
 
+## 0.2.4
+
+### Patch Changes
+
+- 0251a1a: Moved `@zazuko/prefixes` to peer dependencies
+
 ## 0.2.3
 
 ### Patch Changes
