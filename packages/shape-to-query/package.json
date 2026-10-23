@@ -38,9 +38,9 @@
     "ts-pattern": "^5.6.2"
   },
   "peerDependencies": {
-    "@zazuko/prefixes": ">=2",
+    "@tpluscode/rdf-ns-builders": ">=3.0.2",
     "@zazuko/env": ">=3",
-    "@tpluscode/rdf-ns-builders": ">=3.0.2"
+    "@zazuko/prefixes": ">=2"
   },
   "devDependencies": {
     "@tpluscode/sparql-builder": "^3.0.1",
@@ -52,7 +52,7 @@
     "@types/sparql-http-client": "^3.0.5",
     "@types/sparqljs": "^3.1.12",
     "@types/wait-on": "^5.3.4",
-    "@zazuko/env-node": "^3",
+    "@zazuko/env-node": "^3.1.0",
     "assertion-error": "^2.0.1",
     "chai": "^6.3.0",
     "chai-string": "^2.0.0",
