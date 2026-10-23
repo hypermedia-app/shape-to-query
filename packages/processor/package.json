@@ -33,7 +33,7 @@
     "@zazuko/env": "^3.0.3",
     "chai": "^6",
     "glob": "^13",
-    "sparqljs": "^3.7.3"
+    "sparqljs": "^3.7.4"
   },
   "mocha": {
     "config": "../../.mocharc.cjs"
