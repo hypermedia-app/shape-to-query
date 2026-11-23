@@ -16,6 +16,7 @@ import { NodeKindConstraintComponent } from './nodeKind.js'
 import { LanguageInConstraintComponent } from './languageIn.js'
 import { DatatypeConstraintComponent } from './datatype.js'
 import { RangeConstraintComponent } from './RangeConstraintComponent.js'
+import { CardinalityConstraintComponent } from './CardinalityConstraintComponent.js'
 
 interface ConstraintComponentStatic {
   fromShape(shape: PropertyShape, factory: ModelFactory): ConstraintComponent[] | Generator<ConstraintComponent>
@@ -38,5 +39,6 @@ export const constraintComponents = $rdf.termMap<Term, ConstraintComponentStatic
   [sh.MaxInclusiveConstraintComponent, RangeConstraintComponent],
   [sh.MinExclusiveConstraintComponent, RangeConstraintComponent],
   [sh.MaxExclusiveConstraintComponent, RangeConstraintComponent],
-
+  [sh.MinCountConstraintComponent, CardinalityConstraintComponent],
+  [sh.MaxCountConstraintComponent, CardinalityConstraintComponent],
 ])
