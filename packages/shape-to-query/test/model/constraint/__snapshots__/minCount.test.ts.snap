@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`model/constraint/minCount checks for invalid values without requiring the path in a fixed-focus ASK 1`] = `
+"ASK WHERE {
+  FILTER(NOT EXISTS {
+    SELECT (COUNT(DISTINCT ?resource2) AS ?resource3) WHERE { <http://example.com/ns#Bob> <http://example.com/ns#hasHikingGear> ?resource2. }
+    HAVING ((COUNT(DISTINCT ?resource2)) > 1 )
+  })
+  FILTER(NOT EXISTS {
+    <http://example.com/ns#Bob> <http://example.com/ns#hasHikingGear> ?resource1.
+    FILTER(NOT EXISTS {
+      FILTER(?resource1 IN(\\"false\\"^^<http://www.w3.org/2001/XMLSchema#boolean>))
+      FILTER((DATATYPE(?resource1)) = <http://www.w3.org/2001/XMLSchema#boolean>)
+    })
+  })
+}"
+`;
+
+exports[`model/constraint/minCount correlates nested cardinality filters with the value node 1`] = `
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+CONSTRUCT {
+  ?resource1 rdf:type <http://example.com/ns#Person>.
+  ?resource1 <http://example.com/ns#child> ?resource2.
+  ?resource2 <http://example.com/ns#flag> ?resource3.
+}
+WHERE {
+  {
+    SELECT ?resource1 ?resource2 WHERE {
+      ?resource1 rdf:type <http://example.com/ns#Person>.
+      OPTIONAL { ?resource1 <http://example.com/ns#child> ?resource2. }
+      FILTER(NOT EXISTS {
+        ?resource1 <http://example.com/ns#child> ?resource8.
+        FILTER(NOT EXISTS {
+          {
+            FILTER(EXISTS {
+              SELECT ?resource8 WHERE { ?resource8 <http://example.com/ns#flag> ?resource11. }
+              GROUP BY ?resource8
+              HAVING (((COUNT(DISTINCT ?resource11)) >= 1 ) && ((COUNT(DISTINCT ?resource11)) <= 1 ))
+            })
+          }
+        })
+      })
+    }
+  }
+  UNION
+  {
+    SELECT ?resource2 ?resource3 WHERE {
+      ?resource1 rdf:type <http://example.com/ns#Person>;
+        <http://example.com/ns#child> ?resource2.
+      ?resource2 <http://example.com/ns#flag> ?resource3.
+      FILTER(NOT EXISTS {
+        ?resource1 <http://example.com/ns#child> ?resource8.
+        FILTER(NOT EXISTS {
+          {
+            FILTER(EXISTS {
+              SELECT ?resource8 WHERE { ?resource8 <http://example.com/ns#flag> ?resource11. }
+              GROUP BY ?resource8
+              HAVING (((COUNT(DISTINCT ?resource11)) >= 1 ) && ((COUNT(DISTINCT ?resource11)) <= 1 ))
+            })
+          }
+        })
+      })
+    }
+  }
+}"
+`;
+
+exports[`model/constraint/minCount counts distinct path endpoints in one subquery for both bounds 1`] = `
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+CONSTRUCT {
+  ?resource1 rdf:type <http://example.com/ns#Person>.
+  ?resource1 <http://example.com/ns#step> ?resource3.
+  ?resource3 <http://example.com/ns#value> ?resource2.
+}
+WHERE {
+  ?resource1 rdf:type <http://example.com/ns#Person>;
+    <http://example.com/ns#step> ?resource3.
+  ?resource3 <http://example.com/ns#value> ?resource2.
+  FILTER(EXISTS {
+    SELECT ?resource1 WHERE { ?resource1 (<http://example.com/ns#step>/<http://example.com/ns#value>) ?resource8. }
+    GROUP BY ?resource1
+    HAVING (((COUNT(DISTINCT ?resource8)) >= 2 ) && ((COUNT(DISTINCT ?resource8)) <= 2 ))
+  })
+}"
+`;

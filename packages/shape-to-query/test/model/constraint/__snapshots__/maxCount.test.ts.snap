@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`model/constraint/maxCount checks the required value and applies the datatype constraint to every value 1`] = `
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+CONSTRUCT {
+  ?resource1 rdf:type <http://example.com/ns#Person>.
+  ?resource1 <http://example.com/ns#flag> ?resource2.
+}
+WHERE {
+  ?resource1 rdf:type <http://example.com/ns#Person>.
+  OPTIONAL { ?resource1 <http://example.com/ns#flag> ?resource2. }
+  FILTER(EXISTS {
+    ?resource1 <http://example.com/ns#flag> ?resource4.
+    VALUES ?resource4 {
+      \\"false\\"^^xsd:boolean
+    }
+  })
+  FILTER(NOT EXISTS {
+    SELECT ?resource1 WHERE { ?resource1 <http://example.com/ns#flag> ?resource5. }
+    GROUP BY ?resource1
+    HAVING ((COUNT(DISTINCT ?resource5)) > 3 )
+  })
+  FILTER(NOT EXISTS {
+    ?resource1 <http://example.com/ns#flag> ?resource4.
+    FILTER(NOT EXISTS { FILTER((DATATYPE(?resource4)) = xsd:boolean) })
+  })
+}"
+`;
+
+exports[`model/constraint/maxCount uses an optional inverse path and rejects matches when the maximum is zero 1`] = `
+"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+CONSTRUCT {
+  ?resource1 rdf:type <http://example.com/ns#Person>.
+  ?resource2 <http://example.com/ns#owner> ?resource1.
+}
+WHERE {
+  ?resource1 rdf:type <http://example.com/ns#Person>.
+  OPTIONAL { ?resource2 <http://example.com/ns#owner> ?resource1. }
+  FILTER(NOT EXISTS { ?resource1 ^<http://example.com/ns#owner> ?resource5. })
+}"
+`;

@@ -32,15 +32,15 @@ export class OrConstraintComponent extends ConstraintComponent {
       }
     }
 
-    const inner = this.inner
-      .map((i): sparqljs.GroupPattern => {
-        const patterns = i.buildConstraints(arg)
-        return {
-          type: 'group',
-          patterns: propExpr && patterns.length ? [propExpr, ...patterns] : patterns,
-        }
-      })
-      .filter(gr => gr.patterns.length > 0)
+    const inner: sparqljs.GroupPattern[] = []
+    for (const shape of this.inner) {
+      const patterns = shape.buildConstraints(arg)
+      // An unconstrained alternative satisfies the disjunction.
+      if (!patterns.length) {
+        return []
+      }
+      inner.push({ type: 'group', patterns: propExpr ? [propExpr, ...patterns] : patterns })
+    }
 
     if (!inner.length) {
       return []

@@ -47,7 +47,12 @@ export default class extends Shape implements NodeShape {
 
     const logical = this.buildLogicalConstraints({ ...arg, focusNode, rootPatterns })
 
-    return flatten(targets, union(properties, rules), logical)
+    const output = union(properties, rules)
+    if (targets.whereClause.length && output.whereClause.length && this.properties.some(property => property.allowsMissingValues)) {
+      output.whereClause = [{ type: 'optional', patterns: output.whereClause }]
+    }
+
+    return flatten(targets, output, logical)
   }
 
   buildConstraints(arg: BuildParameters & { valueNode: Variable }): sparqljs.Pattern[] {

@@ -20,6 +20,8 @@ export interface Parameters {
 
 export interface ConstraintComponent {
   readonly type: NamedNode
+  /** Whether a cardinality constraint accepts an empty property path. */
+  readonly allowsZeroValues?: boolean
   buildPatterns(arg: Parameters): sparqljs.Pattern[]
 }
 

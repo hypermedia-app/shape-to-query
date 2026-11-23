@@ -5,7 +5,7 @@ import StreamClient from 'sparql-http-client'
 import * as compose from 'docker-compose'
 import waitOn from 'wait-on'
 import $rdf from '@zazuko/env-node'
-import { sh, schema, hydra } from '@tpluscode/rdf-ns-builders'
+import { sh, schema, hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { expect } from 'chai'
 import type { GraphPointer } from 'clownface'
 import { isGraphPointer } from 'is-graph-pointer'
@@ -24,6 +24,7 @@ const client = new StreamClient({
   endpointUrl: 'http://localhost:3030/s2q/query',
   storeUrl: 'http://localhost:3030/s2q/data',
 })
+const tbbt = $rdf.namespace('http://localhost:8080/data/person/')
 
 before(async function () {
   this.timeout(100000)
@@ -33,7 +34,9 @@ before(async function () {
   await waitOn({
     resources: ['http://localhost:3030'],
   })
-  await client.store.post($rdf.fromFile(require.resolve('tbbt-ld/dist/tbbt.nt')))
+  // Fuseki's union default graph reads from named graphs.
+  const graph = $rdf.namedNode('urn:shape-to-query:smoke:tbbt')
+  await client.store.put($rdf.fromFile(require.resolve('tbbt-ld/dist/tbbt.nt')), { graph })
 })
 
 describe('@hydrofoil/shape-to-query', function () {
@@ -54,6 +57,51 @@ describe('@hydrofoil/shape-to-query', function () {
 
     // then
     expect(result).to.be.ok
+  })
+
+  it('selects the person who knows at least eight people with sh:minCount', async function () {
+    const shape = parse`<>
+      ${sh.targetClass} ${schema.Person} ;
+      ${sh.property} [ ${sh.path} ${schema.knows} ; ${sh.minCount} 8 ] .
+    `
+
+    const result = await $rdf.dataset().import(client.query.construct(constructQuery(shape)))
+    const people = $rdf.clownface({ dataset: result }).has(rdf.type, schema.Person)
+
+    expect(people.values).to.deep.equal([tbbt('leonard-hofstadter').value])
+    expect(people.out(schema.knows).terms).to.have.length(8)
+  })
+
+  it('selects people with zero or one family name or parent with sh:maxCount', async function () {
+    const shape = parse`<>
+      ${sh.targetClass} ${schema.Person} ;
+      ${sh.property} [
+        ${sh.path} [ ${sh.alternativePath} ( ${schema.familyName} ${schema.parent} ) ] ;
+        ${sh.maxCount} 1
+      ] .
+    `
+
+    const result = await $rdf.dataset().import(client.query.construct(constructQuery(shape)))
+    const people = $rdf.clownface({ dataset: result }).has(rdf.type, schema.Person)
+
+    expect(people.terms).to.have.length(8)
+    expect(people.values).to.include(tbbt('penny').value)
+    expect(people.values).to.include(tbbt('leonard-hofstadter').value)
+    expect(people.values).not.to.include(tbbt('sheldon-cooper').value)
+  })
+
+  it('selects people who know exactly seven people with both cardinality bounds', async function () {
+    const shape = parse`<>
+      ${sh.targetClass} ${schema.Person} ;
+      ${sh.property} [ ${sh.path} ${schema.knows} ; ${sh.minCount} 7 ; ${sh.maxCount} 7 ] .
+    `
+
+    const result = await $rdf.dataset().import(client.query.construct(constructQuery(shape)))
+    const people = $rdf.clownface({ dataset: result }).has(rdf.type, schema.Person)
+
+    expect(people.terms).to.have.length(7)
+    expect(people.values).not.to.include(tbbt('mary-cooper').value)
+    expect(people.values).not.to.include(tbbt('leonard-hofstadter').value)
   })
 
   context('constraint generates blank nodes', function () {

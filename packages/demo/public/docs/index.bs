@@ -315,6 +315,83 @@ Note: SHACL spec: [[shacl#MaxInclusiveConstraintComponent]]
   </s2q-snippet>
 </div>
 
+### Cardinality Constraint Components ### {#shacl-cardinality-constraints}
+
+`sh:minCount` and `sh:maxCount` filter focus nodes by the number of distinct values reached by a property shape's path.
+An explicit `sh:minCount 0` or a nonnegative maximum without a minimum allows the path to have no values if the other constraints are satisfied.
+When values are present, each must satisfy the property's value constraints.
+
+Both bounds must be nonnegative integers, as required by the [SHACL shapes graph](https://www.w3.org/ns/shacl-shacl/).
+A shape with a negative bound raises an error during query generation.
+
+<div class="example">
+  A minimum of zero is always satisfied. The query includes people with no email address and retrieves email addresses when present.
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/constraint/zero-minCount.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/constraint/zero-minCount.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+<div class="example">
+  Select people with two or three distinct email addresses. The query applies both inclusive bounds to the same count.
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/constraint/count-range.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/constraint/count-range.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+#### sh:minCount #### {#shacl-minCount}
+
+Note: SHACL spec: [[shacl#MinCountConstraintComponent]]
+
+<div class="example">
+  Select people with at least two distinct email addresses.
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/constraint/minCount.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/constraint/minCount.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
+#### sh:maxCount #### {#shacl-maxCount}
+
+Note: SHACL spec: [[shacl#MaxCountConstraintComponent]]
+
+<div class="example">
+  Select people with at most one email address, including people without an address.
+
+  <s2q-snippet>
+    <pre class="include-code" slot="shape">
+    path: example/constraint/maxCount.ttl
+    highlight: turtle
+    </pre>
+    <pre class="include-code" slot="query">
+    path: example/constraint/maxCount.ttl.rq
+    highlight: sparql
+    </pre>
+  </s2q-snippet>
+</div>
+
 ### String-based Constraint Components ### {#shacl-string-constraints}
 
 #### sh:pattern #### {#shacl-pattern}
