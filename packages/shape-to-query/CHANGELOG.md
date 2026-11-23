@@ -1,5 +1,11 @@
 # @hydrofoil/shape-to-query
 
+## 0.15.2
+
+### Patch Changes
+
+- 05c206d: Support `sh:minCount` and `sh:maxCount` by counting distinct property path values per focus node. Allow absent values when the declared cardinality permits them and enforce value constraints when values are present. Fixes #545 Fixes #48
+
 ## 0.15.1
 
 ### Patch Changes
