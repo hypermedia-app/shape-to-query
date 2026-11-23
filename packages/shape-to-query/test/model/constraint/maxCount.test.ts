@@ -15,6 +15,14 @@ describe('model/constraint/maxCount', function () {
     expect(() => shapeToPatterns(shape)).to.throw(`${sh.maxCount.value} must be a nonnegative xsd:integer literal`)
   })
 
+  it('rejects multiple maximum counts on a property shape', function () {
+    const shape = parse`<>
+      ${sh.property} [ ${sh.path} <http://schema.org/email> ; ${sh.maxCount} 1, 2 ] .
+    `
+
+    expect(() => shapeToPatterns(shape)).to.throw(`${sh.maxCount.value} must have at most one value`)
+  })
+
   it('uses an optional inverse path and rejects matches when the maximum is zero', function () {
     const shape = parse`
       @prefix ex: <http://example.com/ns#> .

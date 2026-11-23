@@ -18,6 +18,14 @@ describe('model/constraint/minCount', function () {
     expect(() => shapeToPatterns(shape)).to.throw(`${sh.minCount.value} must be a nonnegative xsd:integer literal`)
   })
 
+  it('rejects multiple minimum counts on a property shape', function () {
+    const shape = parse`<>
+      ${sh.property} [ ${sh.path} <http://schema.org/email> ; ${sh.minCount} 1, 2 ] .
+    `
+
+    expect(() => shapeToPatterns(shape)).to.throw(`${sh.minCount.value} must have at most one value`)
+  })
+
   it('omits the filter and retrieves the path optionally when the minimum is zero', function () {
     const shape = parse`<> ${sh.targetClass} <http://schema.org/Person> ;
       ${sh.property} [ ${sh.path} <http://schema.org/email> ; ${sh.minCount} 0 ] .
