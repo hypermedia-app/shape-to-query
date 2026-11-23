@@ -31,7 +31,7 @@
     "globals": "^17",
     "husky": "^9.1.4",
     "jest-resolve": "^29.5.0",
-    "lint-staged": "^15",
+    "lint-staged": "^17",
     "mocha": "^12",
     "patch-package": "^8.0.1",
     "sinon-chai": "^4.0.1",
